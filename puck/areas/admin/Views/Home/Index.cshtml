@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div class="main">
+    
+</div>
+<script>
+    var obj = {};
+
+    $.get("/admin/api/models", function (data) {
+        obj.models = data;
+        $.get("/admin/api/editmarkup?type=" + data[0], function (data) {
+            obj.markup = data;
+            $(".main").html(data);
+            $.validator.unobtrusive.parse($(".main form"));
+            $(".main form").submit(function (e) {
+                if ($(this).valid()) {
+                    e.preventDefault();
+                    var values = $(this).serialize();
+                    console.log("serialized data: %s", values);
+                    $.post($(this).attr("action"), values, function (data) {
+                        console.log("data %s",data);
+                    });
+                }
+            });
+        });
+    });
+    
+</script>
