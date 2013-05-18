@@ -23,7 +23,7 @@ namespace puck.core.Attributes
             }
             set { _FieldIndexSetting = value; }
         }
-        public Analyzer Analyzer { get; set; }
+        public Type Analyzer { get; set; }
         
     }
 }

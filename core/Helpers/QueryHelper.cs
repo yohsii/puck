@@ -87,6 +87,7 @@ namespace puck.core.Helpers
         private static string getName(string str) {
             var match = nameRegex.Match(str);
             string result = match.Groups[1].Value;
+            result = result.ToLower();
             return result;
         }
 

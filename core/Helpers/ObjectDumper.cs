@@ -8,6 +8,7 @@ using System.Linq;
 using Lucene.Net.Documents;
 using puck.core.Attributes;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Snowball;
 namespace puck.core.Helpers
 {
     public class FlattenedObject {
@@ -30,7 +31,17 @@ namespace puck.core.Helpers
                 var sattr = (IndexSettings)settings.First();
                 FieldIndexSetting = sattr.FieldIndexSetting;
                 FieldStoreSetting = sattr.FieldStoreSetting;
-                Analyzer = sattr.Analyzer;
+                if (sattr.Analyzer != null)
+                {
+                    if (sattr.Analyzer == typeof(SnowballAnalyzer))
+                    {
+                        Analyzer = new SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "English");
+                    }
+                    else
+                    {
+                        Analyzer = (Analyzer)Activator.CreateInstance(sattr.Analyzer, Lucene.Net.Util.Version.LUCENE_30);
+                    }
+                }
             }
             else
             {

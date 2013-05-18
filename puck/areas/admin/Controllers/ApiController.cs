@@ -10,6 +10,9 @@ using System.IO;
 using Newtonsoft.Json;
 using puck.core.Abstract;
 using puck.core.Constants;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Analysis.Snowball;
 namespace puck.core.Controllers
 {
     public class ApiController : BaseController
@@ -42,7 +45,7 @@ namespace puck.core.Controllers
             
             try { 
                 UpdateModelDynamic(model,fc.ToValueProvider());
-                indexer.Index(model);
+                //indexer.Index(model);
             }
             catch (Exception ex) {
                 log.Log(ex);
@@ -52,7 +55,7 @@ namespace puck.core.Controllers
             q
                 .Field(x => x.Person.Name, "Amanuel")
                 .And()
-                .Field(x => x.PageTitle, "News")
+                .Field(x => x.Description, "News home running jumping gardening".Wrap())
                 .And(
                     q.New()
                     .Not()
@@ -61,15 +64,14 @@ namespace puck.core.Controllers
                     .Field(x=>x.Person.Age,10)
                 );
 
-
-
-            //q.AllFields("news").GetAll();
+            var schr = indexer as puck.core.Concrete.Content_Indexer_Searcher;
+            var props = ObjectDumper.Write(model,int.MaxValue);
+            var analyzers = new List<KeyValuePair<string,Analyzer>>();
+            schr.GetFieldSettings(props, null, analyzers);
+            var analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30),analyzers);
+            var qp = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "", analyzer);
+            var parsed = qp.Parse(q.ToString());
             
-            //var results= new QueryHelper<Home>().GetAll();
-            
-            var qp = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "", (indexer as puck.core.Concrete.Content_Indexer_Searcher).Analyzer);
-            //var qp = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "", new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30));
-            //var lq = qp.Parse(q.ToString());
             return Json("");
         }
 

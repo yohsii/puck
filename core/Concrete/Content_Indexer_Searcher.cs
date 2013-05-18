@@ -32,6 +32,51 @@ namespace puck.core.Concrete
             
         }
 
+        public void GetFieldSettings(List<FlattenedObject> props,Document doc,List<KeyValuePair<string,Analyzer>> analyzers) {
+            foreach (var p in props)
+            {
+                if (analyzers != null)
+                {
+                    if (p.Analyzer != null)
+                    {
+                        analyzers.Add(new KeyValuePair<string, Analyzer>(p.Key, p.Analyzer));
+                    }
+                }
+                if (doc != null)
+                {
+                    if (p.Value is int)
+                    {
+                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
+                        nf.SetIntValue(int.Parse(p.Value.ToString()));
+                        doc.Add(nf);
+                    }
+                    else if (p.Value is long)
+                    {
+                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
+                        nf.SetLongValue(long.Parse(p.Value.ToString()));
+                        doc.Add(nf);
+                    }
+                    else if (p.Value is float)
+                    {
+                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
+                        nf.SetFloatValue(float.Parse(p.Value.ToString()));
+                        doc.Add(nf);
+                    }
+                    else if (p.Value is double)
+                    {
+                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
+                        nf.SetDoubleValue(double.Parse(p.Value.ToString()));
+                        doc.Add(nf);
+                    }
+                    else
+                    {
+                        var f = new Field(p.Key, p.Value == null ? string.Empty : p.Value.ToString(), p.FieldStoreSetting, p.FieldIndexSetting);
+                        doc.Add(f);
+                    }
+                }
+            }
+        }
+
         public void Index<T>(T model) {
             lock (write_lock)
             {
@@ -46,41 +91,7 @@ namespace puck.core.Concrete
                     var analyzers = new List<KeyValuePair<string, Analyzer>>();
                     Document doc = new Document();
                     //get fields to index
-                    foreach (var p in props)
-                    {
-                        if (p.Analyzer != null) {
-                            analyzers.Add(new KeyValuePair<string,Analyzer>(p.Key,p.Analyzer));
-                        }
-                        if (p.Value is int)
-                        {
-                            var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
-                            nf.SetIntValue(int.Parse(p.Value.ToString()));
-                            doc.Add(nf);
-                        }
-                        else if (p.Value is long)
-                        {
-                            var nf = new NumericField(p.Key.ToLower(), 4,p.FieldStoreSetting, true);
-                            nf.SetLongValue(long.Parse(p.Value.ToString()));
-                            doc.Add(nf);
-                        }
-                        else if (p.Value is float)
-                        {
-                            var nf = new NumericField(p.Key.ToLower(), 4,p.FieldStoreSetting, true);
-                            nf.SetFloatValue(float.Parse(p.Value.ToString()));
-                            doc.Add(nf);
-                        }
-                        else if (p.Value is double)
-                        {
-                            var nf = new NumericField(p.Key.ToLower(), 4,p.FieldStoreSetting, true);
-                            nf.SetDoubleValue(double.Parse(p.Value.ToString()));
-                            doc.Add(nf);
-                        }
-                        else
-                        {
-                            var f = new Field(p.Key,p.Value==null?string.Empty:p.Value.ToString(),p.FieldStoreSetting,p.FieldIndexSetting);
-                            doc.Add(f);
-                        }
-                    }
+                    GetFieldSettings(props, doc, analyzers);
                     //add cms properties
                     string jsonDoc = JsonConvert.SerializeObject(model);
                     //doc in json form for deserialization later
@@ -123,7 +134,7 @@ namespace puck.core.Concrete
                 IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), Analyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
+                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
                     var id = values.Where(x => x.Key.Equals(FieldKeys.ID)).FirstOrDefault().Value;
                     writer.DeleteDocuments(new Term(FieldKeys.ID, id));
                     Document doc = new Document();
@@ -161,7 +172,7 @@ namespace puck.core.Concrete
                 IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), Analyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
+                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
                     writer.DeleteDocuments(new Term(FieldKeys.ID, id));
                     writer.Flush(true,true,true);                    
                 }
@@ -184,7 +195,7 @@ namespace puck.core.Concrete
                 IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), Analyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
+                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
                     writer.Optimize();                    
                 }
                 catch (Exception ex)
@@ -213,7 +224,7 @@ namespace puck.core.Concrete
                 IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), Analyzer, create, IndexWriter.MaxFieldLength.UNLIMITED);
+                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, create, IndexWriter.MaxFieldLength.UNLIMITED);
                     writer.Optimize();
                     writer.Flush(true, true, true);
                     writer.Dispose(true);
@@ -250,7 +261,7 @@ namespace puck.core.Concrete
         public IDictionary<string, string> Query(string terms)
         {
             BooleanQuery bq = new BooleanQuery();
-            Lucene.Net.QueryParsers.QueryParser snowParser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30,"text",Analyzer);
+            Lucene.Net.QueryParsers.QueryParser snowParser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30,"text",StandardAnalyzer);
             Lucene.Net.Search.Query contentQuery = snowParser.Parse(terms);
             bq.Add(contentQuery,Occur.MUST);
             var collector = TopScoreDocCollector.Create(int.MaxValue,true);
@@ -268,7 +279,13 @@ namespace puck.core.Concrete
             return result;            
         }
         public IList<T> Query<T>(string qstr) {
-            var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,Analyzer);
+            var model = Activator.CreateInstance(typeof(T));
+            var props = ObjectDumper.Write(model, int.MaxValue);
+            var analyzers = new List<KeyValuePair<string, Analyzer>>();
+            GetFieldSettings(props, null, analyzers);
+            var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
+
+            var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
             var coll = TopScoreDocCollector.Create(int.MaxValue,true);
             Searcher.Search(q, coll);
