@@ -13,13 +13,14 @@ using Lucene.Net.Store;
 using puck.core.Constants;
 using puck.core.Helpers;
 using Newtonsoft.Json;
+using Lucene.Net.Analysis;
 
 namespace puck.core.Concrete
 {
     public class Content_Indexer_Searcher : I_Content_Indexer,I_Content_Searcher
     {
-        //private Lucene.Net.Analysis.Standard.StandardAnalyzer Analyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer();
-        private Lucene.Net.Analysis.Snowball.SnowballAnalyzer Analyzer = new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30,"English");
+        private Lucene.Net.Analysis.Standard.StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+        private Lucene.Net.Analysis.Snowball.SnowballAnalyzer SnowballAnalyzer = new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30,"English");
         private string INDEXPATH { get { return HttpContext.Current.Server.MapPath("~/App_Data/Lucene"); } }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };
         private IndexSearcher Searcher = null;
@@ -37,19 +38,19 @@ namespace puck.core.Concrete
                 IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), Analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
                     //get model properties
                     var props = ObjectDumper.Write(model, int.MaxValue);
-                    //lower case keys
-                    props.ForEach(x => x.Key = x.Key.ToLower());
                     //delete current doc
                     var id = props.Where(x => x.Key.Equals(FieldKeys.ID)).FirstOrDefault().Value;
-                    writer.DeleteDocuments(new Term(FieldKeys.ID, id.ToString()));
 
+                    var analyzers = new List<KeyValuePair<string, Analyzer>>();
                     Document doc = new Document();
                     //get fields to index
                     foreach (var p in props)
                     {
+                        if (p.Analyzer != null) {
+                            analyzers.Add(new KeyValuePair<string,Analyzer>(p.Key,p.Analyzer));
+                        }
                         if (p.Value is int)
                         {
                             var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
@@ -87,6 +88,9 @@ namespace puck.core.Concrete
                     //full typename for deserialization later
                     doc.Add(new Field(FieldKeys.PuckType,model.GetType().FullName,Field.Store.YES,Field.Index.NOT_ANALYZED));
                     
+                    var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
+                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
+                    writer.DeleteDocuments(new Term(FieldKeys.ID, id.ToString()));
                     writer.AddDocument(doc);
                     writer.Flush(true, true, true);
                 }

@@ -7,6 +7,7 @@ using puck.core.Abstract;
 using System.Linq;
 using Lucene.Net.Documents;
 using puck.core.Attributes;
+using Lucene.Net.Analysis;
 namespace puck.core.Helpers
 {
     public class FlattenedObject {
@@ -15,31 +16,29 @@ namespace puck.core.Helpers
         public Object Value {get;set;}
         public Object OriginalValue { get; set; }
         public Object[] Attributes { get; set; }
-        public Field.Index FieldIndexSetting { 
-            get {
-                var attr = Attributes.Where(x => x.GetType() == typeof(IndexSettings));
-                if (attr.Any()) {
-                    var sattr = (IndexSettings)attr.First();
-                    return sattr.FieldIndexSetting;
-                }
-                return FieldSettings.FieldIndexSetting;
-            } 
-            
-        }
-        public Field.Store FieldStoreSetting
-        {
-            get {
-                var attr = Attributes.Where(x => x.GetType() == typeof(IndexSettings));
-                if (attr.Any())
-                {
-                    var sattr = (IndexSettings)attr.First();
-                    return sattr.FieldStoreSetting;
-                }
-                return FieldSettings.FieldStoreSetting;
-            }
-            
-        }
+        public Field.Index FieldIndexSetting{get;set;}
+        public Field.Store FieldStoreSetting{get;set;}
+        public Analyzer Analyzer { get; set; }
         public void Transform() {
+            //lower case keys
+            Key = Key.ToLower();
+                    
+            //find field settings
+            var settings = Attributes.Where(x => x.GetType() == typeof(IndexSettings));
+            if (settings.Any())
+            {
+                var sattr = (IndexSettings)settings.First();
+                FieldIndexSetting = sattr.FieldIndexSetting;
+                FieldStoreSetting = sattr.FieldStoreSetting;
+                Analyzer = sattr.Analyzer;
+            }
+            else
+            {
+                FieldIndexSetting = FieldSettings.FieldIndexSetting;
+                FieldStoreSetting = FieldSettings.FieldStoreSetting;
+            }
+
+            //apply transforms
             object attr = null;
             var tattr = Attributes
                 .Where(x => x.GetType().GetInterfaces()

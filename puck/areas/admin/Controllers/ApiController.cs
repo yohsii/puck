@@ -47,7 +47,29 @@ namespace puck.core.Controllers
             catch (Exception ex) {
                 log.Log(ex);
             }
+            var q = new QueryHelper<Home>();
+
+            q
+                .Field(x => x.Person.Name, "Amanuel")
+                .And()
+                .Field(x => x.PageTitle, "News")
+                .And(
+                    q.New()
+                    .Not()
+                    .Field(x=>x.PageTitle,"blog")
+                    .Or()
+                    .Field(x=>x.Person.Age,10)
+                );
+
+
+
+            //q.AllFields("news").GetAll();
             
+            //var results= new QueryHelper<Home>().GetAll();
+            
+            var qp = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "", (indexer as puck.core.Concrete.Content_Indexer_Searcher).Analyzer);
+            //var qp = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "", new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30));
+            //var lq = qp.Parse(q.ToString());
             return Json("");
         }
 

@@ -113,6 +113,7 @@
     <Compile Include="Helpers\ApiHelper.cs" />
     <Compile Include="Helpers\ObjectDumper.cs" />
     <Compile Include="Constants\FieldSettings.cs" />
+    <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\LogIn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

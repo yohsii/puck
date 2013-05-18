@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Lucene.Net.Documents;
 using puck.core.Helpers;
+using Lucene.Net.Analysis;
 namespace puck.core.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
@@ -22,6 +23,7 @@ namespace puck.core.Attributes
             }
             set { _FieldIndexSetting = value; }
         }
+        public Analyzer Analyzer { get; set; }
         
     }
 }

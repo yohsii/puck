@@ -11,14 +11,67 @@ using puck.core.Constants;
 
 namespace puck.core.Helpers
 {
-    public static class QueryHelper<TModel>
+    public static class QueryExtensions {
+        //term modifier string extensions
+        public static string WildCardSingle(this string s, bool perWord = false)
+        {
+            if (perWord)
+                return string.Join(" ", s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x + "?"));
+            else
+                return s + "?";
+        }
+
+        public static string WildCardMulti(this string s, bool perWord = false)
+        {
+            if (perWord)
+                return string.Join(" ", s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x + "*"));
+            else
+                return s + "*";
+        }
+
+        public static string Fuzzy(this string s, float? fuzzyness = null, bool perWord = false)
+        {
+            if (perWord)
+                return string.Join(" ", s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x + "~" + (fuzzyness.HasValue ? fuzzyness.ToString() : "")));
+            else
+                return s + "~";
+        }
+
+        public static string Boost(this string s, float? boost = null, bool perWord = false)
+        {
+            if (perWord)
+                return string.Join(" ", s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(x => x + "^" + (boost.HasValue ? boost.ToString() : "")));
+            else
+                return s + "^";
+        }
+
+        public static string Proximity(this string s, float? proximity = null)
+        {
+            return s + "~" + (proximity.HasValue ? proximity.ToString() : "");
+        }
+
+        public static string Escape(this string s)
+        {
+            return QueryParser.Escape(s);
+        }
+
+        public static string Wrap(this string s)
+        {
+            return string.Concat("\"", s, "\"");
+        }
+    }
+    public class QueryHelper<TModel>
     {
         private static I_Content_Searcher searcher = DependencyResolver.Current.GetService<I_Content_Searcher>();
 
         //query builders append to this string
         string query;
-        
-        static string namePattern = @"^[a-zA-Z0-9]*\.";
+        bool prepended = false;
+        static string namePattern = @"(?:[A-Za-z0-9]*\()?[A-Za-z0-9]\.([A-Za-z0-9.]*)";
         static string paramPattern = @"((?:[a-zA-Z0-9]+\.?)+)\)";
         static string queryPattern = @"^\(*""(.*)""\s";
         static string fieldPattern = @"@";
@@ -32,21 +85,22 @@ namespace puck.core.Helpers
 
         //static helpers
         private static string getName(string str) {
-            string result = nameRegex.Replace(str, "");
+            var match = nameRegex.Match(str);
+            string result = match.Groups[1].Value;
             return result;
         }
 
-        public static string GetName<TModel>(Expression<Func<TModel, string>> exp)
+        public static string GetName<TModel>(Expression<Func<TModel, object>> exp)
         {
             return getName(exp.Body.ToString());            
         }
 
-        public static string Format<TModel>(Expression<Func<TModel, string>> exp)
+        public static string Format<TModel>(Expression<Func<TModel, object>> exp)
         {
             return Format<TModel>(exp, null);
         }
 
-        public static string Format<TModel>(Expression<Func<TModel, string>> exp, params string[] values)
+        public static string Format<TModel>(Expression<Func<TModel, object>> exp, params string[] values)
         {
             string bodystr = exp.Body.ToString();
             var pmatches =paramRegex.Matches(bodystr);
@@ -67,86 +121,96 @@ namespace puck.core.Helpers
         }
 
         //constructor
-        public QueryHelper(TModel type)
+        public QueryHelper(bool prependTypeTerm=true)
         {
-            query += this.Field(FieldKeys.PuckType, typeof(TModel).FullName, false);
+            if(prependTypeTerm)
+                query += "+"+this.Field(FieldKeys.PuckType, typeof(TModel).FullName.Wrap())+" ";
         }
 
-        //overrides
-        public override string ToString()
-        {
-            return query;
+        public QueryHelper<TModel> New() {
+            return new QueryHelper<TModel>(prependTypeTerm:false);
         }
-        
+
         //query builders
         public void Clear() {
             query = string.Empty;
         }
 
-        public QueryHelper<TModel> Format(Expression<Func<TModel, string>> exp) {
+        public QueryHelper<TModel> Format(Expression<Func<TModel, object>> exp) {
             query+= QueryHelper<TModel>.Format<TModel>(exp);
             return this;
         }
 
-        public QueryHelper<TModel> Format(Expression<Func<TModel, string>> exp,params string[] values)
+        public QueryHelper<TModel> Format(Expression<Func<TModel, object>> exp,params string[] values)
         {
             query += QueryHelper<TModel>.Format<TModel>(exp,values);
             return this;
         }
 
-        public QueryHelper<TModel> Range(Expression<Func<TModel, string>> exp,string start,string end,bool inclusiveStart=true,bool inclusiveEnd=true)
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp,string start,string end,bool inclusiveStart=true,bool inclusiveEnd=true)
         {
             string key=getName(exp.Body.ToString());
             string openTag = inclusiveStart ? "[" : "{";
             string closeTag = inclusiveEnd ? "]" : "}";
-            query += string.Concat(key , openTag ,start," TO ",end,closeTag);
+            query += string.Concat(key , openTag ,start," TO ",end,closeTag," ");
             return this;
         }
 
-        public QueryHelper<TModel> Range(Expression<Func<TModel, string>> exp, int start, int end, bool inclusiveStart = true, bool inclusiveEnd = true)
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, int start, int end, bool inclusiveStart = true, bool inclusiveEnd = true)
         {
             return this.Range(exp,start.ToString(),end.ToString(),inclusiveStart,inclusiveEnd);
         }
 
-        public QueryHelper<TModel> Range(Expression<Func<TModel, string>> exp, DateTime start, DateTime end, bool inclusiveStart = true, bool inclusiveEnd = true)
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, DateTime start, DateTime end, bool inclusiveStart = true, bool inclusiveEnd = true)
         {
             string key = getName(exp.Body.ToString());
             string openTag = inclusiveStart ? "[" : "{";
             string closeTag = inclusiveEnd ? "]" : "}";
-            query += string.Concat(key , openTag, start.ToString(dateFormat), " TO ", end.ToString(dateFormat), closeTag);
+            query += string.Concat(key , openTag, start.ToString(dateFormat), " TO ", end.ToString(dateFormat), closeTag," ");
             return this;
         }
 
         //particularly inefficient, cache result!
-        public QueryHelper<TModel> AllFields(string value, bool encapsulateString = true)
+        public QueryHelper<TModel> AllFields(string value)
         {
             var props = ObjectDumper.Write(Activator.CreateInstance(typeof(TModel)),int.MaxValue);
-            value = QueryParser.Escape(value);
-            if (encapsulateString)
-                value = string.Concat("\"", value, "\"");
             foreach (var p in props){
                 query += string.Concat(p.Key, ":", value, " ");
             }            
             return this;
         }
 
-        public QueryHelper<TModel> Field(string key, string value, bool encapsulateString = true)
+        public QueryHelper<TModel> Field(string key, string value)
         {
-            value = QueryParser.Escape(value);
-            if (encapsulateString)
-                value = string.Concat("\"", value, "\"");
             query += string.Concat(key, ":", value," ");
             return this;
         }
 
-        public QueryHelper<TModel> Field(Expression<Func<TModel, string>> exp, string value, bool encapsulateString = true)
+        public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, string value)
         {
             string key = getName(exp.Body.ToString());
-            value = QueryParser.Escape(value);
-            if (encapsulateString)
-                value = string.Concat("\"", value, "\"");
             query += string.Concat(key , ":",  value," ");
             return this;
+        }
+
+        public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, int ivalue)
+        {
+            return this.Field(exp,ivalue.ToString());
+        }
+
+        public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, double dvalue)
+        {
+            return this.Field(exp, dvalue.ToString());
+        }
+
+        public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, float fvalue)
+        {
+            return this.Field(exp, fvalue.ToString());
+        }
+
+        public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, long lvalue)
+        {
+            return this.Field(exp, lvalue.ToString());
         }
 
         public QueryHelper<TModel> ID(string value)
@@ -179,7 +243,7 @@ namespace puck.core.Helpers
         {
             if (q == null)
             {
-                query += "OR";
+                query += "OR ";
             }
             else
             {
@@ -200,18 +264,21 @@ namespace puck.core.Helpers
             }
             return this;
         }
-        
-        //term modifier string extensions
 
+        //overrides
+        public override string ToString()
+        {
+            return query;
+        }
 
         //query executors
-        public List<TModel> GetAll<TModel>()
+        public List<TModel> GetAll()
         {
             var result = searcher.Query<TModel>(query).ToList();
             return result;
         }
 
-        public TModel Get<TModel>()
+        public TModel Get()
         {
             var result = searcher.Query<TModel>(query).FirstOrDefault();
             return result;
