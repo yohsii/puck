@@ -1,0 +1,28 @@
+﻿@{
+    Layout = null;
+    var types = ApiHelper.Models;
+    var variants = ApiHelper.Variants();    
+}
+<div class="">
+    <div class="grid_3 push_1">
+        <div>
+            <label>Type</label>
+            <select name="type">
+                @foreach(var t in types){
+                    <option value="@t.FullName">@t.Name</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label>Variant</label>
+            <select name="variant">
+                @foreach(var v in variants){
+                    <option value="@v.Key">@v.FriendlyName</option>
+                }
+            </select>
+        </div>
+        <div>
+            <button class='btn btn-primary'>Create</button>
+        </div>        
+    </div>
+</div>

@@ -8,6 +8,9 @@ using System.Text.RegularExpressions;
 using System.Linq.Expressions;
 using Lucene.Net.QueryParsers;
 using puck.core.Constants;
+using puck.core.Base;
+using System.Web;
+using System.Globalization;
 
 namespace puck.core.Helpers
 {
@@ -63,14 +66,72 @@ namespace puck.core.Helpers
         {
             return string.Concat("\"", s, "\"");
         }
+        //retrieval extensions
+        public static List<T> Siblings<T>(this BaseModel n) where T : BaseModel {
+            var qh = new QueryHelper<T>();
+            qh
+                    .And()
+                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path).WildCardMulti())
+                    .Not()
+                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path).WildCardMulti() + "/")
+                    .Not()
+                    .Field(x => x.Id, n.Id.ToString().Wrap());                   
+            return qh.GetAll();                
+        }
+        public static List<T> Variants<T>(this BaseModel n) where T : BaseModel
+        {
+            var qh = new QueryHelper<T>();
+            qh      
+                    .And()
+                    .Field(x => x.Id, n.Id.ToString())
+                    .Not()
+                    .Field(x => x.Variant, n.Variant);
+            return qh.GetAll();
+        }
+        public static List<T> Children<T>(this BaseModel n) where T : BaseModel
+        {
+            var qh = new QueryHelper<T>();
+            qh      
+                    .And()
+                    .Field(x => x.Path, n.Path + "/".WildCardMulti())
+                    .Not()
+                    .Field(x => x.Path, n.Path+"/".WildCardMulti() + "/");
+            return qh.GetAll();
+        }
+        public static List<T> Descendants<T>(this BaseModel n) where T : BaseModel {
+            var qh = new QueryHelper<T>();
+            qh.Field(x => x.Path, n.Path+"/".WildCardMulti());
+            return qh.GetAll();
+        }
+        
+        public static Dictionary<string, Dictionary<string, T>> GroupByID<T>(this List<T> items) where T : BaseModel
+        {
+            var d = new Dictionary<string, Dictionary<string, T>>();
+            items.GroupBy(x => x.Id).ToList().ForEach(x =>
+            {
+                d.Add(x.Key.ToString(), new Dictionary<string, T>());
+                x.ToList().ForEach(y => d[x.Key.ToString()][y.Variant] = y);
+            });
+            return d;
+        }
+
+        public static Dictionary<string, Dictionary<string, T>> GroupByPath<T>(this List<T> items) where T : BaseModel
+        {
+            var d = new Dictionary<string, Dictionary<string, T>>();
+            items.GroupBy(x => x.Path).ToList().ForEach(x =>
+            {
+                d.Add(x.Key, new Dictionary<string, T>());
+                x.ToList().ForEach(y => d[x.Key][y.Variant] = y);
+            });
+            return d;
+        }
     }
-    public class QueryHelper<TModel>
+    public class QueryHelper<TModel> where TModel : BaseModel
     {
         private static I_Content_Searcher searcher = DependencyResolver.Current.GetService<I_Content_Searcher>();
 
         //query builders append to this string
         string query;
-        bool prepended = false;
         static string namePattern = @"(?:[A-Za-z0-9]*\()?[A-Za-z0-9]\.([A-Za-z0-9.]*)";
         static string paramPattern = @"((?:[a-zA-Z0-9]+\.?)+)\)";
         static string queryPattern = @"^\(*""(.*)""\s";
@@ -119,6 +180,27 @@ namespace puck.core.Helpers
                 query = string.Format(query, values);
             }
             return query;
+        }
+
+        public static List<T> GetAll<T>() where T:BaseModel{
+            return searcher.Get<T>().ToList();
+        }
+
+        public static List<T> CurrentAll<T>() where T : BaseModel
+        {
+            string path = HttpContext.Current.Request.Url.LocalPath;
+            return searcher.Query<T>(string.Format("+{0}:{1} +{2}:{3}",FieldKeys.PuckType,typeof(T).FullName,FieldKeys.Path,path)).ToList();
+        }
+
+        public static T Current<T>() where T : BaseModel
+        {
+            var variant = CultureInfo.CurrentCulture.Name;
+            string path = HttpContext.Current.Request.Url.LocalPath;
+            return searcher.Query<T>(
+                string.Format("+{0}:{1} +{2}:{3} +{4}:{5}", 
+                    FieldKeys.PuckType, typeof(T).FullName, FieldKeys.Path, path,FieldKeys.Variant,variant
+                ))
+                .FirstOrDefault();
         }
 
         //constructor
@@ -221,10 +303,9 @@ namespace puck.core.Helpers
             return this;
         }
 
-        public QueryHelper<TModel> Path(string value)
-        {
+        public QueryHelper<TModel> Directory(string value) {
             string key = FieldKeys.Path;
-            query += string.Concat(key, ":", value, " ");
+            query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/");
             return this;
         }
 

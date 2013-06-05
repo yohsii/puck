@@ -9,8 +9,20 @@ namespace puck.core.Constants
     {
         public static string PuckDefaultField = "";
         public static string PuckValue = "_puckvalue";
-        public static string PuckType = "_pucktype";
+        public static string PuckType = "typechain";
         public static string ID="id";
         public static string Path="path";
+        public static string Variant = "variant";
+    }
+    public static class DBNames {
+        public static string Redirect = "redirect";
+        public static string PathToLocale = "pathtolocale";        
+        public static string Settings = "settings";
+    }
+    public static class DBKeys
+    {
+        public static string Languages = "languages";
+        public static string DefaultLanguage = "defaultlanguage";
+        public static string EnableLocalePrefix = "enablelocaleprefix";
     }
 }

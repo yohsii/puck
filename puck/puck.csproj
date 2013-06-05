@@ -213,7 +213,7 @@
     <Compile Include="areas\admin\adminAreaRegistration.cs" />
     <Compile Include="areas\admin\Controllers\AdminController.cs" />
     <Compile Include="areas\admin\Controllers\BaseController.cs" />
-    <Compile Include="areas\admin\Controllers\HomeController.cs" />
+    <Compile Include="areas\admin\Controllers\SettingsController.cs" />
     <Compile Include="areas\admin\Models\Person.cs" />
     <Compile Include="areas\admin\Models\TextSingle.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -232,6 +232,9 @@
     <Content Include="App_Data\puck_log.ldf">
       <DependentUpon>puck.mdf</DependentUpon>
     </Content>
+    <Content Include="areas\admin\assets\css\960_12_col.css" />
+    <Content Include="areas\admin\assets\css\bootstrap-responsive.css" />
+    <Content Include="areas\admin\assets\css\bootstrap.css" />
     <Content Include="areas\admin\assets\css\Site.css" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -287,6 +290,8 @@
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="areas\admin\assets\img\glyphicons-halflings-white.png" />
+    <Content Include="areas\admin\assets\img\glyphicons-halflings.png" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1-vsdoc.js" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1.js" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1.min.js" />
@@ -415,7 +420,7 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="areas\admin\assets\img\" />
+    <Folder Include="areas\admin\Config\" />
     <Folder Include="areas\admin\Editors\" />
     <Folder Include="areas\admin\ModelBinders\" />
   </ItemGroup>
@@ -424,9 +429,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="areas\admin\Views\Web.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="areas\admin\Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj">
@@ -438,7 +440,7 @@
     <Content Include="areas\admin\Views\Admin\In.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="areas\admin\Views\Api\EditMarkup.cshtml" />
+    <Content Include="areas\admin\Views\Api\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="areas\admin\Views\Shared\_Layout.cshtml" />
@@ -447,8 +449,25 @@
     <Content Include="areas\admin\Views\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="areas\admin\Views\Shared\EditorTemplates\_Person.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\Object.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Int32.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Int64.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Int16.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Single.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Double.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Boolean.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Decimal.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\Char.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\String.cshtml" />
+    <Content Include="areas\admin\Views\Api\Index.cshtml" />
+    <Content Include="areas\admin\Views\Settings\Edit.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsLanguages.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsRedirect.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsDefaultLanguage.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsTemplate.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsReadOnly.cshtml" />
+    <Content Include="areas\admin\Views\Api\CreateDialog.cshtml" />
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>

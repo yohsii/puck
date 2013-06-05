@@ -13,7 +13,6 @@ namespace puck.areas.admin.ViewModels
 {
     public class Home:BaseModel
     {
-        //[ScaffoldColumn(false)]
         [Required]
         [IndexSettings(FieldIndexSetting = Field.Index.ANALYZED,Analyzer=typeof(SnowballAnalyzer))]
         public string PageTitle { get; set; }
@@ -22,8 +21,6 @@ namespace puck.areas.admin.ViewModels
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        public string LolFace { get; set; }
-        
         public Person Person { get; set; }
     }
 }

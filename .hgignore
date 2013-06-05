@@ -7,3 +7,4 @@ syntax: glob
 *bin\*\*.xml
 *.mdf
 *.ldf
+*\obj\*

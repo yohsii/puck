@@ -8,6 +8,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using System.Data.Entity;
 using puck.core.Abstract;
+using puck.core.Constants;
 
 namespace puck
 {
@@ -28,7 +29,11 @@ namespace puck
             AuthConfig.RegisterAuth();
 
             //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
+            
+            //initiate puck
             DependencyResolver.Current.GetService<I_Content_Indexer>().Ini();
+            DependencyResolver.Current.GetService<I_Task_Dispatcher>().Start();
+            PuckCache.Ini();
         }
     }
 }

@@ -1,0 +1,59 @@
+﻿@model Dictionary<string,string>
+<div class="redirects">
+    <ul>
+        <li>
+            <label>From</label>
+            <input class="from" />
+        </li>
+        <li>
+            <label>To</label>
+            <input class="to" />
+        </li>
+        <li>
+            <button>add</button>
+        </li>
+    </ul>
+    <div class="nodisplay entry">&nbsp;<span><i class="icon-remove-sign"></i></span></div>
+    <div class="display clearboth">
+
+    </div>
+    <span onclick="handleSettingsRedirectTemplate()" class="trigger clear"></span>
+</div>
+<script>
+    var handleSettingsRedirectTemplate = function () {
+        var redirectsContainer = $(".redirects");
+        var from = redirectsContainer.find("input.from");
+        var to = redirectsContainer.find("input.to");
+        var display = redirectsContainer.find(".display");
+        var getPropNameKey = function (i) {
+            return "@ViewData.ModelMetadata.PropertyName" + "[" + i + "].Key";
+        }
+        var getPropNameValue = function (i) {
+            return "@ViewData.ModelMetadata.PropertyName" + "[" + i + "].Value";
+        }
+        var setValue = function () {
+            redirectsContainer.find("input:hidden").remove();
+            display.find(".entry").each(function (i) {
+                var key = $(this).attr('data-from');
+                var value = $(this).attr('data-to');
+                redirectsContainer.append(
+                        "<input type='hidden' name='" + getPropNameKey(i) + "' value='" + key + "'/>"
+                        + "<input type='hidden' name='" + getPropNameValue(i) + "' value='" + value + "'/>"
+                    );
+            });
+        }
+        redirectsContainer.find("button").click(function (e) {
+            e.preventDefault();
+            if (!from.val().isEmpty() && !to.val().isEmpty() && redirectsContainer.find(".display div[data-from=" + from.val() + "]").length == 0) {
+                var entry = redirectsContainer.find(".entry.nodisplay").clone();
+                entry.removeClass("nodisplay");
+                entry.attr("data-from", from.val()).attr("data-to", to.val());
+                entry.find("span").click(function () { entry.remove(); setValue(); });
+                entry.prepend(from.val() + " - " + to.val());
+                display.append(entry);
+                setValue();
+            }
+        });
+    };
+    
+</script>

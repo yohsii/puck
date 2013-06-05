@@ -1,0 +1,12 @@
+﻿@model puck.core.Base.BaseModel
+
+@{
+    Layout=null;
+    
+}
+
+@using (Html.BeginForm("Edit", "Api", new {p_type=Model.GetType().AssemblyQualifiedName,p_path=Request["path"] }, FormMethod.Post))
+{
+    @Html.EditorForModel()
+    <input type="submit" />
+}

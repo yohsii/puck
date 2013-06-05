@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using puck.core.Base;
 
 namespace puck.core.Abstract
 {
@@ -9,8 +10,9 @@ namespace puck.core.Abstract
     {
         void Index(Dictionary<string,string> values);
         void Index(List<Dictionary<string, string>> values);
-        void Index<T>(T model);
-        void Delete(string id);
+        void Index<T>(T model) where T:BaseModel;
+        void Index<T>(List<T> models) where T : BaseModel;
+        void Delete(string query);
         void Ini();
         void Optimize();
     }

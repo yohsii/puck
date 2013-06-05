@@ -14,6 +14,7 @@ using puck.core.Constants;
 using puck.core.Helpers;
 using Newtonsoft.Json;
 using Lucene.Net.Analysis;
+using puck.core.Base;
 
 namespace puck.core.Concrete
 {
@@ -24,6 +25,7 @@ namespace puck.core.Concrete
         private string INDEXPATH { get { return HttpContext.Current.Server.MapPath("~/App_Data/Lucene"); } }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };
         private IndexSearcher Searcher = null;
+        private IndexWriter Writer = null;
         private Object write_lock = new Object();
         private I_Log logger;
         
@@ -76,13 +78,59 @@ namespace puck.core.Concrete
                 }
             }
         }
-
-        public void Index<T>(T model) {
+        //mass index changes in transactional way, like changing paths for related nodes
+        public void Index<T>(List<T> models) where T:BaseModel {
             lock (write_lock)
             {
-                IndexWriter writer = null;
                 try
                 {
+                    var model = Activator.CreateInstance(typeof(T));
+                    var props = ObjectDumper.Write(model, int.MaxValue);
+                    var analyzers = new List<KeyValuePair<string, Analyzer>>();
+                    GetFieldSettings(props, null, analyzers);
+                    var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
+
+                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
+                    SetWriter(false);
+                    //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
+                    Writer.Flush(true, true, true);
+                    foreach (var m in models)
+                    {
+                        //delete doc
+                        string removeQuery = "+"+FieldKeys.ID+":"+m.Id.ToString()+ " +"+FieldKeys.Variant+":"+m.Variant;
+                        var q = parser.Parse(removeQuery);
+                        Writer.DeleteDocuments(q);                    
+                        
+                        Document doc = new Document();
+                        //get fields to index
+                        props = ObjectDumper.Write(m, int.MaxValue);
+                        GetFieldSettings(props, doc, null);
+                        //add cms properties
+                        string jsonDoc = JsonConvert.SerializeObject(m);
+                        //doc in json form for deserialization later
+                        doc.Add(new Field(FieldKeys.PuckValue, jsonDoc, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                        Writer.AddDocument(doc);
+                    }
+                    Writer.Commit();
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(ex);
+                }
+                finally
+                {
+                    CloseWriter();
+                    SetSearcher();
+                }
+            }
+        }
+        public void Index<T>(T model)where T:BaseModel {
+            lock (write_lock)
+            {
+                try
+                {
+                    SetWriter(false);
+                    Writer.Flush(true,true,true);
                     //get model properties
                     var props = ObjectDumper.Write(model, int.MaxValue);
                     //delete current doc
@@ -96,14 +144,17 @@ namespace puck.core.Concrete
                     string jsonDoc = JsonConvert.SerializeObject(model);
                     //doc in json form for deserialization later
                     doc.Add(new Field(FieldKeys.PuckValue,jsonDoc,Field.Store.YES,Field.Index.NOT_ANALYZED));
+                    string typeChain = ApiHelper.TypeChain(model.GetType(),"");
                     //full typename for deserialization later
-                    doc.Add(new Field(FieldKeys.PuckType,model.GetType().FullName,Field.Store.YES,Field.Index.NOT_ANALYZED));
+                    doc.Add(new Field(FieldKeys.PuckType,typeChain,Field.Store.YES,Field.Index.ANALYZED));
                     
                     var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
-                    writer.DeleteDocuments(new Term(FieldKeys.ID, id.ToString()));
-                    writer.AddDocument(doc);
-                    writer.Flush(true, true, true);
+                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
+                    string removeQuery = "+" + FieldKeys.ID + ":" + model.Id.ToString() + " +" + FieldKeys.Variant + ":" + model.Variant;
+                    var q = parser.Parse(removeQuery);
+                    Writer.DeleteDocuments(q);
+                    Writer.AddDocument(doc,analyzer);
+                    Writer.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -111,8 +162,7 @@ namespace puck.core.Concrete
                 }
                 finally
                 {
-                    writer.Dispose(true);
-                    writer = null;
+                    CloseWriter();
                     SetSearcher();
                 }
             }
@@ -131,12 +181,11 @@ namespace puck.core.Concrete
         {
             lock (write_lock)
             {
-                IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
+                    SetWriter(false);
                     var id = values.Where(x => x.Key.Equals(FieldKeys.ID)).FirstOrDefault().Value;
-                    writer.DeleteDocuments(new Term(FieldKeys.ID, id));
+                    Writer.DeleteDocuments(new Term(FieldKeys.ID, id));
                     Document doc = new Document();
                     foreach (var nv in values)
                     {
@@ -150,16 +199,15 @@ namespace puck.core.Concrete
                         }
                         doc.Add(field);
                     }
-                    writer.AddDocument(doc);
-                    writer.Flush(true,true,true);                    
+                    Writer.AddDocument(doc);
+                    Writer.Commit();
                 }
                 catch (Exception ex)
                 {
                     logger.Log(ex);
                 }
                 finally {
-                    writer.Dispose(true);
-                    writer = null;
+                    CloseWriter();
                     SetSearcher();
                 }
             }
@@ -169,12 +217,11 @@ namespace puck.core.Concrete
         {
             lock (write_lock)
             {
-                IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
-                    writer.DeleteDocuments(new Term(FieldKeys.ID, id));
-                    writer.Flush(true,true,true);                    
+                    SetWriter(false);
+                    Writer.DeleteDocuments(new Term(FieldKeys.ID, id));
+                    Writer.Commit();
                 }
                 catch (Exception ex)
                 {
@@ -182,8 +229,7 @@ namespace puck.core.Concrete
                 }
                 finally
                 {
-                    writer.Dispose(true);
-                    writer = null;
+                    CloseWriter();
                     SetSearcher();
                 }
             }
@@ -192,11 +238,10 @@ namespace puck.core.Concrete
         public void Optimize() {
             lock (write_lock)
             {
-                IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, false,IndexWriter.MaxFieldLength.UNLIMITED);
-                    writer.Optimize();                    
+                    SetWriter(false);
+                    Writer.Optimize();                    
                 }
                 catch (Exception ex)
                 {
@@ -204,8 +249,6 @@ namespace puck.core.Concrete
                 }
                 finally
                 {
-                    writer.Dispose(true);
-                    writer = null;
                     SetSearcher();
                 }
             }
@@ -221,25 +264,30 @@ namespace puck.core.Concrete
             
             lock (write_lock)
             {
-                IndexWriter writer = null;
                 try
                 {
-                    writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, create, IndexWriter.MaxFieldLength.UNLIMITED);
-                    writer.Optimize();
-                    writer.Flush(true, true, true);
-                    writer.Dispose(true);
-                    writer = null;
-
+                    SetWriter(create);
+                    Writer.Optimize();
                 }
                 catch (Exception ex)
                 {
                     logger.Log(ex);
                 }
-                finally { }
+                finally {
+                    CloseWriter();
+                }
             }
             SetSearcher();
         }
-
+        public void SetWriter(bool create) {
+            if(Writer==null)
+                Writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, create, IndexWriter.MaxFieldLength.UNLIMITED);                    
+        }
+        public void CloseWriter() {
+            Writer.Close();
+            Writer.Dispose();
+            Writer = null;
+        }
         public void SetSearcher() {
             var oldSearcher = Searcher;
             Searcher = new Lucene.Net.Search.IndexSearcher(FSDirectory.Open(INDEXPATH));
@@ -258,23 +306,26 @@ namespace puck.core.Concrete
             oldSearcher = null;
         }
         
-        public IDictionary<string, string> Query(string terms)
+        public IList<Dictionary<string, string>> Query(string terms)
         {
             BooleanQuery bq = new BooleanQuery();
             Lucene.Net.QueryParsers.QueryParser snowParser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30,"text",StandardAnalyzer);
             Lucene.Net.Search.Query contentQuery = snowParser.Parse(terms);
             bq.Add(contentQuery,Occur.MUST);
-            var collector = TopScoreDocCollector.Create(int.MaxValue,true);
-            Searcher.Search(bq,collector);
-            var hits=collector.TopDocs().ScoreDocs;
+            //var collector = TopScoreDocCollector.Create(int.MaxValue,true);
+            var hits=Searcher.Search(bq,int.MaxValue).ScoreDocs;
+            //var hits=collector.TopDocs().ScoreDocs;
             
-            var result = new Dictionary<string, string>();
+            var result = new List<Dictionary<string, string>>();
             for(var i=0;i<hits.Count();i++){
                 var doc = Searcher.Doc(i);
-                result.Add(
-                    doc.GetValues(FieldKeys.ID).First(),
-                    doc.GetValues(FieldKeys.PuckValue).First()
-                );
+                var d = new Dictionary<string, string>();
+                d.Add(FieldKeys.ID,doc.GetValues(FieldKeys.ID).FirstOrDefault()??"");
+                d.Add(FieldKeys.PuckType,doc.GetValues(FieldKeys.PuckType).FirstOrDefault()??"");
+                d.Add(FieldKeys.PuckValue,doc.GetValues(FieldKeys.PuckValue).FirstOrDefault()??"");
+                d.Add(FieldKeys.Path, doc.GetValues(FieldKeys.Path).FirstOrDefault() ?? "");
+                d.Add(FieldKeys.Variant, doc.GetValues(FieldKeys.Variant).FirstOrDefault() ?? "");
+                result.Add(d);
             }
             return result;            
         }
@@ -287,9 +338,10 @@ namespace puck.core.Concrete
 
             var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
-            var coll = TopScoreDocCollector.Create(int.MaxValue,true);
-            Searcher.Search(q, coll);
-            var hits = coll.TopDocs().ScoreDocs;
+            //var coll = TopScoreDocCollector.Create(int.MaxValue,true);
+            //Searcher.Search(q, coll);
+            //var hits = coll.TopDocs().ScoreDocs;
+            var hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
             var results = new List<T>();
             for (var i = 0; i < hits.Count(); i++) {
                 var doc = Searcher.Doc(i);

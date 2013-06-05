@@ -82,6 +82,8 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -95,31 +97,43 @@
     <Compile Include="Abstract\I_Content_Indexer.cs" />
     <Compile Include="Abstract\I_Content_Searcher.cs" />
     <Compile Include="Abstract\I_Log.cs" />
+    <Compile Include="Abstract\I_Puck_Task.cs" />
+    <Compile Include="Abstract\I_Task_Dispatcher.cs" />
     <Compile Include="Attributes\DateTransformer.cs" />
     <Compile Include="Abstract\I_Property_Transformer.cs" />
     <Compile Include="Attributes\DefaultGUIDTransformer.cs" />
     <Compile Include="Attributes\IndexSettings.cs" />
     <Compile Include="Base\BaseModel.cs" />
     <Compile Include="Concrete\Content_Indexer_Searcher.cs" />
+    <Compile Include="Concrete\Dispatcher.cs" />
     <Compile Include="Concrete\Logger.cs" />
     <Compile Include="Concrete\Puck_Repository.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Constants\PuckCache.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Entities\PuckCustomMeta.cs" />
     <Compile Include="Entities\Model.cs" />
     <Compile Include="Concrete\PuckContext.cs" />
     <Compile Include="Constants\FieldKeys.cs" />
+    <Compile Include="Entities\PuckMeta.cs" />
+    <Compile Include="Entities\PuckRevision.cs" />
+    <Compile Include="Entities\PuckTask.cs" />
     <Compile Include="Filters\Auth.cs" />
     <Compile Include="Helpers\ApiHelper.cs" />
     <Compile Include="Helpers\ObjectDumper.cs" />
     <Compile Include="Constants\FieldSettings.cs" />
     <Compile Include="Helpers\QueryHelper.cs" />
+    <Compile Include="Helpers\ViewExtensions.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\LogIn.cs" />
+    <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\Variant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Misc\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,18 +1,21 @@
 ﻿@model Object
 
+<div class="fields">
+
 @foreach (var prop in ViewData.ModelMetadata.Properties.Where(pm => pm.ShowForEdit && !ViewData.TemplateInfo.Visited(pm))) {
     if (prop.HideSurroundingHtml) {
         @Html.Editor(prop.PropertyName)
     } else {
-        <div class="editor-label" style="">
-            <!--@(prop.IsRequired ? "*" : "")
-            -->
-            @Html.Label(prop.PropertyName)
-        </div>
-        <div class="editor-field">
-            @Html.Editor(prop.PropertyName)
-            <!--@Html.ValidationMessage(prop.PropertyName, "*")-->
-        </div>            
+        <div data-fieldname="@prop.PropertyName" class="fieldwrapper">
+            <div class="editor-label" style="">
+                @Html.Label(prop.PropertyName)
+            </div>
+            <div class="editor-field">
+                @Html.Editor(prop.PropertyName)            
+            </div>            
+        </div>        
     }
 }
+
+</div>
     

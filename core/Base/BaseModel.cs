@@ -12,25 +12,40 @@ namespace puck.core.Base
     public class BaseModel
     {
         public BaseModel() {
-            Id = new Guid();
+            //Id = Guid.NewGuid();
         }
-        [HiddenInput(DisplayValue=false)]
-        [ReadOnly(true)]
+        [UIHint("SettingsReadOnly")]
         [DefaultGUIDTransformer()]
-        public Guid Id { get; private set; }
+        public Guid Id { get; set; }
 
-        [ReadOnly(true)]
+        public String NodeName { get; set; }
+
+        [UIHint("SettingsReadOnly")]
         public string Path { get; set; }
         
-        [DateTransformer()]        
-        [ReadOnly(true)]
+        [DateTransformer()]
+        [UIHint("SettingsReadOnly")]
         public DateTime Created { get; set; }
 
-        [ReadOnly(true)]
+        [DateTransformer()]
+        [UIHint("SettingsReadOnly")]
+        public DateTime Updated { get; set; }
+
+        [UIHint("SettingsReadOnly")]
         public int Revision { get; set; }
 
-        [HiddenInput(DisplayValue=false)]
+        [UIHint("SettingsReadOnly")]
         public string Variant { get; set; }
-        
+
+        public bool Published { get; set; }
+
+        [UIHint("SettingsReadOnly")]
+        public int SortOrder { get; set; }
+        [UIHint("SettingsTemplate")]
+        public string TemplatePath { get; set; }
+
+        [UIHint("SettingsReadOnly")]
+        [IndexSettings(FieldIndexSetting=Lucene.Net.Documents.Field.Index.ANALYZED,FieldStoreSetting=Lucene.Net.Documents.Field.Store.YES)]
+        public string TypeChain { get; set; }
     }
 }

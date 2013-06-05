@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using puck.core.Entities;
 
 namespace puck.core.Abstract
 {
     public interface I_Puck_Repository
     {
+        IQueryable<PuckMeta> GetPuckMeta();
+        void DeleteMeta(string name, string key, string value);
+        void DeleteMeta(PuckMeta meta);
+        int AddMeta(PuckMeta meta);
+        void SaveChanges();
         /*
         int CreateImage(Image image);
         int CreatePlaylist(Playlist playlist);

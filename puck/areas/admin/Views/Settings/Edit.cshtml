@@ -1,0 +1,53 @@
+﻿@model puck.core.Models.Settings
+
+@{
+    Layout = null;
+}
+<div class="container_12 settings">
+    <div class="grid_10 push_1">
+        @using (Html.BeginForm()) {
+            @Html.ValidationSummary(true)
+    
+            <fieldset>
+                <legend>Settings</legend>
+    
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.DefaultLanguage)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.DefaultLanguage)
+                    @Html.ValidationMessageFor(model => model.DefaultLanguage)
+                </div>
+    
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EnableLocalePrefix)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EnableLocalePrefix)
+                    @Html.ValidationMessageFor(model => model.EnableLocalePrefix)
+                </div>
+                
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Languages)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.Languages)
+                    @Html.ValidationMessageFor(model => model.Languages)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Redirect)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.Redirect)
+                    @Html.ValidationMessageFor(model => model.Redirect)
+                </div>
+                
+                <div class="submit">
+                    <input type="submit" value="Save" />
+                </div>
+            </fieldset>
+        }
+    </div>
+</div>
+    

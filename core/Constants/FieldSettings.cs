@@ -15,7 +15,7 @@ namespace puck.core.Helpers
             {typeof(DateTime),typeof(DateTransformer)}
         };
         public static Field.Index FieldIndexSetting = Field.Index.NOT_ANALYZED;
-        public static Field.Store FieldStoreSetting = Field.Store.NO;
+        public static Field.Store FieldStoreSetting = Field.Store.YES;
                 
     }
 }
