@@ -124,36 +124,28 @@ namespace puck.core.Concrete
                 }
             }
         }
-        public void Index<T>(T model)where T:BaseModel {
+        public void Delete<T>(List<T> toDelete) where T:BaseModel
+        {
             lock (write_lock)
             {
                 try
                 {
-                    SetWriter(false);
-                    Writer.Flush(true,true,true);
-                    //get model properties
+                    var model = Activator.CreateInstance(typeof(T));
                     var props = ObjectDumper.Write(model, int.MaxValue);
-                    //delete current doc
-                    var id = props.Where(x => x.Key.Equals(FieldKeys.ID)).FirstOrDefault().Value;
-
                     var analyzers = new List<KeyValuePair<string, Analyzer>>();
-                    Document doc = new Document();
-                    //get fields to index
-                    GetFieldSettings(props, doc, analyzers);
-                    //add cms properties
-                    string jsonDoc = JsonConvert.SerializeObject(model);
-                    //doc in json form for deserialization later
-                    doc.Add(new Field(FieldKeys.PuckValue,jsonDoc,Field.Store.YES,Field.Index.NOT_ANALYZED));
-                    string typeChain = ApiHelper.TypeChain(model.GetType(),"");
-                    //full typename for deserialization later
-                    doc.Add(new Field(FieldKeys.PuckType,typeChain,Field.Store.YES,Field.Index.ANALYZED));
+                    GetFieldSettings(props, null, analyzers);
+                    var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer, analyzers);
+
+                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
                     
-                    var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
-                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
-                    string removeQuery = "+" + FieldKeys.ID + ":" + model.Id.ToString() + " +" + FieldKeys.Variant + ":" + model.Variant;
-                    var q = parser.Parse(removeQuery);
-                    Writer.DeleteDocuments(q);
-                    Writer.AddDocument(doc,analyzer);
+                    SetWriter(false);
+                    Writer.Flush(true, true, true);
+                    foreach (var m in toDelete)
+                    {
+                        string removeQuery = "+" + FieldKeys.ID + ":" + m.Id.ToString() + " +" + FieldKeys.Variant + ":" + m.Variant;
+                        var q = parser.Parse(removeQuery);
+                        Writer.DeleteDocuments(q);
+                    }
                     Writer.Commit();
                 }
                 catch (Exception ex)
@@ -166,7 +158,15 @@ namespace puck.core.Concrete
                     SetSearcher();
                 }
             }
-
+        }
+        public void Delete<T>(T toDelete) where T : BaseModel
+        {
+            if (toDelete != null)
+                Delete<T>(new List<T> { toDelete });
+        }
+        public void Index<T>(T model)where T:BaseModel {
+            if (model != null)
+                Index(new List<T> {model });
         }
         
         public void Index(List<Dictionary<string, string>> values)
@@ -213,14 +213,16 @@ namespace puck.core.Concrete
             }
         }
 
-        public void Delete(string id)
+        public void Delete(string terms)
         {
             lock (write_lock)
             {
                 try
                 {
+                    var parser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "text", StandardAnalyzer);
+                    var contentQuery = parser.Parse(terms);
                     SetWriter(false);
-                    Writer.DeleteDocuments(new Term(FieldKeys.ID, id));
+                    Writer.DeleteDocuments(contentQuery);
                     Writer.Commit();
                 }
                 catch (Exception ex)
@@ -305,15 +307,30 @@ namespace puck.core.Concrete
             }
             oldSearcher = null;
         }
-        
         public IList<Dictionary<string, string>> Query(string terms)
         {
-            BooleanQuery bq = new BooleanQuery();
-            Lucene.Net.QueryParsers.QueryParser snowParser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30,"text",StandardAnalyzer);
-            Lucene.Net.Search.Query contentQuery = snowParser.Parse(terms);
-            bq.Add(contentQuery,Occur.MUST);
+            return Query(terms, null);
+        }
+        public IList<Dictionary<string, string>> Query(string terms,string typeName)
+        {
+            QueryParser parser;
+            if (!string.IsNullOrEmpty(typeName))
+            {
+                var type = Type.GetType(typeName);
+                var model = Activator.CreateInstance(type);
+                var props = ObjectDumper.Write(model, int.MaxValue);
+                var analyzers = new List<KeyValuePair<string, Analyzer>>();
+                GetFieldSettings(props, null, analyzers);
+                var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer, analyzers);
+                parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+            }
+            else {
+                parser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "text", StandardAnalyzer);
+            }
+
+            var contentQuery = parser.Parse(terms);
             //var collector = TopScoreDocCollector.Create(int.MaxValue,true);
-            var hits=Searcher.Search(bq,int.MaxValue).ScoreDocs;
+            var hits=Searcher.Search(contentQuery,int.MaxValue).ScoreDocs;
             //var hits=collector.TopDocs().ScoreDocs;
             
             var result = new List<Dictionary<string, string>>();
@@ -352,7 +369,7 @@ namespace puck.core.Concrete
         }
         public IList<T> Get<T>()
         {
-            var t = new Term(FieldKeys.PuckType,typeof(T).FullName);
+            var t = new Term(FieldKeys.PuckTypeChain,typeof(T).FullName);
             var q = new TermQuery(t);
             var hits=Searcher.Search(q,int.MaxValue).ScoreDocs;
             var results = new List<T>();

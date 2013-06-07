@@ -7,7 +7,7 @@
         //string specName = "(none)";
         //try { specName = CultureInfo.CreateSpecificCulture(ci.Name).Name; }
         //catch { }
-        <option @(selected?"selected":"") value="@v.Key">@v.FriendlyName</option>
+        <option @(selected?"selected":"") value="@v.Key.ToLower()">@v.FriendlyName</option>
     }
 </select>
 

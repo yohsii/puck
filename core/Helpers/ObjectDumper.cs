@@ -39,7 +39,13 @@ namespace puck.core.Helpers
                     }
                     else
                     {
-                        Analyzer = (Analyzer)Activator.CreateInstance(sattr.Analyzer, Lucene.Net.Util.Version.LUCENE_30);
+                        try
+                        {
+                            Analyzer = (Analyzer)Activator.CreateInstance(sattr.Analyzer, Lucene.Net.Util.Version.LUCENE_30);
+                        }
+                        catch (MissingMethodException mmex) {
+                            Analyzer = (Analyzer)Activator.CreateInstance(sattr.Analyzer);
+                        }
                     }
                 }
             }

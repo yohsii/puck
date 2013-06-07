@@ -55,7 +55,7 @@ namespace puck.core.Helpers
                     specName = CultureInfo.CreateSpecificCulture(ci.Name).Name;
                 }
                 catch { }
-                results.Add(new Variant { FriendlyName=ci.EnglishName,IsDefault=false,Key=ci.Name});
+                results.Add(new Variant { FriendlyName=ci.EnglishName,IsDefault=false,Key=ci.Name.ToLower()});
             }
             return results;
         }

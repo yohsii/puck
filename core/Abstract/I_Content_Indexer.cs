@@ -13,6 +13,8 @@ namespace puck.core.Abstract
         void Index<T>(T model) where T:BaseModel;
         void Index<T>(List<T> models) where T : BaseModel;
         void Delete(string query);
+        void Delete<T>(List<T> toDelete) where T : BaseModel;
+        void Delete<T>(T toDelete) where T : BaseModel;
         void Ini();
         void Optimize();
     }

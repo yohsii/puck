@@ -292,6 +292,7 @@
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings-white.png" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings.png" />
+    <Content Include="areas\admin\assets\js\bootstrap.js" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1-vsdoc.js" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1.js" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1.min.js" />
@@ -307,6 +308,7 @@
     <Content Include="areas\admin\assets\js\knockout-2.1.0.debug.js" />
     <Content Include="areas\admin\assets\js\knockout-2.1.0.js" />
     <Content Include="areas\admin\assets\js\modernizr-2.5.3.js" />
+    <Content Include="areas\admin\assets\js\puck.js" />
     <Content Include="areas\admin\assets\js\_references.js" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />

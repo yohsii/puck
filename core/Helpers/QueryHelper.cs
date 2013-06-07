@@ -73,7 +73,7 @@ namespace puck.core.Helpers
                     .And()
                     .Field(x => x.Path, ApiHelper.DirOfPath(n.Path).WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path).WildCardMulti() + "/")
+                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path).WildCardMulti() + "/*")
                     .Not()
                     .Field(x => x.Id, n.Id.ToString().Wrap());                   
             return qh.GetAll();                
@@ -95,7 +95,7 @@ namespace puck.core.Helpers
                     .And()
                     .Field(x => x.Path, n.Path + "/".WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, n.Path+"/".WildCardMulti() + "/");
+                    .Field(x => x.Path, n.Path+"/".WildCardMulti() + "/*");
             return qh.GetAll();
         }
         public static List<T> Descendants<T>(this BaseModel n) where T : BaseModel {
@@ -115,6 +115,11 @@ namespace puck.core.Helpers
             return d;
         }
 
+        public static void Delete<T>(this List<T> toDelete) where T:BaseModel {
+            var indexer = DependencyResolver.Current.GetService<I_Content_Indexer>();
+            indexer.Delete(toDelete);
+        }
+
         public static Dictionary<string, Dictionary<string, T>> GroupByPath<T>(this List<T> items) where T : BaseModel
         {
             var d = new Dictionary<string, Dictionary<string, T>>();
@@ -128,7 +133,7 @@ namespace puck.core.Helpers
     }
     public class QueryHelper<TModel> where TModel : BaseModel
     {
-        private static I_Content_Searcher searcher = DependencyResolver.Current.GetService<I_Content_Searcher>();
+        public static I_Content_Searcher searcher = DependencyResolver.Current.GetService<I_Content_Searcher>();
 
         //query builders append to this string
         string query;
@@ -189,7 +194,7 @@ namespace puck.core.Helpers
         public static List<T> CurrentAll<T>() where T : BaseModel
         {
             string path = HttpContext.Current.Request.Url.LocalPath;
-            return searcher.Query<T>(string.Format("+{0}:{1} +{2}:{3}",FieldKeys.PuckType,typeof(T).FullName,FieldKeys.Path,path)).ToList();
+            return searcher.Query<T>(string.Format("+{0}:{1} +{2}:{3}",FieldKeys.PuckTypeChain,typeof(T).FullName,FieldKeys.Path,path)).ToList();
         }
 
         public static T Current<T>() where T : BaseModel
@@ -198,7 +203,7 @@ namespace puck.core.Helpers
             string path = HttpContext.Current.Request.Url.LocalPath;
             return searcher.Query<T>(
                 string.Format("+{0}:{1} +{2}:{3} +{4}:{5}", 
-                    FieldKeys.PuckType, typeof(T).FullName, FieldKeys.Path, path,FieldKeys.Variant,variant
+                    FieldKeys.PuckTypeChain, typeof(T).FullName, FieldKeys.Path, path,FieldKeys.Variant,variant
                 ))
                 .FirstOrDefault();
         }
@@ -207,7 +212,7 @@ namespace puck.core.Helpers
         public QueryHelper(bool prependTypeTerm=true)
         {
             if(prependTypeTerm)
-                query += "+"+this.Field(FieldKeys.PuckType, typeof(TModel).FullName.Wrap())+" ";
+                query += "+"+this.Field(FieldKeys.PuckTypeChain, typeof(TModel).FullName.Wrap())+" ";
         }
 
         public QueryHelper<TModel> New() {
@@ -305,7 +310,7 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> Directory(string value) {
             string key = FieldKeys.Path;
-            query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/");
+            query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/".WildCardMulti());
             return this;
         }
 

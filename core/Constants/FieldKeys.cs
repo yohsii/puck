@@ -9,7 +9,8 @@ namespace puck.core.Constants
     {
         public static string PuckDefaultField = "";
         public static string PuckValue = "_puckvalue";
-        public static string PuckType = "typechain";
+        public static string PuckTypeChain = "typechain";
+        public static string PuckType = "type";
         public static string ID="id";
         public static string Path="path";
         public static string Variant = "variant";

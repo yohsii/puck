@@ -5,15 +5,15 @@
 }
 <div class="">
     <div class="grid_3 push_1">
-        <div>
+        <div class="typecontainer">
             <label>Type</label>
             <select name="type">
                 @foreach(var t in types){
-                    <option value="@t.FullName">@t.Name</option>
+                    <option value="@t.AssemblyQualifiedName">@t.Name</option>
                 }
             </select>
         </div>
-        <div>
+        <div class="variantcontainer">
             <label>Variant</label>
             <select name="variant">
                 @foreach(var v in variants){

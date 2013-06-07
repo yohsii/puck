@@ -49,6 +49,68 @@ namespace puck.core.Controllers
             var results = qh.Directory(path).GetAll().GroupByPath();
             return Json(results,JsonRequestBehavior.AllowGet);
         }
+        public JsonResult Publish(string id)
+        {
+            var message = string.Empty;
+            var success = false;
+            try
+            {
+                var qh = new QueryHelper<BaseModel>();
+                var toIndex = qh.ID(id).GetAll();
+                if (toIndex.Count == 0)
+                    throw new Exception("no results with ID " + id + " to publish");
+                toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
+                toIndex.ForEach(x=>x.Published=true);
+                indexer.Index(toIndex);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult UnPublish(string id)
+        {
+            var message = string.Empty;
+            var success = false;
+            try
+            {
+                var qh = new QueryHelper<BaseModel>();
+                var toIndex = qh.ID(id).GetAll();
+                if (toIndex.Count == 0)
+                    throw new Exception("no results with ID " + id + " to unpublish");
+                toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
+                toIndex.ForEach(x => x.Published = false);
+                indexer.Index(toIndex);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult Delete(string id){
+            var message = string.Empty;
+            var success = false;
+            try {
+                var qh = new QueryHelper<BaseModel>();
+                var toDelete=qh.And().ID(id).GetAll();
+                if (toDelete.Count == 0)
+                    throw new Exception("no results with ID "+id+" to delete");
+                toDelete.AddRange(toDelete.First().Descendants<BaseModel>());
+                toDelete.Delete();
+                success = true;
+            }
+            catch (Exception ex) {
+                success = false;
+                message = ex.Message;
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Edit(string type,string path="/",string variant="") {
             //empty model of type
             var modelType= Type.GetType(type);
@@ -65,6 +127,7 @@ namespace puck.core.Controllers
                 basemodel.Variant = variant;
                 basemodel.SortOrder = -1;
                 basemodel.TypeChain =ApiHelper.TypeChain(modelType);
+                basemodel.Type = modelType.AssemblyQualifiedName;
                 return View(model);
             }
             //else we'll need to get current data to edit for node
@@ -77,12 +140,12 @@ namespace puck.core.Controllers
             //try get node by path with particular variant
             results = searcher.Query(string.Concat(
                 "+",FieldKeys.Path, ":", path," +",FieldKeys.Variant,":",variant
-            )).ToList();
+            ),type).ToList();
             //just get node by path
             if (results.Count == 0)
                 results = searcher.Query(string.Concat(
                      "+", FieldKeys.Path, ":", path
-                )).ToList();
+                ),type).ToList();
             
             if (results.Count > 0) {
                 var result = results.FirstOrDefault();
