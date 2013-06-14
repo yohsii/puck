@@ -15,7 +15,9 @@
     </ul>
     <div class="nodisplay entry">&nbsp;<span><i class="icon-remove-sign"></i></span></div>
     <div class="display clearboth">
-
+        @foreach(var r in Model.ToList()){
+            <div data-from="@r.Key" data-to="@r.Value" class="entry">@r.Key - @r.Value<span><i class="icon-remove-sign"></i></span></div>
+        }        
     </div>
     <span onclick="handleSettingsRedirectTemplate()" class="trigger clear"></span>
 </div>
@@ -25,6 +27,14 @@
         var from = redirectsContainer.find("input.from");
         var to = redirectsContainer.find("input.to");
         var display = redirectsContainer.find(".display");
+        //ini
+        display.find(".entry").each(function (i) {
+            var el = $(this);
+            el.find("i").click(function () { 
+                el.remove();
+            });
+        });
+
         var getPropNameKey = function (i) {
             return "@ViewData.ModelMetadata.PropertyName" + "[" + i + "].Key";
         }
@@ -44,7 +54,7 @@
         }
         redirectsContainer.find("button").click(function (e) {
             e.preventDefault();
-            if (!from.val().isEmpty() && !to.val().isEmpty() && redirectsContainer.find(".display div[data-from=" + from.val() + "]").length == 0) {
+            if (!from.val().isEmpty() && !to.val().isEmpty() && redirectsContainer.find(".display div[data-from='" + from.val() + "']").length == 0) {
                 var entry = redirectsContainer.find(".entry.nodisplay").clone();
                 entry.removeClass("nodisplay");
                 entry.attr("data-from", from.val()).attr("data-to", to.val());

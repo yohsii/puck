@@ -21,7 +21,6 @@ namespace puck.core.Concrete
     public class Content_Indexer_Searcher : I_Content_Indexer,I_Content_Searcher
     {
         private Lucene.Net.Analysis.Standard.StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-        private Lucene.Net.Analysis.Snowball.SnowballAnalyzer SnowballAnalyzer = new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30,"English");
         private string INDEXPATH { get { return HttpContext.Current.Server.MapPath("~/App_Data/Lucene"); } }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };
         private IndexSearcher Searcher = null;
@@ -31,7 +30,7 @@ namespace puck.core.Concrete
         
         public Content_Indexer_Searcher(I_Log Logger/*,I_BQ_Youtube_Repository repo*/) {
             this.logger = Logger;
-            
+            Ini();
         }
 
         public void GetFieldSettings(List<FlattenedObject> props,Document doc,List<KeyValuePair<string,Analyzer>> analyzers) {
@@ -111,6 +110,7 @@ namespace puck.core.Concrete
                         doc.Add(new Field(FieldKeys.PuckValue, jsonDoc, Field.Store.YES, Field.Index.NOT_ANALYZED));
                         Writer.AddDocument(doc);
                     }
+                    Writer.Flush(true,true,true);
                     Writer.Commit();
                 }
                 catch (Exception ex)
@@ -146,6 +146,7 @@ namespace puck.core.Concrete
                         var q = parser.Parse(removeQuery);
                         Writer.DeleteDocuments(q);
                     }
+                    Writer.Flush(true, true, true);
                     Writer.Commit();
                 }
                 catch (Exception ex)
@@ -286,8 +287,7 @@ namespace puck.core.Concrete
                 Writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, create, IndexWriter.MaxFieldLength.UNLIMITED);                    
         }
         public void CloseWriter() {
-            Writer.Close();
-            Writer.Dispose();
+            Writer.Dispose(false);
             Writer = null;
         }
         public void SetSearcher() {
@@ -335,7 +335,7 @@ namespace puck.core.Concrete
             
             var result = new List<Dictionary<string, string>>();
             for(var i=0;i<hits.Count();i++){
-                var doc = Searcher.Doc(i);
+                var doc = Searcher.Doc(hits[i].Doc);
                 var d = new Dictionary<string, string>();
                 d.Add(FieldKeys.ID,doc.GetValues(FieldKeys.ID).FirstOrDefault()??"");
                 d.Add(FieldKeys.PuckType,doc.GetValues(FieldKeys.PuckType).FirstOrDefault()??"");
@@ -361,7 +361,7 @@ namespace puck.core.Concrete
             var hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
             var results = new List<T>();
             for (var i = 0; i < hits.Count(); i++) {
-                var doc = Searcher.Doc(i);
+                var doc = Searcher.Doc(hits[i].Doc);
                 T result = JsonConvert.DeserializeObject<T>(doc.GetValues(FieldKeys.PuckValue)[0]);
                 results.Add(result);
             }

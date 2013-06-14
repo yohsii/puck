@@ -126,6 +126,7 @@
     <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Helpers\ViewExtensions.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\GroupField.cs" />
     <Compile Include="Models\LogIn.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\Variant.cs" />

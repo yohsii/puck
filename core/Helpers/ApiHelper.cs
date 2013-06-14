@@ -23,19 +23,41 @@ namespace puck.core.Helpers
             return DependencyResolver.Current.GetService<I_Puck_Repository>();
         } }
 
+        public static List<string> FieldGroups(string type=null) {
+            var result = new List<string>();
+            var fieldGroups = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
+            fieldGroups.ForEach(x =>
+            {
+                string typeName = x.Name.Replace(DBNames.FieldGroups, "");
+                string groupName = x.Key;
+                string FieldName = x.Value;
+                result.Add(string.Concat(typeName, ":", groupName, ":", FieldName));
+            });
+            if (!string.IsNullOrEmpty(type)) {
+                var targetType = Type.GetType(type);
+                var baseTypes = BaseTypes(targetType);
+                baseTypes.Add(targetType);
+                result = result
+                    .Where(x => baseTypes
+                        .Any(xx => xx.AssemblyQualifiedName.Equals(x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[0])))
+                        .ToList();
+            }
+            return result;
+        }
+
         public static List<Variant> Variants() {
             var allVariants = AllVariants();
             var results = new List<Variant>();
-            var languageMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
+            //var languageMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
             var allLanguageMetas = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key== DBKeys.Languages).ToList();
-            if (languageMeta != null){
+            /*if (languageMeta != null){
                 allLanguageMetas.Insert(0,languageMeta);
-            }
+            }*/
             for(var i =0;i<allLanguageMetas.Count;i++) {
                 var language = allLanguageMetas[i];
                 if (language != null)
                 {
-                    var variant = allVariants.Where(x => x.Key.ToLower().Equals(languageMeta.Value.ToLower())).FirstOrDefault();
+                    var variant = allVariants.Where(x => x.Key.ToLower().Equals(language.Value.ToLower())).FirstOrDefault();
                     if (variant != null)
                     {
                         variant.IsDefault = i==0;
@@ -59,9 +81,9 @@ namespace puck.core.Helpers
             }
             return results;
         }
-        public static IEnumerable<Type> FindDerivedClasses(Type baseType, List<Type> excluded=null) {
+        public static IEnumerable<Type> FindDerivedClasses(Type baseType, List<Type> excluded=null,bool inclusive=false) {
             excluded = excluded ?? new List<Type>();
-            var types=AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x => x != baseType && baseType.IsAssignableFrom(x) && !excluded.Contains(x));
+            var types=AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).Where(x =>(x != baseType || inclusive) && baseType.IsAssignableFrom(x) && !excluded.Contains(x));
             return types;
         }
         public static string DirOfPath(string s) {
@@ -94,6 +116,14 @@ namespace puck.core.Helpers
                 chain = TypeChain(type.BaseType, chain);
             return chain.TrimEnd();
         }
+        public static List<Type> BaseTypes(Type start,List<Type> result=null,bool excludeSystemObject = true) {
+            result = result ?? new List<Type>();
+            if (start.BaseType == null)
+                return result;
+            if (start.BaseType != typeof(Object) || !excludeSystemObject)
+                result.Add(start.BaseType);
+            return BaseTypes(start.BaseType,result);
+        }
         public static void SetCulture(string path = null) {
             if (path == null)
                 path = HttpContext.Current.Request.Url.AbsolutePath;
@@ -105,13 +135,8 @@ namespace puck.core.Helpers
             return result;
         }}
         
-        public static List<Type> Models { 
-            get {
-                return FindDerivedClasses(
-                    typeof(BaseModel)
-                    ,null
-                    ).ToList();
-            }
+        public static List<Type> Models(bool inclusive=false) { 
+            return FindDerivedClasses(typeof(BaseModel),null,inclusive).ToList();
         }
         
 

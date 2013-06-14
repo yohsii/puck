@@ -1,13 +1,16 @@
 ﻿h1.master{position:absolute;top:10px;right:10px;border-bottom:6px solid #1e1e1e;float:left;}
 .main.grid{height:90%;}
 .main.grid .menutop{height:11%;max-height:50px;padding:30px 0 0 0px;}
-.main.grid ul{list-style-type:none;}
+.main.grid ul{list-style-type:none;margin-left:0px;}
 .main.grid .menutop li{float:left;margin-right:10px;}
 .main.grid .menutop li a{border-bottom:2px solid #e2e2e2;font-weight:bold;font-size:20px;}
 .main.grid .leftarea{border-right:4px solid #e2e2e2;}
 .main.grid .leftarea,.main.grid .rightarea{height:95%}
-.create_default{display:none;}
+.main.grid .leftarea ul.content{margin-top:10px;}
+.main.grid .leftarea ul.content ul{margin-left:10px;}
+.create_default{display:none;padding-left:0px !important;border-bottom:2px solid lightgrey;}
 .btnclose{padding:0px 5px 0px 5px !important;margin:0 0 0 10px;}
+.rightarea{position:relative;}
 .rightarea .message .btn{border-radius:0px !important;}
 html,body{height:98%;}
 .overlay {
@@ -34,9 +37,18 @@ select.languages{height:200px !important;}
 .settings .redirects button{vertical-align:bottom;margin-top:25px;height:31px;}
 .settings div.submit{clear:both;}
 .settings .display{padding:10px 0 10px 0;}
+.settings .fieldgroups{padding:0 0 30px 0;}
+.settings .fieldgroups div.type{clear:left;}
+.settings .fieldgroups li{float:left;margin:0 0 0 10px;}
+.settings .fieldgroups button{vertical-align:bottom;height:31px;}
+.settings .fieldgroups .field{cursor:pointer;font-weight:bold;}
+.settings .fieldgroups .field.inherited{color:#999999;cursor:default;}
+.settings .group{background:#eeffee;float:left;margin:0 10px 0 0;padding:10px;}
 .clearboth{clear:both;}
 span.variant{cursor:pointer;color:#ff3333;font-size:11px;font-weight:bold;}
 div.node-dropdown{position:absolute;}
+
+button.content_update{position:absolute;top:0px;right:0px;}
 
 html {
     background-color: #e2e2e2;

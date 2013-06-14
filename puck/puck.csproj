@@ -470,6 +470,7 @@
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsTemplate.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsReadOnly.cshtml" />
     <Content Include="areas\admin\Views\Api\CreateDialog.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsFieldGroups.cshtml" />
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>

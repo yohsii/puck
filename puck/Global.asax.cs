@@ -9,6 +9,7 @@ using System.Web.Routing;
 using System.Data.Entity;
 using puck.core.Abstract;
 using puck.core.Constants;
+using puck.core.Concrete;
 
 namespace puck
 {
@@ -31,8 +32,6 @@ namespace puck
             //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
             
             //initiate puck
-            DependencyResolver.Current.GetService<I_Content_Indexer>().Ini();
-            DependencyResolver.Current.GetService<I_Task_Dispatcher>().Start();
             PuckCache.Ini();
         }
     }

@@ -19,6 +19,7 @@ namespace puck.core.Constants
         public static string Redirect = "redirect";
         public static string PathToLocale = "pathtolocale";        
         public static string Settings = "settings";
+        public static string FieldGroups = "fieldgroups:";
     }
     public static class DBKeys
     {

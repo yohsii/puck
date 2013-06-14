@@ -33,12 +33,16 @@ namespace puck.core.Controllers
         public ActionResult Index() {
             return View();
         }
+        public JsonResult FieldGroups(string type) {
+            var model = ApiHelper.FieldGroups(type);
+            return Json(model,JsonRequestBehavior.AllowGet);
+        }
         public ActionResult CreateDialog() {
             return View();
         }
         public JsonResult Models(string type)
         {
-            return Json(ApiHelper.Models.Select(x=>x.AssemblyQualifiedName),JsonRequestBehavior.AllowGet);
+            return Json(ApiHelper.Models().Select(x=>x.AssemblyQualifiedName),JsonRequestBehavior.AllowGet);
         }
         public JsonResult Variants() {
             var model = ApiHelper.Variants();
@@ -166,7 +170,7 @@ namespace puck.core.Controllers
                 //check name doesn't already exist and set sort number
                 var mod = model as BaseModel;
                 //get sibling nodes
-                mod.Path = p_path+mod.NodeName;
+                mod.Path =mod.Path.EndsWith("/")? p_path+mod.NodeName:mod.Path;
                 var nodesAtPath = mod.Siblings<BaseModel>().GroupByID();
                 //set sort order for new content
                 if(mod.SortOrder==-1)
@@ -176,7 +180,8 @@ namespace puck.core.Controllers
                     throw new Exception("Nodename exists at this path, choose another.");
                 //check this is an update or create
                 var qh = new QueryHelper<BaseModel>();
-                qh.Field(x=>x.Id,mod.Id.ToString())
+                qh.And()
+                    .Field(x=>x.Id,mod.Id.ToString())
                     .And()
                     .Field(x=>x.Variant,mod.Variant);
                 var original = qh.Get();
@@ -189,7 +194,7 @@ namespace puck.core.Controllers
                 {//this must be an edit
                     if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower())) {
                         nameChanged = true;
-                        originalPath =p_path+original.Path;
+                        originalPath = original.Path;
                     }
                 }
                 var variants = mod.Variants<BaseModel>();
@@ -197,13 +202,13 @@ namespace puck.core.Controllers
                 {//update path of variants
                     nameChanged = true;
                     if(string.IsNullOrEmpty(originalPath))
-                        originalPath =p_path+variants.First().NodeName;
+                        originalPath =variants.First().Path;
                     variants.ForEach(x => { x.NodeName = mod.NodeName; toIndex.Add(x); });
                 }
                 if (nameChanged) { 
                     //update path of decendants
                     var descendants = mod.Descendants<BaseModel>();
-                    var regex = new Regex(originalPath,RegexOptions.Compiled);
+                    var regex = new Regex(Regex.Escape(originalPath),RegexOptions.Compiled);
                     descendants.ForEach(x =>
                     {
                         x.Path = regex.Replace(x.Path, mod.Path,1);

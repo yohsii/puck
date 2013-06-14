@@ -15,15 +15,15 @@ namespace puck.core.Concrete
             return repo.PuckMeta;
         }
 
-        public int AddMeta(PuckMeta meta) {
+        public void AddMeta(PuckMeta meta) {
             repo.PuckMeta.Add(meta);
-            repo.SaveChanges();
-            return meta.ID;
+            //repo.SaveChanges();
+            //return meta.ID;
         }
 
         public void DeleteMeta(PuckMeta meta) {
             repo.PuckMeta.Remove(meta);
-            repo.SaveChanges();
+            //repo.SaveChanges();
         }
 
         public void DeleteMeta(string name,string key,string value)
@@ -39,7 +39,7 @@ namespace puck.core.Concrete
             foreach(var meta in metas.ToList()){
                 repo.PuckMeta.Remove(meta);
             }
-            repo.SaveChanges();
+            //repo.SaveChanges();
         }
 
         public void SaveChanges() {

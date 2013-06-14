@@ -1,11 +1,7 @@
+C:\project\puck\core\bin\Debug\puck.core.dll.config
 C:\project\puck\core\bin\Debug\puck.core.dll
 C:\project\puck\core\bin\Debug\puck.core.pdb
-C:\project\puck\core\obj\Debug\puck.core.dll
-C:\project\puck\core\obj\Debug\puck.core.pdb
-C:\project\puck\core\bin\Debug\puck.core.dll.config
 C:\project\puck\core\bin\Debug\EntityFramework.dll
-C:\project\puck\core\bin\Debug\EntityFramework.xml
-C:\project\puck\core\obj\Debug\core.csprojResolveAssemblyReference.cache
 C:\project\puck\core\bin\Debug\ICSharpCode.SharpZipLib.dll
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Analyzers.dll
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Core.dll
@@ -18,6 +14,8 @@ C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SimpleFacetedSearch.dll
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Snowball.dll
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SpellChecker.dll
 C:\project\puck\core\bin\Debug\Lucene.Net.dll
+C:\project\puck\core\bin\Debug\Newtonsoft.Json.dll
+C:\project\puck\core\bin\Debug\EntityFramework.xml
 C:\project\puck\core\bin\Debug\Lucene.Net.pdb
 C:\project\puck\core\bin\Debug\Lucene.Net.xml
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Analyzers.pdb
@@ -40,5 +38,6 @@ C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Snowball.pdb
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Snowball.xml
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SpellChecker.pdb
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SpellChecker.xml
-C:\project\puck\core\bin\Debug\Newtonsoft.Json.dll
 C:\project\puck\core\bin\Debug\Newtonsoft.Json.xml
+C:\project\puck\core\obj\Debug\puck.core.dll
+C:\project\puck\core\obj\Debug\puck.core.pdb

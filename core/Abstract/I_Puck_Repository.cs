@@ -11,7 +11,7 @@ namespace puck.core.Abstract
         IQueryable<PuckMeta> GetPuckMeta();
         void DeleteMeta(string name, string key, string value);
         void DeleteMeta(PuckMeta meta);
-        int AddMeta(PuckMeta meta);
+        void AddMeta(PuckMeta meta);
         void SaveChanges();
         /*
         int CreateImage(Image image);

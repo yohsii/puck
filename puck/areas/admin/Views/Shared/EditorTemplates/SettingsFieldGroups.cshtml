@@ -1,0 +1,153 @@
+﻿@using puck.core.Models;
+@model List<string>
+@{
+    var models = ApiHelper.Models(inclusive:true);
+    var dic = new Dictionary<string, Dictionary<string, List<string>>>();
+    foreach(var s in Model){
+        var nkv = s.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+        string typeName = nkv[0];
+        string groupName = nkv[1];
+        string FieldName = nkv[2];
+        if (!dic.Keys.Contains(typeName)){
+            dic[typeName] = new Dictionary<string, List<string>>();
+        }
+        if(!dic[typeName].ContainsKey(groupName)){
+            dic[typeName][groupName] = new List<string>();
+        }
+        if (!dic[typeName][groupName].Contains(FieldName)){
+            dic[typeName][groupName].Add(FieldName);
+        }
+    }            
+}
+<div class="fieldgroups">
+<ul>
+    <li>
+        <select>
+        @foreach(var m in models){
+            <option value="@m.AssemblyQualifiedName">@m.FullName</option>
+        }
+        </select>
+    </li>
+    <li>
+        <input class="groupname"/>
+    </li>
+    <li>
+        <button class="add">Add</button>
+    </li>
+</ul>
+
+@foreach (var m in models)
+{
+    var typesChain = ApiHelper.BaseTypes(m);
+    typesChain.Add(m);
+    <div data-type="@m.AssemblyQualifiedName" class="type">
+        <h2>@m.FullName</h2>
+    @{
+    Dictionary<string,List<GroupField>> groupProps = new Dictionary<string,List<GroupField>>();
+    
+    foreach (var b in typesChain) {
+        var props = b.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+        var usedProps = new List<string>();
+        bool inherited = m != b;
+        if (dic.ContainsKey(b.AssemblyQualifiedName))
+        {
+            foreach (var g in dic[b.AssemblyQualifiedName])
+            {
+                if (!groupProps.ContainsKey(g.Key))
+                {
+                    groupProps[g.Key] = new List<GroupField>();
+                }
+                foreach (var p in g.Value)
+                {
+                    groupProps[g.Key].Add(new GroupField { Inherited = inherited, PropertyName = p });
+                    usedProps.Add(p);
+                }
+            }
+        }
+        var notGrouped = props.Where(x => !usedProps.Contains(x.Name)).Select(x => x.Name).ToList();
+        if (notGrouped.Count > 0)
+        {
+            if (!groupProps.ContainsKey("default"))
+            {
+                groupProps["default"] = new List<GroupField>();
+            }
+            foreach (var p in notGrouped)
+            {
+                groupProps["default"].Add(new GroupField { Inherited = inherited, PropertyName = p });
+            }
+        }        
+    }
+        
+    foreach (var group in groupProps)
+    {
+        <div data-group="@group.Key" class="group">
+            <h3>@group.Key</h3>
+            @foreach (var field in group.Value) { 
+                <div data-inherited="@field.Inherited" data-field="@field.PropertyName" class="field @(field.Inherited?"inherited":"")">
+                    @field.PropertyName
+                </div>
+            }
+        </div>
+    }
+    
+                
+    }
+    <div class="clearboth"></div>
+    </div>
+}
+</div>
+<div class="clearboth"></div>
+<span onclick="handleSettingsFieldGroups()" class="trigger clear"></span>
+<script type="text/javascript">
+    var handleSettingsFieldGroups = function () {
+        var container = $(".fieldgroups");
+        var propertyName = function (i) {
+            return "@ViewData.ModelMetadata.PropertyName";
+        }
+        var setValue = function () {
+            container.find("input:hidden").remove();
+            container.find(".type[data-type]").each(function (i) {
+                var type = $(this);
+                type.find(".group[data-group!='default']").each(function (ii) {
+                    var group = $(this);
+                    group.find(".field[data-inherited='False']").each(function (iii) {
+                        var field = $(this);
+                        var val = type.attr("data-type") + ":" + group.attr("data-group") + ":" + field.attr("data-field");
+                        container.append(
+                            '<input name="' + propertyName() + '" type="hidden" value="' + val + '"/>'
+                        );
+                    });
+                });
+            });
+        }
+        container.find(".group").sortable({
+            connectWith: ".group", items: ".field[data-inherited='False']"
+        });
+        container.find("div.type").hide();
+        container.find("div.type:first").show();
+
+        container.find("select").change(function () {
+            var val = $(this).val();
+            container.find("div.type").hide();
+            container.find("div.type[data-type='" + val + "']").show();
+        });
+
+        container.find("button.add").click(function (e) {
+            e.preventDefault();
+            var c = container.find("div.type:visible");
+            var gn = container.find("input.groupname").val();
+            if (!gn.isEmpty() && c.find("[data-group='" + gn + "']").length == 0) {
+                c.find(".clearboth").before(
+                    $("<div/>").addClass("group").attr({ "data-group": gn })
+                    .append("<h3>" + gn + "</h3>").sortable({
+                        connectWith: ".group", items: ".field[data-inherited='False']", change: function (e, ui) {
+                            setValue();
+                        }
+                    })
+                );
+            }
+            setValue();
+        });
+        setValue();
+    }    
+</script>

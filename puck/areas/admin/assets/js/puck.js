@@ -28,6 +28,9 @@ var setUnPublish = function (id, f) {
 var setDelete = function (id, f) {
     $.get("/admin/api/delete?id=" + id, f);
 }
+var getFieldGroups = function (t,f) {
+    $.get("/admin/api/fieldgroups?type="+t, f);
+}
 var wireForm = function (form, success, fail) {
     $.validator.unobtrusive.parse(form);
     form.submit(function (e) {
@@ -72,6 +75,46 @@ var getDrawContent = function (path) {
 var displayMarkup = function (path, type, variant) {
     getMarkup(path, type, variant, function (data) {
         cright.html(data);
+        //get field groups and build tabs
+        getFieldGroups(type, function (data) {
+            var groups = [];
+            $(data).each(function (i) {
+                var val = this
+                if (!groups.contains(val.split(':')[1]))
+                    groups.push(val.split(":")[1]);
+            });
+            var tabHtml = '<ul class="nav nav-tabs">';
+            $(groups).each(function (i) {
+                var val = this;
+                tabHtml += '<li class="' + (i == 0 ? "active" : "") + '"><a class="fieldtabs" href="#fieldtabs' + i + '">' + val + '</a></li>';
+            });
+            tabHtml += '<li class=""><a class="fieldtabs" href="#fieldtabs' + groups.length + '">default</a></li>';
+            tabHtml += '</ul>';
+
+            tabHtml += '<div class="tab-content">';
+            $(groups).each(function (i) {
+                var val = this;
+                tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '">&nbsp;</div>';
+            });
+            tabHtml += '<div data-group="default" class="tab-pane" id="fieldtabs' + groups.length + '">&nbsp;</div>';
+            tabHtml += "</div>";
+            cright.find("form").prepend(tabHtml);
+            cright.find(".nav .fieldtabs").click(function (e) {
+                e.preventDefault();
+                $(this).tab("show");
+            });
+            $(data).each(function (i) {
+                var val = this;
+                var type = val.split(":")[0];
+                var group = val.split(":")[1];
+                var field = val.split(":")[2];
+                var fieldWrapper = $(".fieldwrapper[data-fieldname='" + field + "']");
+                var groupContainer = $(".tab-pane[data-group='" + group + "']");
+                groupContainer.append(fieldWrapper);
+            });
+            cright.find("div.fields>.fieldwrapper").appendTo(cright.find("[data-group='default']"));
+            
+        });
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
             getDrawContent(path);
@@ -130,10 +173,10 @@ var draw = function (data, el) {
                 , "data-children_path": node.Path + "/"
                 , "data-published": node.Published
             });
-
             toAppend.append(elnode);
         }
     }
+    el.find("ul").remove();
     el.append(toAppend);
 }
 var overlayClose = function () {
@@ -157,7 +200,7 @@ var overlay = function (el, width, height, top) {
     inner.append(close).append(el);
     cright.append(ov).append(inner);
     height = height || $(window).height() * 0.8;
-    if (!height)
+    if (height)
         inner.css({ height: height + "px" });
     inner.css({ left: ($(window).width() - width || 960) / 2 + "px" });
     if (!top)
@@ -167,12 +210,13 @@ var overlay = function (el, width, height, top) {
 $('a.settings').click(function (e) {
     e.preventDefault();
     getSettings(function (data) {
-        overlay(data,960);
+        overlay(data, 960, 500);
         $(".overlayinner .trigger").click();
         //setup validation
         wireForm($('.overlayinner form'), function (data) {
             overlayClose();
         }, function (data) {
+            console.log("settings response %o",data);
             msg(data.message);
         });
     });
@@ -203,7 +247,19 @@ cleft.find("ul.content").on("click", "li.node i.expand", function () {
     //get children content
     var node = $(this).parent();
     console.log(node);
-    getDrawContent(node.attr("data-children_path"));
+    var descendants = node.find("ul");
+    if (descendants.length > 0) {//show
+        if (descendants.first().is(":hidden")) {
+            node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+            descendants.show();
+        } else {//hide
+            node.find("i.expand").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+            descendants.hide();
+        }
+    } else {
+        getDrawContent(node.attr("data-children_path"));
+        node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+    }
 });
 //node settings dropdown
 cleft.find("ul.content").on("click", "li.node i.menu", function (e) {

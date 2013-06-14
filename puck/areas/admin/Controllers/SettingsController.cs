@@ -33,7 +33,17 @@ namespace puck.core.Controllers
             var enableLocalePrefix = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.EnableLocalePrefix).FirstOrDefault();
             var redirects = meta.Where(x => x.Name == DBNames.Redirect).ToList().Select(x=>new KeyValuePair<string,string>(x.Key,x.Value)).ToDictionary(x=>x.Key,x=>x.Value);
             var pathToLocale = meta.Where(x => x.Name == DBNames.PathToLocale).ToList().Select(x => new KeyValuePair<string, string>(x.Key, x.Value)).ToDictionary(x=>x.Key,x=>x.Value);
-            var languages = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList().Select(x=>x.Key).ToList();
+            var languages = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList().Select(x=>x.Value).ToList();
+            var fieldGroups = meta.Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
+            
+            model.TypeGroupField = new List<string>();
+            
+            fieldGroups.ForEach(x => {
+                string typeName = x.Name.Replace(DBNames.FieldGroups,"");
+                string groupName = x.Key;
+                string FieldName = x.Value;
+                model.TypeGroupField.Add(string.Concat(typeName,":",groupName,":",FieldName));                
+            });
 
             model.DefaultLanguage = defaultLanguage == null ? "" : defaultLanguage.Value;
             model.EnableLocalePrefix = enableLocalePrefix == null ? false : bool.Parse(enableLocalePrefix.Value);
@@ -55,7 +65,7 @@ namespace puck.core.Controllers
             try
             {
                 // TODO: Add update logic here
-
+                //default language
                 if (!string.IsNullOrEmpty(model.DefaultLanguage)) {
                     var metaDL = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
                     if (metaDL != null)
@@ -70,6 +80,7 @@ namespace puck.core.Controllers
                         repo.AddMeta(newMeta);
                     }
                 }
+                //enable local prefix
                 var metaELP = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.EnableLocalePrefix).FirstOrDefault();
                 if (metaELP != null)
                 {
@@ -78,9 +89,57 @@ namespace puck.core.Controllers
                 else {
                     var newMeta = new PuckMeta();
                     newMeta.Name = DBNames.Settings;
-                    newMeta.Key = DBKeys.DefaultLanguage;
+                    newMeta.Key = DBKeys.EnableLocalePrefix;
                     newMeta.Value = model.EnableLocalePrefix.ToString();
                     repo.AddMeta(newMeta);
+                }
+                //languages
+                if (model.Languages!=null && model.Languages.Count > 0)
+                {
+                    var metaLanguages = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList();
+                    if (metaLanguages.Count > 0)
+                    {
+                        metaLanguages.ForEach(x =>
+                        {
+                            repo.DeleteMeta(x);
+                        });
+                    }
+                    model.Languages.ForEach(x => {
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.Settings;
+                        newMeta.Key = DBKeys.Languages;
+                        newMeta.Value = x;
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                //redirects
+                if (model.Redirect!=null&&model.Redirect.Count > 0) {
+                    var redirectMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect).ToList();
+                    redirectMeta.ForEach(x => {
+                        repo.DeleteMeta(x);
+                    });
+                    model.Redirect.ToList().ForEach(x => {
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.Redirect;
+                        newMeta.Key = x.Key;
+                        newMeta.Value = x.Value;
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                //fieldgroup
+                if (model.TypeGroupField!=null&&model.TypeGroupField.Count > 0) {
+                    var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
+                    fieldGroupMeta.ForEach(x => {
+                        repo.DeleteMeta(x);
+                    });
+                    model.TypeGroupField.ForEach(x => {
+                        var values = x.Split(new char[]{':'},StringSplitOptions.RemoveEmptyEntries);
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.FieldGroups+values[0];
+                        newMeta.Key = values[1];
+                        newMeta.Value=values[2];
+                        repo.AddMeta(newMeta);
+                    });
                 }
                 repo.SaveChanges();
                 success = true;

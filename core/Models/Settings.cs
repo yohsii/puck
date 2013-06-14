@@ -20,5 +20,9 @@ namespace puck.core.Models
         public Dictionary<string, string> PathToLocale { get; set; }
 
         public bool EnableLocalePrefix { get; set; }
+
+        [UIHint("SettingsFieldGroups")]
+        public List<string> TypeGroupField { get; set; }
+        //public Dictionary<string, Dictionary<string,List<string>>> TypeGroupField { get; set; }
     }
 }
