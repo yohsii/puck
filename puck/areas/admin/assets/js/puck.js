@@ -31,6 +31,12 @@ var setDelete = function (id, f) {
 var getFieldGroups = function (t,f) {
     $.get("/admin/api/fieldgroups?type="+t, f);
 }
+var getLocalisationDialog = function (p, f) {
+    $.get("/admin/api/LocalisationDialog?path=" + p, f);
+}
+var getDomainMappingDialog = function (p, f) {
+    $.get("/admin/api/DomainMappingDialog?path=" + p, f);
+}
 var wireForm = function (form, success, fail) {
     $.validator.unobtrusive.parse(form);
     form.submit(function (e) {
@@ -228,6 +234,12 @@ var dirOfPath = function (s) {
         return s;
     return s.substring(0, s.lastIndexOf("/") + 1);
 }
+var isRootItem = function (s) {
+    var matches = s.match(/\//g);
+    if (matches==null)
+        throw "isRootItem - invalid input: " + s;
+    return matches.length == 1;
+}
 var typeFromChain = function (s) {
     return s.split(" ")[0];
 }
@@ -265,13 +277,13 @@ cleft.find("ul.content").on("click", "li.node i.expand", function () {
 cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
     //display dropdown
     var node = $(this).parent();
-    var left = node.position().left;
-    var top = node.position().top + (node.height() * 2);
+    var left = node.offset().left;
+    var top = node.offset().top + 30;
     var dropdown = $(".node-dropdown");
     dropdown
-                .addClass("open")
-                .css({ top: top + "px", left: left + "px" })
-                .attr("data-context", node.attr("data-id"));
+        .addClass("open")
+        .css({ top: top + "px", left: left + "px" })
+        .attr("data-context", node.attr("data-id"));
     e.stopPropagation();
     $("html").on("click", "", function () {
         dropdown.removeClass("open");
@@ -280,20 +292,26 @@ cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
     //filter menu items according to context
     //filter translation item
     var totranslate = untranslated(node.attr("data-variants"));
-    console.log("to translate %o", totranslate);
     if (totranslate)
         dropdown.find("a[data-action='translate']").parents("li").show();
     else
         dropdown.find("a[data-action='translate']").parents("li").hide();
     //filter publish/unpublish
-    if (node.attr("data-published")==true) {
+    if (node.attr("data-published") == true) {
         dropdown.find("a[data-action='publish']").parents("li").hide();
         dropdown.find("a[data-action='unpublish']").parents("li").show();
     } else {
         dropdown.find("a[data-action='publish']").parents("li").show();
         dropdown.find("a[data-action='unpublish']").parents("li").hide();
     }
+    //filter localisation
 
+    //filter domain
+    if (isRootItem(node.attr("data-path"))) {
+        dropdown.find("a[data-action='domain']").parents("li").show();
+    } else {
+        dropdown.find("a[data-action='domain']").parents("li").hide();
+    }    
 });
 //menu items
 $(".node-dropdown a").click(function () {
@@ -307,17 +325,18 @@ $(".node-dropdown a").click(function () {
             break;
         case "translate":
             getCreateDialog(function (data) {
-                overlay(data);
+                overlay(data, 400, 300);
                 var type = $(".overlayinner select[name=type]");
                 var variant = $(".overlayinner select[name=variant] option");
                 $(".overlayinner .typecontainer").hide();
                 type.val(node.attr("data-type"));
+                var variants = node.attr("data-variants").split(",");
                 variant.each(function () {
                     //check value doesn't exist in variant list
                     var option = $(this);
                     var contains = false;
-                    $(languages).each(function () {
-                        if (this.Key == option.val())
+                    $(variants).each(function () {
+                        if (this == option.val())
                             contains = true;
                     });
                     if (contains)
@@ -351,10 +370,37 @@ $(".node-dropdown a").click(function () {
             else
                 msg(data.message);
         }); break;
+        case "localisation":
+            setLocalisation(node.attr("data-path"));
+            break;
+        case "domain":
+            setDomainMapping(node.attr("data-path"));
+            break;
     }
 });
 
-
+var setLocalisation = function (p) {
+    getLocalisationDialog(p, function (data) {
+        overlay(data,400,250);
+        var form = $('.overlayinner form');
+        wireForm(form, function (data) {
+            overlayClose();
+        }, function (data) {
+            msg(data.message);
+        });
+    });
+}
+var setDomainMapping = function (p) {
+    getDomainMappingDialog(p, function (data) {
+        overlay(data,400,250);
+        var form = $('.overlayinner form');
+        wireForm(form, function (data) {
+            overlayClose();
+        }, function (data) {
+            msg(data.message);
+        });
+    });
+}
 cleft.find("ul.content").on("click", "li.node span", function () {
     //get markup
     var node = $(this).parents(".node");

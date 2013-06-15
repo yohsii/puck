@@ -16,6 +16,7 @@ using Lucene.Net.Analysis.Snowball;
 using System.Threading;
 using puck.core.Base;
 using System.Text.RegularExpressions;
+using puck.core.Entities;
 namespace puck.core.Controllers
 {
     public class ApiController : BaseController
@@ -47,6 +48,113 @@ namespace puck.core.Controllers
         public JsonResult Variants() {
             var model = ApiHelper.Variants();
             return Json(model,JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DomainMappingDialog(string path)
+        {
+            var model = ApiHelper.DomainMapping(path);
+            return View((object)model);
+        }
+        public JsonResult DomainMapping(string path)
+        {
+            var model = ApiHelper.DomainMapping(path);
+            return Json(model,JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult DomainMapping(string path,string domains) {
+            string message = "";
+            bool success = false;
+            try
+            {
+                if (string.IsNullOrEmpty(path))
+                    throw new Exception("path null or empty");
+                    
+                if (string.IsNullOrEmpty(domains))
+                {
+                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key == path).ToList();
+                    meta.ForEach(x =>
+                    {
+                        repo.DeleteMeta(x);
+                    });
+                    if(meta.Count>0)
+                        repo.SaveChanges();
+                }
+                else
+                {
+                    var d = domains.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    d.ForEach(dd =>
+                    {
+                        if (repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Value == dd && !x.Key.Equals(path)).Count() > 0)
+                            throw new Exception("domain already mapped to another node, unset first.");
+                    });
+                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key == path).ToList();
+                    meta.ForEach(x =>
+                    {
+                        repo.DeleteMeta(x);
+                    });
+                    d.ForEach(x =>
+                    {
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.DomainMapping;
+                        newMeta.Key = path;
+                        newMeta.Value = x;
+                        repo.AddMeta(newMeta);
+                    });
+                    repo.SaveChanges();
+                }
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult LocalisationDialog(string path)
+        {
+            var model = ApiHelper.PathLocalisation(path);
+            return View((object)model);
+        }
+        public JsonResult Localisation(string path) {
+            var model = ApiHelper.PathLocalisation(path);
+            return Json(model,JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult Localisation(string path,string variant)
+        {
+            string message = "";
+            bool success = false;
+            try
+            {
+                if (string.IsNullOrEmpty(path))
+                    throw new Exception("path null or empty");
+                    
+                if (string.IsNullOrEmpty(variant))
+                {
+                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key == path).ToList();
+                    meta.ForEach(x => {
+                        repo.DeleteMeta(x);
+                    });
+                    if (meta.Count > 0)
+                        repo.SaveChanges();
+                }
+                else
+                {
+                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key == path).FirstOrDefault();
+                    if (meta != null)
+                        repo.DeleteMeta(meta);
+                    var newMeta = new PuckMeta();
+                    newMeta.Name = DBNames.PathToLocale;
+                    newMeta.Key = path;
+                    newMeta.Value = variant;
+                    repo.AddMeta(newMeta);
+                    repo.SaveChanges();
+                }
+                success = true;
+            }
+            catch (Exception ex) {
+                message = ex.Message;
+            }
+            return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
         }
         public JsonResult Content(string path = "/") {
             var qh = new QueryHelper<BaseModel>();
@@ -107,6 +215,17 @@ namespace puck.core.Controllers
                     throw new Exception("no results with ID "+id+" to delete");
                 toDelete.AddRange(toDelete.First().Descendants<BaseModel>());
                 toDelete.Delete();
+                //remove localisation setting
+                var lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.StartsWith(toDelete.First().Path)).ToList();
+                lmeta.ForEach(x => {
+                    repo.DeleteMeta(x);
+                });
+                //remove domain mappings
+                var dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.StartsWith(toDelete.First().Path)).ToList();
+                dmeta.ForEach(x => {
+                    repo.DeleteMeta(x);
+                });
+                repo.SaveChanges();
                 success = true;
             }
             catch (Exception ex) {

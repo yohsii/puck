@@ -41,3 +41,4 @@ C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SpellChecker.xml
 C:\project\puck\core\bin\Debug\Newtonsoft.Json.xml
 C:\project\puck\core\obj\Debug\puck.core.dll
 C:\project\puck\core\obj\Debug\puck.core.pdb
+C:\project\puck\core\obj\Debug\core.csprojResolveAssemblyReference.cache

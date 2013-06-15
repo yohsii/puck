@@ -23,6 +23,15 @@ namespace puck.core.Helpers
             return DependencyResolver.Current.GetService<I_Puck_Repository>();
         } }
 
+        public static String PathLocalisation(string path) {
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && path.StartsWith(x.Key)).OrderByDescending(x=>x.Key.Length).FirstOrDefault();
+            return meta == null ? null : meta.Value;
+        }
+        public static String DomainMapping(string path)
+        {
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key == path).ToList();
+            return meta.Count == 0 ? string.Empty : string.Join(",",meta.Select(x=>x.Value));
+        }
         public static List<string> FieldGroups(string type=null) {
             var result = new List<string>();
             var fieldGroups = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();

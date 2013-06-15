@@ -47,7 +47,7 @@ select.languages{height:200px !important;}
 .clearboth{clear:both;}
 span.variant{cursor:pointer;color:#ff3333;font-size:11px;font-weight:bold;}
 div.node-dropdown{position:absolute;}
-
+.tred{color:#ffeeee;}
 button.content_update{position:absolute;top:0px;right:0px;}
 
 html {
