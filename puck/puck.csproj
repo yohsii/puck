@@ -212,7 +212,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="areas\admin\adminAreaRegistration.cs" />
     <Compile Include="areas\admin\Controllers\AdminController.cs" />
-    <Compile Include="areas\admin\Controllers\BaseController.cs" />
     <Compile Include="areas\admin\Controllers\SettingsController.cs" />
     <Compile Include="areas\admin\Models\Person.cs" />
     <Compile Include="areas\admin\Models\TextSingle.cs" />
@@ -381,7 +380,9 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -419,7 +420,9 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Web.config" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="areas\admin\Config\" />
@@ -430,7 +433,9 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="areas\admin\Views\Web.config" />
+    <Content Include="areas\admin\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\core.csproj">

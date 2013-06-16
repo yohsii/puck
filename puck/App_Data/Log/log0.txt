@@ -13410,3 +13410,31 @@ message: Nodename exists at this path, choose another.
 stacktrace:    at puck.core.Controllers.ApiController.NewContent(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 105
 
 
+date: 16/06/2013 21:07:15
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.Controllers.HomeController.Index(String path) in C:\project\puck\puck\Controllers\HomeController.cs:line 25
+
+
+date: 16/06/2013 21:09:59
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.Controllers.HomeController.Index(String path) in C:\project\puck\puck\Controllers\HomeController.cs:line 25
+
+
+date: 16/06/2013 21:11:14
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.Controllers.HomeController.Index(String path) in C:\project\puck\puck\Controllers\HomeController.cs:line 26
+
+
+date: 16/06/2013 21:13:03
+message: domain roots not set. DOMAIN:localhost
+stacktrace:    at puck.Controllers.HomeController.Index(String path) in C:\project\puck\puck\Controllers\HomeController.cs:line 30
+
+
+date: 16/06/2013 21:58:29
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.Controllers.HomeController.Index(String path) in C:\project\puck\puck\Controllers\HomeController.cs:line 61
+
+

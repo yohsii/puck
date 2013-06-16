@@ -1,12 +1,13 @@
-﻿@{
+﻿@model puck.areas.admin.ViewModels.Home
+@{
     ViewBag.Title = "Home Page";
 }
 @section featured {
     <section class="featured">
         <div class="content-wrapper">
             <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
+                <h1>@Model.PageTitle.</h1>
+                <h2>@Model.Description</h2>
             </hgroup>
             <p>
                 To learn more about ASP.NET MVC visit

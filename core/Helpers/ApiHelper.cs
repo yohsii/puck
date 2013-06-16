@@ -22,7 +22,24 @@ namespace puck.core.Helpers
         public static I_Puck_Repository repo { get {
             return DependencyResolver.Current.GetService<I_Puck_Repository>();
         } }
-
+        public static void UpdateDomainMappings() {
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
+            var map = new Dictionary<string, string>();
+            meta.ForEach(x => {
+                map.Add(x.Value, x.Key);
+            });
+            PuckCache.DomainRoots = map;
+        }
+        public static void UpdatePathLocaleMappings()
+        {
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale).ToList();
+            var map = new Dictionary<string, string>();
+            meta.ForEach(x =>
+            {
+                map.Add(x.Key, x.Value);
+            });
+            PuckCache.PathToLocale = map;
+        }
         public static String PathLocalisation(string path) {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && path.StartsWith(x.Key)).OrderByDescending(x=>x.Key.Length).FirstOrDefault();
             return meta == null ? null : meta.Value;

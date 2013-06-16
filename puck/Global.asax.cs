@@ -30,9 +30,16 @@ namespace puck
             AuthConfig.RegisterAuth();
 
             //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
-            
-            //initiate puck
-            PuckCache.Ini();
+
+            /*
+            Content_Indexer_Searcher.RegisterBeforeIndexHandler<puck.areas.admin.ViewModels.Home>("doshit"
+                ,(object o,puck.core.Events.BeforeIndexingEventArgs args) => { 
+                    
+                }
+                ,true
+                );
+            */
+            puck.core.Bootstrap.Ini();
         }
     }
 }

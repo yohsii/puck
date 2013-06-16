@@ -61,6 +61,7 @@ namespace puck.App_Start
             kernel.Bind<I_Content_Indexer>().To<Content_Indexer_Searcher>().InSingletonScope();
             kernel.Bind<I_Content_Searcher>().ToMethod(x => x.Kernel.Get<I_Content_Indexer>() as I_Content_Searcher);
             kernel.Bind<I_Task_Dispatcher>().To<Dispatcher>().InSingletonScope();
+            
         }        
     }
 }

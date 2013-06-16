@@ -7,6 +7,7 @@ using puck.core.Abstract;
 using System.Linq;
 using Lucene.Net.Documents;
 using puck.core.Attributes;
+using puck.core.Constants;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Snowball;
 namespace puck.core.Helpers

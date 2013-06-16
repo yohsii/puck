@@ -67,15 +67,17 @@ namespace puck.core.Controllers
             {
                 if (string.IsNullOrEmpty(path))
                     throw new Exception("path null or empty");
-                    
+
+                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
+
                 if (string.IsNullOrEmpty(domains))
                 {
-                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key == path).ToList();
-                    meta.ForEach(x =>
+                    var m = meta.Where(x => x.Key == path).ToList();
+                    m.ForEach(x =>
                     {
                         repo.DeleteMeta(x);
                     });
-                    if(meta.Count>0)
+                    if(m.Count>0)
                         repo.SaveChanges();
                 }
                 else
@@ -83,11 +85,11 @@ namespace puck.core.Controllers
                     var d = domains.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                     d.ForEach(dd =>
                     {
-                        if (repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Value == dd && !x.Key.Equals(path)).Count() > 0)
+                        if (meta.Where(x => x.Value == dd && !x.Key.Equals(path)).Count() > 0)
                             throw new Exception("domain already mapped to another node, unset first.");
                     });
-                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key == path).ToList();
-                    meta.ForEach(x =>
+                    var m = meta.Where(x => x.Key == path).ToList();
+                    m.ForEach(x =>
                     {
                         repo.DeleteMeta(x);
                     });
@@ -101,6 +103,7 @@ namespace puck.core.Controllers
                     });
                     repo.SaveChanges();
                 }
+                ApiHelper.UpdateDomainMappings();
                 success = true;
             }
             catch (Exception ex)
@@ -149,6 +152,7 @@ namespace puck.core.Controllers
                     repo.AddMeta(newMeta);
                     repo.SaveChanges();
                 }
+                ApiHelper.UpdatePathLocaleMappings();
                 success = true;
             }
             catch (Exception ex) {
@@ -225,6 +229,8 @@ namespace puck.core.Controllers
                 dmeta.ForEach(x => {
                     repo.DeleteMeta(x);
                 });
+                ApiHelper.UpdateDomainMappings();
+                ApiHelper.UpdatePathLocaleMappings();
                 repo.SaveChanges();
                 success = true;
             }
@@ -335,6 +341,29 @@ namespace puck.core.Controllers
                     });
                 }
                 indexer.Index(toIndex);
+                //if first time node saved and is root node - set locale for path
+                if (original == null && mod.Path.Count(x=>x=='/') == 1)
+                {
+                    var lMeta = new PuckMeta() { 
+                        Name = DBNames.PathToLocale,
+                        Key = mod.Path,
+                        Value = mod.Variant
+                    };
+                    repo.AddMeta(lMeta);
+                    //if first item - set wildcard domain mapping
+                    if (nodesAtPath.Count == 0) {
+                        var dMeta = new PuckMeta()
+                        {
+                            Name = DBNames.DomainMapping,
+                            Key = mod.Path,
+                            Value = "*"
+                        };
+                        repo.AddMeta(lMeta);                        
+                    }
+                    repo.SaveChanges();
+                    ApiHelper.UpdateDomainMappings();
+                    ApiHelper.UpdatePathLocaleMappings();
+                }
                 success = true;
             }
             catch (Exception ex) {

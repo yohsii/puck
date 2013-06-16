@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Lucene.Net.Documents;
-using puck.core.Helpers;
+using puck.core.Constants;
 using Lucene.Net.Analysis;
 namespace puck.core.Attributes
 {

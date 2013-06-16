@@ -150,6 +150,10 @@ namespace puck.core.Helpers
         static Regex fieldRegex = new Regex(fieldPattern,RegexOptions.Compiled);
 
         //static helpers
+        public static IList<Dictionary<string,string>> Query(string q){
+            return searcher.Query(q);
+        }
+
         private static string getName(string str) {
             var match = nameRegex.Match(str);
             string result = match.Groups[1].Value;

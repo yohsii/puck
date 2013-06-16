@@ -75,6 +75,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
@@ -104,25 +105,25 @@
     <Compile Include="Attributes\DefaultGUIDTransformer.cs" />
     <Compile Include="Attributes\IndexSettings.cs" />
     <Compile Include="Base\BaseModel.cs" />
+    <Compile Include="Bootstrap.cs" />
     <Compile Include="Concrete\Content_Indexer_Searcher.cs" />
     <Compile Include="Concrete\Dispatcher.cs" />
     <Compile Include="Concrete\Logger.cs" />
     <Compile Include="Concrete\Puck_Repository.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Constants\PuckCache.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Constants\PuckConstants.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Entities\PuckCustomMeta.cs" />
     <Compile Include="Entities\Model.cs" />
     <Compile Include="Concrete\PuckContext.cs" />
-    <Compile Include="Constants\FieldKeys.cs" />
     <Compile Include="Entities\PuckMeta.cs" />
     <Compile Include="Entities\PuckRevision.cs" />
     <Compile Include="Entities\PuckTask.cs" />
+    <Compile Include="Events\PuckEventArgs.cs" />
     <Compile Include="Filters\Auth.cs" />
     <Compile Include="Helpers\ApiHelper.cs" />
     <Compile Include="Helpers\ObjectDumper.cs" />
-    <Compile Include="Constants\FieldSettings.cs" />
     <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Helpers\ViewExtensions.cs" />
     <Compile Include="Migrations\Configuration.cs" />
