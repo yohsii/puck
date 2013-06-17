@@ -35,7 +35,8 @@ namespace puck.core.Controllers
             var pathToLocale = meta.Where(x => x.Name == DBNames.PathToLocale).ToList().Select(x => new KeyValuePair<string, string>(x.Key, x.Value)).ToDictionary(x=>x.Key,x=>x.Value);
             var languages = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList().Select(x=>x.Value).ToList();
             var fieldGroups = meta.Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
-            
+            var typeAllowedTypes = meta.Where(x => x.Name == DBNames.TypeAllowedTypes).Select(x=>x.Key+":"+x.Value).ToList();
+
             model.TypeGroupField = new List<string>();
             
             fieldGroups.ForEach(x => {
@@ -45,6 +46,7 @@ namespace puck.core.Controllers
                 model.TypeGroupField.Add(string.Concat(typeName,":",groupName,":",FieldName));                
             });
 
+            model.TypeAllowedTypes = typeAllowedTypes;
             model.DefaultLanguage = defaultLanguage == null ? "" : defaultLanguage.Value;
             model.EnableLocalePrefix = enableLocalePrefix == null ? false : bool.Parse(enableLocalePrefix.Value);
             model.Languages = languages;
@@ -138,6 +140,21 @@ namespace puck.core.Controllers
                         newMeta.Name = DBNames.FieldGroups+values[0];
                         newMeta.Key = values[1];
                         newMeta.Value=values[2];
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                //typeallowedtypes
+                if (model.TypeAllowedTypes != null && model.TypeAllowedTypes.Count > 0){
+                    var typeAllowedTypesMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTypes).ToList();
+                    typeAllowedTypesMeta.ForEach(x => {
+                        repo.DeleteMeta(x);
+                    });
+                    model.TypeAllowedTypes.ForEach(x => {
+                        var values = x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.TypeAllowedTypes;
+                        newMeta.Key = values[0];
+                        newMeta.Value = values[1];
                         repo.AddMeta(newMeta);
                     });
                 }

@@ -38,12 +38,15 @@ namespace puck.core.Controllers
             var model = ApiHelper.FieldGroups(type);
             return Json(model,JsonRequestBehavior.AllowGet);
         }
-        public ActionResult CreateDialog() {
+        public ActionResult CreateDialog(string type) {
             return View();
         }
         public JsonResult Models(string type)
         {
-            return Json(ApiHelper.Models().Select(x=>x.AssemblyQualifiedName),JsonRequestBehavior.AllowGet);
+            if(string.IsNullOrEmpty(type))
+                return Json(ApiHelper.Models().Select(x=>x.AssemblyQualifiedName),JsonRequestBehavior.AllowGet);
+            else
+                return Json(ApiHelper.AllowedTypes(type).Select(x => x.AssemblyQualifiedName), JsonRequestBehavior.AllowGet);
         }
         public JsonResult Variants() {
             var model = ApiHelper.Variants();

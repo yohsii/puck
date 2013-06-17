@@ -1,6 +1,11 @@
 ﻿@{
     Layout = null;
-    var types = ApiHelper.Models();
+    List<Type> types; 
+    if(string.IsNullOrEmpty(Request["type"])){
+        types = ApiHelper.Models(true);
+    }else{
+        types = ApiHelper.AllowedTypes(Request["type"]);  
+    }    
     var variants = ApiHelper.Variants();    
 }
 <div class="">

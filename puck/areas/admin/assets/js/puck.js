@@ -10,8 +10,8 @@ var getModels = function (path, f) {
 var getMarkup = function (path, type, variant, f) {
     $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&path=" + path, f);
 }
-var getCreateDialog = function (f) {
-    $.get("/admin/api/createdialog", f, "html");
+var getCreateDialog = function (f, t) {
+    $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");
 }
 var getSettings = function (f) {
     $.get("/admin/settings/edit", f, "html");
@@ -60,7 +60,7 @@ var wireForm = function (form, success, fail) {
         }
     });
 }
-var newContent = function (path) {
+var newContent = function (path, type) {
     getCreateDialog(function (data) {
         overlay(data, 400, 300, 100);
         $(".overlayinner button").click(function () {
@@ -69,7 +69,7 @@ var newContent = function (path) {
             overlayClose()
             displayMarkup(path, type, variant);
         });
-    });
+    }, type);
 }
 var getDrawContent = function (path) {
     getContent(path, function (data) {
@@ -321,7 +321,7 @@ $(".node-dropdown a").click(function () {
     var node = $(".node[data-id='" + context + "']");
     switch (action) {
         case "create":
-            newContent(node.attr("data-children_path"));
+            newContent(node.attr("data-children_path"), node.attr("data-type"));
             break;
         case "translate":
             getCreateDialog(function (data) {
@@ -345,7 +345,7 @@ $(".node-dropdown a").click(function () {
                 $(".overlayinner button").click(function () {
                     displayMarkup(node.attr("data-path"), node.attr("data-type"), variant.val());
                 });
-            });
+            },node.attr("data-type"));
             break;
         case "delete":
             if (confirm("sure?")) {

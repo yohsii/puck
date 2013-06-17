@@ -24,5 +24,9 @@ namespace puck.core.Models
         [UIHint("SettingsFieldGroups")]
         public List<string> TypeGroupField { get; set; }
         //public Dictionary<string, Dictionary<string,List<string>>> TypeGroupField { get; set; }
+
+        [UIHint("SettingsTypeAllowedTypes")]
+        public List<string> TypeAllowedTypes { get; set; }
+
     }
 }

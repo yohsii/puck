@@ -160,7 +160,11 @@ namespace puck.core.Helpers
             //get tasks from db
             return result;
         }}
-        
+        public static List<Type> AllowedTypes(string typeName) {
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTypes && x.Key.Equals(typeName)).ToList();
+            var result = meta.Select(x=>Type.GetType(x.Value)).ToList();
+            return result;
+        }
         public static List<Type> Models(bool inclusive=false) { 
             return FindDerivedClasses(typeof(BaseModel),null,inclusive).ToList();
         }

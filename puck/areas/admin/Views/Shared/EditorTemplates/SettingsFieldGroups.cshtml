@@ -140,7 +140,7 @@
                 c.find(".clearboth").before(
                     $("<div/>").addClass("group").attr({ "data-group": gn })
                     .append("<h3>" + gn + "</h3>").sortable({
-                        connectWith: ".group", items: ".field[data-inherited='False']", change: function (e, ui) {
+                        connectWith: ".group", items: ".field[data-inherited='False']", update: function (e, ui) {
                             setValue();
                         }
                     })

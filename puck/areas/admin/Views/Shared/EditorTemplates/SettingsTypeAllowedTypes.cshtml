@@ -1,0 +1,69 @@
+﻿@model List<string>
+@{
+    var models = ApiHelper.Models(true);
+}
+<span onclick="handleSettingsTypeAllowedTypes()" class="trigger clear"></span>
+<div class="settings_type_allowed_types">
+    <select>
+        @foreach (var m in models) { 
+            <option value="@m.AssemblyQualifiedName">@m.FullName</option>
+        }
+    </select>
+    <div class="lists">
+    @foreach (var m in models) { 
+        var included = new List<Type>();
+        foreach (var entry in Model) {
+            var kv = entry.Split(new char[]{':'},StringSplitOptions.RemoveEmptyEntries);
+            if (m.AssemblyQualifiedName.Equals(kv[0])) {
+                included.Add(Type.GetType(kv[1]));
+            }
+        }
+        var excluded = models.Where(x=>!included.Any(i=>x.AssemblyQualifiedName.Equals(i.AssemblyQualifiedName))).ToList();
+        <div class="type" data-type="@m.AssemblyQualifiedName">
+            <div class="list excluded"><h2>excluded child types</h2>
+                @foreach (var t in excluded) { 
+                    <div data-type="@t.AssemblyQualifiedName" class="field">@t.FullName</div>
+                }
+            </div>
+            <div class="list included"><h2>allowed child types</h2>
+                @foreach (var t in included) { 
+                    <div data-type="@t.AssemblyQualifiedName" class="field">@t.FullName</div>
+                }
+            </div>
+        </div>
+    }
+    <div class="clearboth"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    var handleSettingsTypeAllowedTypes = function () {
+        var propertyName = function (i) {
+            return "@ViewData.ModelMetadata.PropertyName";
+        }
+        var container = $(".settings_type_allowed_types");
+        var select = container.find("select");
+        container.find(".list").hide();
+        container.find(".type[data-type='" + select.val() + "'] .list").show();
+        select.change(function (e) {
+            var val = $(this).val();
+            container.find(".list").hide();
+            container.find(".type[data-type='" + val + "'] .list").show();
+        });
+        var setValue = function () {
+            container.find("input:hidden").remove();
+            container.find(".included .field").each(function (i) {
+                var typeEl = $(this).parents(".type:first");
+                var typeName = typeEl.attr("data-type");
+                var fieldTypeName = $(this).attr("data-type");
+                container.append(
+                    '<input type="hidden" name="' + propertyName(i) + '" value="' + typeName + ":" + fieldTypeName + '"/>'
+                );
+            });
+        };
+        $(".list").sortable({
+            connectWith: ".list", items: ".field", update: function (e, ui) {
+                setValue();
+            }
+        });
+    }
+</script>
