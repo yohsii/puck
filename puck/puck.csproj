@@ -213,6 +213,7 @@
     <Compile Include="areas\admin\adminAreaRegistration.cs" />
     <Compile Include="areas\admin\Controllers\AdminController.cs" />
     <Compile Include="areas\admin\Controllers\SettingsController.cs" />
+    <Compile Include="areas\admin\Controllers\TaskController.cs" />
     <Compile Include="areas\admin\Models\Person.cs" />
     <Compile Include="areas\admin\Models\TextSingle.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -479,6 +480,9 @@
     <Content Include="areas\admin\Views\Api\DomainMappingDialog.cshtml" />
     <Content Include="areas\admin\Views\Api\LocalisationDialog.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsTypeAllowedTypes.cshtml" />
+    <Content Include="areas\admin\Views\Task\Index.cshtml" />
+    <Content Include="areas\admin\Views\Task\Edit.cshtml" />
+    <Content Include="areas\admin\Views\Task\CreateTaskDialog.cshtml" />
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>

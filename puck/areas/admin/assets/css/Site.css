@@ -53,7 +53,7 @@ div.node-dropdown{position:absolute;}
 button.content_update{position:absolute;top:0px;right:0px;}
 .path_locale_dialog button{float:right;}
 .domain_mapping_dialog button{float:right;}
-
+.tasklist th{padding:10px;font-size:13px;}
 
 html {
     background-color: #e2e2e2;
@@ -82,7 +82,7 @@ a {
 
     a:link, a:visited,
     a:active, a:hover {
-        color: #333;
+        /*color: #333;*/
     }
 
     a:hover {

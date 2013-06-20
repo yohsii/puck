@@ -31,6 +31,7 @@ namespace puck.core.Constants
         public static string FieldGroups = "fieldgroups:";
         public static string DomainMapping = "domainmapping";
         public static string TypeAllowedTypes = "typeallowedtypes";
+        public static string Tasks = "task";
     }
     public static class DBKeys
     {

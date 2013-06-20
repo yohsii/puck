@@ -9,5 +9,5 @@ else if (ViewData.ModelMetadata.IsReadOnly)
 }
 else
 { 
-    <input type="datetime" name="@ViewData.ModelMetadata.PropertyName" value="@(Model.HasValue?Model.Value.ToString():"")" />
+    <input type="datetime-local" name="@ViewData.ModelMetadata.PropertyName" value="@(Model.HasValue?Model.Value.ToString():"")" />
 }

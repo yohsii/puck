@@ -1,0 +1,62 @@
+﻿@model List<puck.core.Base.BaseTask>
+
+@{
+    Layout = null;
+}
+
+<div class="tasklist">
+    <p>
+        <a class="btn-link create_task" href="@Url.Action("Create")">
+            <i class="icon-plus-sign"></i>
+            New Task
+        </a>
+        
+    </p>
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>
+                Name
+            </th>
+            <th>
+                Recurring
+            </th>
+            <th>
+                Interval (min)
+            </th>
+            <th>
+                Run On
+            </th>
+            <th>
+                Last Run
+            </th>
+            <th></th>
+        </tr>
+    
+    @foreach (var item in Model) {
+        <tr>
+            <td>@item.GetType().Name<br /><sub>@item.GetType().Namespace</sub></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recurring)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IntervalMinutes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RunOn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastRun)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) <br />
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class="delete"})                
+            </td>
+        </tr>
+    }
+    
+    </table>
+</div>

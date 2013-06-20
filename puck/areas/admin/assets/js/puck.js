@@ -37,6 +37,59 @@ var getLocalisationDialog = function (p, f) {
 var getDomainMappingDialog = function (p, f) {
     $.get("/admin/api/DomainMappingDialog?path=" + p, f);
 }
+var getTasks = function (f) {
+    $.get("/admin/task/index", f);
+}
+var getTaskCreateDialog = function (f) {
+    $.get("/admin/task/CreateTaskDialog", f);
+}
+var getTaskMarkup = function (f,type,id) {
+    var type = isNullEmpty(type) ? "" : ("type=" + type);
+    var id = isNullEmpty(id) ? "" : "id=" + id;
+    if (!isNullEmpty(type))
+        type+="&"
+    $.get("/admin/task/Edit?"+type+id, f);
+}
+var showTasks = function () {
+    getTasks(function (data) {
+        cright.html(data);
+        cright.find("a").click(function (e) {
+            e.preventDefault();
+            var el = $(this);
+            if (el.hasClass("create_task")) {
+                createTask();
+                return;
+            }
+            if (el.hasClass("delete"))
+                if (!confirm("sure?"))
+                    return;
+            $.get(el.attr("href"), function (d) {
+                cright.append(d);
+            });
+        });
+    });
+}
+var createTask = function () {
+    getTaskCreateDialog(function (data) {
+        overlay(data, 400, 150);
+        $(".overlayinner button").click(function (e) {
+            e.preventDefault();
+            var typeSelect = $(".overlayinner select[name=type]");
+            var type = typeSelect.val();
+            getTaskMarkup(function (data) {
+                overlayClose();
+                overlay(data, 500);
+                var form = $(".overlayinner form");
+                wireForm(form, function (data) {
+                    msg(true, "task updated");
+                    overlayClose();
+                }, function (data) {
+                    msg(false, data.message);
+                });
+            }, type);
+        });
+    });
+}
 var wireForm = function (form, success, fail) {
     $.validator.unobtrusive.parse(form);
     form.submit(function (e) {
@@ -62,7 +115,7 @@ var wireForm = function (form, success, fail) {
 }
 var newContent = function (path, type) {
     getCreateDialog(function (data) {
-        overlay(data, 400, 300, 100);
+        overlay(data, 400, 250, 100);
         $(".overlayinner button").click(function () {
             var type = $(".overlayinner select[name=type]").val();
             var variant = $(".overlayinner select[name=variant]").val();
@@ -254,6 +307,8 @@ var untranslated = function (variants) {
 //bindings
 //root new content button
 $(".create_default").show().click(function () { newContent("/"); });
+//task list
+$(".menutop .tasks").click(function (e) { e.preventDefault(); showTasks(); });
 //content tree expand
 cleft.find("ul.content").on("click", "li.node i.expand", function () {
     //get children content
@@ -418,6 +473,10 @@ getDrawContent("/");
 //extensions
 String.prototype.isEmpty = function () {
     return this.replace(/\s/g, "").length == 0;
+}
+var isNullEmpty = function (s) {
+    if (s == null || s == undefined) return true;
+    return s.replace(/\s/g, "").length == 0;
 }
 Array.prototype.contains=function(v){
     var contains=false;

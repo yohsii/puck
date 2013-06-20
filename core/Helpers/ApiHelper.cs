@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using puck.core.Models;
 using puck.core.Constants;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace puck.core.Helpers
 {
@@ -22,6 +23,15 @@ namespace puck.core.Helpers
         public static I_Puck_Repository repo { get {
             return DependencyResolver.Current.GetService<I_Puck_Repository>();
         } }
+        public static I_Task_Dispatcher tdispatcher{get{
+            return DependencyResolver.Current.GetService<I_Task_Dispatcher>();
+        }}
+        public static void UpdateTaskMappings()
+        {
+            var tasks = Tasks();
+            tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
+            tdispatcher.Tasks = tasks;
+        }
         public static void UpdateDomainMappings() {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
             var map = new Dictionary<string, string>();
@@ -154,12 +164,20 @@ namespace puck.core.Helpers
             if (path == null)
                 path = HttpContext.Current.Request.Url.AbsolutePath;
         }
-
-        public static List<I_Puck_Task> Tasks { get {
-            var result = new List<I_Puck_Task>();
-            //get tasks from db
+        public static List<Type> TaskTypes() {
+            return FindDerivedClasses(typeof(BaseTask),null,false).ToList();
+        }
+        public static List<BaseTask> Tasks(){
+            var result = new List<BaseTask>();
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks).ToList();
+            meta.ForEach(x => {
+                var type = Type.GetType(x.Key);
+                var instance = JsonConvert.DeserializeObject(x.Value,type) as BaseTask;
+                instance.ID = x.ID;
+                result.Add(instance);
+            });
             return result;
-        }}
+        }
         public static List<Type> AllowedTypes(string typeName) {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTypes && x.Key.Equals(typeName)).ToList();
             var result = meta.Select(x=>Type.GetType(x.Value)).ToList();

@@ -98,13 +98,14 @@
     <Compile Include="Abstract\I_Content_Indexer.cs" />
     <Compile Include="Abstract\I_Content_Searcher.cs" />
     <Compile Include="Abstract\I_Log.cs" />
-    <Compile Include="Abstract\I_Puck_Task.cs" />
     <Compile Include="Abstract\I_Task_Dispatcher.cs" />
     <Compile Include="Attributes\DateTransformer.cs" />
     <Compile Include="Abstract\I_Property_Transformer.cs" />
     <Compile Include="Attributes\DefaultGUIDTransformer.cs" />
     <Compile Include="Attributes\IndexSettings.cs" />
+    <Compile Include="Attributes\PuckTaskSettingsType.cs" />
     <Compile Include="Base\BaseModel.cs" />
+    <Compile Include="Base\BaseTask.cs" />
     <Compile Include="Bootstrap.cs" />
     <Compile Include="Concrete\Content_Indexer_Searcher.cs" />
     <Compile Include="Concrete\Dispatcher.cs" />
@@ -114,12 +115,9 @@
     </Compile>
     <Compile Include="Constants\PuckConstants.cs" />
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Entities\PuckCustomMeta.cs" />
-    <Compile Include="Entities\Model.cs" />
     <Compile Include="Concrete\PuckContext.cs" />
     <Compile Include="Entities\PuckMeta.cs" />
     <Compile Include="Entities\PuckRevision.cs" />
-    <Compile Include="Entities\PuckTask.cs" />
     <Compile Include="Events\PuckEventArgs.cs" />
     <Compile Include="Filters\Auth.cs" />
     <Compile Include="Helpers\ApiHelper.cs" />
@@ -129,6 +127,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\GroupField.cs" />
     <Compile Include="Models\LogIn.cs" />
+    <Compile Include="Models\PuckTask.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\Variant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

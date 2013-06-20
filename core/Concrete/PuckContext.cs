@@ -9,8 +9,6 @@ namespace puck.core.Entities
     public class PuckContext : DbContext
     {
         public DbSet<PuckMeta> PuckMeta { get; set; }
-        public DbSet<PuckCustomMeta> CustomMeta { get; set; }
-        public DbSet<PuckRevision> PuckRevision { get; set; }
-        public DbSet<PuckTask> PuckTask { get; set; }
+        public DbSet<PuckRevision> PuckRevision { get; set; }        
     }
 }

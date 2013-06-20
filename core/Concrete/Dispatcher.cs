@@ -8,24 +8,31 @@ using System.Threading;
 using puck.core.Helpers;
 using System.Threading.Tasks;
 using System.Web.Hosting;
+using puck.core.Base;
+using puck.core.Events;
 namespace puck.core.Concrete
 {
     public class Dispatcher:I_Task_Dispatcher
     {
         public Dispatcher() {
             HostingEnvironment.RegisterObject(this);
+            Start();
         }
         System.Timers.Timer tmr;
         private static object lck= new object();
-        int wait = 100;
+        int lock_wait = 100;
         int interval = 1000;
-        private static List<I_Puck_Task> taskList = new List<I_Puck_Task>();
-        public static List<I_Puck_Task> Tasks { get { return taskList; } }
-        private static CancellationTokenSource groupTokenSource;
-        public static CancellationTokenSource GroupTokenSource { get{return groupTokenSource;} }
+        public List<BaseTask> Tasks { get ;set;}
+        private CancellationTokenSource groupTokenSource;
+        public event EventHandler<DispatchEventArgs> AfterTask;
+        protected void OnAfterTask(object s, DispatchEventArgs args) {
+            if (AfterTask != null)
+                AfterTask(s,args);
+        }
+        public CancellationTokenSource GroupTokenSource { get{return groupTokenSource;} }
         public void Start() {
-            //set task list
-            taskList = ApiHelper.Tasks;
+            if (Tasks == null)
+                Tasks = new List<BaseTask>();
             //setup global cancel token for all tasks
             groupTokenSource = new CancellationTokenSource();
             //set up timer
@@ -35,14 +42,10 @@ namespace puck.core.Concrete
             tmr.Enabled = true;
             tmr.AutoReset = true;
         }
-        public void AddTasks(List<I_Puck_Task> tasks) {
-            //add extra tasks to list
-            taskList.AddRange(tasks);            
-        }
-        public void OnTaskEnd(I_Puck_Task t){
-            //remove one off events that have already occurred - signified by lastrun having a value and recurring flag being false
-            if (!t.Recurring && t.LastRun.HasValue) {
-                taskList.Remove(t);
+        public void OnTaskEnd(BaseTask t){
+            //remove one off events
+            if (!t.Recurring) {
+                Tasks.Remove(t);
             }
         }
         public void Dispatch(object sender, EventArgs e) { 
@@ -50,13 +53,13 @@ namespace puck.core.Concrete
             bool taken=false;
             try
             {
-                Monitor.TryEnter(lck, wait, ref taken);
+                Monitor.TryEnter(lck, lock_wait, ref taken);
                 if (!taken)
                     return;
 
-                foreach (var t in taskList) {
-                    if(ShouldRun(t))
-                        System.Threading.Tasks.Task.Factory.StartNew(()=>t.Run(groupTokenSource.Token),groupTokenSource.Token)
+                foreach (var t in Tasks) {
+                    if(ShouldRunNow(t))
+                        System.Threading.Tasks.Task.Factory.StartNew(() => { t.Run(groupTokenSource.Token); t.LastRun = DateTime.Now; }, groupTokenSource.Token)
                             .ContinueWith(x=>OnTaskEnd(t));
                 };
             }
@@ -65,23 +68,17 @@ namespace puck.core.Concrete
                     Monitor.Exit(lck);
             }
         }
-        public bool ShouldRun(I_Puck_Task t) {
-            if (!t.Recurring)
-            {
-                if (DateTime.Now >= t.RunOn && t.LastRun == null)
-                    return true;
-                else return false;
-            }
-            else{
-                if (t.LastRun.HasValue && DateTime.Now >= t.LastRun.Value.AddSeconds(t.IntervalSeconds))
-                    return true;
-                else return false;
-            }            
+        public bool ShouldRunNow(BaseTask t) {
+            return (t.Recurring && ((t.LastRun == null && DateTime.Now > t.RunOn) || (t.LastRun.HasValue && DateTime.Now > t.LastRun.Value.AddSeconds(t.IntervalMinutes))))
+                || (!t.Recurring && DateTime.Now > t.RunOn);                        
+        }
+        public bool CanRun(BaseTask t) {
+            return (t.Recurring || (!t.Recurring && t.RunOn>DateTime.Now));
         }
         public void Stop(bool immediate) {
             tmr.Stop();
             groupTokenSource.Cancel();
-            taskList.Clear();
+            Tasks.Clear();
             HostingEnvironment.UnregisterObject(this);
         }
 

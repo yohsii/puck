@@ -13,7 +13,9 @@ namespace puck.core
     {
         public static void Ini() {
             ApiHelper.UpdateDomainMappings();
-            ApiHelper.UpdatePathLocaleMappings();            
+            ApiHelper.UpdatePathLocaleMappings();
+            ApiHelper.UpdateTaskMappings();
+            
         }
     }
 }
