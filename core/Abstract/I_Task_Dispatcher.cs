@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Hosting;
 using puck.core.Base;
+using puck.core.Events;
 
 namespace puck.core.Abstract
 {
@@ -14,5 +15,6 @@ namespace puck.core.Abstract
         bool ShouldRunNow(BaseTask t);
         bool CanRun(BaseTask t);
         void Stop(bool immediate);
+        event EventHandler<DispatchEventArgs> TaskEnd;
     }
 }

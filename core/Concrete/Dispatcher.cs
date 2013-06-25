@@ -24,10 +24,10 @@ namespace puck.core.Concrete
         int interval = 1000;
         public List<BaseTask> Tasks { get ;set;}
         private CancellationTokenSource groupTokenSource;
-        public event EventHandler<DispatchEventArgs> AfterTask;
-        protected void OnAfterTask(object s, DispatchEventArgs args) {
-            if (AfterTask != null)
-                AfterTask(s,args);
+        public event EventHandler<DispatchEventArgs> TaskEnd;
+        protected void OnTaskEnd(object s, DispatchEventArgs args) {
+            if (TaskEnd != null)
+                TaskEnd(s,args);
         }
         public CancellationTokenSource GroupTokenSource { get{return groupTokenSource;} }
         public void Start() {
@@ -47,6 +47,7 @@ namespace puck.core.Concrete
             if (!t.Recurring) {
                 Tasks.Remove(t);
             }
+            OnTaskEnd(this, new DispatchEventArgs() {Task=t });
         }
         public void Dispatch(object sender, EventArgs e) { 
             //dispatch registered tasks, if dispatching already, return. * shouldn't happen if sensible interval set

@@ -7,10 +7,14 @@ using puck.core.Constants;
 using puck.core.Base;
 using Newtonsoft.Json;
 using puck.core.Abstract;
+using puck.core.Controllers;
+using System.Web.Caching;
+using System.Threading;
+using System.Globalization;
 
 namespace puck.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         I_Log log;
         public HomeController(I_Log log) {
@@ -21,6 +25,7 @@ namespace puck.Controllers
         {
             try
             {
+                var dmode = this.GetDisplayModeId();
                 if (string.IsNullOrEmpty(path))
                     path = string.Empty;
                 else
@@ -45,6 +50,9 @@ namespace puck.Controllers
                     }else
                         variant = PuckCache.SystemVariant;
                 }
+                //set thread culture for future api calls on this thread
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(variant);
+
                 var results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
                     string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
                     );
@@ -61,8 +69,24 @@ namespace puck.Controllers
                     //404
                     return View(PuckCache.Path404);
                 }
-
-                return View(result[FieldKeys.TemplatePath], model);
+                string templatePath = result[FieldKeys.TemplatePath];
+                if (!string.IsNullOrEmpty(dmode)) {
+                    string cacheKey = CacheKeys.PrefixTemplateExist + dmode + templatePath;
+                    if (HttpContext.Cache[cacheKey] != null)
+                    {
+                        templatePath = HttpContext.Cache[cacheKey] as string;
+                    }
+                    else
+                    {
+                        string dpath = templatePath.Insert(templatePath.LastIndexOf('.') + 1, dmode + ".");
+                        if (System.IO.File.Exists(Server.MapPath(dpath)))
+                        {
+                            templatePath = dpath;
+                        }
+                        HttpContext.Cache.Insert(cacheKey,templatePath,null,Cache.NoAbsoluteExpiration,TimeSpan.FromMinutes(10));
+                    }
+                }
+                return View(templatePath, model);
             }
             catch (Exception ex) {
                 log.Log(ex);

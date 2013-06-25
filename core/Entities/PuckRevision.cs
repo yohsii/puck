@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using puck.core.Base;
 
 namespace puck.core.Entities
 {
-    public class PuckRevision
+    public class PuckRevision:BaseModel
     {
         [Key]
-        public int ID { get; set; }
-        public string Variant { get; set; }
-        public Guid GUID { get; set; }
+        public int RevisionID { get; set; }
+        public bool Current { get; set; }
         public string Value { get; set; }
-        public string Type { get; set; }
     }
 }

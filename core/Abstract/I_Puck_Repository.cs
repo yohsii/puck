@@ -12,6 +12,13 @@ namespace puck.core.Abstract
         void DeleteMeta(string name, string key, string value);
         void DeleteMeta(PuckMeta meta);
         void AddMeta(PuckMeta meta);
+        IQueryable<PuckRevision> GetPuckRevision();
+        void DeleteRevision(PuckRevision meta);
+        void AddRevision(PuckRevision meta);
+        IQueryable<PuckRevision> CurrentRevisionsByPath(string path);
+        IQueryable<PuckRevision> CurrentRevisionDescendants(string path);
+        IQueryable<PuckRevision> CurrentRevisionVariants(Guid id, string variant);
+        PuckRevision CurrentRevision(Guid id, string variant);
         void SaveChanges();
         /*
         int CreateImage(Image image);

@@ -457,11 +457,14 @@ namespace puck.core.Concrete
             if (!string.IsNullOrEmpty(typeName))
             {
                 var type = Type.GetType(typeName);
+                /*
                 var model = Activator.CreateInstance(type);
                 var props = ObjectDumper.Write(model, int.MaxValue);
                 var analyzers = new List<KeyValuePair<string, Analyzer>>();
                 GetFieldSettings(props, null, analyzers);
                 var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer, analyzers);
+                */
+                var analyzer = PuckCache.AnalyzerForModel[type];
                 parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
             }
             else {
@@ -488,12 +491,14 @@ namespace puck.core.Concrete
             return result;            
         }
         public IList<T> Query<T>(string qstr) {
+            /*
             var model = Activator.CreateInstance(typeof(T));
             var props = ObjectDumper.Write(model, int.MaxValue);
             var analyzers = new List<KeyValuePair<string, Analyzer>>();
             GetFieldSettings(props, null, analyzers);
             var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
-
+            */
+            var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
             //var coll = TopScoreDocCollector.Create(int.MaxValue,true);

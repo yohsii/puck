@@ -42,3 +42,6 @@ C:\project\puck\core\bin\Debug\Newtonsoft.Json.xml
 C:\project\puck\core\obj\Debug\puck.core.dll
 C:\project\puck\core\obj\Debug\puck.core.pdb
 C:\project\puck\core\obj\Debug\core.csprojResolveAssemblyReference.cache
+C:\project\puck\core\bin\Debug\Ninject.dll
+C:\project\puck\core\bin\Debug\Ninject.pdb
+C:\project\puck\core\bin\Debug\Ninject.xml

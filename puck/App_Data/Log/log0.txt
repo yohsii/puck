@@ -13453,3 +13453,13 @@ message: Object reference not set to an instance of an object.
 stacktrace:    at puck.Controllers.HomeController.Index(String path) in C:\project\puck\puck\Controllers\HomeController.cs:line 31
 
 
+date: 24/06/2013 18:31:07
+message: Nodename exists at this path, choose another.
+stacktrace:    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 327
+
+
+date: 24/06/2013 18:32:47
+message: Nodename exists at this path, choose another.
+stacktrace:    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 327
+
+

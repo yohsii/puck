@@ -68,45 +68,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                if (string.IsNullOrEmpty(path))
-                    throw new Exception("path null or empty");
-
-                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
-
-                if (string.IsNullOrEmpty(domains))
-                {
-                    var m = meta.Where(x => x.Key == path).ToList();
-                    m.ForEach(x =>
-                    {
-                        repo.DeleteMeta(x);
-                    });
-                    if(m.Count>0)
-                        repo.SaveChanges();
-                }
-                else
-                {
-                    var d = domains.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    d.ForEach(dd =>
-                    {
-                        if (meta.Where(x => x.Value == dd && !x.Key.Equals(path)).Count() > 0)
-                            throw new Exception("domain already mapped to another node, unset first.");
-                    });
-                    var m = meta.Where(x => x.Key == path).ToList();
-                    m.ForEach(x =>
-                    {
-                        repo.DeleteMeta(x);
-                    });
-                    d.ForEach(x =>
-                    {
-                        var newMeta = new PuckMeta();
-                        newMeta.Name = DBNames.DomainMapping;
-                        newMeta.Key = path;
-                        newMeta.Value = x;
-                        repo.AddMeta(newMeta);
-                    });
-                    repo.SaveChanges();
-                }
-                ApiHelper.UpdateDomainMappings();
+                ApiHelper.SetDomain(path,domains);
                 success = true;
             }
             catch (Exception ex)
@@ -131,31 +93,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                if (string.IsNullOrEmpty(path))
-                    throw new Exception("path null or empty");
-                    
-                if (string.IsNullOrEmpty(variant))
-                {
-                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key == path).ToList();
-                    meta.ForEach(x => {
-                        repo.DeleteMeta(x);
-                    });
-                    if (meta.Count > 0)
-                        repo.SaveChanges();
-                }
-                else
-                {
-                    var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key == path).FirstOrDefault();
-                    if (meta != null)
-                        repo.DeleteMeta(meta);
-                    var newMeta = new PuckMeta();
-                    newMeta.Name = DBNames.PathToLocale;
-                    newMeta.Key = path;
-                    newMeta.Value = variant;
-                    repo.AddMeta(newMeta);
-                    repo.SaveChanges();
-                }
-                ApiHelper.UpdatePathLocaleMappings();
+                ApiHelper.SetLocalisation(path,variant);
                 success = true;
             }
             catch (Exception ex) {
@@ -164,23 +102,33 @@ namespace puck.core.Controllers
             return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
         }
         public JsonResult Content(string path = "/") {
+            var results = repo.CurrentRevisionsByPath(path)
+                .ToList()
+                .Select(x =>ApiHelper.RevisionToBaseModel(x)).ToList().GroupByPath().OrderBy(x=>x.Value.First().Value.SortOrder).ToDictionary(x=>x.Key,x=>x.Value);
             var qh = new QueryHelper<BaseModel>();
-            var results = qh.Directory(path).GetAll().GroupByPath();
-            return Json(results,JsonRequestBehavior.AllowGet);
+            var publishedContent = qh.Directory(path).GetAll().GroupByPath();
+            return Json(new { current=results,published=publishedContent }, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult Publish(string id)
+        public JsonResult Sort(string path,List<string> items) {
+            string message = "";
+            bool success = false;
+            try{
+                ApiHelper.Sort(path,items);
+                success = true;
+            }
+            catch (Exception ex) {
+                success = false;
+                message = ex.Message;
+            }
+            return Json(new {success=success,message=message },JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult Publish(string id,bool descendants=false)
         {
             var message = string.Empty;
             var success = false;
             try
             {
-                var qh = new QueryHelper<BaseModel>();
-                var toIndex = qh.ID(id).GetAll();
-                if (toIndex.Count == 0)
-                    throw new Exception("no results with ID " + id + " to publish");
-                toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
-                toIndex.ForEach(x=>x.Published=true);
-                indexer.Index(toIndex);
+                ApiHelper.Publish(id,descendants);
                 success = true;
             }
             catch (Exception ex)
@@ -196,13 +144,7 @@ namespace puck.core.Controllers
             var success = false;
             try
             {
-                var qh = new QueryHelper<BaseModel>();
-                var toIndex = qh.ID(id).GetAll();
-                if (toIndex.Count == 0)
-                    throw new Exception("no results with ID " + id + " to unpublish");
-                toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
-                toIndex.ForEach(x => x.Published = false);
-                indexer.Index(toIndex);
+                ApiHelper.UnPublish(id);
                 success = true;
             }
             catch (Exception ex)
@@ -212,29 +154,11 @@ namespace puck.core.Controllers
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult Delete(string id){
+        public JsonResult Delete(string id,string variant = null){
             var message = string.Empty;
             var success = false;
             try {
-                var qh = new QueryHelper<BaseModel>();
-                var toDelete=qh.And().ID(id).GetAll();
-                if (toDelete.Count == 0)
-                    throw new Exception("no results with ID "+id+" to delete");
-                toDelete.AddRange(toDelete.First().Descendants<BaseModel>());
-                toDelete.Delete();
-                //remove localisation setting
-                var lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.StartsWith(toDelete.First().Path)).ToList();
-                lmeta.ForEach(x => {
-                    repo.DeleteMeta(x);
-                });
-                //remove domain mappings
-                var dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.StartsWith(toDelete.First().Path)).ToList();
-                dmeta.ForEach(x => {
-                    repo.DeleteMeta(x);
-                });
-                ApiHelper.UpdateDomainMappings();
-                ApiHelper.UpdatePathLocaleMappings();
-                repo.SaveChanges();
+                ApiHelper.Delete(id,variant);
                 success = true;
             }
             catch (Exception ex) {
@@ -251,13 +175,8 @@ namespace puck.core.Controllers
             if (path.EndsWith("/"))
             {
                 var basemodel = (BaseModel)model;
-                basemodel.Created = DateTime.Now;
-                basemodel.Updated = DateTime.Now;
-                basemodel.Id = Guid.NewGuid();
-                basemodel.Revision = 0;
                 basemodel.Path = path;
                 basemodel.Variant = variant;
-                basemodel.SortOrder = -1;
                 basemodel.TypeChain =ApiHelper.TypeChain(modelType);
                 basemodel.Type = modelType.AssemblyQualifiedName;
                 return View(model);
@@ -268,22 +187,18 @@ namespace puck.core.Controllers
             if(string.IsNullOrEmpty(variant))
                 variant = Thread.CurrentThread.CurrentCulture.Name;
 
-            List<Dictionary<string, string>> results=null;
+            List<PuckRevision> results = null;
             //try get node by path with particular variant
-            results = searcher.Query(string.Concat(
-                "+",FieldKeys.Path, ":", path," +",FieldKeys.Variant,":",variant
-            ),type).ToList();
+            results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(path) && x.Variant.ToLower().Equals(variant) && x.Current).ToList();
+            
             //just get node by path
             if (results.Count == 0)
-                results = searcher.Query(string.Concat(
-                     "+", FieldKeys.Path, ":", path
-                ),type).ToList();
+                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(path) && x.Current).ToList();
             
             if (results.Count > 0) {
                 var result = results.FirstOrDefault();
-                model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue],Type.GetType(result[FieldKeys.PuckType]));
+                model = ApiHelper.RevisionToModel(result);
             }
-
             return View(model);
         }
 
@@ -295,78 +210,10 @@ namespace puck.core.Controllers
             string message = "";
             try { 
                 UpdateModelDynamic(model,fc.ToValueProvider());
-                //check name doesn't already exist and set sort number
                 var mod = model as BaseModel;
-                //get sibling nodes
+                //append nodename to path, which indicates first save
                 mod.Path =mod.Path.EndsWith("/")? p_path+mod.NodeName:mod.Path;
-                var nodesAtPath = mod.Siblings<BaseModel>().GroupByID();
-                //set sort order for new content
-                if(mod.SortOrder==-1)
-                    mod.SortOrder = nodesAtPath.Count;
-                //check node name is unique at path
-                if (nodesAtPath.Any(x => x.Value.Any(y => y.Value.NodeName.ToLower().Equals(mod.NodeName))))
-                    throw new Exception("Nodename exists at this path, choose another.");
-                //check this is an update or create
-                var qh = new QueryHelper<BaseModel>();
-                qh.And()
-                    .Field(x=>x.Id,mod.Id.ToString())
-                    .And()
-                    .Field(x=>x.Variant,mod.Variant);
-                var original = qh.Get();
-                
-                var toIndex = new List<BaseModel>();
-                toIndex.Add(mod);
-                bool nameChanged = false;
-                string originalPath = string.Empty;                
-                if (original != null)
-                {//this must be an edit
-                    if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower())) {
-                        nameChanged = true;
-                        originalPath = original.Path;
-                    }
-                }
-                var variants = mod.Variants<BaseModel>();
-                if (variants.Any(x => !x.NodeName.ToLower().Equals(mod.NodeName.ToLower())))
-                {//update path of variants
-                    nameChanged = true;
-                    if(string.IsNullOrEmpty(originalPath))
-                        originalPath =variants.First().Path;
-                    variants.ForEach(x => { x.NodeName = mod.NodeName; toIndex.Add(x); });
-                }
-                if (nameChanged) { 
-                    //update path of decendants
-                    var descendants = mod.Descendants<BaseModel>();
-                    var regex = new Regex(Regex.Escape(originalPath),RegexOptions.Compiled);
-                    descendants.ForEach(x =>
-                    {
-                        x.Path = regex.Replace(x.Path, mod.Path,1);
-                        toIndex.Add(x);
-                    });
-                }
-                indexer.Index(toIndex);
-                //if first time node saved and is root node - set locale for path
-                if (original == null && mod.Path.Count(x=>x=='/') == 1)
-                {
-                    var lMeta = new PuckMeta() { 
-                        Name = DBNames.PathToLocale,
-                        Key = mod.Path,
-                        Value = mod.Variant
-                    };
-                    repo.AddMeta(lMeta);
-                    //if first item - set wildcard domain mapping
-                    if (nodesAtPath.Count == 0) {
-                        var dMeta = new PuckMeta()
-                        {
-                            Name = DBNames.DomainMapping,
-                            Key = mod.Path,
-                            Value = "*"
-                        };
-                        repo.AddMeta(lMeta);                        
-                    }
-                    repo.SaveChanges();
-                    ApiHelper.UpdateDomainMappings();
-                    ApiHelper.UpdatePathLocaleMappings();
-                }
+                ApiHelper.SaveContent(mod);
                 success = true;
             }
             catch (Exception ex) {

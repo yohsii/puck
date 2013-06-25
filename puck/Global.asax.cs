@@ -10,6 +10,7 @@ using System.Data.Entity;
 using puck.core.Abstract;
 using puck.core.Constants;
 using puck.core.Concrete;
+using System.Web.WebPages;
 
 namespace puck
 {
@@ -28,6 +29,12 @@ namespace puck
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AuthConfig.RegisterAuth();
+
+            DisplayModeProvider.Instance.Modes.Insert(0, new DefaultDisplayMode("iPhone")
+            {
+                ContextCondition = (context => context.GetOverriddenUserAgent().IndexOf
+                    ("iPhone", StringComparison.OrdinalIgnoreCase) >= 0)
+            });
 
             //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
 

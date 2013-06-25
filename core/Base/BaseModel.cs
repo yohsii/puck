@@ -14,7 +14,11 @@ namespace puck.core.Base
     public class BaseModel
     {
         public BaseModel() {
-            
+            Created = DateTime.Now;
+            Updated = DateTime.Now;
+            Id = Guid.NewGuid();
+            Revision = 0;
+            SortOrder = -1;                
         }
         [UIHint("SettingsReadOnly")]
         [DefaultGUIDTransformer()]

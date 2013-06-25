@@ -10,6 +10,7 @@ using puck.core.Abstract;
 using Lucene.Net.Documents;
 using puck.core.Attributes;
 using System.Configuration;
+using Ninject;
 namespace puck.core.Constants
 {
     public static class FieldKeys
@@ -39,6 +40,9 @@ namespace puck.core.Constants
         public static string DefaultLanguage = "defaultlanguage";
         public static string EnableLocalePrefix = "enablelocaleprefix";
     }
+    public static class CacheKeys {
+        public static string PrefixTemplateExist = "fexist:";
+    }
     public static class FieldSettings
     {
         public static Dictionary<Type, Type> DefaultPropertyTransformers = new Dictionary<Type, Type>
@@ -53,15 +57,17 @@ namespace puck.core.Constants
     {
         public static string Path404 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck404Path"]) ? "~/views/Puck404.cshtml" : ConfigurationManager.AppSettings["Puck404Path"];
         public static string Path500 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck500Path"]) ? "~/views/Puck500.cshtml" : ConfigurationManager.AppSettings["Puck500Path"];
-        public static bool Debug = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckDebug"]) && ConfigurationManager.AppSettings["PuckDebug"].ToLower() == bool.TrueString.ToString() ? true : false;
+        public static bool Debug = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckDebug"]) && ConfigurationManager.AppSettings["PuckDebug"].ToLower() == bool.TrueString.ToLower();
+        public static bool UpdateTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static string SystemVariant = "en-GB";
         public static List<Variant> Variants { get; set; }
         public static Dictionary<string,string> DomainRoots {get;set;}
         public static Dictionary<string, string> PathToLocale { get; set; }
         public static Dictionary<string, Analyzer> TypeAnalyzers { get; set; }
-        public static HashSet<Analyzer> Analyzers { get; set; }
         public static Dictionary<string, string> Redirect { get; set; }
-        
+        public static IKernel NinjectKernel { get; set; }
+        public static List<Analyzer> Analyzers { get; set; }
+        public static Dictionary<Type, Analyzer> AnalyzerForModel { get; set; }
     }
 
     

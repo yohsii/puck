@@ -7,6 +7,21 @@ var cmsg = $(".rightarea .message");
 var getModels = function (path, f) {
     $.get("/admin/api/models?path=" + path, f);
 };
+var sortNodes = function (path, items, f) {
+    var items_str = "";
+    $(items).each(function (i) {
+        items_str += "items=" + this + "&";
+    });
+    items_str=items_str.substring(0, items_str.length - 1);
+    $.ajax({
+        url: "/admin/api/sort?path=" + path,
+        data: items_str,
+        traditional: true,
+        success: f,
+        type: "POST",
+        datatype: "json"
+    });
+}
 var getMarkup = function (path, type, variant, f) {
     $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&path=" + path, f);
 }
@@ -124,11 +139,15 @@ var newContent = function (path, type) {
         });
     }, type);
 }
+var publishedContent = [];
 var getDrawContent = function (path) {
     getContent(path, function (data) {
+        for (var k in data.published) {
+            publishedContent[k] = data.published[k];            
+        }
         console.log("content for path / %o", data);
         var nodeParent = dirOfPath(path);
-        draw(data, cleft.find(".node[data-children_path='" + nodeParent + "']"));
+        draw(data.current, cleft.find(".node[data-children_path='" + nodeParent + "']"));
     });
 }
 var displayMarkup = function (path, type, variant) {
@@ -237,6 +256,16 @@ var draw = function (data, el) {
     }
     el.find("ul").remove();
     el.append(toAppend);
+    toAppend.sortable({ update: function (event, ui) {
+        var parent = ui.item.parents("li[data-children_path]:first");
+        var sortPath = parent.attr("data-children_path");
+        var items = [];
+        parent.find("li.node").each(function () {
+            items.push($(this).attr("data-path"));
+        });
+        sortNodes(sortPath, items, function () { });
+    }
+    });
 }
 var overlayClose = function () {
     $(".overlayinner,.overlay").remove();
@@ -281,8 +310,8 @@ $('a.settings').click(function (e) {
     });
 });
 var dirOfPath = function (s) {
-    if (s == "/")
-        return "";
+    //if (s == "/")
+        //return s;
     if (s[s.length - 1] == "/")
         return s;
     return s.substring(0, s.lastIndexOf("/") + 1);
@@ -352,7 +381,7 @@ cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
     else
         dropdown.find("a[data-action='translate']").parents("li").hide();
     //filter publish/unpublish
-    if (node.attr("data-published") == true) {
+    if (publishedContent[node.attr("data-path")] !=undefined) {
         dropdown.find("a[data-action='publish']").parents("li").hide();
         dropdown.find("a[data-action='unpublish']").parents("li").show();
     } else {

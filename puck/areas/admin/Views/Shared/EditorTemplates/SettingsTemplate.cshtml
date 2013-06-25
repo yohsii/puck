@@ -5,7 +5,8 @@
     var views = ApiHelper.Views();
     <select name="@ViewData.ModelMetadata.PropertyName">
         @foreach(var f in views){
-            <option value="@ApiHelper.ToVirtualPath(f.FullName)">
+            var selected =string.IsNullOrEmpty(Model)?false: Model.ToLower().Equals(ApiHelper.ToVirtualPath(f.FullName).ToLower());
+            <option @(selected?"selected":"") value="@ApiHelper.ToVirtualPath(f.FullName)">
                 @f.Name
             </option>
         }

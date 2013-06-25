@@ -3,11 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.WebPages;
 
 namespace puck.core.Controllers
 {
     public class BaseController : Controller
     {
+        public string GetDisplayModeId()
+        {
+            System.Web.HttpContextBase context = this.HttpContext;
+            IList<IDisplayMode> modes = DisplayModeProvider.Instance.Modes;
+            int length = modes.Count;
+
+            for (var i = 0; i < length; i++)
+            {
+                if (modes[i].CanHandleContext(context))
+                {
+                    return modes[i].DisplayModeId;
+                }
+            }
+            return null;
+            //throw new Exception("No display mode could be found for the sent context.");
+        }
         internal static bool IsPropertyAllowed(string propertyName, string[] includeProperties, string[] excludeProperties)
         {
             // We allow a property to be bound if its both in the include list AND not in the exclude list.

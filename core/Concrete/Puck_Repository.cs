@@ -25,6 +25,41 @@ namespace puck.core.Concrete
             repo.PuckMeta.Remove(meta);
             //repo.SaveChanges();
         }
+        public void DeleteRevision(PuckRevision revision) {
+            repo.PuckRevision.Remove(revision);
+        }
+        public void AddRevision(PuckRevision revision) {
+            repo.PuckRevision.Add(revision);
+        }
+        public IQueryable<PuckRevision> GetPuckRevision() {
+            return repo.PuckRevision;
+        }
+        public IQueryable<PuckRevision> CurrentRevisionsByPath(string path) {
+            var pathCount = path.Count(x => x == '/');
+            var results = repo.PuckRevision
+                .Where(x => x.Path.ToLower().StartsWith(path.ToLower()) && x.Path.Length - x.Path.Replace("/", "").Length == pathCount && x.Current);
+            return results;
+        }
+        public IQueryable<PuckRevision> CurrentRevisionDescendants(string path)
+        {
+            if (!path.EndsWith("/"))
+                path = path + "/";
+            var results = repo.PuckRevision
+                .Where(x => x.Path.ToLower().StartsWith(path.ToLower()) && x.Current);
+            return results;
+        }
+        public IQueryable<PuckRevision> CurrentRevisionVariants(Guid id,string variant)
+        {
+            var results = repo.PuckRevision
+                .Where(x => x.Id==id && x.Current && !x.Variant.ToLower().Equals(variant.ToLower()));
+            return results;
+        }
+        public PuckRevision CurrentRevision(Guid id, string variant)
+        {
+            var results = repo.PuckRevision
+                .Where(x => x.Id == id && x.Current && x.Variant.ToLower().Equals(variant.ToLower()));
+            return results.FirstOrDefault();
+        }
 
         public void DeleteMeta(string name,string key,string value)
         {

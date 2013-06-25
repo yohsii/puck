@@ -13,6 +13,8 @@ namespace puck.App_Start
     using System.Reflection;
     using puck.core.Abstract;
     using puck.core.Concrete;
+    using puck.core.Constants;
+    using System.Web.Mvc;
     public static class NinjectWebCommon 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
@@ -57,11 +59,13 @@ namespace puck.App_Start
         {
             kernel.Load(Assembly.GetExecutingAssembly());
             kernel.Bind<I_Log>().To<Logger>().InSingletonScope();
-            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InRequestScope();
+            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().WhenInjectedInto<IController>().InRequestScope();
+            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InRequestScope().Named("R");
+            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InTransientScope().Named("T");
             kernel.Bind<I_Content_Indexer>().To<Content_Indexer_Searcher>().InSingletonScope();
             kernel.Bind<I_Content_Searcher>().ToMethod(x => x.Kernel.Get<I_Content_Indexer>() as I_Content_Searcher);
             kernel.Bind<I_Task_Dispatcher>().To<Dispatcher>().InSingletonScope();
-            
+            PuckCache.NinjectKernel = kernel;
         }        
     }
 }
