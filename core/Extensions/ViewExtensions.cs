@@ -5,10 +5,31 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Globalization;
-namespace puck.core.Helpers
+using puck.core.Constants;
+using puck.core.Abstract;
+using Ninject;
+using Newtonsoft.Json;
+namespace puck.core.Extensions
 {
     public static class ViewExtensions
     {
+        public static T PuckEditorSettings<T>(this WebViewPage page) {
+            var repo = PuckCache.NinjectKernel.Get<I_Puck_Repository>("T");
+            
+            var modelType = page.ViewData.Model.GetType();
+            var propertyType = ModelMetadata.FromStringExpression("", page.ViewData).PropertyName;
+            var key = string.Concat(modelType,":",propertyType);
+            var settingsType = typeof(T);
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
+            if (meta != null)
+            {
+                var data = JsonConvert.DeserializeObject(meta.Value, settingsType);
+                return (T)data;
+            }
+            else {
+                return default(T);
+            }            
+        }
         private static List<Type> NonIntNumbers = new List<Type> { typeof(Decimal),typeof(Single),typeof(Double),typeof(Decimal?),typeof(Single?),typeof(Double?)};
         public static MvcHtmlString Input(this HtmlHelper htmlHelper, string type) {
             var value = (htmlHelper.ViewData.ModelMetadata.Model??"").ToString();

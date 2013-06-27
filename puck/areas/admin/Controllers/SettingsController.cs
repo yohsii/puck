@@ -31,7 +31,8 @@ namespace puck.core.Controllers
 
             var defaultLanguage = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
             var enableLocalePrefix = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.EnableLocalePrefix).FirstOrDefault();
-            var redirects = meta.Where(x => x.Name == DBNames.Redirect).ToList().Select(x=>new KeyValuePair<string,string>(x.Key,x.Value)).ToDictionary(x=>x.Key,x=>x.Value);
+            var redirects = meta.Where(x => x.Name == DBNames.Redirect301 || x.Name==DBNames.Redirect302).ToList()
+                .Select(x=>new KeyValuePair<string,string>(x.Name+x.Key,x.Value)).ToDictionary(x=>x.Key,x=>x.Value);
             var pathToLocale = meta.Where(x => x.Name == DBNames.PathToLocale).ToList().Select(x => new KeyValuePair<string, string>(x.Key, x.Value)).ToDictionary(x=>x.Key,x=>x.Value);
             var languages = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList().Select(x=>x.Value).ToList();
             var fieldGroups = meta.Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
@@ -116,14 +117,14 @@ namespace puck.core.Controllers
                 }
                 //redirects
                 if (model.Redirect!=null&&model.Redirect.Count > 0) {
-                    var redirectMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect).ToList();
+                    var redirectMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect301 || x.Name==DBNames.Redirect302).ToList();
                     redirectMeta.ForEach(x => {
                         repo.DeleteMeta(x);
                     });
                     model.Redirect.ToList().ForEach(x => {
                         var newMeta = new PuckMeta();
-                        newMeta.Name = DBNames.Redirect;
-                        newMeta.Key = x.Key;
+                        newMeta.Name = x.Key.StartsWith(DBNames.Redirect301)?DBNames.Redirect301:DBNames.Redirect302;
+                        newMeta.Key = x.Key.Substring(newMeta.Name.Length);
                         newMeta.Value = x.Value;
                         repo.AddMeta(newMeta);
                     });

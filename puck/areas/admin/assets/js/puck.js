@@ -23,7 +23,7 @@ var sortNodes = function (path, items, f) {
     });
 }
 var getMarkup = function (path, type, variant, f) {
-    $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&path=" + path, f);
+    $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&path=" + path, f,"html");
 }
 var getCreateDialog = function (f, t) {
     $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");
@@ -140,16 +140,82 @@ var newContent = function (path, type) {
     }, type);
 }
 var publishedContent = [];
-var getDrawContent = function (path) {
+var haveChildren = [];
+var getDrawContent = function (path, el, sortable) {
+    if (el == undefined) {
+        var nodeParent = dirOfPath(path);
+        el = cleft.find(".node[data-children_path='" + nodeParent + "']");
+    }
     getContent(path, function (data) {
         for (var k in data.published) {
-            publishedContent[k] = data.published[k];            
+            publishedContent[k] = data.published[k];
         }
-        console.log("content for path / %o", data);
-        var nodeParent = dirOfPath(path);
-        draw(data.current, cleft.find(".node[data-children_path='" + nodeParent + "']"));
+        for (var i = 0; i < data.children.length; i++) {
+            haveChildren[data.children[i]] = true;
+        }
+        draw(data.current, el, sortable);
+        el.find(".node").each(function () {
+            var n = $(this);
+            if (!haveChildren[n.attr("data-path")])
+                n.find(".expand").css({visibility:"hidden"});
+        });
     });
 }
+var defaultLanguage = "en-gb";
+var draw = function (data, el, sortable) {
+    var str = "";
+    var toAppend = $("<ul/>");
+    for (var p in data) {//paths as keys
+        var variants = [];
+        for (var v in data[p]) {//variant as keys
+            variants.push(v);
+            var node;
+            if (!!data[p][defaultLanguage])
+                node = data[p][defaultLanguage];
+            else
+                node = data[p][v];
+            var elnode = $("<li/>").addClass("node");
+            if (!node.Published)
+                elnode.addClass("unpublished");
+            elnode.append($("<i class=\"icon-chevron-right expand\"></i>"))
+            elnode.append($("<i class=\"icon-cog menu\"></i>"))
+                    .append("<span class='nodename'>" + node.NodeName + "&nbsp;" + "</span>");
+            for (var i = 0; i < variants.length; i++) {
+                elnode.append(
+                            $("<span class=\"variant\"/>").attr("data-variant", variants[i]).html(variants[i])
+                        );
+            }
+            elnode.attr({
+                "data-type_chain": typeFromChain(node.TypeChain)
+                , "data-type": node.Type
+                , "data-id": node.Id
+                , "data-path": node.Path
+                , "data-nodename": node.NodeName
+                , "data-variants": variants.join(",")
+                , "data-parent_path": dirOfPath(node.Path)
+                , "data-children_path": node.Path + "/"
+                , "data-published": node.Published
+            });
+            toAppend.append(elnode);
+        }
+    }
+    el.find("ul").remove();
+    el.append(toAppend);
+    if (sortable) {
+        toAppend.sortable({
+            update: function (event, ui) {
+                var parent = ui.item.parents("li[data-children_path]:first");
+                var sortPath = parent.attr("data-children_path");
+                var items = [];
+                parent.find("li.node").each(function () {
+                    items.push($(this).attr("data-path"));
+                });
+                sortNodes(sortPath, items, function () { });
+            }
+        });
+    }
+}
+
 var displayMarkup = function (path, type, variant) {
     getMarkup(path, type, variant, function (data) {
         cright.html(data);
@@ -191,15 +257,15 @@ var displayMarkup = function (path, type, variant) {
                 groupContainer.append(fieldWrapper);
             });
             cright.find("div.fields>.fieldwrapper").appendTo(cright.find("[data-group='default']"));
-            
+
         });
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
-            getDrawContent(path);
+            getDrawContent(path,undefined,true);
         }, function (data) {
             msg(false, data.message);
         });
-
+        afterDom();
     });
 }
 var msg = function (success, str) {
@@ -216,57 +282,7 @@ var msg = function (success, str) {
 var getContent = function (path, f) {
     $.get("/admin/api/content?path=" + path, f);
 };
-var defaultLanguage = "en-gb";
-var drda;
-var draw = function (data, el) {
-    drda = data;
-    var str = "";
-    var toAppend = $("<ul/>");
-    for (var p in data) {//paths as keys
-        var variants = [];
-        for (var v in data[p]) {//variant as keys
-            variants.push(v);
-            var node;
-            if (!!data[p][defaultLanguage])
-                node = data[p][defaultLanguage];
-            else
-                node = data[p][v];
-            var elnode = $("<li/>").addClass("node");
-            elnode.append($("<i class=\"icon-chevron-right expand\"></i>"))
-            elnode.append($("<i class=\"icon-cog menu\"></i>"))
-                    .append(node.NodeName + "&nbsp;");
-            for (var i = 0; i < variants.length; i++) {
-                elnode.append(
-                            $("<span class=\"variant\"/>").attr("data-variant", variants[i]).html(variants[i])
-                        );
-            }
-            elnode.attr({
-                "data-type_chain": typeFromChain(node.TypeChain)
-                , "data-type": node.Type
-                , "data-id": node.Id
-                , "data-path": node.Path
-                , "data-nodename": node.NodeName
-                , "data-variants": variants.join(",")
-                , "data-parent_path": dirOfPath(node.Path)
-                , "data-children_path": node.Path + "/"
-                , "data-published": node.Published
-            });
-            toAppend.append(elnode);
-        }
-    }
-    el.find("ul").remove();
-    el.append(toAppend);
-    toAppend.sortable({ update: function (event, ui) {
-        var parent = ui.item.parents("li[data-children_path]:first");
-        var sortPath = parent.attr("data-children_path");
-        var items = [];
-        parent.find("li.node").each(function () {
-            items.push($(this).attr("data-path"));
-        });
-        sortNodes(sortPath, items, function () { });
-    }
-    });
-}
+
 var overlayClose = function () {
     $(".overlayinner,.overlay").remove();
 }
@@ -294,18 +310,28 @@ var overlay = function (el, width, height, top) {
     if (!top)
         inner.css({ top: ($(window).height() - height) / 2 + "px" });
 }
+var afterDomActions = [];
+var onAfterDom = function (f) {
+    afterDomActions.push(f);
+}
+var afterDom = function () {
+    while (afterDomActions.length) {
+        afterDomActions.pop()();
+    }
+}
 
 $('a.settings').click(function (e) {
     e.preventDefault();
     getSettings(function (data) {
         overlay(data, 960, 500);
-        $(".overlayinner .trigger").click();
+        afterDom();
+        //$(".overlayinner .trigger").click();
         //setup validation
         wireForm($('.overlayinner form'), function (data) {
             overlayClose();
         }, function (data) {
-            console.log("settings response %o",data);
-            msg(data.message);
+            console.log("settings response %o", data);
+            msg(false, d.message);
         });
     });
 });
@@ -339,7 +365,7 @@ $(".create_default").show().click(function () { newContent("/"); });
 //task list
 $(".menutop .tasks").click(function (e) { e.preventDefault(); showTasks(); });
 //content tree expand
-cleft.find("ul.content").on("click", "li.node i.expand", function () {
+$("body").on("click", "ul.content li.node i.expand", function () {
     //get children content
     var node = $(this).parent();
     console.log(node);
@@ -353,7 +379,7 @@ cleft.find("ul.content").on("click", "li.node i.expand", function () {
             descendants.hide();
         }
     } else {
-        getDrawContent(node.attr("data-children_path"));
+        getDrawContent(node.attr("data-children_path"),node,true);
         node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
     }
 });
@@ -485,7 +511,7 @@ var setDomainMapping = function (p) {
         });
     });
 }
-cleft.find("ul.content").on("click", "li.node span", function () {
+cleft.find("ul.content").on("click", "li.node span.variant", function () {
     //get markup
     var node = $(this).parents(".node");
     console.log(node);
@@ -497,7 +523,7 @@ var languages;
 getVariants(function (data) {
     languages = data;
 });
-getDrawContent("/");
+getDrawContent("/",undefined,true);
 
 //extensions
 String.prototype.isEmpty = function () {

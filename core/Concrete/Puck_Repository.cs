@@ -40,6 +40,12 @@ namespace puck.core.Concrete
                 .Where(x => x.Path.ToLower().StartsWith(path.ToLower()) && x.Path.Length - x.Path.Replace("/", "").Length == pathCount && x.Current);
             return results;
         }
+        public IQueryable<PuckRevision> CurrentRevisionChildren(string path)
+        {
+            if (!path.EndsWith("/"))
+                path = path + "/";
+            return CurrentRevisionsByPath(path);
+        }
         public IQueryable<PuckRevision> CurrentRevisionDescendants(string path)
         {
             if (!path.EndsWith("/"))

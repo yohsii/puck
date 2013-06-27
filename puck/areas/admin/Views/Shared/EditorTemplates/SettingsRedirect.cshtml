@@ -10,27 +10,35 @@
             <input class="to" />
         </li>
         <li>
+            <label>Type</label>
+            <select class="redirect_type">
+                <option value="@puck.core.Constants.DBNames.Redirect301">Permanent</option>
+                <option value="@puck.core.Constants.DBNames.Redirect302">Temporary</option>
+            </select>
+        </li>
+        <li>
             <button>add</button>
         </li>
     </ul>
     <div class="nodisplay entry">&nbsp;<span><i class="icon-remove-sign"></i></span></div>
     <div class="display clearboth">
         @foreach(var r in Model.ToList()){
-            <div data-from="@r.Key" data-to="@r.Value" class="entry">@r.Key - @r.Value<span><i class="icon-remove-sign"></i></span></div>
+            var rtype = r.Key.StartsWith(puck.core.Constants.DBNames.Redirect301) ? puck.core.Constants.DBNames.Redirect301 : puck.core.Constants.DBNames.Redirect302;
+            <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value<span><i class="icon-remove-sign"></i></span></div>
         }        
-    </div>
-    <span onclick="handleSettingsRedirectTemplate()" class="trigger clear"></span>
+    </div>    
 </div>
 <script>
-    var handleSettingsRedirectTemplate = function () {
+    onAfterDom(function () {
         var redirectsContainer = $(".redirects");
         var from = redirectsContainer.find("input.from");
         var to = redirectsContainer.find("input.to");
+        var rtype_sel = redirectsContainer.find("select.redirect_type");
         var display = redirectsContainer.find(".display");
         //ini
         display.find(".entry").each(function (i) {
             var el = $(this);
-            el.find("i").click(function () { 
+            el.find("i").click(function () {
                 el.remove();
             });
         });
@@ -46,8 +54,9 @@
             display.find(".entry").each(function (i) {
                 var key = $(this).attr('data-from');
                 var value = $(this).attr('data-to');
+                var rtype = $(this).attr("data-rtype");
                 redirectsContainer.append(
-                        "<input type='hidden' name='" + getPropNameKey(i) + "' value='" + key + "'/>"
+                        "<input type='hidden' name='" + getPropNameKey(i) + "' value='" +rtype+ key + "'/>"
                         + "<input type='hidden' name='" + getPropNameValue(i) + "' value='" + value + "'/>"
                     );
             });
@@ -57,13 +66,13 @@
             if (!from.val().isEmpty() && !to.val().isEmpty() && redirectsContainer.find(".display div[data-from='" + from.val() + "']").length == 0) {
                 var entry = redirectsContainer.find(".entry.nodisplay").clone();
                 entry.removeClass("nodisplay");
-                entry.attr("data-from", from.val()).attr("data-to", to.val());
+                entry.attr("data-from", from.val()).attr("data-to", to.val()).attr("data-rtype", rtype_sel.val());
                 entry.find("span").click(function () { entry.remove(); setValue(); });
                 entry.prepend(from.val() + " - " + to.val());
                 display.append(entry);
                 setValue();
             }
         });
-    };
+    });
     
 </script>

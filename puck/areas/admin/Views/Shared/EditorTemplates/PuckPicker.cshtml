@@ -1,0 +1,79 @@
+﻿@model List<puck.core.Models.PuckPicker>
+
+@{
+    //var settings = this.PuckEditorSettings<>();
+}
+<div class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName">
+    <ul class="content nomenu">
+        <li class="node" data-children_path="/"></li>
+    </ul>        
+    <div class="selected_content">
+        @if (Model != null)
+        {
+            foreach (var m in Model)
+            {
+
+            }
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    onAfterDom(function () {
+        var propname = "@ViewData.ModelMetadata.PropertyName";
+        var container = $(".puckpicker_" + propname);
+        var selected_container = container.find(".selected_content");
+        var selected_content = function () { return selected_container.find(".selected_node"); }
+        var startPath = "/";
+        var maxPick = 2;
+        var selectionType = "both"; //both|variant|node
+        var allowUnpublished = false;
+        var allowDuplicates = false;
+
+        var setValue = function () {
+            container.find(":hidden").remove();
+            selected_content().each(function (i) {
+                var node = $(this);
+                container.append(
+                    "<input type='hidden' name='" + propname + "[" + i + "].Id' value='" + node.attr("data-id") + "'/>"
+                    + "<input type='hidden' name='" + propname + "[" + i + "].Variant' value='" + node.attr("data-variant") + "'/>"
+                );
+            });
+        }
+        el = container.find(".node[data-children_path='/']");
+        getDrawContent(startPath, el);
+        selected_container.on("click", "i", function (e) {
+            $(this).parent().remove();
+            setValue();
+        });
+        container.on("click", ".node span", function (e) {
+            var clicked = $(this);
+            var node = clicked.parent();
+            var isVariantSelection = clicked.hasClass("variant");
+
+            if (selected_content().length >= maxPick) {
+                return false;
+            }
+            
+            if (node.attr("data-published") =="false" && !allowUnpublished) {
+                return false;
+            }
+
+            if (selected_content().filter("[data-id='" + node.attr("data-id") + "']").length > 0 && !allowDuplicates) {
+                return;
+            }
+
+            if (isVariantSelection && (selectionType == "variant" || selectionType == "both")) {
+                selected_container.append(
+                    "<div class='selected_node' data-variant='" + clicked.attr("data-variant") + "' data-id='" + node.attr("data-id") + "'><span>"
+                    + node.attr("data-nodename") + "</span>&nbsp; - &nbsp;<span>" + clicked.attr("data-variant") + "</span>&nbsp;<i class='icon-remove-sign'></i></div>"
+                );
+            } else if (!isVariantSelection && (selectionType == "node" || selectionType == "both")) {
+                selected_container.append(
+                    "<div class='selected_node' data-variant='null' data-id='" + node.attr("data-id") + "'><span>" + node.attr("data-nodename") + "</span>&nbsp;<i class='icon-remove-sign'></i></div>"
+                );
+            }
+            setValue();
+        });
+
+    });    
+</script>

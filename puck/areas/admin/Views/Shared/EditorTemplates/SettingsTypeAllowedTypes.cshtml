@@ -36,7 +36,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    var handleSettingsTypeAllowedTypes = function () {
+    onAfterDom(function () {
         var propertyName = function (i) {
             return "@ViewData.ModelMetadata.PropertyName";
         }
@@ -65,5 +65,5 @@
                 setValue();
             }
         });
-    }
+    });
 </script>

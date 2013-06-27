@@ -4,9 +4,6 @@
 <select name="@ViewData.ModelMetadata.PropertyName" class="languages" multiple>
     @foreach (var v in ApiHelper.AllVariants()) {
         var selected = Model.Contains(v.Key);
-        //string specName = "(none)";
-        //try { specName = CultureInfo.CreateSpecificCulture(ci.Name).Name; }
-        //catch { }
         <option @(selected?"selected":"") value="@v.Key.ToLower()">@v.FriendlyName</option>
     }
 </select>

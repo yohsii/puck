@@ -278,6 +278,13 @@ namespace puck.core.Helpers
             return this;
         }
 
+        public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, bool value)
+        {
+            string key = getName(exp.Body.ToString());
+            query += string.Concat(key, ":", value.ToString(), " ");
+            return this;
+        }
+
         public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, string value)
         {
             string key = getName(exp.Body.ToString());
@@ -309,6 +316,13 @@ namespace puck.core.Helpers
         {
             string key = FieldKeys.ID;
             query += string.Concat(key, ":", value, " ");
+            return this;
+        }
+
+        public QueryHelper<TModel> ID(Guid value)
+        {
+            string key = FieldKeys.ID;
+            query += string.Concat(key, ":", value.ToString(), " ");
             return this;
         }
 

@@ -2,7 +2,7 @@
 
 @{
     Layout=null;
-    
+    ViewBag.Level0Type = Model.GetType();
 }
 
 @using (Html.BeginForm("Edit", "Api", new {p_type=Model.GetType().AssemblyQualifiedName,p_path=Request["path"] }, FormMethod.Post))

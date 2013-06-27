@@ -36,18 +36,21 @@ namespace puck.core
                 var pfAnalyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30),analyzers);
                 PuckCache.AnalyzerForModel.Add(t,pfAnalyzer);
             }
-            if (PuckCache.UpdateTaskLastRun) {
+            if (PuckCache.UpdateTaskLastRun || PuckCache.UpdateRecurringTaskLastRun) {
                 var dispatcher = PuckCache.NinjectKernel.Get<I_Task_Dispatcher>();
                 if (dispatcher != null) { 
                     dispatcher.TaskEnd+= (object s,DispatchEventArgs e)=>{
-                        var repo = PuckCache.NinjectKernel.Get<I_Puck_Repository>("T");
-                        var taskMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == e.Task.ID).FirstOrDefault();
-                        if (taskMeta != null) {
-                            taskMeta.Value = JsonConvert.SerializeObject(e.Task);
-                            repo.SaveChanges();
-                            repo = null;
-                        }                        
-                        
+                        if ((PuckCache.UpdateTaskLastRun && !e.Task.Recurring) || (PuckCache.UpdateRecurringTaskLastRun && e.Task.Recurring))
+                        {
+                            var repo = PuckCache.NinjectKernel.Get<I_Puck_Repository>("T");
+                            var taskMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == e.Task.ID).FirstOrDefault();
+                            if (taskMeta != null)
+                            {
+                                taskMeta.Value = JsonConvert.SerializeObject(e.Task);
+                                repo.SaveChanges();
+                                repo = null;
+                            }
+                        }
                     };
                 }
             }

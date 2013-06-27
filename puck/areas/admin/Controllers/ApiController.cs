@@ -105,9 +105,14 @@ namespace puck.core.Controllers
             var results = repo.CurrentRevisionsByPath(path)
                 .ToList()
                 .Select(x =>ApiHelper.RevisionToBaseModel(x)).ToList().GroupByPath().OrderBy(x=>x.Value.First().Value.SortOrder).ToDictionary(x=>x.Key,x=>x.Value);
+            List<string> haveChildren = new List<string>();
+            foreach (var k in results) {
+                if (repo.CurrentRevisionChildren(k.Key).Count() > 0)
+                    haveChildren.Add(k.Key);                
+            }
             var qh = new QueryHelper<BaseModel>();
             var publishedContent = qh.Directory(path).GetAll().GroupByPath();
-            return Json(new { current=results,published=publishedContent }, JsonRequestBehavior.AllowGet);
+            return Json(new { current=results,published=publishedContent,children=haveChildren }, JsonRequestBehavior.AllowGet);
         }
         public JsonResult Sort(string path,List<string> items) {
             string message = "";

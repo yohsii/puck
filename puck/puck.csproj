@@ -483,6 +483,7 @@
     <Content Include="areas\admin\Views\Task\Index.cshtml" />
     <Content Include="areas\admin\Views\Task\Edit.cshtml" />
     <Content Include="areas\admin\Views\Task\CreateTaskDialog.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\PuckPicker.cshtml" />
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>

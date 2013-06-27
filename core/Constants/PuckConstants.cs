@@ -26,7 +26,9 @@ namespace puck.core.Constants
     }
     public static class DBNames
     {
-        public static string Redirect = "redirect";
+        public static string EditorSettings = "editorsettings";
+        public static string Redirect301 = "redirect301:";
+        public static string Redirect302 = "redirect302:";
         public static string PathToLocale = "pathtolocale";
         public static string Settings = "settings";
         public static string FieldGroups = "fieldgroups:";
@@ -59,6 +61,7 @@ namespace puck.core.Constants
         public static string Path500 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck500Path"]) ? "~/views/Puck500.cshtml" : ConfigurationManager.AppSettings["Puck500Path"];
         public static bool Debug = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckDebug"]) && ConfigurationManager.AppSettings["PuckDebug"].ToLower() == bool.TrueString.ToLower();
         public static bool UpdateTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"].ToLower() == bool.TrueString.ToLower();
+        public static bool UpdateRecurringTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static string SystemVariant = "en-GB";
         public static List<Variant> Variants { get; set; }
         public static Dictionary<string,string> DomainRoots {get;set;}

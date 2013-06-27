@@ -97,9 +97,9 @@
 }
 </div>
 <div class="clearboth"></div>
-<span onclick="handleSettingsFieldGroups()" class="trigger clear"></span>
+
 <script type="text/javascript">
-    var handleSettingsFieldGroups = function () {
+    onAfterDom(function () {
         var container = $(".fieldgroups");
         var propertyName = function (i) {
             return "@ViewData.ModelMetadata.PropertyName";
@@ -149,5 +149,5 @@
             setValue();
         });
         setValue();
-    }    
+    });    
 </script>

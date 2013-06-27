@@ -9,6 +9,7 @@ using puck.core.Base;
 using puck.core.Attributes;
 using Lucene.Net.Documents;
 using Lucene.Net.Analysis.Snowball;
+using puck.core.Models;
 namespace puck.areas.admin.ViewModels
 {
     public class Home:BaseModel
@@ -22,5 +23,8 @@ namespace puck.areas.admin.ViewModels
         public string Description { get; set; }
 
         public Person Person { get; set; }
+        
+        [UIHint("PuckPicker")]
+        public List<PuckPicker> Picker { get; set; }
     }
 }
