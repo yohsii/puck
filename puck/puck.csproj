@@ -512,6 +512,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Create.tt</DependentUpon>
     </Content>
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsRoles.cshtml" />
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>

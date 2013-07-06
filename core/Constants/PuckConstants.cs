@@ -13,6 +13,20 @@ using System.Configuration;
 using Ninject;
 namespace puck.core.Constants
 {
+    public static class PuckRoles
+    {
+        public static string Create = "create";
+        public static string Delete = "delete";
+        public static string Unpublish = "unpublish";
+        public static string Localisation = "localisation";
+        public static string Domain = "domain";
+        public static string Revert = "revert";
+        public static string Cache = "cache";
+        public static string Settings = "settings";
+        public static string Tasks = "tasks";
+        public static string Users = "users";
+        public static string Publish = "publish";
+    }
     public static class FieldKeys
     {
         public static string PuckDefaultField = "";
@@ -48,8 +62,7 @@ namespace puck.core.Constants
     }
     public static class CacheKeys {
         public static string PrefixTemplateExist = "fexist:";
-    }
-    public enum PuckRoles { }
+    }    
     public static class FieldSettings
     {
         public static Dictionary<Type, Type> DefaultPropertyTransformers = new Dictionary<Type, Type>
@@ -67,12 +80,18 @@ namespace puck.core.Constants
         public static bool Debug = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckDebug"]) && ConfigurationManager.AppSettings["PuckDebug"].ToLower() == bool.TrueString.ToLower();
         public static bool UpdateTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool UpdateRecurringTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"].ToLower() == bool.TrueString.ToLower();
+        public static bool TaskCatchUp = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckTaskCatchUp"]) && ConfigurationManager.AppSettings["PuckTaskCatchUp"].ToLower() == bool.TrueString.ToLower();
+        public static int RedirectOuputCacheMinutes = 10;
+        public static int DefaultOutputCacheMinutes = -1;
         public static string SystemVariant = "en-GB";
         public static List<Variant> Variants { get; set; }
         public static Dictionary<string,string> DomainRoots {get;set;}
         public static Dictionary<string, string> PathToLocale { get; set; }
         public static Dictionary<string, Analyzer> TypeAnalyzers { get; set; }
-        public static Dictionary<string, string> Redirect { get; set; }
+        public static Dictionary<string, string> Redirect301 { get; set; }
+        public static Dictionary<string, string> Redirect302 { get; set; }
+        public static Dictionary<string, int> TypeOutputCache { get; set; }
+        public static HashSet<string> OutputCacheExclusion { get; set; }
         public static IKernel NinjectKernel { get; set; }
         public static I_Puck_Repository PuckRepo { get { return NinjectKernel.Get<I_Puck_Repository>("T"); } }
         public static List<Analyzer> Analyzers { get; set; }

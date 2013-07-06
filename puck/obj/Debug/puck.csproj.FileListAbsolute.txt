@@ -22,6 +22,7 @@ C:\project\puck\puck\bin\Lucene.Net.Contrib.SpellChecker.dll
 C:\project\puck\puck\bin\Lucene.Net.dll
 C:\project\puck\puck\bin\Microsoft.Web.Infrastructure.dll
 C:\project\puck\puck\bin\Microsoft.Web.WebPages.OAuth.dll
+C:\project\puck\puck\bin\MiniProfiler.dll
 C:\project\puck\puck\bin\Newtonsoft.Json.dll
 C:\project\puck\puck\bin\Ninject.dll
 C:\project\puck\puck\bin\Ninject.Web.Common.dll
@@ -44,6 +45,7 @@ C:\project\puck\puck\bin\WebGrease.dll
 C:\project\puck\puck\bin\WebMatrix.Data.dll
 C:\project\puck\puck\bin\WebMatrix.WebData.dll
 C:\project\puck\puck\bin\puck.core.pdb
+C:\project\puck\puck\bin\EntityFramework.xml
 C:\project\puck\puck\bin\Lucene.Net.pdb
 C:\project\puck\puck\bin\Lucene.Net.xml
 C:\project\puck\puck\bin\Lucene.Net.Contrib.Analyzers.pdb
@@ -66,6 +68,8 @@ C:\project\puck\puck\bin\Lucene.Net.Contrib.Snowball.pdb
 C:\project\puck\puck\bin\Lucene.Net.Contrib.Snowball.xml
 C:\project\puck\puck\bin\Lucene.Net.Contrib.SpellChecker.pdb
 C:\project\puck\puck\bin\Lucene.Net.Contrib.SpellChecker.xml
+C:\project\puck\puck\bin\MiniProfiler.pdb
+C:\project\puck\puck\bin\MiniProfiler.xml
 C:\project\puck\puck\bin\Newtonsoft.Json.xml
 C:\project\puck\puck\bin\Ninject.pdb
 C:\project\puck\puck\bin\Ninject.xml
@@ -73,7 +77,6 @@ C:\project\puck\puck\bin\Ninject.Web.Common.pdb
 C:\project\puck\puck\bin\Ninject.Web.Common.xml
 C:\project\puck\puck\bin\Ninject.Web.Mvc.pdb
 C:\project\puck\puck\bin\Ninject.Web.Mvc.xml
-C:\project\puck\puck\bin\EntityFramework.xml
 C:\project\puck\puck\bin\System.Net.Http.xml
 C:\project\puck\puck\bin\System.Net.Http.Formatting.xml
 C:\project\puck\puck\bin\System.Net.Http.WebRequest.xml
@@ -97,6 +100,3 @@ C:\project\puck\puck\bin\DotNetOpenAuth.OpenId.RelyingParty.xml
 C:\project\puck\puck\obj\Debug\puck.csprojResolveAssemblyReference.cache
 C:\project\puck\puck\obj\Debug\puck.ui.dll
 C:\project\puck\puck\obj\Debug\puck.ui.pdb
-C:\project\puck\puck\bin\MiniProfiler.dll
-C:\project\puck\puck\bin\MiniProfiler.pdb
-C:\project\puck\puck\bin\MiniProfiler.xml

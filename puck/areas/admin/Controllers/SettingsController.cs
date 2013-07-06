@@ -262,9 +262,12 @@ namespace puck.core.Controllers
                 }
                 //delete unset
                 repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy && !cacheTypes.Contains(x.Key)).ToList().ForEach(x => repo.DeleteMeta(x));
-
-                ApiHelper.UpdateDefaultLanguage();
+                
                 repo.SaveChanges();
+                ApiHelper.UpdateDefaultLanguage();
+                ApiHelper.UpdateCacheMappings();
+                ApiHelper.UpdateRedirectMappings();
+                
                 success = true;                
             }
             catch(Exception ex)

@@ -2,6 +2,7 @@
 @{
     Layout = null;    
 }
+<div class="user_list">
 <p>
     <button class="create btn-link">Create</button>
 </p>
@@ -31,16 +32,17 @@
             @Html.DisplayFor(modelItem => item.User.Email)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Roles)
+            @string.Join(", ",item.Roles)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.StartNode)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.User.UserName }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.User.UserName})
+            @Html.ActionLink("Edit", "Edit", new { }, new {@class="edit",data_username=item.User.UserName}) <br />
+            @Html.ActionLink("Delete", "Delete", new { },new {@class="delete",data_username=item.User.UserName})
         </td>
     </tr>
 }
 
 </table>
+</div>

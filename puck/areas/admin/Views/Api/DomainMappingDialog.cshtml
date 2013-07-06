@@ -4,11 +4,13 @@
 }
 @using (Html.BeginForm("DomainMapping", "Api", new {path=Request["path"] }, FormMethod.Post))
 {
-    <div class="domain_mapping_dialog">
-        <div class="grid_3 push_1">
+    <div class="domain_mapping_dialog settings">
+        <div class="grid_4 push_1">
             <b>@Request["path"]</b><br />
-            <label for="variant">Domain Mappings (csv)</label>
-            <input name="domains" value="@Model" type="text" />
+            <div class="fieldwrapper">
+                <label for="variant">Domain Mappings (csv)</label>
+                <input name="domains" value="@Model" type="text" />
+            </div>
             <br />
             <button class="btn-link">save</button>
         </div>

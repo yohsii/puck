@@ -12,10 +12,12 @@
     else
     {
     <div class="grid_5 push_1">
+        <span>Current - @Model.Current.Updated</span>
         @Html.DisplayFor(x => x.Current)
     </div>
 
     <div class="grid_5 push_1">
+        <span>Revision @Model.Revision.Revision - @Model.Revision.Updated</span>
         @Html.DisplayFor(x => x.Revision)
     </div>
     <p>

@@ -10,18 +10,21 @@ using System.Threading.Tasks;
 using System.Web.Hosting;
 using puck.core.Base;
 using puck.core.Events;
+using puck.core.Constants;
 namespace puck.core.Concrete
 {
     public class Dispatcher:I_Task_Dispatcher
     {
         public Dispatcher() {
             HostingEnvironment.RegisterObject(this);
+            CatchUp=PuckCache.TaskCatchUp;
             Start();
         }
         System.Timers.Timer tmr;
         private static object lck= new object();
         int lock_wait = 100;
         int interval = 1000;
+        public bool CatchUp {get;set;}
         public List<BaseTask> Tasks { get ;set;}
         private CancellationTokenSource groupTokenSource;
         public event EventHandler<DispatchEventArgs> TaskEnd;
@@ -74,7 +77,7 @@ namespace puck.core.Concrete
                 || (!t.Recurring && DateTime.Now > t.RunOn);                        
         }
         public bool CanRun(BaseTask t) {
-            return (t.Recurring || (!t.Recurring && t.RunOn>DateTime.Now));
+            return (t.Recurring || (!t.Recurring && (t.RunOn>DateTime.Now ||(CatchUp&&t.LastRun==null))));
         }
         public void Stop(bool immediate) {
             tmr.Stop();

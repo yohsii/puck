@@ -13596,3 +13596,54 @@ stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[
    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 222
 
 
+date: 06/07/2013 14:20:44
+message: username not available
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 97
+
+
+date: 06/07/2013 14:23:13
+message: username not available
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 97
+
+
+date: 06/07/2013 14:29:15
+message: username not available
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 97
+
+
+date: 06/07/2013 15:29:55
+message: The password retrieval answer provided is invalid. Please check the value and try again.
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 101
+
+
+date: 06/07/2013 15:30:51
+message: The password retrieval answer provided is invalid. Please check the value and try again.
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 101
+
+
+date: 06/07/2013 15:41:20
+message: The password retrieval answer provided is invalid. Please check the value and try again.
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 101
+
+
+date: 06/07/2013 15:43:43
+message: The password retrieval answer provided is invalid. Please check the value and try again.
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 101
+
+
+date: 06/07/2013 15:44:51
+message: The role 'cache' was not found.
+stacktrace:    at System.Web.Security.SqlRoleProvider.RemoveUsersFromRolesCore(SqlConnection conn, String usernames, String roleNames)
+   at System.Web.Security.SqlRoleProvider.RemoveUsersFromRoles(String[] usernames, String[] roleNames)
+   at System.Web.Security.Roles.RemoveUserFromRoles(String username, String[] roleNames)
+   at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 112
+
+
+date: 06/07/2013 16:20:57
+message: The role 'cache' was not found.
+stacktrace:    at System.Web.Security.SqlRoleProvider.AddUsersToRolesCore(SqlConnection conn, String usernames, String roleNames)
+   at System.Web.Security.SqlRoleProvider.AddUsersToRoles(String[] usernames, String[] roleNames)
+   at System.Web.Security.Roles.AddUserToRoles(String username, String[] roleNames)
+   at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 120
+
+

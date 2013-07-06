@@ -129,6 +129,7 @@
     <Compile Include="Entities\PuckRevision.cs" />
     <Compile Include="Events\PuckEventArgs.cs" />
     <Compile Include="Filters\Auth.cs" />
+    <Compile Include="Filters\CacheValidate.cs" />
     <Compile Include="Filters\SetPuckCulture.cs" />
     <Compile Include="Globalisation\PuckLabels.Designer.cs">
       <AutoGen>True</AutoGen>

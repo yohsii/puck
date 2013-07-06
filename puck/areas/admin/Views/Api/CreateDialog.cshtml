@@ -8,9 +8,9 @@
     }    
     var variants = ApiHelper.Variants();    
 }
-<div class="create_dialog">
+<div class="create_dialog settings">
     <div class="grid_3 push_1">
-        <div class="typecontainer">
+        <div class="typecontainer fieldwrapper">
             <label>Type</label>
             <select name="type">
                 @foreach(var t in types){
@@ -18,7 +18,7 @@
                 }
             </select>
         </div>
-        <div class="variantcontainer">
+        <div class="variantcontainer fieldwrapper">
             <label>Variant</label>
             <select name="variant">
                 @foreach(var v in variants){

@@ -344,6 +344,44 @@ namespace puck.core.Helpers
             tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
             tdispatcher.Tasks = tasks;
         }
+        public static void UpdateRedirectMappings() {
+            var meta301 = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect301).ToList();
+            var meta302 = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect302).ToList();
+            var map301 = new Dictionary<string, string>();
+            meta301.ForEach(x =>
+            {
+                map301.Add(x.Key, x.Value);
+            });
+            var map302 = new Dictionary<string, string>();
+            meta302.ForEach(x =>
+            {
+                map302.Add(x.Key, x.Value);
+            });
+            PuckCache.Redirect301= map301;
+            PuckCache.Redirect302 = map302;
+        }
+        public static void UpdateCacheMappings() {
+            var metaTypeCache = repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy).ToList();
+            var metaCacheExclude = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude).ToList();
+            
+            var mapTypeCache = new Dictionary<string, int>();
+            metaTypeCache.ForEach(x =>
+            {
+                int cacheMinutes;
+                if (int.TryParse(x.Value, out cacheMinutes))
+                {
+                    mapTypeCache.Add(x.Key, cacheMinutes);
+                }
+            });
+
+            var mapCacheExclude = new HashSet<string>();
+            metaCacheExclude.ForEach(x =>
+            {
+                mapCacheExclude.Add(x.Key);
+            });
+            PuckCache.TypeOutputCache = mapTypeCache;
+            PuckCache.OutputCacheExclusion = mapCacheExclude;
+        }
         public static void UpdateDomainMappings() {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
             var map = new Dictionary<string, string>();

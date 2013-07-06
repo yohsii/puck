@@ -46,6 +46,10 @@ var setDelete = function (id, f, variant) {
         path += "&variant="+variant;
     $.get(path, f);
 }
+var setDeleteRevision = function (id, f) {
+    var path = "/admin/api/deleterevision?id=" + id;
+    $.get(path, f);
+}
 var setRevert = function (id, f) {
     var path = "/admin/api/revert?id=" + id;
     $.get(path, f);
@@ -75,11 +79,51 @@ var getTaskMarkup = function (f,type,id) {
 var getUsers = function (f) {
     $.get("/admin/admin/index", f, "html");
 }
+var getUserMarkup = function (u,f) {
+    $.get("/admin/admin/edit?username="+u, f, "html");
+}
+var setDeleteUser = function (u,f) {
+    $.get("/admin/admin/delete?username=" + u, f);
+}
+var showUserMarkup = function (username) {
+    getUserMarkup(username, function (d) {
+        overlay(d, 580);
+        wireForm($(".overlayinner form"), function (data) {
+            showUsers();
+            overlayClose();
+        }, function (data) {
+            $(".overlayinner .msg").show().html(data.message);            
+        });
+    });
+}
 var showUsers = function () {
     getUsers(function (data) {
         if (!canChangeMainContent())
             return;
         cright.html(data);
+        cright.find(".create").click(function (e) {
+            e.preventDefault();
+            showUserMarkup("");
+        });
+        cright.find(".edit").click(function (e) {
+            e.preventDefault();
+            var name = $(this).attr("data-username");
+            showUserMarkup(name);
+        });
+        cright.find(".delete").click(function (e) {
+            e.preventDefault();
+            if (!confirm("sure?"))
+                return;
+            var el = $(this);
+            var name = el.attr("data-username");
+            setDeleteUser(name, function (d) {
+                if (d.success) {
+                    el.parents("tr:first").remove();
+                } else {
+                    msg(false, d.message);
+                }
+            });
+        });
     });
 }
 var revisionsFor = function (vcsv, id) {
@@ -117,21 +161,25 @@ var showRevisions = function (variant, id) {
         });
         cright.find(".delete").click(function (e) {
             e.preventDefault();
+            if (!confirm("sure?"))
+                return;
             var el = $(this);
-            setDelete(el.attr("data-id"), function (data) {
-                if (data.success === true) {
-                    el.find("tr:first").remove();
+            setDeleteRevision(el.attr("data-id"), function (data) {
+                if (data.success == true) {
+                    el.parents("tr:first").remove();
                 } else {
                     msg(false, data.message);
                 }
-            }, el.attr("data-variant"));
+            });
         });
         cright.find(".revert").click(function (e) {
             e.preventDefault();
+            if (!confirm("sure?"))
+                return;
             var el = $(this);
             setRevert(el.attr("data-id"), function (data) {
                 if (data.success) {
-                    //load markup for node
+                    displayMarkup(data.path, data.type, data.variant);
                 } else {
                     msg(false, data.message);
                 }
@@ -145,10 +193,18 @@ var getCompareMarkup = function (id,f) {
 var showCompare = function (id) {
     getCompareMarkup(id, function (data) {
         overlay(data);
-        $(".overlayinner").find("a.revert").click(function (e) {
+        $(".overlayinner").find("button.revert").click(function (e) {
             e.preventDefault();
+            if (!confirm("sure?"))
+                return;
             var el = $(this);
-            setRevert(el.attr("data-id"));
+            setRevert(el.attr("data-id"), function (d) {
+                if (d.success) {
+                    displayMarkup(d.path, d.type, d.variant);
+                } else {
+                    msg(false, d.message);
+                }
+            });
         });
         var displays = $(".overlayinner .grid_5>.fields");
         var first = displays.first();
@@ -471,6 +527,7 @@ var overlayClose = function () {
 var overlay = function (el, width, height, top) {
     var ov = $("<div class='overlay'/>");
     var inner = $("<div class='overlayinner container_12'/>");
+    var clear = $("<div class='clearboth'/>");
     if (!!width)
         inner.css({ width: width + "px" });
     if (!!height)
@@ -481,7 +538,7 @@ var overlay = function (el, width, height, top) {
     close.click(function () {
         overlayClose();
     });
-    inner.append(close).append(el);
+    inner.append(close).append(clear).append(el);
     cright.append(ov).append(inner);
     height = height || $(window).height() * 0.8;
     if (height)
@@ -706,7 +763,7 @@ var setLocalisation = function (p) {
 }
 var setDomainMapping = function (p) {
     getDomainMappingDialog(p, function (data) {
-        overlay(data,400,250);
+        overlay(data,500,250);
         var form = $('.overlayinner form');
         wireForm(form, function (data) {
             overlayClose();

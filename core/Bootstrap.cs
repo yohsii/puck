@@ -20,6 +20,8 @@ namespace puck.core
             ApiHelper.UpdatePathLocaleMappings();
             ApiHelper.UpdateTaskMappings();
             ApiHelper.UpdateDefaultLanguage();
+            ApiHelper.UpdateCacheMappings();
+            ApiHelper.UpdateRedirectMappings();
             PuckCache.Analyzers = new List<Lucene.Net.Analysis.Analyzer>();
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             foreach(var t in ApiHelper.Models(true)){
@@ -55,6 +57,7 @@ namespace puck.core
                     };
                 }
             }
+
         }
     }
 }

@@ -76,6 +76,7 @@ namespace puck.core.Controllers
             }
             catch (Exception ex)
             {
+                log.Log(ex);
                 message = ex.Message;
             }
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
@@ -100,6 +101,7 @@ namespace puck.core.Controllers
                 success = true;
             }
             catch (Exception ex) {
+                log.Log(ex);
                 message = ex.Message;
             }
             return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
@@ -125,6 +127,7 @@ namespace puck.core.Controllers
                 success = true;
             }
             catch (Exception ex) {
+                log.Log(ex);
                 success = false;
                 message = ex.Message;
             }
@@ -141,6 +144,7 @@ namespace puck.core.Controllers
             }
             catch (Exception ex)
             {
+                log.Log(ex);
                 success = false;
                 message = ex.Message;
             }
@@ -157,6 +161,7 @@ namespace puck.core.Controllers
             }
             catch (Exception ex)
             {
+                log.Log(ex);
                 success = false;
                 message = ex.Message;
             }
@@ -170,6 +175,7 @@ namespace puck.core.Controllers
                 success = true;
             }
             catch (Exception ex) {
+                log.Log(ex);
                 success = false;
                 message = ex.Message;
             }
@@ -301,6 +307,9 @@ namespace puck.core.Controllers
         {
             bool success = false;
             string message = "";
+            string path = "";
+            string type = "";
+            string variant = "";
             try
             {
                 var rnode = repo.GetPuckRevision().Where(x=>x.RevisionID==id).FirstOrDefault();
@@ -310,11 +319,19 @@ namespace puck.core.Controllers
                 current.ForEach(x => x.Current = false);
                 rnode.Current = true;
                 repo.SaveChanges();
+                if (current.Any()) {
+                    //don't want to revert change node/path because it has consequences for children/descendants
+                    rnode.NodeName = current.FirstOrDefault().NodeName;
+                    rnode.Path = current.FirstOrDefault().Path;
+                }
                 if (current.Any(x => x.Published))
                 {
                     var model = JsonConvert.DeserializeObject(rnode.Value, Type.GetType(rnode.Type)) as BaseModel;
                     indexer.Index(new List<BaseModel>(){model});
-                }                
+                }
+                path = rnode.Path;
+                type = rnode.Type;
+                variant = rnode.Variant;
                 success = true;
             }
             catch (Exception ex)
@@ -322,6 +339,25 @@ namespace puck.core.Controllers
                 success = false;
                 message = ex.Message;
                 log.Log(ex);
+            }
+            return Json(new { success = success, message = message,path=path,type=type,variant=variant }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult DeleteRevision(int id)
+        {
+            var message = string.Empty;
+            var success = false;
+            try
+            {
+                repo.GetPuckRevision().Where(x => x.RevisionID == id).ToList().ForEach(x=>repo.DeleteRevision(x));
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                success = false;
+                message = ex.Message;
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }

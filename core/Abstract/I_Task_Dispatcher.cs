@@ -14,6 +14,7 @@ namespace puck.core.Abstract
         void Start();
         bool ShouldRunNow(BaseTask t);
         bool CanRun(BaseTask t);
+        bool CatchUp{get;set;}
         void Stop(bool immediate);
         event EventHandler<DispatchEventArgs> TaskEnd;
     }

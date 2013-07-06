@@ -15,6 +15,7 @@ C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Snowball.dll
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SpellChecker.dll
 C:\project\puck\core\bin\Debug\Lucene.Net.dll
 C:\project\puck\core\bin\Debug\Newtonsoft.Json.dll
+C:\project\puck\core\bin\Debug\Ninject.dll
 C:\project\puck\core\bin\Debug\EntityFramework.xml
 C:\project\puck\core\bin\Debug\Lucene.Net.pdb
 C:\project\puck\core\bin\Debug\Lucene.Net.xml
@@ -39,11 +40,10 @@ C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Snowball.xml
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SpellChecker.pdb
 C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.SpellChecker.xml
 C:\project\puck\core\bin\Debug\Newtonsoft.Json.xml
-C:\project\puck\core\obj\Debug\puck.core.dll
-C:\project\puck\core\obj\Debug\puck.core.pdb
-C:\project\puck\core\obj\Debug\core.csprojResolveAssemblyReference.cache
-C:\project\puck\core\bin\Debug\Ninject.dll
 C:\project\puck\core\bin\Debug\Ninject.pdb
 C:\project\puck\core\bin\Debug\Ninject.xml
+C:\project\puck\core\obj\Debug\core.csprojResolveAssemblyReference.cache
 C:\project\puck\core\obj\Debug\puck.core.Globalisation.PuckLabels.resources
 C:\project\puck\core\obj\Debug\core.csproj.GenerateResource.Cache
+C:\project\puck\core\obj\Debug\puck.core.dll
+C:\project\puck\core\obj\Debug\puck.core.pdb
