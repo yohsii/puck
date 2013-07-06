@@ -24,7 +24,7 @@
     <div class="display clearboth">
         @foreach(var r in Model.ToList()){
             var rtype = r.Key.StartsWith(puck.core.Constants.DBNames.Redirect301) ? puck.core.Constants.DBNames.Redirect301 : puck.core.Constants.DBNames.Redirect302;
-            <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value<span><i class="icon-remove-sign"></i></span></div>
+            <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value - @rtype.Substring(8,3)&nbsp;<span><i class="icon-remove-sign"></i></span></div>
         }        
     </div>    
 </div>
@@ -68,7 +68,7 @@
                 entry.removeClass("nodisplay");
                 entry.attr("data-from", from.val()).attr("data-to", to.val()).attr("data-rtype", rtype_sel.val());
                 entry.find("span").click(function () { entry.remove(); setValue(); });
-                entry.prepend(from.val() + " - " + to.val());
+                entry.prepend(from.val() + " - " + to.val() + " - "+rtype_sel.val().substr(8,3));
                 display.append(entry);
                 setValue();
             }

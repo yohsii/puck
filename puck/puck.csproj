@@ -13,9 +13,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>puck</RootNamespace>
     <AssemblyName>puck.ui</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
+    <TargetFrameworkProfile />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,6 +30,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,8 +39,13 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -72,6 +83,9 @@
       <HintPath>..\packages\Lucene.Net.Contrib.3.0.3\lib\net40\Lucene.Net.Contrib.SpellChecker.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="MiniProfiler">
+      <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -86,17 +100,15 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -104,9 +116,6 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -155,6 +164,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>
     </Reference>
@@ -215,6 +225,7 @@
     <Compile Include="areas\admin\Controllers\SettingsController.cs" />
     <Compile Include="areas\admin\Controllers\TaskController.cs" />
     <Compile Include="areas\admin\Models\Person.cs" />
+    <Compile Include="areas\admin\Models\PuckImage.cs" />
     <Compile Include="areas\admin\Models\TextSingle.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="areas\admin\Controllers\ApiController.cs" />
@@ -226,6 +237,7 @@
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transformers\PuckImageTransformer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\puck.mdf" />
@@ -298,6 +310,7 @@
     <Content Include="areas\admin\assets\js\jquery-1.7.1.min.js" />
     <Content Include="areas\admin\assets\js\jquery-ui-1.8.20.js" />
     <Content Include="areas\admin\assets\js\jquery-ui-1.8.20.min.js" />
+    <Content Include="areas\admin\assets\js\jquery-ui-timepicker-addon.js" />
     <Content Include="areas\admin\assets\js\jquery.unobtrusive-ajax.js" />
     <Content Include="areas\admin\assets\js\jquery.unobtrusive-ajax.min.js" />
     <Content Include="areas\admin\assets\js\jquery.validate-vsdoc.js" />
@@ -484,26 +497,66 @@
     <Content Include="areas\admin\Views\Task\Edit.cshtml" />
     <Content Include="areas\admin\Views\Task\CreateTaskDialog.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\PuckPicker.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsEditorParameters.cshtml" />
+    <Content Include="areas\admin\Views\Settings\EditParameters.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\PuckPickerSelectionType.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\HttpPostedFileBase.cshtml" />
+    <Content Include="areas\admin\Views\Api\Revisions.cshtml" />
+    <Content Include="areas\admin\Views\Api\Compare.cshtml" />
+    <Content Include="areas\admin\Views\Shared\DisplayTemplates\Object.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsCachePolicy.cshtml" />
+    <Content Include="areas\admin\Views\Admin\Index.cshtml" />
+    <Content Include="areas\admin\Views\Admin\Edit.cshtml" />
+    <Content Include="CodeTemplates\AddView\CSHTML\Create.cshtml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Create.tt</DependentUpon>
+    </Content>
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>
     </None>
+    <Content Include="CodeTemplates\AddView\CSHTML\Delete.cshtml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Delete.tt</DependentUpon>
+    </Content>
     <None Include="CodeTemplates\AddView\CSHTML\Delete.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Delete.cshtml</LastGenOutput>
     </None>
+    <Content Include="CodeTemplates\AddView\CSHTML\Details.cshtml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Details.tt</DependentUpon>
+    </Content>
     <None Include="CodeTemplates\AddView\CSHTML\Details.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Details.cshtml</LastGenOutput>
     </None>
+    <Content Include="CodeTemplates\AddView\CSHTML\Edit.cshtml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Edit.tt</DependentUpon>
+    </Content>
     <None Include="CodeTemplates\AddView\CSHTML\Edit.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Edit.cshtml</LastGenOutput>
     </None>
+    <Content Include="CodeTemplates\AddView\CSHTML\Empty.cshtml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Empty.tt</DependentUpon>
+    </Content>
     <None Include="CodeTemplates\AddView\CSHTML\Empty.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Empty.cshtml</LastGenOutput>
     </None>
+    <Content Include="CodeTemplates\AddView\CSHTML\List.cshtml">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>List.tt</DependentUpon>
+    </Content>
     <None Include="CodeTemplates\AddView\CSHTML\List.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>List.cshtml</LastGenOutput>

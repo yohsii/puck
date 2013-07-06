@@ -17,8 +17,11 @@ using System.Threading;
 using puck.core.Base;
 using System.Text.RegularExpressions;
 using puck.core.Entities;
+using puck.core.Filters;
+using puck.core.Models;
 namespace puck.core.Controllers
 {
+    [SetPuckCulture]
     public class ApiController : BaseController
     {
         I_Content_Indexer indexer;
@@ -215,10 +218,13 @@ namespace puck.core.Controllers
             string message = "";
             try { 
                 UpdateModelDynamic(model,fc.ToValueProvider());
+                ObjectDumper.BindImages(model, int.MaxValue);
+                ObjectDumper.Transform(model, int.MaxValue);
+                var npi = ObjectDumper.Write(model, int.MaxValue);
                 var mod = model as BaseModel;
                 //append nodename to path, which indicates first save
                 mod.Path =mod.Path.EndsWith("/")? p_path+mod.NodeName:mod.Path;
-                ApiHelper.SaveContent(mod);
+                //ApiHelper.SaveContent(mod);
                 success = true;
             }
             catch (Exception ex) {
@@ -228,7 +234,97 @@ namespace puck.core.Controllers
             }
             return Json(new {success=success,message=message },JsonRequestBehavior.AllowGet);
         }
+        public JsonResult CacheInfo(string path) {
+            bool success = false;
+            string message = "";
+            var model = false;
+            try
+            {
+                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().Equals(path.ToLower())).FirstOrDefault();
+                if (meta == null || !bool.TryParse(meta.Value, out model))
+                    model = false;
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+                log.Log(ex);
+            }
+            return Json(new {result=model, success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult CacheInfo(string path,bool value)
+        {
+            bool success = false;
+            string message = "";
+            try
+            {
+                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().Equals(path.ToLower())).FirstOrDefault();
+                if (meta != null)
+                    meta.Value = value.ToString();
+                else {
+                    meta = new PuckMeta() { Name=DBNames.CacheExclude,Key=path,Value=value.ToString()};
+                    repo.AddMeta(meta);
+                }
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+                log.Log(ex);
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Revisions(Guid id,string variant) {
+            var model = repo.GetPuckRevision().Where(x => x.Id == id && variant.ToLower().Equals(variant.ToLower())).OrderByDescending(x=>x.Revision).ToList();
+            return View(model);
+        }
 
-        
+        public ActionResult Compare(int id)
+        {
+            var compareTo = repo.GetPuckRevision().Where(x => x.RevisionID == id).FirstOrDefault();
+            var current = repo.GetPuckRevision().Where(x => x.Id == compareTo.Id && x.Variant.ToLower().Equals(compareTo.Variant.ToLower()) && x.Current).FirstOrDefault();
+            var model = new RevisionCompare{Current=null,Revision=null,RevisionID=-1};
+            if (compareTo != null && current != null)
+            {
+                var mCompareTo = JsonConvert.DeserializeObject(compareTo.Value, Type.GetType(compareTo.Type)) as BaseModel;
+                var mCurrent = JsonConvert.DeserializeObject(current.Value, Type.GetType(current.Type)) as BaseModel;
+                model = new RevisionCompare { Current = mCurrent, Revision = mCompareTo,RevisionID=compareTo.RevisionID};
+            }
+            return View(model);
+        }
+
+        public ActionResult Revert(int id)
+        {
+            bool success = false;
+            string message = "";
+            try
+            {
+                var rnode = repo.GetPuckRevision().Where(x=>x.RevisionID==id).FirstOrDefault();
+                if (rnode == null)
+                    throw new Exception(string.Format("revision does not exist: id:{0}", id));
+                var current = repo.GetPuckRevision().Where(x => x.Id == rnode.Id && x.Variant.ToLower().Equals(rnode.Variant.ToLower()) && x.Current).ToList();
+                current.ForEach(x => x.Current = false);
+                rnode.Current = true;
+                repo.SaveChanges();
+                if (current.Any(x => x.Published))
+                {
+                    var model = JsonConvert.DeserializeObject(rnode.Value, Type.GetType(rnode.Type)) as BaseModel;
+                    indexer.Index(new List<BaseModel>(){model});
+                }                
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+                log.Log(ex);
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

@@ -7,7 +7,7 @@
     <div class="path_locale_dialog">
         <div class="grid_3 push_1">
             <b>@Request["path"]</b><br />
-            <label for="variant">Default Path Culture @Html.Raw(string.IsNullOrEmpty(Model)?"":" - <span class=\"tred\">"+Model+"</span>")</label>
+            <label for="variant">Default Culture @Html.Raw(string.IsNullOrEmpty(Model)?"":" - <span class=\"tred\">"+Model+"</span>")</label>
             <select name="variant">
             <option value="">None</option>
             @foreach (var v in ApiHelper.Variants()) {

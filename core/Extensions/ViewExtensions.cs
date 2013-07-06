@@ -15,16 +15,18 @@ namespace puck.core.Extensions
     {
         public static T PuckEditorSettings<T>(this WebViewPage page) {
             var repo = PuckCache.NinjectKernel.Get<I_Puck_Repository>("T");
-            
-            var modelType = page.ViewData.Model.GetType();
-            var propertyType = ModelMetadata.FromStringExpression("", page.ViewData).PropertyName;
-            var key = string.Concat(modelType,":",propertyType);
+
+            var modelType = page.ViewBag.Level0Type as Type;
+            if (modelType == null)
+                return default(T);
             var settingsType = typeof(T);
+            var propertyName = ModelMetadata.FromStringExpression("", page.ViewData).PropertyName;
+            var key = string.Concat(settingsType.AssemblyQualifiedName,":",modelType.AssemblyQualifiedName,":",propertyName);
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
             if (meta != null)
             {
                 var data = JsonConvert.DeserializeObject(meta.Value, settingsType);
-                return (T)data;
+                return data==null?default(T):(T)data;
             }
             else {
                 return default(T);

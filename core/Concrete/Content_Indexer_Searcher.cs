@@ -208,7 +208,7 @@ namespace puck.core.Concrete
                     var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
                     SetWriter(false);
                     //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
-                    Writer.Flush(true, true, true);
+                    //Writer.Flush(true, true, true);
                     var cancelled = new List<BaseModel>();
                     foreach (var m in models)
                     {
@@ -222,7 +222,7 @@ namespace puck.core.Concrete
                         //delete doc
                         string removeQuery = "+"+FieldKeys.ID+":"+m.Id.ToString()+ " +"+FieldKeys.Variant+":"+m.Variant;
                         var q = parser.Parse(removeQuery);
-                        Writer.DeleteDocuments(q);                    
+                        //Writer.DeleteDocuments(q);                    
                         
                         Document doc = new Document();
                         //get fields to index
@@ -232,10 +232,10 @@ namespace puck.core.Concrete
                         string jsonDoc = JsonConvert.SerializeObject(m);
                         //doc in json form for deserialization later
                         doc.Add(new Field(FieldKeys.PuckValue, jsonDoc, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                        Writer.AddDocument(doc);
+                        //Writer.AddDocument(doc);
                     }
-                    Writer.Flush(true,true,true);
-                    Writer.Commit();
+                    //Writer.Flush(true,true,true);
+                    //Writer.Commit();
                     models
                         .Where(x=>!cancelled.Contains(x))
                         .ToList()
@@ -243,7 +243,8 @@ namespace puck.core.Concrete
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(ex);
+                    throw;
+                    //logger.Log(ex);
                 }
                 finally
                 {
@@ -291,7 +292,8 @@ namespace puck.core.Concrete
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(ex);
+                    throw;
+                    //logger.Log(ex);
                 }
                 finally
                 {
@@ -345,7 +347,8 @@ namespace puck.core.Concrete
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(ex);
+                    throw;
+                    //logger.Log(ex);
                 }
                 finally {
                     CloseWriter();
@@ -368,7 +371,8 @@ namespace puck.core.Concrete
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(ex);
+                    throw;
+                    //logger.Log(ex);
                 }
                 finally
                 {
@@ -388,7 +392,8 @@ namespace puck.core.Concrete
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(ex);
+                    throw;
+                    //logger.Log(ex);
                 }
                 finally
                 {
@@ -414,7 +419,8 @@ namespace puck.core.Concrete
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(ex);
+                    throw;
+                    //logger.Log(ex);
                 }
                 finally {
                     CloseWriter();
@@ -442,7 +448,8 @@ namespace puck.core.Concrete
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(ex);
+                    throw;
+                    //logger.Log(ex);
                 }
             }
             oldSearcher = null;

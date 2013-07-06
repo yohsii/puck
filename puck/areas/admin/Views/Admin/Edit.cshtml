@@ -1,0 +1,21 @@
+﻿@model puck.core.Models.PuckUser
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Puck User</legend>
+
+        @Html.LabelFor(x=>x.UserName)
+        @Html.DisplayFor(x=>x.UserName)
+
+        @Html.LabelFor(x=>x.Email)
+        @Html.TextBoxFor(x=>x.Email)
+
+        
+    </fieldset>
+}
+
+<div>
+    <button class="btn-link update">update</button>
+</div>

@@ -97,3 +97,6 @@ C:\project\puck\puck\bin\DotNetOpenAuth.OpenId.RelyingParty.xml
 C:\project\puck\puck\obj\Debug\puck.csprojResolveAssemblyReference.cache
 C:\project\puck\puck\obj\Debug\puck.ui.dll
 C:\project\puck\puck\obj\Debug\puck.ui.pdb
+C:\project\puck\puck\bin\MiniProfiler.dll
+C:\project\puck\puck\bin\MiniProfiler.pdb
+C:\project\puck\puck\bin\MiniProfiler.xml

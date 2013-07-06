@@ -20,7 +20,7 @@ namespace puck.Controllers
         public HomeController(I_Log log) {
             this.log = log;
         }
-
+        [OutputCache(Duration=10,VaryByParam="*")]
         public ActionResult Index(string path)
         {
             try

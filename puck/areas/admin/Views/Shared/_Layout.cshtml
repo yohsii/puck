@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using StackExchange.Profiling;
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -16,9 +17,10 @@
         <script type="text/javascript" src="~/areas/admin/assets/js/jquery.validate.unobtrusive.js"></script>
         <script type="text/javascript" src="~/areas/admin/assets/js/bootstrap.js"></script>
         <script type="text/javascript" src="~/areas/admin/assets/js/modernizr-2.5.3.js"></script>
-        
+        <script type="text/javascript" src="~/areas/admin/assets/js/jquery-ui-timepicker-addon.js"></script>        
     </head>
     <body>
-        @RenderBody()        
+        @RenderBody()
+        @MiniProfiler.RenderIncludes(position: RenderPosition.Left, showTrivial: false, showTimeWithChildren: false, startHidden: false)
     </body>
 </html>

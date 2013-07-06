@@ -3,22 +3,37 @@
 @{
     Layout = null;
 }
-<div class="container_12 settings">
-    <div class="grid_10 push_1">
+<div class="settings">
+    <div class="grid_9 alpha omega">
         @using (Html.BeginForm()) {
             @Html.ValidationSummary(true)
-    
             <fieldset>
                 <legend>Settings</legend>
-    
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.EnableLocalePrefix)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.EnableLocalePrefix)
-                    @Html.ValidationMessageFor(model => model.EnableLocalePrefix)
+                <div class="submit top">
+                    <button class="btn-link">update</button>
                 </div>
                 
+                <div class="fieldwrapper">
+                    <div class="editor-label">
+                    @Html.LabelFor(model => model.DefaultLanguage)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.DefaultLanguage)
+                        @Html.ValidationMessageFor(model => model.DefaultLanguage)
+                    </div>
+                </div>
+                
+                <div class="fieldwrapper">
+                    <div class="editor-label">
+                    @Html.LabelFor(model => model.EnableLocalePrefix)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.EnableLocalePrefix)
+                        @Html.ValidationMessageFor(model => model.EnableLocalePrefix)
+                    </div>
+                </div>
+                
+                <div class="fieldwrapper">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Languages)
                 </div>
@@ -26,7 +41,9 @@
                     @Html.EditorFor(model => model.Languages)
                     @Html.ValidationMessageFor(model => model.Languages)
                 </div>
+                </div>
 
+                <div class="fieldwrapper">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Redirect)
                 </div>
@@ -34,7 +51,9 @@
                     @Html.EditorFor(model => model.Redirect)
                     @Html.ValidationMessageFor(model => model.Redirect)
                 </div>
-                
+                </div>
+
+                <div class="fieldwrapper">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.TypeGroupField)
                 </div>
@@ -42,7 +61,9 @@
                     @Html.EditorFor(model => model.TypeGroupField)
                     @Html.ValidationMessageFor(model => model.TypeGroupField)
                 </div>
+                </div>
 
+                <div class="fieldwrapper">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.TypeAllowedTypes)
                 </div>
@@ -50,8 +71,29 @@
                     @Html.EditorFor(model => model.TypeAllowedTypes)
                     @Html.ValidationMessageFor(model => model.TypeAllowedTypes)
                 </div>
+                </div>
 
-                <div class="submit">
+                <div class="fieldwrapper">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EditorParameters)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EditorParameters)
+                    @Html.ValidationMessageFor(model => model.EditorParameters)
+                </div>
+                </div>
+
+                <div class="fieldwrapper">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.CachePolicy)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.CachePolicy)
+                    @Html.ValidationMessageFor(model => model.CachePolicy)
+                </div>
+                </div>
+
+                <div class="submit bottom">
                     <button class="btn-link">update</button>
                 </div>
             </fieldset>

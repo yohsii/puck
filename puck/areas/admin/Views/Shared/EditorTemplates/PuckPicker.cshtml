@@ -1,7 +1,11 @@
 ﻿@model List<puck.core.Models.PuckPicker>
 
 @{
-    //var settings = this.PuckEditorSettings<>();
+    var settings = this.PuckEditorSettings<puck.core.Models.PuckPickerEditorSettings>()
+        ??new puck.core.Models.PuckPickerEditorSettings(){
+            AllowDuplicates=false,AllowUnpublished=true,MaxPick=2,SelectionType="both",StartPath=null
+        };
+    var startPath = "/";
 }
 <div class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName">
     <ul class="content nomenu">
@@ -12,7 +16,29 @@
         {
             foreach (var m in Model)
             {
-
+                if (!string.IsNullOrEmpty(m.Variant))
+                {
+                    var nodes =puck.core.Constants.PuckCache.PuckRepo.GetPuckRevision().Where(x=>x.Id==m.Id).ToList(); 
+                    var node = nodes.Where(x => x.Variant.ToLower().Equals(puck.core.Constants.PuckCache.SystemVariant.ToLower())).FirstOrDefault()??nodes.FirstOrDefault();
+                    if (node != null)
+                    {
+                    <div class="selected_node" data-variant="@m.Variant" data-id="@m.Id">
+                        <span>@node.NodeName</span>&nbsp; - &nbsp;<span>@m.Variant</span>&nbsp;
+                        <i class='icon-remove-sign'></i>
+                    </div>
+                    }
+                }
+                else
+                {
+                    var node = puck.core.Constants.PuckCache.PuckRepo.GetPuckRevision().Where(x=>x.Id==m.Id && x.Variant.ToLower().Equals(m.Variant.ToLower())).FirstOrDefault();
+                    if (node != null)
+                    {
+                    <div class="selected_node" data-variant="null" data-id="@m.Id">
+                        <span>@node.NodeName</span>&nbsp;
+                        <i class='icon-remove-sign'></i>
+                    </div>
+                    }
+                }
             }
         }
     </div>
@@ -23,11 +49,11 @@
         var container = $(".puckpicker_" + propname);
         var selected_container = container.find(".selected_content");
         var selected_content = function () { return selected_container.find(".selected_node"); }
-        var startPath = "/";
-        var maxPick = 2;
-        var selectionType = "both"; //both|variant|node
-        var allowUnpublished = false;
-        var allowDuplicates = false;
+        var startPath = "@startPath";
+        var maxPick = "@settings.MaxPick";
+        var selectionType = "@settings.SelectionType"; //both|variant|node
+        var allowUnpublished = "@settings.AllowUnpublished";
+        var allowDuplicates = "@settings.AllowDuplicates";
 
         var setValue = function () {
             container.find(":hidden").remove();
@@ -39,6 +65,7 @@
                 );
             });
         }
+        setValue();
         el = container.find(".node[data-children_path='/']");
         getDrawContent(startPath, el);
         selected_container.on("click", "i", function (e) {
@@ -53,8 +80,8 @@
             if (selected_content().length >= maxPick) {
                 return false;
             }
-            
-            if (node.attr("data-published") =="false" && !allowUnpublished) {
+
+            if (node.attr("data-published") == "false" && !allowUnpublished) {
                 return false;
             }
 
@@ -74,6 +101,5 @@
             }
             setValue();
         });
-
     });    
 </script>

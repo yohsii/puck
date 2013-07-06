@@ -333,6 +333,11 @@ namespace puck.core.Helpers
             UpdateDomainMappings();
             UpdatePathLocaleMappings();
         }
+        public static void UpdateDefaultLanguage() {
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
+            if (meta != null && !string.IsNullOrEmpty(meta.Value))
+                PuckCache.SystemVariant = meta.Value;
+        }
         public static void UpdateTaskMappings()
         {
             var tasks = Tasks();
@@ -473,6 +478,23 @@ namespace puck.core.Helpers
         }
         public static List<Type> TaskTypes() {
             return FindDerivedClasses(typeof(BaseTask),null,false).ToList();
+        }
+        public static List<Type> EditorSettingTypes() {
+            return FindDerivedClasses(typeof(I_Puck_Editor_Settings)).ToList();
+        }
+        public static List<I_Puck_Editor_Settings> EditorSettings()
+        {
+            var result = new List<I_Puck_Editor_Settings>();
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings).ToList();
+            meta.ForEach(x =>
+            {
+                //key - settingsType:modelType:propertyName
+                var keys = x.Key.Split(new char[] { ':' },StringSplitOptions.RemoveEmptyEntries);
+                var type = Type.GetType(keys[0]);
+                var instance = JsonConvert.DeserializeObject(x.Value, type) as I_Puck_Editor_Settings;
+                result.Add(instance);
+            });
+            return result;
         }
         public static List<BaseTask> Tasks(){
             var result = new List<BaseTask>();

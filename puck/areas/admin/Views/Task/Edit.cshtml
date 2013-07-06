@@ -2,8 +2,8 @@
 @{
     Layout = null;    
 }
-<div class="container_12 settings">
-    <div class="grid_10 push_1">
+<div class="task_edit settings">
+    <div class="grid_5 push_1">
 @using (Html.BeginForm("Edit", "Task", new { p_type = Model.GetType().AssemblyQualifiedName }, FormMethod.Post))
 {
     @Html.EditorForModel()

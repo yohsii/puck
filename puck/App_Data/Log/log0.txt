@@ -13463,3 +13463,136 @@ message: Nodename exists at this path, choose another.
 stacktrace:    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 327
 
 
+date: 01/07/2013 19:51:15
+message: The model of type 'puck.core.Models.PuckTask' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 161
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 137
+   at puck.core.Controllers.TaskController.Edit(String p_type, FormCollection fc) in C:\project\puck\puck\areas\admin\Controllers\TaskController.cs:line 81
+
+
+date: 01/07/2013 20:04:30
+message: The model of type 'puck.core.Models.PuckTask' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 161
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 137
+   at puck.core.Controllers.TaskController.Edit(String p_type, FormCollection fc) in C:\project\puck\puck\areas\admin\Controllers\TaskController.cs:line 81
+
+
+date: 02/07/2013 12:39:29
+message: The model of type 'puck.areas.admin.ViewModels.Home' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 161
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 137
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 219
+
+
+date: 02/07/2013 13:33:40
+message: The model of type 'puck.areas.admin.ViewModels.Home' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 161
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\puck\core\Controllers\BaseController.cs:line 137
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 219
+
+
+date: 02/07/2013 16:35:52
+message: Error getting value from 'ReadTimeout' on 'System.Web.HttpInputStream'.
+stacktrace:    at Newtonsoft.Json.Serialization.DynamicValueProvider.GetValue(Object target)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.CalculatePropertyValues(JsonWriter writer, Object value, JsonContainerContract contract, JsonProperty member, JsonProperty property, JsonContract& memberContract, Object& memberValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.Serialize(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.SerializeInternal(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Serialize(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value, Type type, Formatting formatting, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value, Formatting formatting, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value)
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in C:\project\puck\core\Helpers\ApiHelper.cs:line 252
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 227
+
+
+date: 02/07/2013 16:38:09
+message: Error getting value from 'ReadTimeout' on 'System.Web.HttpInputStream'.
+stacktrace:    at Newtonsoft.Json.Serialization.DynamicValueProvider.GetValue(Object target)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.CalculatePropertyValues(JsonWriter writer, Object value, JsonContainerContract contract, JsonProperty member, JsonProperty property, JsonContract& memberContract, Object& memberValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.Serialize(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.SerializeInternal(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Serialize(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value, Type type, Formatting formatting, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value, Formatting formatting, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value)
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in C:\project\puck\core\Helpers\ApiHelper.cs:line 252
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 227
+
+
+date: 02/07/2013 16:51:42
+message: Exception has been thrown by the target of an invocation.
+stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor)
+   at System.Reflection.RuntimeMethodInfo.UnsafeInvokeInternal(Object obj, Object[] parameters, Object[] arguments)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, BindingFlags invokeAttr, Binder binder, Object[] index, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, Object[] index)
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 249
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 293
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 293
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 293
+   at puck.core.Helpers.ObjectDumper.Write(Object element, Int32 depth) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 99
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 222
+
+
+date: 02/07/2013 17:04:02
+message: Exception has been thrown by the target of an invocation.
+stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor)
+   at System.Reflection.RuntimeMethodInfo.UnsafeInvokeInternal(Object obj, Object[] parameters, Object[] arguments)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, BindingFlags invokeAttr, Binder binder, Object[] index, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, Object[] index)
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 252
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.Write(Object element, Int32 depth) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 99
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 222
+
+
+date: 02/07/2013 17:04:45
+message: Exception has been thrown by the target of an invocation.
+stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor)
+   at System.Reflection.RuntimeMethodInfo.UnsafeInvokeInternal(Object obj, Object[] parameters, Object[] arguments)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, BindingFlags invokeAttr, Binder binder, Object[] index, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, Object[] index)
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 252
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.Write(Object element, Int32 depth) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 99
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 222
+
+
+date: 02/07/2013 17:25:40
+message: Exception has been thrown by the target of an invocation.
+stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor)
+   at System.Reflection.RuntimeMethodInfo.UnsafeInvokeInternal(Object obj, Object[] parameters, Object[] arguments)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, BindingFlags invokeAttr, Binder binder, Object[] index, CultureInfo culture)
+   at System.Reflection.RuntimePropertyInfo.GetValue(Object obj, Object[] index)
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 252
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.WriteObject_(String prefix, Object element) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 296
+   at puck.core.Helpers.ObjectDumper.Write(Object element, Int32 depth) in C:\project\puck\core\Helpers\ObjectDumper.cs:line 99
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\puck\puck\areas\admin\Controllers\ApiController.cs:line 222
+
+

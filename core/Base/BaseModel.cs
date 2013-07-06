@@ -25,6 +25,7 @@ namespace puck.core.Base
         [IndexSettings(FieldIndexSetting=Lucene.Net.Documents.Field.Index.NOT_ANALYZED,Analyzer=typeof(KeywordAnalyzer))]
         public Guid Id { get; set; }
 
+        [Display(Name="Node Name")]
         public String NodeName { get; set; }
 
         [UIHint("SettingsReadOnly")]
@@ -48,12 +49,16 @@ namespace puck.core.Base
 
         public bool Published { get; set; }
 
+        [Display(Name = "Sort Order")]
         [UIHint("SettingsReadOnly")]
         public int SortOrder { get; set; }
+
+        [Display(Name = "Template Path")]
         [UIHint("SettingsTemplate")]
         [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED, Analyzer = typeof(KeywordAnalyzer))]
         public string TemplatePath { get; set; }
 
+        [Display(Name = "Type Chain")]
         [UIHint("SettingsReadOnly")]
         [IndexSettings(FieldIndexSetting=Lucene.Net.Documents.Field.Index.ANALYZED,Analyzer=typeof(StandardAnalyzer),FieldStoreSetting=Lucene.Net.Documents.Field.Store.YES)]
         public string TypeChain { get; set; }

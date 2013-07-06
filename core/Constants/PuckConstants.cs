@@ -35,9 +35,13 @@ namespace puck.core.Constants
         public static string DomainMapping = "domainmapping";
         public static string TypeAllowedTypes = "typeallowedtypes";
         public static string Tasks = "task";
+        public static string CachePolicy = "cache";
+        public static string CacheExclude = "cacheexclude";
+        public static string UserStartNode = "userstartnode";
     }
     public static class DBKeys
     {
+        public static string ObjectCacheMinutes = "objectcachemin";
         public static string Languages = "languages";
         public static string DefaultLanguage = "defaultlanguage";
         public static string EnableLocalePrefix = "enablelocaleprefix";
@@ -45,6 +49,7 @@ namespace puck.core.Constants
     public static class CacheKeys {
         public static string PrefixTemplateExist = "fexist:";
     }
+    public enum PuckRoles { }
     public static class FieldSettings
     {
         public static Dictionary<Type, Type> DefaultPropertyTransformers = new Dictionary<Type, Type>
@@ -69,6 +74,7 @@ namespace puck.core.Constants
         public static Dictionary<string, Analyzer> TypeAnalyzers { get; set; }
         public static Dictionary<string, string> Redirect { get; set; }
         public static IKernel NinjectKernel { get; set; }
+        public static I_Puck_Repository PuckRepo { get { return NinjectKernel.Get<I_Puck_Repository>("T"); } }
         public static List<Analyzer> Analyzers { get; set; }
         public static Dictionary<Type, Analyzer> AnalyzerForModel { get; set; }
     }

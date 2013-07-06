@@ -5,7 +5,7 @@ using System.Text;
 
 namespace puck.core.Abstract
 {
-    interface I_Puck_Editor_Settings
+    public interface I_Puck_Editor_Settings
     {
 
     }

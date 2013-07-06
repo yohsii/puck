@@ -14,6 +14,7 @@ namespace puck.areas.admin.ViewModels
 {
     public class Home:BaseModel
     {
+        [Display(Name="Page Title")]
         [Required]
         [IndexSettings(FieldIndexSetting = Field.Index.ANALYZED,Analyzer=typeof(SnowballAnalyzer))]
         public string PageTitle { get; set; }
@@ -26,5 +27,7 @@ namespace puck.areas.admin.ViewModels
         
         [UIHint("PuckPicker")]
         public List<PuckPicker> Picker { get; set; }
+
+        
     }
 }

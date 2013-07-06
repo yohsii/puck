@@ -8,10 +8,14 @@ using puck.core.Models;
 using puck.core.Constants;
 using System.Web.Script.Serialization;
 using puck.core.Entities;
+using puck.core.Helpers;
+using puck.core.Filters;
+using Newtonsoft.Json;
 
 namespace puck.core.Controllers
 {
-    public class SettingsController : Controller
+    [SetPuckCulture]
+    public class SettingsController : BaseController
     {
         I_Content_Indexer indexer;
         I_Content_Searcher searcher;
@@ -22,6 +26,78 @@ namespace puck.core.Controllers
             this.searcher = s;
             this.log = l;
             this.repo = r;
+        }
+
+        public JsonResult DeleteParameters(string key) {
+            bool success = false;
+            string message = "";
+            try
+            {
+                repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key == key).ToList().ForEach(x=>repo.DeleteMeta(x));
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+                log.Log(ex);
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);            
+        }
+
+        public ActionResult EditParameters(string settingsType,string modelType,string propertyName) {
+            string key = string.Concat(settingsType, ":", modelType, ":", propertyName);
+            var typeSettings = Type.GetType(settingsType);
+            var meta = repo.GetPuckMeta().Where(x=>x.Name==DBNames.EditorSettings && x.Key == key).FirstOrDefault();
+            object model = null;
+            if (meta != null) {
+                try {
+                    model = JsonConvert.DeserializeObject(meta.Value, typeSettings);
+                }
+                catch (Exception ex) {
+                    log.Log(ex);
+                }
+            }
+            if (model == null) {
+                model = Activator.CreateInstance(typeSettings);
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult EditParameters(string puck_settingsType,string puck_modelType,string puck_propertyName,FormCollection fc) {
+            string key = string.Concat(puck_settingsType, ":", puck_modelType, ":", puck_propertyName);
+            var targetType = Type.GetType(puck_settingsType);
+            var model = Activator.CreateInstance(targetType);
+            bool success = false;
+            string message = "";
+            try
+            {
+                UpdateModelDynamic(model, fc.ToValueProvider());
+                PuckMeta settingsMeta = null;
+                settingsMeta = repo.GetPuckMeta().Where(x =>x.Name==DBNames.EditorSettings && x.Key == key).FirstOrDefault();
+                if(settingsMeta != null){
+                    settingsMeta.Value = JsonConvert.SerializeObject(model);
+                }
+                else
+                {
+                    settingsMeta = new PuckMeta();
+                    settingsMeta.Name = DBNames.EditorSettings;
+                    settingsMeta.Key = key;
+                    settingsMeta.Value = JsonConvert.SerializeObject(model);
+                    repo.AddMeta(settingsMeta);
+                }
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                success = false;
+                message = ex.Message;
+                log.Log(ex);
+            }
+            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);            
         }
 
         public ActionResult Edit()
@@ -37,7 +113,8 @@ namespace puck.core.Controllers
             var languages = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList().Select(x=>x.Value).ToList();
             var fieldGroups = meta.Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
             var typeAllowedTypes = meta.Where(x => x.Name == DBNames.TypeAllowedTypes).Select(x=>x.Key+":"+x.Value).ToList();
-
+            var editorParameters = meta.Where(x => x.Name == DBNames.EditorSettings).Select(x=>x.Key).ToList();
+            var cachePolicy = meta.Where(x => x.Name == DBNames.CachePolicy).Select(x=>x.Key+":"+x.Value).ToList();
             model.TypeGroupField = new List<string>();
             
             fieldGroups.ForEach(x => {
@@ -53,7 +130,8 @@ namespace puck.core.Controllers
             model.Languages = languages;
             model.PathToLocale = pathToLocale;
             model.Redirect = redirects;
-
+            model.EditorParameters = editorParameters;
+            model.CachePolicy = cachePolicy;
             return View(model);
         }
 
@@ -159,9 +237,35 @@ namespace puck.core.Controllers
                         repo.AddMeta(newMeta);
                     });
                 }
+                //cachepolicy
+                if (model.CachePolicy == null)
+                    model.CachePolicy = new List<string>();
+                var cacheTypes = new List<string>();
+                if (model.CachePolicy.Count > 0) {
+                    foreach (var entry in model.CachePolicy) {
+                        var type = entry.Split(new char[]{':'},StringSplitOptions.RemoveEmptyEntries)[0];
+                        cacheTypes.Add(type);
+                        var minutes = entry.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        int min;
+                        if(!int.TryParse(minutes,out min))
+                            throw new Exception("cache policy minutes not int for type:"+type);
+                        var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy && x.Key.ToLower().Equals(type.ToLower())).FirstOrDefault();
+                        if (meta != null)
+                        {
+                            meta.Value = minutes;
+                        }
+                        else {
+                            meta = new PuckMeta() { Name=DBNames.CachePolicy,Key=type,Value=minutes};
+                            repo.AddMeta(meta);
+                        }
+                    }
+                }
+                //delete unset
+                repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy && !cacheTypes.Contains(x.Key)).ToList().ForEach(x => repo.DeleteMeta(x));
+
+                ApiHelper.UpdateDefaultLanguage();
                 repo.SaveChanges();
-                success = true;
-                //return RedirectToAction("Index");
+                success = true;                
             }
             catch(Exception ex)
             {

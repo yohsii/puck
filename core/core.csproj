@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>puck.core</RootNamespace>
     <AssemblyName>puck.core</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,10 +31,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -125,6 +129,12 @@
     <Compile Include="Entities\PuckRevision.cs" />
     <Compile Include="Events\PuckEventArgs.cs" />
     <Compile Include="Filters\Auth.cs" />
+    <Compile Include="Filters\SetPuckCulture.cs" />
+    <Compile Include="Globalisation\PuckLabels.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PuckLabels.resx</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\ApiHelper.cs" />
     <Compile Include="Helpers\ObjectDumper.cs" />
     <Compile Include="Helpers\QueryHelper.cs" />
@@ -134,9 +144,14 @@
     <Compile Include="Models\LogIn.cs" />
     <Compile Include="Models\PuckPicker.cs" />
     <Compile Include="Models\PuckTask.cs" />
+    <Compile Include="Models\RevisionCompare.cs" />
     <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\PuckPickerEditorSettings.cs" />
+    <Compile Include="Models\PuckUser.cs" />
     <Compile Include="Models\Variant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValueProviders\FileValueProvider.cs" />
+    <Compile Include="ValueProviders\FileValueProviderFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Misc\" />
@@ -145,6 +160,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Globalisation\PuckLabels.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>PuckLabels.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

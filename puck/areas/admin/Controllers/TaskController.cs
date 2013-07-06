@@ -10,9 +10,11 @@ using puck.core.Abstract;
 using puck.core.Constants;
 using Newtonsoft.Json;
 using puck.core.Entities;
+using puck.core.Filters;
 
 namespace puck.core.Controllers
 {
+    [SetPuckCulture]
     public class TaskController : BaseController
     {
         I_Puck_Repository repo;
@@ -99,33 +101,31 @@ namespace puck.core.Controllers
                 message = ex.Message;
                 log.Log(ex);
             }
-            return Json(new {success=success,message=message },JsonRequestBehavior.AllowGet);
+            return Json(new {success=success,message=message });
         }
 
         //
         // GET: /admin/Task/Delete/5
 
-        public ActionResult Delete(int id)
+        public JsonResult Delete(int id)
         {
-            return View();
-        }
-
-        //
-        // POST: /admin/Task/Delete/5
-
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
+            bool success = false;
+            string message = "";
             try
             {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == id).ToList().ForEach(x=>repo.DeleteMeta(x));
+                repo.SaveChanges();
+                ApiHelper.UpdateTaskMappings();
+                success = true;
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                success = false;
+                message = ex.Message;
+                log.Log(ex);
             }
+            return Json(new { success = success, message = message },JsonRequestBehavior.AllowGet);
         }
+
     }
 }

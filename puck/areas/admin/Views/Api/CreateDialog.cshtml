@@ -22,7 +22,7 @@
             <label>Variant</label>
             <select name="variant">
                 @foreach(var v in variants){
-                    <option value="@v.Key">@v.FriendlyName</option>
+                    <option value="@v.Key.ToLower()">@v.FriendlyName</option>
                 }
             </select>
         </div>

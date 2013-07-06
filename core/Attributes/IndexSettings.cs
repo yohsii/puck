@@ -24,6 +24,6 @@ namespace puck.core.Attributes
             set { _FieldIndexSetting = value; }
         }
         public Type Analyzer { get; set; }
-        
+        public bool Ignore { get; set; }
     }
 }

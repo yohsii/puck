@@ -1,0 +1,46 @@
+﻿@model List<puck.core.Models.PuckUser>
+@{
+    Layout = null;    
+}
+<p>
+    <button class="create btn-link">Create</button>
+</p>
+<table>
+    <tr>
+        <th>
+            Username
+        </th>
+        <th>
+            Email
+        </th>
+        <th>
+            Roles
+        </th>
+        <th>
+            Start Path
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.UserName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Roles)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.StartNode)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.User.UserName }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.User.UserName})
+        </td>
+    </tr>
+}
+
+</table>

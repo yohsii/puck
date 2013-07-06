@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using puck.core.Base;
 
 namespace puck.core.Abstract
 {
-    interface I_Property_Transformer<TIn,TOut>
+    public interface I_Property_Transformer<TIn,TOut>
     {
-        TOut Transform(TIn p);
+        TOut Transform(BaseModel m,string propertyName,string uniquePropertyName,TIn p);
     }
 }

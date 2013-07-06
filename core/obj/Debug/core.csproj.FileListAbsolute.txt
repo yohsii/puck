@@ -45,3 +45,5 @@ C:\project\puck\core\obj\Debug\core.csprojResolveAssemblyReference.cache
 C:\project\puck\core\bin\Debug\Ninject.dll
 C:\project\puck\core\bin\Debug\Ninject.pdb
 C:\project\puck\core\bin\Debug\Ninject.xml
+C:\project\puck\core\obj\Debug\puck.core.Globalisation.PuckLabels.resources
+C:\project\puck\core\obj\Debug\core.csproj.GenerateResource.Cache

@@ -9,5 +9,9 @@ namespace puck.areas.admin.Models
     {
         public int Age { get; set; }
         public string Name { get; set; }
+        
+        public PuckImage Image { get; set; }
+
+        public TextSingle TextGroup { get; set; }
     }
 }

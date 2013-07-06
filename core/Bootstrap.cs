@@ -19,6 +19,7 @@ namespace puck.core
             ApiHelper.UpdateDomainMappings();
             ApiHelper.UpdatePathLocaleMappings();
             ApiHelper.UpdateTaskMappings();
+            ApiHelper.UpdateDefaultLanguage();
             PuckCache.Analyzers = new List<Lucene.Net.Analysis.Analyzer>();
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             foreach(var t in ApiHelper.Models(true)){

@@ -1,0 +1,133 @@
+﻿@model List<string>
+<div class="editor_parameters editor_parameters_@ViewData.ModelMetadata.PropertyName">
+@{
+    var settingTypes = ApiHelper.EditorSettingTypes();
+    var models = ApiHelper.Models();
+    var propsForType = new Dictionary<string, List<System.Reflection.PropertyInfo>>();
+    
+    if(settingTypes.Count==0){
+        <h2>no editor settings detected.</h2>
+    }else{
+        <table>
+        <tr>
+        <td><label>parameters:</label></td>
+        <td><select class="stype">
+        @foreach(var setting in settingTypes){
+            <option value="@setting.AssemblyQualifiedName">@setting.FullName</option>    
+        }
+        </select>
+        </td>
+        </tr>
+        
+        <tr>
+        <td><label>model:</label></td>
+        <td><select class="mtype">
+        @foreach (var mod in models)
+        {
+            <option value="@mod.AssemblyQualifiedName">@mod.FullName</option>
+            var props = mod.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            propsForType[mod.AssemblyQualifiedName] = props.ToList();
+        }
+        </select>
+        </td>
+        </tr>
+        
+        <tr>
+        <td><label>property:</label></td>
+        <td>
+        @foreach(var entry in propsForType){
+            <select data-model="@entry.Key" class="props">
+                <option value="">None</option>
+                @foreach(var prop in entry.Value){
+                    <option>@prop.Name</option>
+                }
+            </select>
+        }
+        </td>
+        </tr>
+        </table>
+        <br />
+        <button>edit parameters</button>
+        
+        if (Model != null){
+        <table class="list">
+            <thead>
+                <tr>
+                    <th style="width:250px;">Parameters Type</th>
+                    <th style="width:250px;">Model Type</th>
+                    <th>Property name</th>
+                    <th></th>
+                </tr>                
+            </thead>
+            
+            @foreach (var entry in Model)
+            {
+                var keys = entry.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                if (keys.Length < 2) { continue; }
+                var settingsType = Type.GetType(keys[0]);
+                var modelType = Type.GetType(keys[1]);
+                var propertyName = keys.Length < 3 ? "" : keys[2];
+                <tr>
+                    <td data-type="@settingsType.AssemblyQualifiedName">@settingsType.FullName</td>
+                    <td data-type="@modelType.AssemblyQualifiedName">@modelType.FullName</td>
+                    <td>@propertyName</td>
+                    <td>
+                        <a href="#" class="edit">edit</a>
+                        <br />
+                        <a href="#" class="delete">delete</a>
+                    </td>
+                </tr>
+            }
+        </table>
+        }
+    }
+    }
+<script type="text/javascript">
+    onAfterDom(function () {
+        var propertyName = "@ViewData.ModelMetadata.PropertyName";
+        var container = $(".editor_parameters_" + propertyName);
+        var settings_sel = container.find("select.stype");
+        var models_sel = container.find("select.mtype");
+        var props_sel = container.find("select.props");
+        var edit_btn = container.find("button");
+        var showProptertiesForModel = function () {
+            props_sel.hide();
+            props_sel.filter("[data-model='" + models_sel.val() + "']").show();
+        }
+        var table = container.find("table.list");
+        models_sel.change(function (e) {
+            showProptertiesForModel();
+        });
+        var appendToTable = function (settingsType,settingsFullName, modelType,modelFullName, propName) {
+            table.append(
+                "<tr><td data-type='"+settingsType+"'>" + settingsFullName + "</td><td data-type='"+modelType+"'>" + modelFullName + "</td><td>" + propName + "</td><td><a href='#' class='edit'>edit</a><br /><a href='#' class='delete'>delete</a></td></tr>"
+                );
+        }
+        edit_btn.click(function (e) {
+            e.preventDefault();
+            var settingsType = settings_sel.val();
+            var settingsFullName = settings_sel.find("option:selected").html();
+            var modelType = models_sel.val();
+            var modelFullName = models_sel.find("option:selected").html();
+            var propName = props_sel.filter("[data-model='" + modelType + "']").first().val();
+            editParameters(settingsType, modelType, propName, function(){appendToTable(settingsType,settingsFullName,modelType,modelFullName, propName)});
+        });
+        table.on("click", "a", function (e) {
+            e.preventDefault();
+            var a = $(this);
+            var row = a.parents("tr:first");
+            var columns = row.find("td");
+            var settingsType = $(columns[0]).attr("data-type");
+            var modelType = $(columns[1]).attr("data-type");
+            var propName = $(columns[2]).html();
+            var key = settingsType + ":" + modelType + ":" + propName;
+            if (a.hasClass("edit")) {
+                editParameters(settingsType, modelType, propName,function(){});
+            } else {
+                deleteParameters(key, row.remove());
+            }
+        });
+        showProptertiesForModel();
+    });
+</script>
+</div>
