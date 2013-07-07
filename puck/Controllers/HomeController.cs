@@ -14,7 +14,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Diagnostics;
 using puck.core.Filters;
-
+using StackExchange.Profiling;
 namespace puck.Controllers
 {
     public class HomeController : BaseController
@@ -24,48 +24,23 @@ namespace puck.Controllers
             this.log = log;
         }
 
-        [OutputCache(Duration=10,VaryByParam="*")]
-        [CacheValidate]
         public ActionResult Index(string path)
         {
             try
             {
-                //inspect cache attribute, if set in current method or stack below
-                if (PuckCache.DefaultOutputCacheMinutes == -1){
-                    var st = new StackTrace(false);
-                    if (st.FrameCount > 1)
-                    {
-                        var frame = st.GetFrame(1);
-                        var outputCacheAttribute = frame.GetMethod().GetCustomAttribute(typeof(OutputCacheAttribute)) as OutputCacheAttribute;
-                        if (outputCacheAttribute == null)
-                        {
-                            frame = st.GetFrame(0);
-                            outputCacheAttribute = frame.GetMethod().GetCustomAttribute(typeof(OutputCacheAttribute)) as OutputCacheAttribute;
-                        }
-                        if (outputCacheAttribute != null)
-                        {
-                            PuckCache.DefaultOutputCacheMinutes = outputCacheAttribute.Duration;
-                        }
-                        else
-                        {
-                            PuckCache.DefaultOutputCacheMinutes = 0;
-                        }
-                    }
-                    else {
-                        PuckCache.DefaultOutputCacheMinutes = 0;
-                    }
-                }
                 //do redirects
                 string redirectUrl;
                 if (PuckCache.Redirect301.TryGetValue(Request.Url.AbsolutePath, out redirectUrl)) {
                     Response.Cache.SetCacheability(HttpCacheability.Public);
                     Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
+                    //Response.Cache.SetValidUntilExpires(true);
                     Response.RedirectPermanent(redirectUrl,true);
                 }
                 if (PuckCache.Redirect302.TryGetValue(Request.Url.AbsolutePath, out redirectUrl))
                 {
                     Response.Cache.SetCacheability(HttpCacheability.Public);
                     Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
+                    //Response.Cache.SetValidUntilExpires(true);
                     Response.Redirect(redirectUrl, true);
                 }
 
@@ -96,28 +71,31 @@ namespace puck.Controllers
                 }
                 //set thread culture for future api calls on this thread
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(variant);
-
-                var results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
-                    string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
-                    );
-
-                var result = results.FirstOrDefault();
+                IList<Dictionary<string,string>> results;
+                using (StackExchange.Profiling.MiniProfiler.Current.Step("lucene"))
+                {
+                    results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
+                        string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
+                        );
+                }
+                var result =results==null? null: results.FirstOrDefault();
                 object model = null;
                 if (result != null)
                 {
                     model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], Type.GetType(result[FieldKeys.PuckType]));
-                    if (!PuckCache.OutputCacheExclusion.Contains(Request.Url.AbsolutePath))
+                    if (!PuckCache.OutputCacheExclusion.Contains(searchPath))
                     {
                         int cacheMinutes;
-                        if (PuckCache.TypeOutputCache.TryGetValue(result[FieldKeys.PuckType], out cacheMinutes))
+                        if (!PuckCache.TypeOutputCache.TryGetValue(result[FieldKeys.PuckType], out cacheMinutes))
                         {
-                            Response.Cache.SetCacheability(HttpCacheability.Public);
-                            Response.Cache.SetExpires(DateTime.Now.AddMinutes(cacheMinutes));
+                            if (!PuckCache.TypeOutputCache.TryGetValue(typeof(BaseModel).AssemblyQualifiedName, out cacheMinutes))
+                            {
+                                cacheMinutes = PuckCache.DefaultOutputCacheMinutes;
+                            }                                
                         }
-                        else {
-                            Response.Cache.SetCacheability(HttpCacheability.Public);
-                            Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.DefaultOutputCacheMinutes));
-                        }
+                        Response.Cache.SetCacheability(HttpCacheability.Public);
+                        Response.Cache.SetExpires(DateTime.Now.AddMinutes(cacheMinutes));
+                        //Response.Cache.SetValidUntilExpires(true);
                     }
                 }
 

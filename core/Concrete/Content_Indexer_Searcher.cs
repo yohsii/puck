@@ -464,13 +464,6 @@ namespace puck.core.Concrete
             if (!string.IsNullOrEmpty(typeName))
             {
                 var type = Type.GetType(typeName);
-                /*
-                var model = Activator.CreateInstance(type);
-                var props = ObjectDumper.Write(model, int.MaxValue);
-                var analyzers = new List<KeyValuePair<string, Analyzer>>();
-                GetFieldSettings(props, null, analyzers);
-                var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer, analyzers);
-                */
                 var analyzer = PuckCache.AnalyzerForModel[type];
                 parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
             }
@@ -479,9 +472,7 @@ namespace puck.core.Concrete
             }
 
             var contentQuery = parser.Parse(terms);
-            //var collector = TopScoreDocCollector.Create(int.MaxValue,true);
-            var hits=Searcher.Search(contentQuery,int.MaxValue).ScoreDocs;
-            //var hits=collector.TopDocs().ScoreDocs;
+            var hits=Searcher.Search(contentQuery,10).ScoreDocs;
             
             var result = new List<Dictionary<string, string>>();
             for(var i=0;i<hits.Count();i++){
@@ -498,19 +489,9 @@ namespace puck.core.Concrete
             return result;            
         }
         public IList<T> Query<T>(string qstr) {
-            /*
-            var model = Activator.CreateInstance(typeof(T));
-            var props = ObjectDumper.Write(model, int.MaxValue);
-            var analyzers = new List<KeyValuePair<string, Analyzer>>();
-            GetFieldSettings(props, null, analyzers);
-            var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
-            */
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
-            //var coll = TopScoreDocCollector.Create(int.MaxValue,true);
-            //Searcher.Search(q, coll);
-            //var hits = coll.TopDocs().ScoreDocs;
             var hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
             var results = new List<T>();
             for (var i = 0; i < hits.Count(); i++) {

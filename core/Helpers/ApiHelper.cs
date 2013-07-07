@@ -375,7 +375,7 @@ namespace puck.core.Helpers
             });
 
             var mapCacheExclude = new HashSet<string>();
-            metaCacheExclude.ForEach(x =>
+            metaCacheExclude.Where(x=>x.Value.ToLower()==bool.TrueString.ToLower()).ToList().ForEach(x =>
             {
                 mapCacheExclude.Add(x.Key);
             });

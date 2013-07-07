@@ -1,7 +1,7 @@
 ﻿@model List<string>
 <div class="cachepolicy cachepolicy_@ViewData.ModelMetadata.PropertyName">
 @{
-    var models = ApiHelper.Models();
+    var models = ApiHelper.Models(true);
     <table>
     <tr>
         <td>Model Type</td>

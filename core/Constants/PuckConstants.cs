@@ -82,7 +82,7 @@ namespace puck.core.Constants
         public static bool UpdateRecurringTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool TaskCatchUp = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckTaskCatchUp"]) && ConfigurationManager.AppSettings["PuckTaskCatchUp"].ToLower() == bool.TrueString.ToLower();
         public static int RedirectOuputCacheMinutes = 10;
-        public static int DefaultOutputCacheMinutes = -1;
+        public static int DefaultOutputCacheMinutes = 0;
         public static string SystemVariant = "en-GB";
         public static List<Variant> Variants { get; set; }
         public static Dictionary<string,string> DomainRoots {get;set;}
