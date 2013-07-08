@@ -21,6 +21,8 @@ namespace puck.core.Helpers
 {
     public class ApiHelper
     {
+        private static readonly object _savelck = new object();
+
         public static I_Puck_Repository repo { get {
             return PuckCache.NinjectKernel.Get<I_Puck_Repository>("R");
         } }
@@ -30,6 +32,8 @@ namespace puck.core.Helpers
         public static I_Content_Indexer indexer{get{
             return PuckCache.NinjectKernel.Get<I_Content_Indexer>();
          }}
+
+
         public static object RevisionToModel(PuckRevision revision) {
             var model = JsonConvert.DeserializeObject(revision.Value, Type.GetType(revision.Type));
             var mod = model as BaseModel;
@@ -43,29 +47,35 @@ namespace puck.core.Helpers
             mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName;
             return mod;
         }
-        public static void Sort(string path, List<string> paths) { 
-            var qh = new QueryHelper<BaseModel>();
-            var indexItems = qh.Directory(path).GetAll();
-            var dbItems = repo.CurrentRevisionsByPath(path).ToList();                
-            indexItems.ForEach(n => {
-                for (var i = 0; i < paths.Count; i++) {
-                    if (paths[i].ToLower().Equals(n.Path.ToLower())) {
-                        n.SortOrder = i;
-                    }
-                }
-            });
-            dbItems.ForEach(n =>
+        public static void Sort(string path, List<string> paths) {
+            lock (_savelck)
             {
-                for (var i = 0; i < paths.Count; i++)
+                var qh = new QueryHelper<BaseModel>();
+                var indexItems = qh.Directory(path).GetAll();
+                var dbItems = repo.CurrentRevisionsByPath(path).ToList();
+                indexItems.ForEach(n =>
                 {
-                    if (paths[i].ToLower().Equals(n.Path.ToLower()))
+                    for (var i = 0; i < paths.Count; i++)
                     {
-                        n.SortOrder = i;
+                        if (paths[i].ToLower().Equals(n.Path.ToLower()))
+                        {
+                            n.SortOrder = i;
+                        }
                     }
-                }
-            });
-            repo.SaveChanges();
-            indexer.Index(indexItems);
+                });
+                dbItems.ForEach(n =>
+                {
+                    for (var i = 0; i < paths.Count; i++)
+                    {
+                        if (paths[i].ToLower().Equals(n.Path.ToLower()))
+                        {
+                            n.SortOrder = i;
+                        }
+                    }
+                });
+                repo.SaveChanges();
+                indexer.Index(indexItems);
+            }
         }
         public static void SetDomain(string path, string domains) {
             if (string.IsNullOrEmpty(path))
@@ -137,201 +147,219 @@ namespace puck.core.Helpers
             ApiHelper.UpdatePathLocaleMappings();                
         }
         public static void Publish(string id,bool descendants) {
-            var qh = new QueryHelper<BaseModel>();
-            var toIndex = qh.ID(id).GetAll();
-            if (toIndex.Count == 0)
-                throw new Exception("no results with ID " + id + " to publish");
-            if (descendants)
-                toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
-            toIndex.ForEach(x => x.Published = true);
-            indexer.Index(toIndex);                
-        }
-        public static void UnPublish(string id) {
-            var qh = new QueryHelper<BaseModel>();
-            var toIndex = qh.ID(id).GetAll();
-            if (toIndex.Count == 0)
-                throw new Exception("no results with ID " + id + " to unpublish");
-            toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
-            toIndex.ForEach(x => x.Published = false);
-            indexer.Index(toIndex);                
-        }
-        public static void Delete(string id, string variant = null) {
-            //remove from index
-            var qh = new QueryHelper<BaseModel>();
-            var toDeleteQ = qh.And().ID(id);
-            if (!string.IsNullOrEmpty(variant))
-                toDeleteQ.Field(x => x.Variant, variant);
-            var toDelete = toDeleteQ.GetAll();
-            if (toDelete.Count == 0)
-                throw new Exception("no results with ID " + id + " and Variant " + variant + " to delete");
-            toDelete.AddRange(toDelete.First().Descendants<BaseModel>());
-            toDelete.Delete();
-            //remove from repo
-            var repoItemsQ = repo.GetPuckRevision().Where(x => x.Id == new Guid(id));
-            if (!string.IsNullOrEmpty(variant))
-                repoItemsQ = repoItemsQ.Where(x => x.Variant.ToLower().Equals(variant.ToLower()));
-            var repoItems = repoItemsQ.ToList();
-            repoItems.ForEach(x => repo.DeleteRevision(x));
-            //remove localisation setting
-            var lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.StartsWith(toDelete.First().Path)).ToList();
-            lmeta.ForEach(x =>
-            {
-                repo.DeleteMeta(x);
-            });
-            //remove domain mappings
-            var dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.StartsWith(toDelete.First().Path)).ToList();
-            dmeta.ForEach(x =>
-            {
-                repo.DeleteMeta(x);
-            });
-            ApiHelper.UpdateDomainMappings();
-            ApiHelper.UpdatePathLocaleMappings();
-            repo.SaveChanges();                
-        }
-        public static void SaveContent<T>(T mod) where T : BaseModel {
-            //get sibling nodes
-            mod.Revision += 1;
-            var nodeDirectory = mod.Path.Substring(0, mod.Path.LastIndexOf('/') + 1);
-            mod.Path = nodeDirectory + mod.NodeName;
-            var nodesAtPath = repo.CurrentRevisionsByPath(nodeDirectory).Where(x => x.Id != mod.Id)
-                .ToList()
-                .Select(x =>
-                    RevisionToBaseModel(x)
-                ).ToList().GroupByID();
-            //set sort order for new content
-            if (mod.SortOrder == -1)
-                mod.SortOrder = nodesAtPath.Count;
-            //check node name is unique at path
-            if (nodesAtPath.Any(x => x.Value.Any(y => y.Value.NodeName.ToLower().Equals(mod.NodeName))))
-                throw new Exception("Nodename exists at this path, choose another.");
-            //check this is an update or create
-            var original = repo.CurrentRevision(mod.Id, mod.Variant);
-            var toIndex = new List<BaseModel>();
-            toIndex.Add(mod);
-            bool nameChanged = false;
-            string originalPath = string.Empty;
-            if (original != null)
-            {//this must be an edit
-                if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower()))
-                {
-                    nameChanged = true;
-                    originalPath = original.Path;
-                }
-            }
-            var variantsDb = repo.CurrentRevisionVariants(mod.Id, mod.Variant).ToList();
-            if (variantsDb.Any(x => !x.NodeName.ToLower().Equals(mod.NodeName.ToLower())))
-            {//update path of variants
-                nameChanged = true;
-                if (string.IsNullOrEmpty(originalPath))
-                    originalPath = variantsDb.First().Path;
-                variantsDb.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; });
-            }
-            
-            if (nameChanged)
-            {
-                var regex = new Regex(Regex.Escape(originalPath), RegexOptions.Compiled);
-                //update path of decendants
-                var descendantsDb = repo.CurrentRevisionDescendants(originalPath).ToList();
-                descendantsDb.ForEach(x => { x.Path = regex.Replace(x.Path, mod.Path, 1); });                                
-            }
-            //add revision
-            var revision = new PuckRevision();
-            revision.Created = mod.Created;
-            revision.Id = mod.Id;
-            revision.NodeName = mod.NodeName;
-            revision.Path = mod.Path;
-            revision.Published = mod.Published;
-            revision.Revision = mod.Revision;
-            revision.SortOrder = mod.SortOrder;
-            revision.TemplatePath = mod.TemplatePath;
-            revision.Type = mod.Type;
-            revision.TypeChain = mod.TypeChain;
-            revision.Updated = mod.Updated;
-            revision.Variant = mod.Variant;
-            revision.Current = true;
-            revision.Value = JsonConvert.SerializeObject(mod);
-            repo.GetPuckRevision()
-                .Where(x => x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower()) && x.Current)
-                .ToList()
-                .ForEach(x => x.Current = false);
-            repo.AddRevision(revision);
-            if (mod.Published)//add to lucene index
+            lock (_savelck)
             {
                 var qh = new QueryHelper<BaseModel>();
-                var changed = false;
-                var indexOriginalPath = string.Empty;
-                //get current indexed node with same ID and VARIANT
-                var currentMod = qh.And().Field(x => x.Variant, mod.Variant)
-                    .And()
-                    .ID(mod.Id)
-                    .Get();
-                //if node exists in index
-                if (currentMod != null) {
-                    //and that node currently has a different path than the node we're indexing to replace it
-                    if (!mod.Path.ToLower().Equals(currentMod.Path.ToLower())) {
-                        //means we have changed the path - by changing the nodename
-                        changed = true;
-                        //set the original path so we can use it for regex replace operation for changing descendants who will otherwise have incorrect paths
-                        originalPath = currentMod.Path;
-                    }
-                }
-                //get nodes currently indexed which have the same ID but different VARIANT
-                var variants = mod.Variants<BaseModel>();
-                //if any of the variants have different path to the current node
-                if (variants.Any(x => !x.Path.ToLower().Equals(mod.Path.ToLower()))) {
-                    //means we have changed the path - by changing the nodename
-                    changed = true;
-                    //if the original path hasn't been set already, set it for use in a regex replace operation
-                    if (string.IsNullOrEmpty(indexOriginalPath))
-                        indexOriginalPath = variants.First().Path;
-                }
-                //sync up all the variants so they have the same nodename and path
-                variants.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; toIndex.Add(x); });
-                //if there was a change in the path
-                if (changed) {
-                    //new regex which searches for the current indexed path so it can be replaced with the new one
-                    var regex = new Regex(Regex.Escape(indexOriginalPath), RegexOptions.Compiled);
-                    var descendants = new List<BaseModel>();
-                    //get descendants - either from currently indexed version of the node we're currently saving (which may be new variant and so not currently indexed) or from its variants.
-                    if (currentMod != null)
-                        descendants = currentMod.Descendants<BaseModel>();
-                    else if (variants.Any())
-                        descendants = descendants.First().Descendants<BaseModel>();
-                    //replace portion of path that has changed
-                    descendants.ForEach(x => { x.Path = regex.Replace(x.Path, mod.Path, 1); toIndex.Add(x); });
-                    //delete previous meta binding
-                    repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
-                        .ForEach(x => x.Key=mod.Path);
-                    repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
-                        .ForEach(x => x.Key = mod.Path);                
-                }
+                var toIndex = qh.ID(id).GetAll();
+                if (toIndex.Count == 0)
+                    throw new Exception("no results with ID " + id + " to publish");
+                if (descendants)
+                    toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
+                toIndex.ForEach(x => x.Published = true);
+                indexer.Index(toIndex);
+            }                
+        }
+        public static void UnPublish(string id) {
+            lock (_savelck)
+            {
+                var qh = new QueryHelper<BaseModel>();
+                var toIndex = qh.ID(id).GetAll();
+                if (toIndex.Count == 0)
+                    throw new Exception("no results with ID " + id + " to unpublish");
+                toIndex.AddRange(toIndex.First().Descendants<BaseModel>());
+                toIndex.ForEach(x => x.Published = false);
                 indexer.Index(toIndex);
             }
-            //if first time node saved and is root node - set locale for path
-            if ((original == null) && mod.Path.Count(x => x == '/') == 1)
+        }
+        public static void Delete(string id, string variant = null) {
+            lock (_savelck)
             {
-                var lMeta = new PuckMeta()
+                //remove from index
+                var qh = new QueryHelper<BaseModel>();
+                var toDeleteQ = qh.And().ID(id);
+                if (!string.IsNullOrEmpty(variant))
+                    toDeleteQ.Field(x => x.Variant, variant);
+                var toDelete = toDeleteQ.GetAll();
+                if (toDelete.Count == 0)
+                    throw new Exception("no results with ID " + id + " and Variant " + variant + " to delete");
+                toDelete.AddRange(toDelete.First().Descendants<BaseModel>());
+                toDelete.Delete();
+                //remove from repo
+                var repoItemsQ = repo.GetPuckRevision().Where(x => x.Id == new Guid(id));
+                if (!string.IsNullOrEmpty(variant))
+                    repoItemsQ = repoItemsQ.Where(x => x.Variant.ToLower().Equals(variant.ToLower()));
+                var repoItems = repoItemsQ.ToList();
+                repoItems.ForEach(x => repo.DeleteRevision(x));
+                //remove localisation setting
+                var lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.StartsWith(toDelete.First().Path)).ToList();
+                lmeta.ForEach(x =>
                 {
-                    Name = DBNames.PathToLocale,
-                    Key = mod.Path,
-                    Value = mod.Variant
-                };
-                repo.AddMeta(lMeta);
-                //if first item - set wildcard domain mapping
-                if (nodesAtPath.Count == 0)
+                    repo.DeleteMeta(x);
+                });
+                //remove domain mappings
+                var dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.StartsWith(toDelete.First().Path)).ToList();
+                dmeta.ForEach(x =>
                 {
-                    var dMeta = new PuckMeta()
+                    repo.DeleteMeta(x);
+                });
+                ApiHelper.UpdateDomainMappings();
+                ApiHelper.UpdatePathLocaleMappings();
+                repo.SaveChanges();
+            }             
+        }
+        public static void SaveContent<T>(T mod) where T : BaseModel {
+            lock (_savelck)
+            {
+                //get sibling nodes
+                mod.Revision += 1;
+                var nodeDirectory = mod.Path.Substring(0, mod.Path.LastIndexOf('/') + 1);
+                mod.Path = nodeDirectory + mod.NodeName;
+                var nodesAtPath = repo.CurrentRevisionsByPath(nodeDirectory).Where(x => x.Id != mod.Id)
+                    .ToList()
+                    .Select(x =>
+                        RevisionToBaseModel(x)
+                    ).ToList().GroupByID();
+                //set sort order for new content
+                if (mod.SortOrder == -1)
+                    mod.SortOrder = nodesAtPath.Count;
+                //check node name is unique at path
+                if (nodesAtPath.Any(x => x.Value.Any(y => y.Value.NodeName.ToLower().Equals(mod.NodeName))))
+                    throw new Exception("Nodename exists at this path, choose another.");
+                //check this is an update or create
+                var original = repo.CurrentRevision(mod.Id, mod.Variant);
+                var toIndex = new List<BaseModel>();
+                toIndex.Add(mod);
+                bool nameChanged = false;
+                string originalPath = string.Empty;
+                if (original != null)
+                {//this must be an edit
+                    if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower()))
                     {
-                        Name = DBNames.DomainMapping,
+                        nameChanged = true;
+                        originalPath = original.Path;
+                    }
+                }
+                var variantsDb = repo.CurrentRevisionVariants(mod.Id, mod.Variant).ToList();
+                if (variantsDb.Any(x => !x.NodeName.ToLower().Equals(mod.NodeName.ToLower())))
+                {//update path of variants
+                    nameChanged = true;
+                    if (string.IsNullOrEmpty(originalPath))
+                        originalPath = variantsDb.First().Path;
+                    variantsDb.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; });
+                }
+
+                if (nameChanged)
+                {
+                    var regex = new Regex(Regex.Escape(originalPath), RegexOptions.Compiled);
+                    //update path of decendants
+                    var descendantsDb = repo.CurrentRevisionDescendants(originalPath).ToList();
+                    descendantsDb.ForEach(x => { x.Path = regex.Replace(x.Path, mod.Path, 1); });
+                }
+                //add revision
+                var revision = new PuckRevision();
+                revision.LastEditedBy = HttpContext.Current.User.Identity.Name;
+                revision.CreatedBy = original == null ? revision.LastEditedBy : original.CreatedBy;
+                revision.Created = mod.Created;
+                revision.Id = mod.Id;
+                revision.NodeName = mod.NodeName;
+                revision.Path = mod.Path;
+                revision.Published = mod.Published;
+                revision.Revision = mod.Revision;
+                revision.SortOrder = mod.SortOrder;
+                revision.TemplatePath = mod.TemplatePath;
+                revision.Type = mod.Type;
+                revision.TypeChain = mod.TypeChain;
+                revision.Updated = mod.Updated;
+                revision.Variant = mod.Variant;
+                revision.Current = true;
+                revision.Value = JsonConvert.SerializeObject(mod);
+                repo.GetPuckRevision()
+                    .Where(x => x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower()) && x.Current)
+                    .ToList()
+                    .ForEach(x => x.Current = false);
+                repo.AddRevision(revision);
+                if (mod.Published)//add to lucene index
+                {
+                    var qh = new QueryHelper<BaseModel>();
+                    var changed = false;
+                    var indexOriginalPath = string.Empty;
+                    //get current indexed node with same ID and VARIANT
+                    var currentMod = qh.And().Field(x => x.Variant, mod.Variant)
+                        .And()
+                        .ID(mod.Id)
+                        .Get();
+                    //if node exists in index
+                    if (currentMod != null)
+                    {
+                        //and that node currently has a different path than the node we're indexing to replace it
+                        if (!mod.Path.ToLower().Equals(currentMod.Path.ToLower()))
+                        {
+                            //means we have changed the path - by changing the nodename
+                            changed = true;
+                            //set the original path so we can use it for regex replace operation for changing descendants who will otherwise have incorrect paths
+                            originalPath = currentMod.Path;
+                        }
+                    }
+                    //get nodes currently indexed which have the same ID but different VARIANT
+                    var variants = mod.Variants<BaseModel>();
+                    //if any of the variants have different path to the current node
+                    if (variants.Any(x => !x.Path.ToLower().Equals(mod.Path.ToLower())))
+                    {
+                        //means we have changed the path - by changing the nodename
+                        changed = true;
+                        //if the original path hasn't been set already, set it for use in a regex replace operation
+                        if (string.IsNullOrEmpty(indexOriginalPath))
+                            indexOriginalPath = variants.First().Path;
+                    }
+                    //sync up all the variants so they have the same nodename and path
+                    variants.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; toIndex.Add(x); });
+                    //if there was a change in the path
+                    if (changed)
+                    {
+                        //new regex which searches for the current indexed path so it can be replaced with the new one
+                        var regex = new Regex(Regex.Escape(indexOriginalPath), RegexOptions.Compiled);
+                        var descendants = new List<BaseModel>();
+                        //get descendants - either from currently indexed version of the node we're currently saving (which may be new variant and so not currently indexed) or from its variants.
+                        if (currentMod != null)
+                            descendants = currentMod.Descendants<BaseModel>();
+                        else if (variants.Any())
+                            descendants = descendants.First().Descendants<BaseModel>();
+                        //replace portion of path that has changed
+                        descendants.ForEach(x => { x.Path = regex.Replace(x.Path, mod.Path, 1); toIndex.Add(x); });
+                        //delete previous meta binding
+                        repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
+                            .ForEach(x => x.Key = mod.Path);
+                        repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
+                            .ForEach(x => x.Key = mod.Path);
+                    }
+                    indexer.Index(toIndex);
+                }
+                //if first time node saved and is root node - set locale for path
+                if ((original == null) && mod.Path.Count(x => x == '/') == 1)
+                {
+                    var lMeta = new PuckMeta()
+                    {
+                        Name = DBNames.PathToLocale,
                         Key = mod.Path,
-                        Value = "*"
+                        Value = mod.Variant
                     };
                     repo.AddMeta(lMeta);
+                    //if first item - set wildcard domain mapping
+                    if (nodesAtPath.Count == 0)
+                    {
+                        var dMeta = new PuckMeta()
+                        {
+                            Name = DBNames.DomainMapping,
+                            Key = mod.Path,
+                            Value = "*"
+                        };
+                        repo.AddMeta(lMeta);
+                    }
                 }
+                repo.SaveChanges();
+                UpdateDomainMappings();
+                UpdatePathLocaleMappings();
             }
-            repo.SaveChanges();
-            UpdateDomainMappings();
-            UpdatePathLocaleMappings();
         }
         public static void UpdateDefaultLanguage() {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
@@ -434,11 +462,7 @@ namespace puck.core.Helpers
         public static List<Variant> Variants() {
             var allVariants = AllVariants();
             var results = new List<Variant>();
-            //var languageMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
             var allLanguageMetas = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key== DBKeys.Languages).ToList();
-            /*if (languageMeta != null){
-                allLanguageMetas.Insert(0,languageMeta);
-            }*/
             for(var i =0;i<allLanguageMetas.Count;i++) {
                 var language = allLanguageMetas[i];
                 if (language != null)

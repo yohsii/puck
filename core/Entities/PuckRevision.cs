@@ -11,6 +11,8 @@ namespace puck.core.Entities
     {
         [Key]
         public int RevisionID { get; set; }
+        public string LastEditedBy { get; set; }
+        public string CreatedBy { get; set; }
         public bool Current { get; set; }
         public string Value { get; set; }
     }

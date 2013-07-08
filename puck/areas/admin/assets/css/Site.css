@@ -16,6 +16,8 @@
 .rightarea .message .btn{border-radius:0px !important;}
 h1.right_style{font-family:courier;color:#6e6e6e;font-size:30px;border-bottom:6px solid #6e6e6e;position:absolute;padding-top:0px;top:0px;right:0px;}
 html,body{height:100%;}
+.login button{float:right;}
+.login .error{clear:both;}
 .overlay {
     position: fixed;
     top: 0;

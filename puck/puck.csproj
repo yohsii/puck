@@ -221,14 +221,10 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="areas\admin\adminAreaRegistration.cs" />
-    <Compile Include="areas\admin\Controllers\AdminController.cs" />
-    <Compile Include="areas\admin\Controllers\SettingsController.cs" />
-    <Compile Include="areas\admin\Controllers\TaskController.cs" />
     <Compile Include="areas\admin\Models\Person.cs" />
     <Compile Include="areas\admin\Models\PuckImage.cs" />
     <Compile Include="areas\admin\Models\TextSingle.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="areas\admin\Controllers\ApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="areas\admin\ViewModels\Home.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
@@ -440,7 +436,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="areas\admin\Config\" />
-    <Folder Include="areas\admin\Editors\" />
+    <Folder Include="areas\admin\Controllers\" />
     <Folder Include="areas\admin\ModelBinders\" />
   </ItemGroup>
   <ItemGroup>

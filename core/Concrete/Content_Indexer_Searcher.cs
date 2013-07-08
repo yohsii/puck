@@ -208,7 +208,7 @@ namespace puck.core.Concrete
                     var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
                     SetWriter(false);
                     //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
-                    //Writer.Flush(true, true, true);
+                    Writer.Flush(true, true, true);
                     var cancelled = new List<BaseModel>();
                     foreach (var m in models)
                     {
@@ -222,7 +222,7 @@ namespace puck.core.Concrete
                         //delete doc
                         string removeQuery = "+"+FieldKeys.ID+":"+m.Id.ToString()+ " +"+FieldKeys.Variant+":"+m.Variant;
                         var q = parser.Parse(removeQuery);
-                        //Writer.DeleteDocuments(q);                    
+                        Writer.DeleteDocuments(q);                    
                         
                         Document doc = new Document();
                         //get fields to index
@@ -232,10 +232,10 @@ namespace puck.core.Concrete
                         string jsonDoc = JsonConvert.SerializeObject(m);
                         //doc in json form for deserialization later
                         doc.Add(new Field(FieldKeys.PuckValue, jsonDoc, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                        //Writer.AddDocument(doc);
+                        Writer.AddDocument(doc);
                     }
-                    //Writer.Flush(true,true,true);
-                    //Writer.Commit();
+                    Writer.Flush(true,true,true);
+                    Writer.Commit();
                     models
                         .Where(x=>!cancelled.Contains(x))
                         .ToList()
@@ -454,6 +454,25 @@ namespace puck.core.Concrete
             }
             oldSearcher = null;
         }
+        public IList<Dictionary<string, string>> Query(Query contentQuery)
+        {
+            var hits = Searcher.Search(contentQuery, 10).ScoreDocs;
+
+            var result = new List<Dictionary<string, string>>();
+            for (var i = 0; i < hits.Count(); i++)
+            {
+                var doc = Searcher.Doc(hits[i].Doc);
+                var d = new Dictionary<string, string>();
+                d.Add(FieldKeys.ID, doc.GetValues(FieldKeys.ID).FirstOrDefault() ?? "");
+                d.Add(FieldKeys.PuckType, doc.GetValues(FieldKeys.PuckType).FirstOrDefault() ?? "");
+                d.Add(FieldKeys.PuckValue, doc.GetValues(FieldKeys.PuckValue).FirstOrDefault() ?? "");
+                d.Add(FieldKeys.Path, doc.GetValues(FieldKeys.Path).FirstOrDefault() ?? "");
+                d.Add(FieldKeys.Variant, doc.GetValues(FieldKeys.Variant).FirstOrDefault() ?? "");
+                d.Add(FieldKeys.TemplatePath, doc.GetValues(FieldKeys.TemplatePath).FirstOrDefault() ?? "");
+                result.Add(d);
+            }
+            return result;            
+        }
         public IList<Dictionary<string, string>> Query(string terms)
         {
             return Query(terms, null);
@@ -472,21 +491,7 @@ namespace puck.core.Concrete
             }
 
             var contentQuery = parser.Parse(terms);
-            var hits=Searcher.Search(contentQuery,10).ScoreDocs;
-            
-            var result = new List<Dictionary<string, string>>();
-            for(var i=0;i<hits.Count();i++){
-                var doc = Searcher.Doc(hits[i].Doc);
-                var d = new Dictionary<string, string>();
-                d.Add(FieldKeys.ID,doc.GetValues(FieldKeys.ID).FirstOrDefault()??"");
-                d.Add(FieldKeys.PuckType,doc.GetValues(FieldKeys.PuckType).FirstOrDefault()??"");
-                d.Add(FieldKeys.PuckValue,doc.GetValues(FieldKeys.PuckValue).FirstOrDefault()??"");
-                d.Add(FieldKeys.Path, doc.GetValues(FieldKeys.Path).FirstOrDefault() ?? "");
-                d.Add(FieldKeys.Variant, doc.GetValues(FieldKeys.Variant).FirstOrDefault() ?? "");
-                d.Add(FieldKeys.TemplatePath, doc.GetValues(FieldKeys.TemplatePath).FirstOrDefault() ?? "");
-                result.Add(d);
-            }
-            return result;            
+            return Query(contentQuery);            
         }
         public IList<T> Query<T>(string qstr) {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];

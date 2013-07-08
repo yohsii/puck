@@ -94,6 +94,7 @@ namespace puck.core.Constants
         public static HashSet<string> OutputCacheExclusion { get; set; }
         public static IKernel NinjectKernel { get; set; }
         public static I_Puck_Repository PuckRepo { get { return NinjectKernel.Get<I_Puck_Repository>("T"); } }
+        public static I_Log PuckLog { get { return NinjectKernel.Get<I_Log>(); } }
         public static List<Analyzer> Analyzers { get; set; }
         public static Dictionary<Type, Analyzer> AnalyzerForModel { get; set; }
     }

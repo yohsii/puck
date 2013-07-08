@@ -19,11 +19,12 @@ namespace puck.Controllers
 {
     public class HomeController : BaseController
     {
-        I_Log log;
-        public HomeController(I_Log log) {
-            this.log = log;
+        public ActionResult Index()
+        {
+            return base.Puck();
         }
 
+        /*
         public ActionResult Index(string path)
         {
             try
@@ -129,6 +130,7 @@ namespace puck.Controllers
                 return View(PuckCache.Path500);
             }
         }
+        */
                 
     }
 }

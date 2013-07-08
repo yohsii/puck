@@ -11,6 +11,7 @@ using puck.core.Constants;
 using puck.core.Base;
 using System.Web;
 using System.Globalization;
+using Lucene.Net.Search;
 
 namespace puck.core.Helpers
 {
@@ -137,6 +138,7 @@ namespace puck.core.Helpers
 
         //query builders append to this string
         string query;
+        Sort sort = new Sort();
         static string namePattern = @"(?:[A-Za-z0-9]*\()?[A-Za-z0-9]\.([A-Za-z0-9.]*)";
         static string paramPattern = @"((?:[a-zA-Z0-9]+\.?)+)\)";
         static string queryPattern = @"^\(*""(.*)""\s";
@@ -153,7 +155,10 @@ namespace puck.core.Helpers
         public static IList<Dictionary<string,string>> Query(string q){
             return searcher.Query(q);
         }
-
+        public static IList<Dictionary<string, string>> Query(Query q)
+        {
+            return searcher.Query(q);
+        }
         private static string getName(string str) {
             var match = nameRegex.Match(str);
             string result = match.Groups[1].Value;
@@ -261,7 +266,15 @@ namespace puck.core.Helpers
             query += string.Concat(key , openTag, start.ToString(dateFormat), " TO ", end.ToString(dateFormat), closeTag," ");
             return this;
         }
-
+        /*
+        public QueryHelper<TModel> Sort(Expression<Func<TModel, object>> exp, bool descending)
+        {
+            string key = getName(exp.Body.ToString());
+            sort.SetSort(new SortField(key,descending));
+            query += string.Concat(key, ":", value, " ");
+            return this;
+        }
+        */
         //particularly inefficient, cache result!
         public QueryHelper<TModel> AllFields(string value)
         {
@@ -310,6 +323,13 @@ namespace puck.core.Helpers
         public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, long lvalue)
         {
             return this.Field(exp, lvalue.ToString());
+        }
+
+        public QueryHelper<TModel> ExplicitType<AType>()
+        {
+            string key = FieldKeys.PuckType;
+            query += string.Concat(key, ":", typeof(AType).AssemblyQualifiedName, " ");
+            return this;
         }
 
         public QueryHelper<TModel> ID(string value)

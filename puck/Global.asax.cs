@@ -12,7 +12,6 @@ using puck.core.Constants;
 using puck.core.Concrete;
 using System.Web.WebPages;
 using StackExchange.Profiling;
-using puck.core.ValueProviders;
 
 namespace puck
 {

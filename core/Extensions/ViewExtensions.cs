@@ -9,6 +9,7 @@ using puck.core.Constants;
 using puck.core.Abstract;
 using Ninject;
 using Newtonsoft.Json;
+using puck.core.Controllers;
 namespace puck.core.Extensions
 {
     public static class ViewExtensions
@@ -21,16 +22,30 @@ namespace puck.core.Extensions
                 return default(T);
             var settingsType = typeof(T);
             var propertyName = ModelMetadata.FromStringExpression("", page.ViewData).PropertyName;
-            var key = string.Concat(settingsType.AssemblyQualifiedName,":",modelType.AssemblyQualifiedName,":",propertyName);
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
-            if (meta != null)
-            {
-                var data = JsonConvert.DeserializeObject(meta.Value, settingsType);
-                return data==null?default(T):(T)data;
+            var type = modelType;
+            while (type != typeof(object)) {
+                var key = string.Concat(settingsType.AssemblyQualifiedName, ":", type.AssemblyQualifiedName, ":", propertyName);
+                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
+                if (meta == null) {
+                    key = string.Concat(settingsType.AssemblyQualifiedName, ":", type.AssemblyQualifiedName, ":");
+                    meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
+                }
+                if (meta != null)
+                {
+                    var data = JsonConvert.DeserializeObject(meta.Value, settingsType);
+                    return data == null ? default(T) : (T)data;
+                }
+                type = type.BaseType;
             }
-            else {
+            return default(T);            
+        }
+        public static T GetModel<T>(this WebViewPage page) {
+            var instance = Activator.CreateInstance(typeof(T));
+            var controller = page.ViewContext.Controller as BaseController;
+            if (controller.TryUpdateModelDynamic(instance))
+                return (T)instance;
+            else 
                 return default(T);
-            }            
         }
         private static List<Type> NonIntNumbers = new List<Type> { typeof(Decimal),typeof(Single),typeof(Double),typeof(Decimal?),typeof(Single?),typeof(Double?)};
         public static MvcHtmlString Input(this HtmlHelper htmlHelper, string type) {

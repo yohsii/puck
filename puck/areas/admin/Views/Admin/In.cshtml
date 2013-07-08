@@ -1,7 +1,21 @@
 ﻿@model puck.core.Models.LogIn
 
 @{
-    ViewBag.Title = "In";
+    
 }
 
 <h2>In</h2>
+<div class="container_12 login">
+    <div class="grid_12">
+        <h1 class="master">Puck</h1>
+    </div>
+    <div class="grid_3 push_5">
+        @using(Html.BeginForm()){
+            @Html.EditorForModel()
+            <button class="btn-link">submit</button>
+        }
+        <div class="error">
+            @ViewBag.Error
+        </div>
+    </div>    
+</div>

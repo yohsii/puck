@@ -5,7 +5,7 @@ var cleft = $(".leftarea");
 var cright = $(".rightarea .content");
 var cmsg = $(".rightarea .message");
 var getModels = function (path, f) {
-    $.get("/admin/api/models?path=" + path, f);
+    $.get("/admin/api/models?p_path=" + path, f);
 };
 var sortNodes = function (path, items, f) {
     var items_str = "";
@@ -14,7 +14,7 @@ var sortNodes = function (path, items, f) {
     });
     items_str=items_str.substring(0, items_str.length - 1);
     $.ajax({
-        url: "/admin/api/sort?path=" + path,
+        url: "/admin/api/sort?p_path=" + path,
         data: items_str,
         traditional: true,
         success: f,
@@ -23,7 +23,7 @@ var sortNodes = function (path, items, f) {
     });
 }
 var getMarkup = function (path, type, variant, f) {
-    $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&path=" + path, f,"html");
+    $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&p_path=" + path, f,"html");
 }
 var getCreateDialog = function (f, t) {
     $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");
@@ -58,10 +58,10 @@ var getFieldGroups = function (t,f) {
     $.get("/admin/api/fieldgroups?type="+t, f);
 }
 var getLocalisationDialog = function (p, f) {
-    $.get("/admin/api/LocalisationDialog?path=" + p, f);
+    $.get("/admin/api/LocalisationDialog?p_path=" + p, f);
 }
 var getDomainMappingDialog = function (p, f) {
-    $.get("/admin/api/DomainMappingDialog?path=" + p, f);
+    $.get("/admin/api/DomainMappingDialog?p_path=" + p, f);
 }
 var getTasks = function (f) {
     $.get("/admin/task/index", f);
@@ -85,6 +85,39 @@ var getUserMarkup = function (u,f) {
 var setDeleteUser = function (u,f) {
     $.get("/admin/admin/delete?username=" + u, f);
 }
+var getRevisions = function (id, variant, f) {
+    $.get("/admin/api/revisions?id=" + id + "&variant=" + variant, f, "html");
+}
+var getCompareMarkup = function (id, f) {
+    $.get("/admin/api/compare?id=" + id, f, "html");
+}
+var getCacheInfo = function (path, f) {
+    $.get("/admin/api/cacheinfo?p_path=" + path, f);
+}
+var setCacheInfo = function (path, value, f) {
+    $.post("/admin/api/cacheinfo?p_path=" + path + "&value=" + value, f);
+}
+var deleteParameters = function (key, f) {
+    $.get("/admin/settings/DeleteParameters?key=" + key, function (data) {
+        if (data.success) {
+            f();
+        } else {
+            msg(false, data.message);
+        }
+    });
+}
+var getEditorParametersMarkup = function (f, settingsType, modelType, propertyName) {
+    $.get("/admin/settings/EditParameters?settingsType=" + settingsType + "&modelType=" + modelType + "&propertyName=" + propertyName, f);
+}
+var getContent = function (path, f) {
+    $.get("/admin/api/content?p_path=" + path, f);
+};
+var getPath = function (id, f) {
+    $.get("/admin/api/getpath?id=" + id, f);
+};
+var getStartPath = function (f) {
+    $.get("/admin/api/startpath", f);
+};
 var showUserMarkup = function (username) {
     getUserMarkup(username, function (d) {
         overlay(d, 580);
@@ -146,9 +179,6 @@ var revisionsFor = function (vcsv, id) {
         });
     }
 }
-var getRevisions = function (id, variant, f) {
-    $.get("/admin/api/revisions?id="+id+"&variant="+variant, f,"html");
-}
 var showRevisions = function (variant, id) {
     getRevisions(id, variant, function (data) {
         if (!canChangeMainContent())
@@ -187,9 +217,6 @@ var showRevisions = function (variant, id) {
         });
     });
 }
-var getCompareMarkup = function (id,f) {
-    $.get("/admin/api/compare?id=" + id, f, "html");
-}
 var showCompare = function (id) {
     getCompareMarkup(id, function (data) {
         overlay(data);
@@ -226,12 +253,6 @@ var showCompare = function (id) {
 
     });
 }
-var getCacheInfo = function (path, f) {
-    $.get("/admin/api/cacheinfo?path=" + path, f);
-}
-var setCacheInfo = function (path, value,f) {
-    $.post("/admin/api/cacheinfo?path=" + path+"&value="+value, f);
-}
 var showCacheInfo = function (path) {
     getCacheInfo(path, function (data) {
         if (data.success) {
@@ -254,18 +275,6 @@ var showCacheInfo = function (path) {
             msg(false, data.message);
         }
     });
-}
-var deleteParameters = function (key, f) {
-    $.get("/admin/settings/DeleteParameters?key=" + key, function (data) {
-        if (data.success) {
-            f();
-        } else {
-            msg(false, data.message);
-        }
-    });
-}
-var getEditorParametersMarkup = function (f, settingsType, modelType, propertyName) {
-    $.get("/admin/settings/EditParameters?settingsType=" + settingsType + "&modelType="+modelType+"&propertyName="+propertyName, f);
 }
 var editParameters = function (settingsType, modelType, propertyName, success) {
     getEditorParametersMarkup(function (data) {
@@ -515,10 +524,6 @@ var msg = function (success, str) {
     cmsg.append(el);
     el.fadeIn();
 }
-
-var getContent = function (path, f) {
-    $.get("/admin/api/content?path=" + path, f);
-};
 
 var overlayClose = function () {
     $(".overlayinner,.overlay").remove();
@@ -784,7 +789,9 @@ var languages;
 getVariants(function (data) {
     languages = data;
 });
-getDrawContent("/",undefined,true);
+getStartPath(function (d) {
+    getDrawContent(d, undefined, true);
+});
 
 //extensions
 String.prototype.isEmpty = function () {

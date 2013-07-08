@@ -13647,3 +13647,18 @@ stacktrace:    at System.Web.Security.SqlRoleProvider.AddUsersToRolesCore(SqlCon
    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\puck\areas\admin\Controllers\AdminController.cs:line 120
 
 
+date: 08/07/2013 10:09:32
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 30
+
+
+date: 08/07/2013 10:09:36
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 30
+
+
+date: 08/07/2013 10:09:37
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 30
+
+

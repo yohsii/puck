@@ -30,6 +30,7 @@ namespace puck.core.Base
 
         [UIHint("SettingsReadOnly")]
         [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED, Analyzer = typeof(KeywordAnalyzer))]
+        [MaxLength(2048)]
         public string Path { get; set; }
         
         [DateTransformer()]
@@ -45,6 +46,7 @@ namespace puck.core.Base
 
         [UIHint("SettingsReadOnly")]
         [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED, Analyzer = typeof(KeywordAnalyzer))]
+        [MaxLength(10)]
         public string Variant { get; set; }
 
         public bool Published { get; set; }

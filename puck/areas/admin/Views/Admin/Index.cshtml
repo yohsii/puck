@@ -35,7 +35,13 @@
             @string.Join(", ",item.Roles)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.StartNode)
+            @if (item.StartNode != null && item.StartNode.Count > 0) {
+                var id = item.StartNode[0].Id;
+                var startNode = PuckCache.PuckRepo.GetPuckRevision().Where(x => x.Id == id).ToList().FirstOrDefault();
+                if (startNode != null) { 
+                    @startNode.Path
+                }
+            }            
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { }, new {@class="edit",data_username=item.User.UserName}) <br />

@@ -47,3 +47,8 @@ C:\project\puck\core\obj\Debug\puck.core.Globalisation.PuckLabels.resources
 C:\project\puck\core\obj\Debug\core.csproj.GenerateResource.Cache
 C:\project\puck\core\obj\Debug\puck.core.dll
 C:\project\puck\core\obj\Debug\puck.core.pdb
+C:\project\puck\core\bin\Debug\MiniProfiler.dll
+C:\project\puck\core\bin\Debug\MiniProfiler.pdb
+C:\project\puck\core\bin\Debug\MiniProfiler.xml
+C:\project\puck\core\obj\Debug\puck.core.Migrations.indexes.resources
+C:\project\puck\core\obj\Debug\puck.core.Migrations.indexesMeta.resources
