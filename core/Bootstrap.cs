@@ -24,11 +24,14 @@ namespace puck.core
             ApiHelper.UpdateRedirectMappings();
             PuckCache.Analyzers = new List<Lucene.Net.Analysis.Analyzer>();
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
+            PuckCache.TypeFields = new Dictionary<string, List<string>>();
             foreach(var t in ApiHelper.Models(true)){
                 var instance = Activator.CreateInstance(t);
                 var dmp = ObjectDumper.Write(instance,int.MaxValue);
                 var analyzers = new List<KeyValuePair<string, Analyzer>>();
+                PuckCache.TypeFields[t.AssemblyQualifiedName] = new List<string>();
                 foreach (var p in dmp) {
+                    PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key);
                     if (p.Analyzer == null)
                         continue;
                     if (!PuckCache.Analyzers.Any(x => x.GetType() == p.Analyzer.GetType())) {
@@ -40,12 +43,12 @@ namespace puck.core
                 PuckCache.AnalyzerForModel.Add(t,pfAnalyzer);
             }
             if (PuckCache.UpdateTaskLastRun || PuckCache.UpdateRecurringTaskLastRun) {
-                var dispatcher = PuckCache.NinjectKernel.Get<I_Task_Dispatcher>();
+                var dispatcher = PuckCache.PuckDispatcher;
                 if (dispatcher != null) { 
                     dispatcher.TaskEnd+= (object s,DispatchEventArgs e)=>{
                         if ((PuckCache.UpdateTaskLastRun && !e.Task.Recurring) || (PuckCache.UpdateRecurringTaskLastRun && e.Task.Recurring))
                         {
-                            var repo = PuckCache.NinjectKernel.Get<I_Puck_Repository>("T");
+                            var repo = PuckCache.PuckRepo;
                             var taskMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == e.Task.ID).FirstOrDefault();
                             if (taskMeta != null)
                             {

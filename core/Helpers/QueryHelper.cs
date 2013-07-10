@@ -117,7 +117,7 @@ namespace puck.core.Helpers
         }
 
         public static void Delete<T>(this List<T> toDelete) where T:BaseModel {
-            var indexer = DependencyResolver.Current.GetService<I_Content_Indexer>();
+            var indexer = PuckCache.PuckIndexer;
             indexer.Delete(toDelete);
         }
 
@@ -134,12 +134,13 @@ namespace puck.core.Helpers
     }
     public class QueryHelper<TModel> where TModel : BaseModel
     {
-        public static I_Content_Searcher searcher = DependencyResolver.Current.GetService<I_Content_Searcher>();
+        public static I_Content_Searcher searcher = PuckCache.PuckSearcher;
 
         //query builders append to this string
         string query;
         Sort sort = new Sort();
         static string namePattern = @"(?:[A-Za-z0-9]*\()?[A-Za-z0-9]\.([A-Za-z0-9.]*)";
+        static string nameArrayPattern = @"\.get_Item\(\d\)";
         static string paramPattern = @"((?:[a-zA-Z0-9]+\.?)+)\)";
         static string queryPattern = @"^\(*""(.*)""\s";
         static string fieldPattern = @"@";
@@ -147,6 +148,7 @@ namespace puck.core.Helpers
         
         //regexes compiled on startup and reused since they will be used frequently
         static Regex nameRegex = new Regex(namePattern,RegexOptions.Compiled);
+        static Regex nameArrayRegex = new Regex(nameArrayPattern, RegexOptions.Compiled);
         static Regex paramRegex = new Regex(paramPattern, RegexOptions.Compiled);
         static Regex queryRegex = new Regex(queryPattern, RegexOptions.Compiled);
         static Regex fieldRegex = new Regex(fieldPattern,RegexOptions.Compiled);
@@ -160,6 +162,7 @@ namespace puck.core.Helpers
             return searcher.Query(q);
         }
         private static string getName(string str) {
+            str = nameArrayRegex.Replace(str, "");
             var match = nameRegex.Match(str);
             string result = match.Groups[1].Value;
             result = result.ToLower();
@@ -275,12 +278,11 @@ namespace puck.core.Helpers
             return this;
         }
         */
-        //particularly inefficient, cache result!
+        
         public QueryHelper<TModel> AllFields(string value)
         {
-            var props = ObjectDumper.Write(Activator.CreateInstance(typeof(TModel)),int.MaxValue);
-            foreach (var p in props){
-                query += string.Concat(p.Key, ":", value, " ");
+            foreach (var k in PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName]){
+                query += string.Concat(k, ":", value, " ");
             }            
             return this;
         }
@@ -329,6 +331,13 @@ namespace puck.core.Helpers
         {
             string key = FieldKeys.PuckType;
             query += string.Concat(key, ":", typeof(AType).AssemblyQualifiedName, " ");
+            return this;
+        }
+
+        public QueryHelper<TModel> Variant(string value)
+        {
+            string key = FieldKeys.Variant;
+            query += string.Concat(key, ":", value, " ");
             return this;
         }
 

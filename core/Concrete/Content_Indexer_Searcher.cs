@@ -30,7 +30,7 @@ namespace puck.core.Concrete
         private Object write_lock = new Object();
         private I_Log logger;
         
-        public Content_Indexer_Searcher(I_Log Logger/*,I_BQ_Youtube_Repository repo*/) {
+        public Content_Indexer_Searcher(I_Log Logger) {
             this.logger = Logger;
             Ini();
 

@@ -74,7 +74,7 @@
         });
         container.on("click", ".node span", function (e) {
             var clicked = $(this);
-            var node = clicked.parent();
+            var node = clicked.parents(".node:first");
             var isVariantSelection = clicked.hasClass("variant");
 
             if (selected_content().length >= maxPick) {

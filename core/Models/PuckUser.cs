@@ -21,7 +21,11 @@ namespace puck.core.Models
         
         [UIHint("SettingsRoles")]
         public List<string> Roles { get; set; }
-        
+
+        [UIHint("SettingsUserVariant")]
+        [Display(Name="User Language")]
+        public string UserVariant { get; set;}
+
         [UIHint("PuckPicker")]
         public List<PuckPicker> StartNode { get; set; }
         

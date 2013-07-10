@@ -6,7 +6,8 @@
         @Html.Editor(prop.PropertyName)
     } else {
         var complexChild = ViewBag.Level0Type != null && prop.ContainerType != ViewBag.Level0Type;
-        <div data-fieldname="@prop.PropertyName" class="fieldwrapper @(prop.IsComplexType?"complex":"") @(complexChild?"complex_child":"")">
+        var propName = string.IsNullOrEmpty(ViewData.TemplateInfo.GetFullHtmlFieldName("")) ? prop.PropertyName : ViewData.TemplateInfo.GetFullHtmlFieldName("") + "." + prop.PropertyName;
+        <div data-fieldname="@propName" class="fieldwrapper @(prop.IsComplexType?"complex":"") @(complexChild?"complex_child":"")">
             <div class="editor-label" style="">
                 @Html.Label(string.IsNullOrEmpty(prop.DisplayName)?prop.PropertyName:prop.DisplayName)
             </div>

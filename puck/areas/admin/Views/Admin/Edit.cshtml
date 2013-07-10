@@ -38,6 +38,11 @@
             @Html.EditorFor(x => x.Roles)
             </div>
             
+            <div class="fieldwrapper">
+            @Html.LabelFor(x => x.UserVariant)
+            @Html.EditorFor(x => x.UserVariant)
+            </div>
+            
             @if (string.IsNullOrEmpty(Model.Password))
             {
                 <div class="fieldwrapper">

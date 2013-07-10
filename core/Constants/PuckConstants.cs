@@ -16,16 +16,18 @@ namespace puck.core.Constants
     public static class PuckRoles
     {
         public static string Create = "create";
+        public static string Edit = "edit";
         public static string Delete = "delete";
+        public static string Publish = "publish";
         public static string Unpublish = "unpublish";
+        public static string Revert = "revert";
+        public static string Sort = "sort";
         public static string Localisation = "localisation";
         public static string Domain = "domain";
-        public static string Revert = "revert";
         public static string Cache = "cache";
         public static string Settings = "settings";
         public static string Tasks = "tasks";
-        public static string Users = "users";
-        public static string Publish = "publish";
+        public static string Users = "users";        
     }
     public static class FieldKeys
     {
@@ -52,6 +54,7 @@ namespace puck.core.Constants
         public static string CachePolicy = "cache";
         public static string CacheExclude = "cacheexclude";
         public static string UserStartNode = "userstartnode";
+        public static string UserVariant = "uservariant";
     }
     public static class DBKeys
     {
@@ -91,9 +94,13 @@ namespace puck.core.Constants
         public static Dictionary<string, string> Redirect301 { get; set; }
         public static Dictionary<string, string> Redirect302 { get; set; }
         public static Dictionary<string, int> TypeOutputCache { get; set; }
+        public static Dictionary<string, List<string>> TypeFields { get; set; }
         public static HashSet<string> OutputCacheExclusion { get; set; }
         public static IKernel NinjectKernel { get; set; }
-        public static I_Puck_Repository PuckRepo { get { return NinjectKernel.Get<I_Puck_Repository>("T"); } }
+        public static I_Task_Dispatcher PuckDispatcher { get { return NinjectKernel.Get<I_Task_Dispatcher>(); } }
+        public static I_Content_Searcher PuckSearcher { get { return NinjectKernel.Get<I_Content_Searcher>(); } }
+        public static I_Content_Indexer PuckIndexer { get { return NinjectKernel.Get<I_Content_Indexer>(); } }
+        public static I_Puck_Repository PuckRepo { get { return NinjectKernel.Get<I_Puck_Repository>(); } }
         public static I_Log PuckLog { get { return NinjectKernel.Get<I_Log>(); } }
         public static List<Analyzer> Analyzers { get; set; }
         public static Dictionary<Type, Analyzer> AnalyzerForModel { get; set; }

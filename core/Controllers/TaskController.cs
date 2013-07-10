@@ -15,7 +15,7 @@ using puck.core.Filters;
 namespace puck.core.Controllers
 {
     [SetPuckCulture]
-    [Auth]
+    [Auth(Roles="tasks")]
     public class TaskController : BaseController
     {
         I_Puck_Repository repo;

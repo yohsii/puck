@@ -19,6 +19,7 @@ using puck.core.Entities;
 using puck.core.Filters;
 using puck.core.Models;
 using StackExchange.Profiling;
+using System.Web.Security;
 namespace puck.core.Controllers
 {
     [Auth]
@@ -38,6 +39,19 @@ namespace puck.core.Controllers
         public ActionResult Index() {
             return View();
         }
+        public JsonResult UserLanguage()
+        {
+            string variant = PuckCache.SystemVariant;
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
+            if (meta != null)
+                variant = meta.Value;
+            return Json(variant, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult UserRoles()
+        {
+            var roles = Roles.GetRolesForUser(User.Identity.Name);
+            return Json(roles, JsonRequestBehavior.AllowGet);
+        }
         public JsonResult FieldGroups(string type) {
             var model = ApiHelper.FieldGroups(type);
             return Json(model,JsonRequestBehavior.AllowGet);
@@ -56,16 +70,19 @@ namespace puck.core.Controllers
             var model = ApiHelper.Variants();
             return Json(model,JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = "domain")]
         public ActionResult DomainMappingDialog(string p_path)
         {
             var model = ApiHelper.DomainMapping(p_path);
             return View((object)model);
         }
+        [Auth(Roles = "domain")]
         public JsonResult DomainMapping(string p_path)
         {
             var model = ApiHelper.DomainMapping(p_path);
             return Json(model,JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = "domain")]
         [HttpPost]
         public JsonResult DomainMapping(string p_path,string domains) {
             string message = "";
@@ -82,15 +99,19 @@ namespace puck.core.Controllers
             }
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
         }
+        
+        [Auth(Roles = "localisation")]
         public ActionResult LocalisationDialog(string p_path)
         {
             var model = ApiHelper.PathLocalisation(p_path);
             return View((object)model);
         }
+        [Auth(Roles = "localisation")]
         public JsonResult Localisation(string p_path) {
             var model = ApiHelper.PathLocalisation(p_path);
             return Json(model,JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = "localisation")]
         [HttpPost]
         public JsonResult Localisation(string p_path,string variant)
         {
@@ -107,11 +128,13 @@ namespace puck.core.Controllers
             }
             return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetPath(Guid id) {
             var node = repo.GetPuckRevision().Where(x => x.Id == id).FirstOrDefault();
             string path = node == null ? string.Empty : node.Path;
             return Json(path,JsonRequestBehavior.AllowGet);
         }
+        
         public JsonResult StartPath() {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == HttpContext.User.Identity.Name).FirstOrDefault();
             if (meta != null)
@@ -128,13 +151,19 @@ namespace puck.core.Controllers
             }
             return Json("/", JsonRequestBehavior.AllowGet);
         }
+        
         public JsonResult Content(string p_path = "/") {
             List<PuckRevision> resultsRev;
             using (MiniProfiler.Current.Step("content by path from DB"))
             {
                 resultsRev = repo.CurrentRevisionsByPath(p_path).ToList();
             }
-            var results = resultsRev.Select(x =>ApiHelper.RevisionToBaseModel(x)).ToList().GroupByPath().OrderBy(x=>x.Value.First().Value.SortOrder).ToDictionary(x=>x.Key,x=>x.Value);
+            
+            var results = resultsRev.Select(x =>ApiHelper.RevisionToBaseModel(x)).ToList()
+                .GroupByPath()
+                .OrderBy(x=>x.Value.First().Value.SortOrder)
+                .ToDictionary(x=>x.Key,x=>x.Value);
+
             List<string> haveChildren = new List<string>();
             foreach (var k in results) {
                 if (repo.CurrentRevisionChildren(k.Key).Count() > 0)
@@ -144,6 +173,8 @@ namespace puck.core.Controllers
             var publishedContent = qh.Directory(p_path).GetAll().GroupByPath();
             return Json(new { current=results,published=publishedContent,children=haveChildren }, JsonRequestBehavior.AllowGet);
         }
+
+        [Auth(Roles = "sort")]
         public JsonResult Sort(string p_path,List<string> items) {
             string message = "";
             bool success = false;
@@ -158,13 +189,16 @@ namespace puck.core.Controllers
             }
             return Json(new {success=success,message=message },JsonRequestBehavior.AllowGet);
         }
-        public JsonResult Publish(string id,bool descendants=false)
+
+        [Auth(Roles = "publish")]
+        public JsonResult Publish(Guid id,string variant,string descendants)
         {
             var message = string.Empty;
             var success = false;
             try
             {
-                ApiHelper.Publish(id,descendants);
+                var arrDescendants = descendants.Split(new char[]{','},StringSplitOptions.RemoveEmptyEntries).ToList();
+                //ApiHelper.Publish(id,variant,arrDescendants,true);
                 success = true;
             }
             catch (Exception ex)
@@ -175,13 +209,16 @@ namespace puck.core.Controllers
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult UnPublish(string id)
+
+        [Auth(Roles = "unpublish")]
+        public JsonResult UnPublish(Guid id,string variant,string descendants)
         {
             var message = string.Empty;
             var success = false;
             try
             {
-                ApiHelper.UnPublish(id);
+                var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                //ApiHelper.Publish(id,variant,arrDescendants,false);
                 success = true;
             }
             catch (Exception ex)
@@ -192,7 +229,9 @@ namespace puck.core.Controllers
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult Delete(string id,string variant = null){
+
+        [Auth(Roles = "delete")]
+        public JsonResult Delete(Guid id,string variant = null){
             var message = string.Empty;
             var success = false;
             try {
@@ -206,7 +245,9 @@ namespace puck.core.Controllers
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Edit(string type,string p_path="/",string variant="") {
+
+        [Auth(Roles = "edit")]
+        public ActionResult Edit(string type,string p_path="/",string variant="",string fromVariant="") {
             //empty model of type
             var modelType= Type.GetType(type);
             object model = Activator.CreateInstance(modelType);
@@ -223,24 +264,32 @@ namespace puck.core.Controllers
             //else we'll need to get current data to edit for node
            
             //get current culture
-            if(string.IsNullOrEmpty(variant))
-                variant = Thread.CurrentThread.CurrentCulture.Name;
+            //if(string.IsNullOrEmpty(variant))
+                //variant = Thread.CurrentThread.CurrentCulture.Name;
 
             List<PuckRevision> results = null;
             //try get node by path with particular variant
-            results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(variant) && x.Current).ToList();
-            
-            //just get node by path
-            if (results.Count == 0)
-                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Current).ToList();
-            
+            if(string.IsNullOrEmpty(fromVariant))
+                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(variant.ToLower()) && x.Current).ToList();
+            else
+                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(fromVariant.ToLower()) && x.Current).ToList();
+
             if (results.Count > 0) {
                 var result = results.FirstOrDefault();
                 model = ApiHelper.RevisionToModel(result);
+                if(!string.IsNullOrEmpty(fromVariant)){
+                    var mod = model as BaseModel;
+                    mod.Variant = variant;
+                    mod.Created = DateTime.Now;
+                    mod.Updated = DateTime.Now;
+                    mod.Published = false;
+                    mod.Revision = 0;
+                }
             }
             return View(model);
         }
 
+        [Auth(Roles = "edit")]
         [HttpPost]
         public JsonResult Edit(FormCollection fc,string p_type,string p_path) {
             var targetType = Type.GetType(p_type);
@@ -251,11 +300,11 @@ namespace puck.core.Controllers
                 UpdateModelDynamic(model,fc.ToValueProvider());
                 ObjectDumper.BindImages(model, int.MaxValue);
                 ObjectDumper.Transform(model, int.MaxValue);
-                var npi = ObjectDumper.Write(model, int.MaxValue);
+                //var npi = ObjectDumper.Write(model, int.MaxValue);
                 var mod = model as BaseModel;
                 //append nodename to path, which indicates first save
                 mod.Path =mod.Path.EndsWith("/")? p_path+mod.NodeName:mod.Path;
-                //ApiHelper.SaveContent(mod);
+                ApiHelper.SaveContent(mod);
                 success = true;
             }
             catch (Exception ex) {
@@ -265,6 +314,8 @@ namespace puck.core.Controllers
             }
             return Json(new {success=success,message=message },JsonRequestBehavior.AllowGet);
         }
+
+        [Auth(Roles = "cache")]
         public JsonResult CacheInfo(string p_path) {
             bool success = false;
             string message = "";
@@ -284,6 +335,8 @@ namespace puck.core.Controllers
             }
             return Json(new {result=model, success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+        [Auth(Roles = "cache")]
         [HttpPost]
         public JsonResult CacheInfo(string p_path,bool value)
         {
@@ -309,11 +362,13 @@ namespace puck.core.Controllers
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
+
+        [Auth(Roles = "revert")]
         public ActionResult Revisions(Guid id,string variant) {
-            var model = repo.GetPuckRevision().Where(x => x.Id == id && variant.ToLower().Equals(variant.ToLower())).OrderByDescending(x=>x.Revision).ToList();
+            var model = repo.GetPuckRevision().Where(x => x.Id == id && x.Variant.ToLower().Equals(variant.ToLower())).OrderByDescending(x=>x.Revision).ToList();
             return View(model);
         }
-
+        [Auth(Roles = "revert")]
         public ActionResult Compare(int id)
         {
             var compareTo = repo.GetPuckRevision().Where(x => x.RevisionID == id).FirstOrDefault();
@@ -327,7 +382,7 @@ namespace puck.core.Controllers
             }
             return View(model);
         }
-
+        [Auth(Roles = "revert")]
         public ActionResult Revert(int id)
         {
             bool success = false;
@@ -367,7 +422,7 @@ namespace puck.core.Controllers
             }
             return Json(new { success = success, message = message,path=path,type=type,variant=variant }, JsonRequestBehavior.AllowGet);
         }
-
+        [Auth(Roles = "revert")]
         public JsonResult DeleteRevision(int id)
         {
             var message = string.Empty;

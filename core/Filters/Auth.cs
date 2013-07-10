@@ -43,15 +43,22 @@ namespace puck.core.Filters
             UrlHelper urlHelper = new UrlHelper(context.RequestContext);
             if (context.HttpContext.Request.IsAjaxRequest())
             {
-                context.Result = new JsonResult
-                {
-                    Data = new
+                if (context.HttpContext.Request.Headers["accept"] != null && !context.HttpContext.Request.Headers["accept"].ToLower().StartsWith("text/html"))
+                    context.Result = new JsonResult
                     {
-                        succes=false,
-                        message = "Not authorized - log back in",
-                        LogOnUrl = urlHelper.Action("In","Account")
-                    }, JsonRequestBehavior = JsonRequestBehavior.AllowGet
-                };
+                        Data = new
+                        {
+                            succes=false,
+                            message = "Not authorized - make sure your login is still valid and check with your admin that you have the necessary permissions to access this content.",
+                            LogOnUrl = urlHelper.Action("In","Account")
+                        }, JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                    };
+                else
+                    context.Result = new ContentResult()
+                    {
+                        Content = "Not authorized - make sure your login is still valid and check with your admin that you have the necessary permissions to access this content.",
+                        ContentType="text/html"
+                    };
             }
             else {
                 context.RequestContext.HttpContext.Response.Redirect(urlHelper.Action("In", "Admin"), true);

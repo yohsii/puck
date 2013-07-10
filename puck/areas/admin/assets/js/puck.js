@@ -22,8 +22,8 @@ var sortNodes = function (path, items, f) {
         datatype: "json"
     });
 }
-var getMarkup = function (path, type, variant, f) {
-    $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&p_path=" + path, f,"html");
+var getMarkup = function (path, type, variant, f, fromVariant) {
+    $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&p_path=" + path+"&fromVariant="+(fromVariant==undefined?"":fromVariant), f,"html");
 }
 var getCreateDialog = function (f, t) {
     $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");
@@ -34,11 +34,21 @@ var getSettings = function (f) {
 var getVariants = function (f) {
     $.get("/admin/api/variants", f);
 }
-var setPublish = function (id, f) {
-    $.get("/admin/api/publish?id=" + id, f);
+var setPublish = function (id,variant,descendants, f) {
+    var path = "/admin/api/publish?id=" + id;
+    if (variant != undefined)
+        path += "&variant=" + variant;
+    if (descendants != undefined)
+        path += "&descendants=" + descendants;
+    $.get(path, f);
 }
-var setUnPublish = function (id, f) {
-    $.get("/admin/api/unpublish?id=" + id, f);
+var setUnpublish = function (id,variant,descendants, f) {
+    var path = "/admin/api/unpublish?id=" + id;
+    if (variant != undefined)
+        path += "&variant=" + variant;
+    if (descendants != undefined)
+        path += "&descendants=" + descendants;
+    $.get(path, f);
 }
 var setDelete = function (id, f, variant) {
     var path = "/admin/api/delete?id=" + id;
@@ -94,6 +104,12 @@ var getCompareMarkup = function (id, f) {
 var getCacheInfo = function (path, f) {
     $.get("/admin/api/cacheinfo?p_path=" + path, f);
 }
+var getUserRoles = function (f) {
+    $.get("/admin/api/userroles", f);
+}
+var getUserLanguage = function (f) {
+    $.get("/admin/api/userlanguage", f);
+}
 var setCacheInfo = function (path, value, f) {
     $.post("/admin/api/cacheinfo?p_path=" + path + "&value=" + value, f);
 }
@@ -123,6 +139,8 @@ var showUserMarkup = function (username) {
         overlay(d, 580);
         wireForm($(".overlayinner form"), function (data) {
             showUsers();
+            userRoles = $(".overlayinner select[name=Roles]").val();
+            getUserLanguage(function (d) { defaultLanguage = d; });
             overlayClose();
         }, function (data) {
             $(".overlayinner .msg").show().html(data.message);            
@@ -165,6 +183,7 @@ var revisionsFor = function (vcsv, id) {
         showRevisions(variants[0], id);
     } else {
         var markup = $(".interfaces .revision_for_dialog").clone();
+        markup.find(".descendantscontainer").hide();
         for (var i = 0; i < variants.length; i++) {
             markup.find("select").append(
                 "<option value='" + variants[i] + "'>" + variants[i] + "</option>"
@@ -386,8 +405,6 @@ var newContent = function (path, type) {
         });
     }, type);
 }
-var publishedContent = [];
-var haveChildren = [];
 var getDrawContent = function (path, el, sortable) {
     if (el == undefined) {
         var nodeParent = dirOfPath(path);
@@ -408,48 +425,57 @@ var getDrawContent = function (path, el, sortable) {
         });
     });
 }
-var defaultLanguage = "en-gb";
 var draw = function (data, el, sortable) {
     var str = "";
     var toAppend = $("<ul/>");
     for (var p in data) {//paths as keys
+        dbcontent[p] = data[p];
         var variants = [];
+        var hasUnpublished = false;
         for (var v in data[p]) {//variant as keys
             variants.push(v);
-            var node;
-            if (!!data[p][defaultLanguage])
-                node = data[p][defaultLanguage];
-            else
-                node = data[p][v];
-            var elnode = $("<li/>").addClass("node");
-            if (!node.Published)
-                elnode.addClass("unpublished");
-            elnode.append($("<i class=\"icon-chevron-right expand\"></i>"))
-            elnode.append($("<i class=\"icon-cog menu\"></i>"))
-                    .append("<span class='nodename'>" + node.NodeName + "&nbsp;" + "</span>");
-            for (var i = 0; i < variants.length; i++) {
-                elnode.append(
-                            $("<span class=\"variant\"/>").attr("data-variant", variants[i]).html(variants[i])
-                        );
+            if (data[p][v].Published==false) {
+                hasUnpublished = true;
             }
-            elnode.attr({
-                "data-type_chain": typeFromChain(node.TypeChain)
-                , "data-type": node.Type
-                , "data-id": node.Id
-                , "data-path": node.Path
-                , "data-nodename": node.NodeName
-                , "data-variants": variants.join(",")
-                , "data-parent_path": dirOfPath(node.Path)
-                , "data-children_path": node.Path + "/"
-                , "data-published": node.Published
-            });
-            toAppend.append(elnode);
         }
+        var node;
+        if (!!data[p][defaultLanguage])
+            node = data[p][defaultLanguage];
+        else
+            node = data[p][v];
+        var elnode = $("<li/>").addClass("node");
+        var elinner = $("<div class='inner'/>");
+        elnode.append(elinner);
+        if (hasUnpublished)
+            elnode.addClass("unpublished");
+        elinner.append($("<i class=\"icon-chevron-right expand\"></i>"))
+        elinner.append($("<i class=\"icon-cog menu\"></i>"))
+                .append("<span class='nodename'>" + node.NodeName + "&nbsp;" + "</span>");
+        for (var i = 0; i < variants.length; i++) {
+            var vel = $("<span class=\"variant\"/>").attr("data-variant", variants[i]).html(variants[i] + "&nbsp;");
+            if (publishedContent[node.Path] != undefined && publishedContent[node.Path][variants[i]] != undefined) {
+                vel.addClass("published");
+            }
+            elinner.append(vel);
+        }
+        elnode.attr({
+            "data-type_chain": typeFromChain(node.TypeChain)
+            , "data-type": node.Type
+            , "data-id": node.Id
+            , "data-path": node.Path
+            , "data-nodename": node.NodeName
+            , "data-variants": variants.join(",")
+            , "data-parent_path": dirOfPath(node.Path)
+            , "data-children_path": node.Path + "/"
+            , "data-published": node.Published
+        });
+        toAppend.append(elnode);        
     }
     el.find("ul").remove();
     el.append(toAppend);
     if (sortable) {
         toAppend.sortable({
+            axis:'y',
             update: function (event, ui) {
                 var parent = ui.item.parents("li[data-children_path]:first");
                 var sortPath = parent.attr("data-children_path");
@@ -462,7 +488,7 @@ var draw = function (data, el, sortable) {
         });
     }
 }
-var displayMarkup = function (path, type, variant) {
+var displayMarkup = function (path, type, variant,fromVariant) {
     getMarkup(path, type, variant, function (data) {
         cright.html(data);
         //get field groups and build tabs
@@ -502,7 +528,13 @@ var displayMarkup = function (path, type, variant) {
                 var groupContainer = $(".tab-pane[data-group='" + group + "']");
                 groupContainer.append(fieldWrapper);
             });
-            cright.find("div.fields>.fieldwrapper").appendTo(cright.find("[data-group='default']"));
+            cright.find("div.fields>.fieldwrapper").each(function () {
+                var el = $(this);
+                var fieldname = el.attr("data-fieldname");
+                if (fieldname.split(".").length > 1)
+                    cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']").append(el);
+                else el.appendTo(cright.find("[data-group='default']"));
+            })
 
         });
         wireForm(cright.find('form'), function (data) {
@@ -512,7 +544,7 @@ var displayMarkup = function (path, type, variant) {
             msg(false, data.message);
         });
         afterDom();
-    });
+    },fromVariant);
 }
 var msg = function (success, str) {
     var btnClass = "";
@@ -563,21 +595,11 @@ var afterDom = function () {
         afterDomActions.pop()();
     }
 }
-var afterOverlayActions = [];
-var onAfterOverlay = function (f) {
-    afterOverlayActions.push(f);
-}
-var afterOverlay = function () {
-    while (afterOverlayActions.length) {
-        afterOverlayActions.pop()();
-    }
-}
 var canChangeMainContent=function(){
     if(cright.find(".fieldwrapper").length>0)
         return confirm("sure you want to move away from this page?");
     else
         return true;
-
 }
 $('a.settings').click(function (e) {
     e.preventDefault();
@@ -588,8 +610,11 @@ $('a.settings').click(function (e) {
         afterDom();
         //setup validation
         wireForm(cright.find('form'), function (data) {
-            msg(true, "settings updated.")
+            msg(true, "settings updated.");
             window.scrollTo(0);
+            getVariants(function (data) {
+                languages = data;
+            });
         }, function (data) {
             msg(false, d.message);
         });
@@ -627,7 +652,7 @@ $(".menutop .users").click(function (e) { e.preventDefault(); showUsers(); });
 //content tree expand
 $("body").on("click", "ul.content li.node i.expand", function () {
     //get children content
-    var node = $(this).parent();
+    var node = $(this).parents(".node:first");
     console.log(node);
     var descendants = node.find("ul");
     if (descendants.length > 0) {//show
@@ -646,7 +671,7 @@ $("body").on("click", "ul.content li.node i.expand", function () {
 //node settings dropdown
 cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
     //display dropdown
-    var node = $(this).parent();
+    var node = $(this).parents(".node:first");
     var left = node.offset().left;
     var top = node.offset().top + 30;
     var dropdown = $(".node-dropdown");
@@ -659,7 +684,7 @@ cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
         dropdown.removeClass("open");
         $("html").off();
     });
-    //filter menu items according to context
+    //filter menu items according to context -- ie COULD this option be shown in the current context
     //filter translation item
     var totranslate = untranslated(node.attr("data-variants"));
     if (totranslate)
@@ -667,22 +692,55 @@ cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
     else
         dropdown.find("a[data-action='translate']").parents("li").hide();
     //filter publish/unpublish
-    if (publishedContent[node.attr("data-path")] !=undefined) {
-        dropdown.find("a[data-action='publish']").parents("li").hide();
+    if (publishedVariants(node.attr("data-path")) !=false)
         dropdown.find("a[data-action='unpublish']").parents("li").show();
-    } else {
-        dropdown.find("a[data-action='publish']").parents("li").show();
+    else
         dropdown.find("a[data-action='unpublish']").parents("li").hide();
-    }
-    //filter localisation
-
+    
+    if (unpublishedVariants(node.attr("data-path")) !=false)    
+        dropdown.find("a[data-action='publish']").parents("li").show();
+    else
+        dropdown.find("a[data-action='publish']").parents("li").hide();
     //filter domain
     if (isRootItem(node.attr("data-path"))) {
         dropdown.find("a[data-action='domain']").parents("li").show();
     } else {
         dropdown.find("a[data-action='domain']").parents("li").hide();
-    }    
+    }
+    //filter menu items according to permissions -- ie can user access option
+    dropdown.find("a[data-action]").each(function () {
+        var permission = $(this).attr("data-permission");
+        if (!userRoles.contains(permission)) $(this).parents("li").hide();
+        else $(this).parents("li").show();
+    });
 });
+var dialogForVariants = function (variants) {
+    var dialog = $(".interfaces .revision_for_dialog").clone();
+    $.each(variants, function () {
+        dialog.find(".variantcontainer select").append("<option value='" + this + "'>" + this + "</option>");
+    });
+    $.each(languages, function () {
+        dialog.find(".descendantscontainer select").append("<option value='" + this.Key + "'>" + this.Key + "</option>");        
+    });
+    dialog.find(".descendantscontainer select").prepend("<option selected value=''>None</option>");
+    return dialog;
+}
+var unpublishedVariants = function (path) {
+    var variants = [];
+    cleft.find(".node[data-path='" + path + "'] .variant").each(function () {
+        if (!$(this).hasClass("published"))
+            variants.push($(this).attr("data-variant"));
+    });
+    return variants.length == 0 ? false : variants;
+}
+var publishedVariants = function (path) {
+    var variants = [];
+    cleft.find(".node[data-path='" + path + "'] .variant").each(function () {
+        if ($(this).hasClass("published"))
+            variants.push($(this).attr("data-variant"));
+    });
+    return variants.length == 0 ? false : variants;
+}
 //menu items
 $(".node-dropdown a").click(function () {
     var el = $(this);
@@ -690,6 +748,80 @@ $(".node-dropdown a").click(function () {
     var context = el.parents(".node-dropdown").attr("data-context");
     var node = $(".node[data-id='" + context + "']");
     switch (action) {
+        case "delete":
+            if (confirm("sure?")) {
+                var doDelete = function (id, variant) {
+                    setDelete(id, function (data) {
+                        if (data.success === true) {
+                            if (variant == "" || variant == undefined) {
+                                node.remove();
+                            } else {
+                                node.find("span.variant[data-variant='" + variant + "']").remove();
+                            }
+                            overlayClose();
+                        } else {
+                            msg(false, data.message);
+                        }
+                    }, variant);
+                }
+                var variants = node.attr("data-variants").split(",");
+                if (variants.length > 1) {
+                    var dialog = dialogForVariants(variants);
+                    overlay(dialog, 400, 150);
+                    dialog.find(".descendantscontainer").hide();
+                    dialog.find("button").click(function () {
+                        doDelete(node.attr("data-id"), dialog.find("select").val());
+                    });
+                } else {
+                    doDelete(node.attr("data-id"), variants[0]);
+                }
+            }; break;
+        case "publish":
+            var doPublish = function (id, variant,descendants) {
+                setPublish(id,variant,descendants, function (data) {
+                    if (data.success === true) {
+                        getDrawContent(dirOfPath(node.attr("data-path")), undefined, true);
+                        overlayClose();
+                    } else {
+                        msg(false, data.message);
+                    }
+                });
+            }
+            var variants = unpublishedVariants(node.attr("data-path"));
+            if (variants.length > 1 || 1 == 1) {
+                var dialog = dialogForVariants(variants);
+                dialog.find(".descendantscontainer label").html("Publish descendants?");
+                overlay(dialog, 400, 250);
+                dialog.find("button").click(function () {
+                    doPublish(node.attr("data-id"), dialog.find("select[name=variant]").val(), (dialog.find("select[name=descendants]").val() || []).join(','));
+                });
+            } else {
+                doPublish(node.attr("data-id"), variants[0]);
+            }
+            break;
+        case "unpublish":
+            var doUnpublish = function (id, variant,descendants) {
+                setUnpublish(id,variant,descendants, function (data) {
+                    if (data.success === true) {
+                        getDrawContent(dirOfPath(node.attr("data-path")), undefined, true);
+                        overlayClose();
+                    } else {
+                        msg(false, data.message);
+                    }
+                });
+            }
+            var variants = publishedVariants(node.attr("data-path"));
+            if (variants.length > 1 || 1 == 1) {
+                var dialog = dialogForVariants(variants);
+                dialog.find(".descendantscontainer label").html("Unpublish descendants?");
+                overlay(dialog, 400, 250);
+                dialog.find("button").click(function () {
+                    doUnpublish(node.attr("data-id"), dialog.find("select[name='variant']").val(), (dialog.find("select[name='descendants']").val() || []).join(','));
+                });
+            } else {
+                doUnpublish(node.attr("data-id"), variants[0]);
+            }
+            break;
         case "revert":
             revisionsFor(node.attr("data-variants"),node.attr("data-id"));
             break;
@@ -701,13 +833,29 @@ $(".node-dropdown a").click(function () {
             break;
         case "translate":
             getCreateDialog(function (data) {
-                overlay(data, 400, 300);
+                overlay(data, 400, 250);
                 var type = $(".overlayinner select[name=type]");
-                var variant = $(".overlayinner select[name=variant] option");
-                $(".overlayinner .typecontainer").hide();
+                var variant = $(".overlayinner select[name=variant]");
+                var fromVariant = variant.clone().attr("name","fromVariant");
+                $(".overlayinner .typecontainer label").html("Translate from version").siblings().hide().after(fromVariant);
                 type.val(node.attr("data-type"));
                 var variants = node.attr("data-variants").split(",");
-                variant.each(function () {
+                if (variants.length == 1) {
+                    $(".overlayinner .typecontainer").hide();
+                    $(".overlayinner").css({height:"170px"});
+                }
+                fromVariant.find("option").each(function () {
+                    var option = $(this);
+                    var contains = false;
+                    $(variants).each(function () {
+                        if (this == option.val())
+                            contains = true;
+                    });
+                    if (!contains) {
+                        option.remove();
+                    }
+                });
+                variant.find("option").each(function () {
                     //check value doesn't exist in variant list
                     var option = $(this);
                     var contains = false;
@@ -719,33 +867,11 @@ $(".node-dropdown a").click(function () {
                         option.remove();
                 });
                 $(".overlayinner button").click(function () {
-                    displayMarkup(node.attr("data-path"), node.attr("data-type"), variant.val());
+                    displayMarkup(node.attr("data-path"), node.attr("data-type"), variant.val(),fromVariant.val());
+                    overlayClose();
                 });
             }, node.attr("data-type"));
             break;
-        case "delete":
-            if (confirm("sure?")) {
-                setDelete(node.attr("data-id"), function (data) {
-                    if (data.success === true) {
-                        node.remove();
-                    } else {
-                        msg(false, data.message);
-                    }
-                });
-            }; break;
-        case "publish": setPublish(node.attr("data-id"), function (data) {
-            if (data.success === true)
-                var todo = ""; //refresh node
-            else
-                msg(false, data.message);
-
-        }); break;
-        case "unpublish": setUnPublish(node.attr("data-id"), function (data) {
-            if (data.success === true)
-                var todo = "";
-            else
-                msg(false, data.message);
-        }); break;
         case "localisation":
             setLocalisation(node.attr("data-path"));
             break;
@@ -785,14 +911,20 @@ cleft.find("ul.content").on("click", "li.node span.variant", function () {
 });
 
 //ini
+var publishedContent = [];
+var haveChildren = [];
+var dbcontent = [];
+var defaultLanguage = "en-gb";
+var userRoles = [];
 var languages;
+getUserLanguage(function (d) { defaultLanguage = d; });
+getUserRoles(function (d) { userRoles = d; });
 getVariants(function (data) {
     languages = data;
 });
 getStartPath(function (d) {
     getDrawContent(d, undefined, true);
 });
-
 //extensions
 String.prototype.isEmpty = function () {
     return this.replace(/\s/g, "").length == 0;

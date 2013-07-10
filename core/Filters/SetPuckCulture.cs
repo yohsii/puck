@@ -13,7 +13,24 @@ namespace puck.core.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(PuckCache.SystemVariant);
+            string variant;
+            if (filterContext.HttpContext.Session["language"] != null)
+            {
+                variant = filterContext.HttpContext.Session["language"] as string;
+            }
+            else {
+                var repo = PuckCache.PuckRepo;
+                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == filterContext.HttpContext.User.Identity.Name).FirstOrDefault();
+                if (meta != null && !string.IsNullOrEmpty(meta.Value))
+                {
+                    variant = meta.Value;
+                    filterContext.HttpContext.Session["language"] = meta.Value;
+                }
+                else {
+                    variant = PuckCache.SystemVariant;
+                }
+            }
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(variant);
         }
     }
 }

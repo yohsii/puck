@@ -52,6 +52,7 @@ namespace puck.core.Controllers
             return View();
         }
 
+        [Auth(Roles = "users")]
         public ActionResult Index()
         {
             var model = new List<PuckUser>();
@@ -64,12 +65,15 @@ namespace puck.core.Controllers
                 var meta = repo.GetPuckMeta().Where(x =>x.Name== DBNames.UserStartNode && x.Key.Equals(mu.UserName)).FirstOrDefault();
                 if(meta!=null)
                     pu.StartNode =new List<PuckPicker>{JsonConvert.DeserializeObject(meta.Value,typeof(PuckPicker)) as PuckPicker};
+                var userMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key.Equals(mu.UserName)).FirstOrDefault();
+                if (userMeta != null)
+                    pu.UserVariant = userMeta.Value;
                 model.Add(pu);
             }
             return View(model);
         }
 
-        [Auth]
+        [Auth(Roles = "users")]
         public ActionResult Edit(string userName=null) {
             var model = new PuckUser();
             if (!string.IsNullOrEmpty(userName)) {
@@ -81,13 +85,16 @@ namespace puck.core.Controllers
                 model.Roles = Roles.GetRolesForUser(userName).ToList();
                 var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(usr.UserName)).FirstOrDefault();
                 if(meta !=null)
-                    model.StartNode = JsonConvert.DeserializeObject(meta.Value, typeof(List<PuckPicker>)) as List<PuckPicker>;                
+                    model.StartNode = new List<PuckPicker>{JsonConvert.DeserializeObject(meta.Value, typeof(PuckPicker)) as PuckPicker};
+                var userMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key.Equals(usr.UserName)).FirstOrDefault();
+                if (userMeta != null)
+                    model.UserVariant = userMeta.Value;
             }
             return View(model);
         }
 
         [HttpPost]
-        [Auth]
+        [Auth(Roles="users")]
         public JsonResult Edit(PuckUser user,bool edit)
         {
             bool success = false;
@@ -145,6 +152,13 @@ namespace puck.core.Controllers
                     }
                     meta.Value = JsonConvert.SerializeObject(user.StartNode.First());
                 }
+                var userVariantMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
+                if (userVariantMeta != null)
+                    userVariantMeta.Value = user.UserVariant;
+                else {
+                    userVariantMeta = new PuckMeta() {Name=DBNames.UserVariant,Key = User.Identity.Name,Value=user.UserVariant };
+                    repo.AddMeta(userVariantMeta);
+                }
                 repo.SaveChanges();
                 success = true;
             }
@@ -156,7 +170,7 @@ namespace puck.core.Controllers
             return Json(new {success=success,message=message }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth]
+        [Auth(Roles = "users")]
         public JsonResult Delete(string username) {
             bool success = false;
             string message = "";
@@ -164,6 +178,7 @@ namespace puck.core.Controllers
             {
                 Membership.Providers["puck"].DeleteUser(username, true);
                 repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(username)).ToList().ForEach(x => repo.DeleteMeta(x));
+                repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key.Equals(username)).ToList().ForEach(x => repo.DeleteMeta(x));
                 repo.SaveChanges();
                 success = true;
             }

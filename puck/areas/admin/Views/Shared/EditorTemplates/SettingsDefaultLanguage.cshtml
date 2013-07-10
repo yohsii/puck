@@ -1,7 +1,7 @@
 ﻿@using System.Globalization;
 @model String
 @{
-    var selected =string.IsNullOrEmpty(Model)? "en-gb":Model;
+    var selected =string.IsNullOrEmpty(Model)? PuckCache.SystemVariant:Model;
 }
 <select name="@ViewData.ModelMetadata.PropertyName" class="defaultlanguage">
     @foreach (var v in ApiHelper.AllVariants()) {

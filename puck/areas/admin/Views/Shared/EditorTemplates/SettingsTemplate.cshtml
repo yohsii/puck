@@ -2,7 +2,7 @@
 @model String
 
 @{
-    var views = ApiHelper.Views();
+    var views = ApiHelper.Views(new string[]{"~/views/shared/","~/views/_ViewStart.cshtml"});
     <select name="@ViewData.ModelMetadata.PropertyName">
         @foreach(var f in views.OrderBy(x=>x.Name).ToList()){
             var selected =string.IsNullOrEmpty(Model)?false: Model.ToLower().Equals(ApiHelper.ToVirtualPath(f.FullName).ToLower());

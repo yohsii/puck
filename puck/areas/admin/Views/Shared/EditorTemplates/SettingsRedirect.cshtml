@@ -2,11 +2,11 @@
 <div class="redirects">
     <ul>
         <li>
-            <label>From</label>
+            <label>From (<i class="icon-pencil"></i>)</label>
             <input class="from" />
         </li>
         <li>
-            <label>To</label>
+            <label>To (<i class="icon-pencil"></i>)</label>
             <input class="to" />
         </li>
         <li>
@@ -26,7 +26,10 @@
             var rtype = r.Key.StartsWith(puck.core.Constants.DBNames.Redirect301) ? puck.core.Constants.DBNames.Redirect301 : puck.core.Constants.DBNames.Redirect302;
             <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value - @rtype.Substring(8,3)&nbsp;<span><i class="icon-remove-sign"></i></span></div>
         }        
-    </div>    
+    </div>
+    <ul class="content nomenu redirect">
+        <li class="node" data-children_path="/"></li>
+    </ul>  
 </div>
 <script>
     onAfterDom(function () {
@@ -42,6 +45,19 @@
                 el.remove();
             });
         });
+
+        redirectsContainer.find("label i").click(function () {
+            var target = $(this).parent().siblings("input");
+            var markup = redirectsContainer.find("ul.content").clone();
+            var el = markup.find(".node[data-children_path='/']");
+            overlay(markup);
+            getDrawContent("/", el);
+            markup.on("click", ".node span", function (e) {
+                var node = $(this).parents(".node:first");
+                target.val(node.attr("data-path"));
+                overlayClose();
+            });
+        });        
 
         var getPropNameKey = function (i) {
             return "@ViewData.ModelMetadata.PropertyName" + "[" + i + "].Key";

@@ -59,9 +59,10 @@ namespace puck.App_Start
         {
             kernel.Load(Assembly.GetExecutingAssembly());
             kernel.Bind<I_Log>().To<Logger>().InSingletonScope();
-            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().WhenInjectedInto<IController>().InRequestScope();
-            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InRequestScope().Named("R");
-            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InTransientScope().Named("T");
+            //kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().WhenInjectedInto<IController>().InRequestScope();
+            //kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InRequestScope().Named("R");
+            //kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InTransientScope().Named("T");
+            kernel.Bind<I_Puck_Repository>().To<Puck_Repository>().InTransientScope();
             kernel.Bind<I_Content_Indexer>().To<Content_Indexer_Searcher>().InSingletonScope();
             kernel.Bind<I_Content_Searcher>().ToMethod(x => x.Kernel.Get<I_Content_Indexer>() as I_Content_Searcher);
             kernel.Bind<I_Task_Dispatcher>().To<Dispatcher>().InSingletonScope();

@@ -23,6 +23,7 @@ namespace puck.core.Helpers
         public Object[] Attributes { get; set; }
         public Field.Index FieldIndexSetting{get;set;}
         public Field.Store FieldStoreSetting{get;set;}
+        public bool Ignore { get; set; }
         public Analyzer Analyzer { get; set; }
         public String UniqueKey { get; set; }
         public void Transform() {
@@ -34,6 +35,7 @@ namespace puck.core.Helpers
             if (settings.Any())
             {
                 var sattr = (IndexSettings)settings.First();
+                Ignore = sattr.Ignore;
                 FieldIndexSetting = sattr.FieldIndexSetting;
                 FieldStoreSetting = sattr.FieldStoreSetting;
                 if (sattr.Analyzer != null)
@@ -101,7 +103,12 @@ namespace puck.core.Helpers
             ObjectDumper dumper = new ObjectDumper(depth);
             dumper.topElement = element as BaseModel;
             dumper.WriteObject_("","", element);
-            dumper.result.ForEach(x=>x.Transform());
+            dumper.result.ForEach(x => {
+                if (x.Ignore)
+                    dumper.result.Remove(x);
+                else
+                    x.Transform(); 
+            });
             return dumper.result;
         }
         public static void Transform(object element, int depth)

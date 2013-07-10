@@ -140,6 +140,7 @@
                 c.find(".clearboth").before(
                     $("<div/>").addClass("group").attr({ "data-group": gn })
                     .append("<h3>" + gn + "</h3>").sortable({
+                        axis:'y',
                         connectWith: ".group", items: ".field[data-inherited='False']", update: function (e, ui) {
                             setValue();
                         }
@@ -149,5 +150,10 @@
             setValue();
         });
         setValue();
+        container.find("div.group").sortable({
+            connectWith: ".group", items: ".field[data-inherited='False']", update: function (e, ui) {
+                setValue();
+            }
+        });
     });    
 </script>

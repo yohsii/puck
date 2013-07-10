@@ -2,7 +2,7 @@
 @{
     Layout = null;    
 }
-@using (Html.BeginForm("DomainMapping", "Api", new {path=Request["path"] }, FormMethod.Post))
+@using (Html.BeginForm("DomainMapping", "Api", new {p_path=Request["p_path"] }, FormMethod.Post))
 {
     <div class="domain_mapping_dialog settings">
         <div class="grid_4 push_1">

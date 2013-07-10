@@ -15,7 +15,7 @@ namespace puck.core.Extensions
     public static class ViewExtensions
     {
         public static T PuckEditorSettings<T>(this WebViewPage page) {
-            var repo = PuckCache.NinjectKernel.Get<I_Puck_Repository>("T");
+            var repo = PuckCache.PuckRepo;
 
             var modelType = page.ViewBag.Level0Type as Type;
             if (modelType == null)

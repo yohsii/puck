@@ -21,7 +21,7 @@ namespace puck.core.Filters
         {
             // don't serve this page from cache (need to add some conditions here, to determine whether to use or not to use the outputcache)
             //if()
-            validationStatus = HttpValidationStatus.Invalid;
+            //validationStatus = HttpValidationStatus.Invalid;
 
             // additionally, ignore the [OutputCache] for this particular request
             //context.Response.Cache.SetNoServerCaching();
