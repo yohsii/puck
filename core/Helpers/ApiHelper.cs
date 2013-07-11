@@ -278,14 +278,16 @@ namespace puck.core.Helpers
                 string originalPath = string.Empty;
                 if (original != null)
                 {//this must be an edit
-                    if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower()))
+                    //if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower()))
+                    if (!original.Path.ToLower().Equals(mod.Path.ToLower()))
                     {
                         nameChanged = true;
                         originalPath = original.Path;
                     }
                 }
                 var variantsDb = repo.CurrentRevisionVariants(mod.Id, mod.Variant).ToList();
-                if (variantsDb.Any(x => !x.NodeName.ToLower().Equals(mod.NodeName.ToLower())))
+                //if (variantsDb.Any(x => !x.NodeName.ToLower().Equals(mod.NodeName.ToLower())))
+                if (variantsDb.Any(x => !x.Path.ToLower().Equals(mod.Path.ToLower())))
                 {//update path of variants
                     nameChanged = true;
                     if (string.IsNullOrEmpty(originalPath))
@@ -303,7 +305,7 @@ namespace puck.core.Helpers
                 //add revision
                 var revision = new PuckRevision();
                 revision.LastEditedBy = HttpContext.Current.User.Identity.Name;
-                revision.CreatedBy = original == null ? revision.LastEditedBy : original.CreatedBy;
+                revision.CreatedBy = mod.CreatedBy;
                 revision.Created = mod.Created;
                 revision.Id = mod.Id;
                 revision.NodeName = mod.NodeName;
@@ -576,7 +578,7 @@ namespace puck.core.Helpers
         public static string TypeChain(Type type, string chain = "")
         {
             chain += type.FullName + " ";
-            if (type.BaseType != null)
+            if (type.BaseType != null && type.BaseType!=typeof(Object))
                 chain = TypeChain(type.BaseType, chain);
             return chain.TrimEnd();
         }

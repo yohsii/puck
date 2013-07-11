@@ -13662,3 +13662,27 @@ message: Object reference not set to an instance of an object.
 stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 30
 
 
+date: 10/07/2013 22:55:27
+message: Exception has been thrown by the target of an invocation.
+stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor)
+   at System.Reflection.RuntimeMethodInfo.UnsafeInvokeInternal(Object obj, Object[] parameters, Object[] arguments)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+   at puck.core.Helpers.ObjectDumper.Transform(String prefix, String ukey, Object element) in c:\project\puck\core\Helpers\ObjectDumper.cs:line 301
+   at puck.core.Helpers.ObjectDumper.Transform(String prefix, String ukey, Object element) in c:\project\puck\core\Helpers\ObjectDumper.cs:line 306
+   at puck.core.Helpers.ObjectDumper.Transform(Object element, Int32 depth) in c:\project\puck\core\Helpers\ObjectDumper.cs:line 118
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 299
+
+
+date: 10/07/2013 22:56:46
+message: Exception has been thrown by the target of an invocation.
+stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[] arguments, Signature sig, Boolean constructor)
+   at System.Reflection.RuntimeMethodInfo.UnsafeInvokeInternal(Object obj, Object[] parameters, Object[] arguments)
+   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)
+   at puck.core.Helpers.ObjectDumper.Transform(String prefix, String ukey, Object element) in c:\project\puck\core\Helpers\ObjectDumper.cs:line 301
+   at puck.core.Helpers.ObjectDumper.Transform(String prefix, String ukey, Object element) in c:\project\puck\core\Helpers\ObjectDumper.cs:line 306
+   at puck.core.Helpers.ObjectDumper.Transform(Object element, Int32 depth) in c:\project\puck\core\Helpers\ObjectDumper.cs:line 118
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 299
+
+

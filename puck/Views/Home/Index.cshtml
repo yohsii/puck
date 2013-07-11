@@ -4,7 +4,9 @@
 @{
     ViewBag.Title = "Home Page";
     var model = this.GetModel<puck.areas.admin.Models.TextSingle>();
-    var st = "LOL";    
+    var st = "LOL";
+    var qh = new QueryHelper<BaseModel>();
+    @qh.Field(x => x.NodeName, "LOLER-.").ToString();
 }
 @section featured {
     <section class="featured">

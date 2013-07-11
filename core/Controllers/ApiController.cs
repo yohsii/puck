@@ -70,6 +70,30 @@ namespace puck.core.Controllers
             var model = ApiHelper.Variants();
             return Json(model,JsonRequestBehavior.AllowGet);
         }
+        public ActionResult Preview(string path, string variant)
+        {
+            var model = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(path.ToLower()) && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
+            return Preview(model);
+        }
+        public ActionResult PreviewGuid(Guid id,string variant) {
+            var model = repo.GetPuckRevision().Where(x => x.Id == id && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
+            return Preview(model);
+        }
+        private ActionResult Preview(PuckRevision model)
+        {
+            var dmode = this.GetDisplayModeId();
+            string templatePath = model.TemplatePath;
+            if (!string.IsNullOrEmpty(dmode))
+            {
+                string dpath = templatePath.Insert(templatePath.LastIndexOf('.') + 1, dmode + ".");
+                if (System.IO.File.Exists(Server.MapPath(dpath)))
+                {
+                    templatePath = dpath;
+                }
+            }
+            var mod = ApiHelper.RevisionToBaseModel(model);
+            return View(templatePath, mod);
+        }
         [Auth(Roles = "domain")]
         public ActionResult DomainMappingDialog(string p_path)
         {
@@ -198,7 +222,7 @@ namespace puck.core.Controllers
             try
             {
                 var arrDescendants = descendants.Split(new char[]{','},StringSplitOptions.RemoveEmptyEntries).ToList();
-                //ApiHelper.Publish(id,variant,arrDescendants,true);
+                ApiHelper.Publish(id,variant,arrDescendants,true);
                 success = true;
             }
             catch (Exception ex)
@@ -218,7 +242,7 @@ namespace puck.core.Controllers
             try
             {
                 var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                //ApiHelper.Publish(id,variant,arrDescendants,false);
+                ApiHelper.Publish(id,variant,arrDescendants,false);
                 success = true;
             }
             catch (Exception ex)
@@ -259,14 +283,12 @@ namespace puck.core.Controllers
                 basemodel.Variant = variant;
                 basemodel.TypeChain =ApiHelper.TypeChain(modelType);
                 basemodel.Type = modelType.AssemblyQualifiedName;
+                basemodel.CreatedBy = User.Identity.Name;
+                basemodel.LastEditedBy = basemodel.CreatedBy;
                 return View(model);
             }
-            //else we'll need to get current data to edit for node
+            //else we'll need to get current data to edit for node or return node to translate
            
-            //get current culture
-            //if(string.IsNullOrEmpty(variant))
-                //variant = Thread.CurrentThread.CurrentCulture.Name;
-
             List<PuckRevision> results = null;
             //try get node by path with particular variant
             if(string.IsNullOrEmpty(fromVariant))
@@ -284,6 +306,8 @@ namespace puck.core.Controllers
                     mod.Updated = DateTime.Now;
                     mod.Published = false;
                     mod.Revision = 0;
+                    mod.CreatedBy = User.Identity.Name;
+                    mod.LastEditedBy = mod.CreatedBy;
                 }
             }
             return View(model);
@@ -291,6 +315,7 @@ namespace puck.core.Controllers
 
         [Auth(Roles = "edit")]
         [HttpPost]
+        [ValidateInput(false)]
         public JsonResult Edit(FormCollection fc,string p_type,string p_path) {
             var targetType = Type.GetType(p_type);
             var model = Activator.CreateInstance(targetType);

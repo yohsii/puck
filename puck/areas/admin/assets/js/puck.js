@@ -535,15 +535,34 @@ var displayMarkup = function (path, type, variant,fromVariant) {
                     cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']").append(el);
                 else el.appendTo(cright.find("[data-group='default']"));
             })
-
+            afterDom();
         });
+        //publish btn
+        if (userRoles.contains("publish")) {
+            console.log("can publish");
+            cright.find(".content_publish").click(function () {
+                cright.find("select[name='Published']").val("true");                
+            });
+        } else { cright.find(".content_publish").hide(); console.log("cannot publish"); }
+        //udpate btn
+        cright.find(".content_update").click(function () {
+            cright.find("input[name='Publish']").val("false");
+        });
+        //preview btn
+        if (path.slice(-1) != '/') {
+            console.log("path not dir");
+            cright.find(".content_preview").click(function (e) {
+                e.preventDefault();
+                window.open("/admin/api/preview?path=" + path +"&variant=" + variant, "_blank");
+            });
+        } else { cright.find(".content_preview").hide(); console.log("path is dir"); }
+
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
             getDrawContent(dirOfPath(path),undefined,true);
         }, function (data) {
             msg(false, data.message);
-        });
-        afterDom();
+        });        
     },fromVariant);
 }
 var msg = function (success, str) {
@@ -560,6 +579,7 @@ var msg = function (success, str) {
 var overlayClose = function () {
     $(".overlayinner,.overlay").remove();
     $("body").css({ overflow: "scroll" });
+    $(document).unbind("keyup");
 }
 var overlay = function (el, width, height, top) {
     var ov = $("<div class='overlay'/>");
@@ -585,6 +605,9 @@ var overlay = function (el, width, height, top) {
         inner.css({ top: ($(window).height() - height) / 2 + "px" });
     $("body").css({ overflow: "hidden" });
     afterDom();
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) { overlayClose(); }
+    });
 }
 var afterDomActions = [];
 var onAfterDom = function (f) {
@@ -597,9 +620,13 @@ var afterDom = function () {
 }
 var canChangeMainContent=function(){
     if(cright.find(".fieldwrapper").length>0)
-        return confirm("sure you want to move away from this page?");
-    else
-        return true;
+        if (confirm("sure you want to move away from this page?")) {
+            return true;
+        } else {
+            return false;
+        }
+        else
+            return true;
 }
 $('a.settings').click(function (e) {
     e.preventDefault();
@@ -905,8 +932,9 @@ var setDomainMapping = function (p) {
 }
 cleft.find("ul.content").on("click", "li.node span.variant", function () {
     //get markup
+    if (!canChangeMainContent())
+        return false;
     var node = $(this).parents(".node");
-    console.log(node);
     displayMarkup(node.attr("data-path"),node.attr("data-type"),$(this).attr("data-variant"));
 });
 

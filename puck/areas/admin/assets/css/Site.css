@@ -68,6 +68,7 @@ select.languages{height:200px !important;}
 .cache_exclude_dialog .fieldwrapper {padding:0 5px 0 5px;}
 .user_edit button {float:right;padding:20px;}
 .user_edit select[multiple] {height:200px !important;}
+.puck_mce textarea{width:665px;height:500px;}
 .settings .editor_parameters{}
 .settings .editor_parameters select{width:500px;}
 .settings .editor_parameters button{margin-bottom:20px;}
@@ -91,7 +92,10 @@ div.compare button{clear:left;float:right;padding:10px 50px 20px 0;}
 span.variant{cursor:pointer;color:#ff3333;font-size:11px;font-weight:bold;}
 div.node-dropdown{position:absolute;}
 .tred{color:#ff3333;}
-button.content_update{position:absolute;top:0px;right:0px;}
+button.content_preview{position:absolute;top:0px;right:60px;}
+button.content_update{position:absolute;top:0px;right:30px;}
+button.content_publish{position:absolute;top:0px;right:0px;}
+.content_btns{border:none;background-color:#fff;padding:1px;}
 .path_locale_dialog button{float:right;}
 .domain_mapping_dialog button{float:right;}
 .tasklist th{padding:10px;font-size:13px;}

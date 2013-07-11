@@ -29,6 +29,12 @@ namespace puck.core.Base
         public String NodeName { get; set; }
 
         [UIHint("SettingsReadOnly")]
+        public string LastEditedBy { get; set; }
+        
+        [UIHint("SettingsReadOnly")]
+        public string CreatedBy { get; set; }
+        
+        [UIHint("SettingsReadOnly")]
         [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED, Analyzer = typeof(KeywordAnalyzer))]
         [MaxLength(2048)]
         public string Path { get; set; }
@@ -48,7 +54,8 @@ namespace puck.core.Base
         [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED, Analyzer = typeof(KeywordAnalyzer))]
         [MaxLength(10)]
         public string Variant { get; set; }
-
+        
+        [UIHint("SettingsReadOnly")]
         public bool Published { get; set; }
 
         [Display(Name = "Sort Order")]

@@ -20,7 +20,7 @@ namespace puck.areas.admin.ViewModels
         public string PageTitle { get; set; }
         
         [IndexSettings(FieldIndexSetting=Field.Index.ANALYZED,Analyzer=typeof(SnowballAnalyzer))]
-        [DataType(DataType.MultilineText)]
+        [UIHint("rte")]
         public string Description { get; set; }
 
         public Person Person { get; set; }

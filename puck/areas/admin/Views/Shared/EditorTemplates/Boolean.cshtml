@@ -10,8 +10,7 @@ else if (ViewData.ModelMetadata.IsReadOnly)
 else
 { 
     <select name="@ViewData.ModelMetadata.PropertyName">
-        <option @(!Model.HasValue?"selected":"") value="null">No selection</option>
         <option @(Model.HasValue && Model.Value?"selected":"") value="true">Yes</option>
-        <option @(Model.HasValue && !Model.Value?"selected":"") value="false">No</option>
+        <option @(!Model.HasValue||(Model.HasValue && !Model.Value)?"selected":"") value="false">No</option>
     </select>    
 }

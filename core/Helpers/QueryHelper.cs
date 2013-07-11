@@ -161,6 +161,9 @@ namespace puck.core.Helpers
         {
             return searcher.Query(q);
         }
+        public static string Escape (string q){
+            return QueryParser.Escape(q);
+        }
         private static string getName(string str) {
             str = nameArrayRegex.Replace(str, "");
             var match = nameRegex.Match(str);
@@ -181,6 +184,7 @@ namespace puck.core.Helpers
 
         public static string Format<TModel>(Expression<Func<TModel, object>> exp, params string[] values)
         {
+            values = values.Select(x => Escape(x)).ToArray();
             string bodystr = exp.Body.ToString();
             var pmatches =paramRegex.Matches(bodystr);
             var qmatch = queryRegex.Matches(bodystr);
@@ -224,7 +228,7 @@ namespace puck.core.Helpers
         public QueryHelper(bool prependTypeTerm=true)
         {
             if(prependTypeTerm)
-                query += "+"+this.Field(FieldKeys.PuckTypeChain, typeof(TModel).FullName.Wrap())+" ";
+                query += "+"+this.Field(FieldKeys.PuckTypeChain, Escape(typeof(TModel).FullName).Wrap())+" ";
         }
 
         public QueryHelper<TModel> New() {
@@ -233,7 +237,7 @@ namespace puck.core.Helpers
 
         //query builders
         public void Clear() {
-            query = string.Empty;
+            query = "+" + this.Field(FieldKeys.PuckTypeChain, Escape(typeof(TModel).FullName).Wrap()) + " ";
         }
 
         public QueryHelper<TModel> Format(Expression<Func<TModel, object>> exp) {
@@ -252,7 +256,7 @@ namespace puck.core.Helpers
             string key=getName(exp.Body.ToString());
             string openTag = inclusiveStart ? "[" : "{";
             string closeTag = inclusiveEnd ? "]" : "}";
-            query += string.Concat(key , openTag ,start," TO ",end,closeTag," ");
+            query += string.Concat(key , openTag ,Escape(start)," TO ",Escape(end),closeTag," ");
             return this;
         }
 
@@ -282,14 +286,14 @@ namespace puck.core.Helpers
         public QueryHelper<TModel> AllFields(string value)
         {
             foreach (var k in PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName]){
-                query += string.Concat(k, ":", value, " ");
+                query += string.Concat(k, ":", Escape(value), " ");
             }            
             return this;
         }
 
         public QueryHelper<TModel> Field(string key, string value)
         {
-            query += string.Concat(key, ":", value," ");
+            query += string.Concat(key, ":", Escape(value)," ");
             return this;
         }
 
@@ -303,7 +307,7 @@ namespace puck.core.Helpers
         public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, string value)
         {
             string key = getName(exp.Body.ToString());
-            query += string.Concat(key , ":",  value," ");
+            query += string.Concat(key , ":",  Escape(value)," ");
             return this;
         }
 
@@ -330,34 +334,34 @@ namespace puck.core.Helpers
         public QueryHelper<TModel> ExplicitType<AType>()
         {
             string key = FieldKeys.PuckType;
-            query += string.Concat(key, ":", typeof(AType).AssemblyQualifiedName, " ");
+            query += string.Concat(key, ":", Escape(typeof(AType).AssemblyQualifiedName), " ");
             return this;
         }
 
         public QueryHelper<TModel> Variant(string value)
         {
             string key = FieldKeys.Variant;
-            query += string.Concat(key, ":", value, " ");
+            query += string.Concat(key, ":", Escape(value), " ");
             return this;
         }
 
         public QueryHelper<TModel> ID(string value)
         {
             string key = FieldKeys.ID;
-            query += string.Concat(key, ":", value, " ");
+            query += string.Concat(key, ":", Escape(value), " ");
             return this;
         }
 
         public QueryHelper<TModel> ID(Guid value)
         {
             string key = FieldKeys.ID;
-            query += string.Concat(key, ":", value.ToString(), " ");
+            query += string.Concat(key, ":", Escape(value.ToString()), " ");
             return this;
         }
 
         public QueryHelper<TModel> Directory(string value) {
             string key = FieldKeys.Path;
-            query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/".WildCardMulti());
+            query += string.Concat("+",key,":",Escape(value).WildCardMulti()," -",key,":",Escape(value).WildCardMulti()+"/".WildCardMulti());
             return this;
         }
 

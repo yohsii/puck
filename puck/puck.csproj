@@ -242,6 +242,7 @@
     </Content>
     <Content Include="areas\admin\assets\css\960_12_col.css" />
     <Content Include="areas\admin\assets\css\bootstrap-responsive.css" />
+    <Content Include="areas\admin\assets\css\bootstrap-wysihtml5-0.0.2.css" />
     <Content Include="areas\admin\assets\css\bootstrap.css" />
     <Content Include="areas\admin\assets\css\Site.css" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -300,6 +301,7 @@
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings-white.png" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings.png" />
+    <Content Include="areas\admin\assets\js\bootstrap-wysihtml5-0.0.2.js" />
     <Content Include="areas\admin\assets\js\bootstrap.js" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1-vsdoc.js" />
     <Content Include="areas\admin\assets\js\jquery-1.7.1.js" />
@@ -318,6 +320,7 @@
     <Content Include="areas\admin\assets\js\knockout-2.1.0.js" />
     <Content Include="areas\admin\assets\js\modernizr-2.5.3.js" />
     <Content Include="areas\admin\assets\js\puck.js" />
+    <Content Include="areas\admin\assets\js\wysihtml5-0.3.0_rc2.js" />
     <Content Include="areas\admin\assets\js\_references.js" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -427,6 +430,7 @@
     <Folder Include="areas\admin\Config\" />
     <Folder Include="areas\admin\Controllers\" />
     <Folder Include="areas\admin\ModelBinders\" />
+    <Folder Include="Media\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -499,6 +503,7 @@
     </Content>
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsRoles.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsUserVariant.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\rte.cshtml" />
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>

@@ -38,7 +38,7 @@ namespace puck.core.Controllers
                 ViewBag.Error = "Incorrect Login Information";
                 return View(user);
             }
-            FormsAuthentication.SetAuthCookie(user.Username,user.PersistentCookie);
+            FormsAuthentication.SetAuthCookie(user.Username,user.PersistentCookie,"/admin/");
             return RedirectToAction("Index", "Api", new { area="admin"});
         }
 

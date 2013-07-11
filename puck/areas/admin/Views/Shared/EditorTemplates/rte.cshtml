@@ -1,0 +1,11 @@
+﻿@model string
+
+<div class="puck_mce mce_@ViewData.ModelMetadata.PropertyName">
+    @Html.TextAreaFor(x => x)
+</div>
+<script>
+    onAfterDom(function () {
+        var selector = ".mce_@ViewData.ModelMetadata.PropertyName textarea";
+        $(selector).wysihtml5();
+    });
+</script>

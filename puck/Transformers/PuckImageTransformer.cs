@@ -5,6 +5,7 @@ using System.Web;
 using puck.core.Abstract;
 using puck.areas.admin.Models;
 using puck.core.Base;
+using System.IO;
 namespace puck.Transformers
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
@@ -12,7 +13,24 @@ namespace puck.Transformers
     {
         public PuckImage Transform(BaseModel m,string propertyName,string ukey,PuckImage p)
         {
-            p.File = null;
+            if (p == null || p.File == null)
+                return null;
+            try
+            {
+                if (p.File != null) {
+                    string filepath = string.Concat("~/Media/", m.Id, "/", m.Variant, "/", ukey, "_", p.File.FileName);
+                    string absfilepath =HttpContext.Current.Server.MapPath(filepath);
+                    new FileInfo(absfilepath).Directory.Create();
+                    p.File.SaveAs(absfilepath);
+                    p.Path = filepath;
+                    p.Size = p.File.InputStream.Length.ToString();
+                    p.Extension=Path.GetExtension(p.File.FileName);
+                }
+            }catch(Exception ex){
+                
+            }finally {
+                p.File = null;
+            }
             return p;
         }
     }    
