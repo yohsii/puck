@@ -12,6 +12,7 @@ using puck.core.Base;
 using System.Web;
 using System.Globalization;
 using Lucene.Net.Search;
+using System.Threading;
 
 namespace puck.core.Helpers
 {
@@ -68,6 +69,27 @@ namespace puck.core.Helpers
             return string.Concat("\"", s, "\"");
         }
         //retrieval extensions
+        public static List<T> Parent<T>(this BaseModel n) where T : BaseModel
+        {
+            var qh = new QueryHelper<T>();
+            string path = n.Path.Substring(0, n.Path.LastIndexOf('/'));
+            qh
+                .And()
+                .Field(x => x.Path, path);
+            return qh.GetAll();
+        }
+        public static List<T> Ancestors<T>(this BaseModel n) where T : BaseModel {
+            var qh = new QueryHelper<T>();
+            string nodePath = n.Path;
+            while (nodePath.Count(x => x == '/') > 1)
+            {
+                nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
+                qh
+                    .And()
+                    .Field(x=>x.Path,nodePath);            
+            }
+            return qh.GetAll();
+        }
         public static List<T> Siblings<T>(this BaseModel n) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh
@@ -228,7 +250,7 @@ namespace puck.core.Helpers
         public QueryHelper(bool prependTypeTerm=true)
         {
             if(prependTypeTerm)
-                query += "+"+this.Field(FieldKeys.PuckTypeChain, Escape(typeof(TModel).FullName).Wrap())+" ";
+                query += "+"+this.Field(FieldKeys.PuckTypeChain, typeof(TModel).FullName.Wrap())+" ";
         }
 
         public QueryHelper<TModel> New() {
@@ -282,7 +304,22 @@ namespace puck.core.Helpers
             return this;
         }
         */
-        
+
+        public QueryHelper<TModel> CurrentLanguage() {
+            var key = FieldKeys.Variant;
+            var variant = Thread.CurrentThread.CurrentCulture.Name;
+            query += string.Concat("+",key,":",variant," ");
+            return this;
+        }
+
+        public QueryHelper<TModel> Level(int level) {
+            var includePath =string.Join("",Enumerable.Range(0, level).ToList().Select(x=>"/*"));
+            var excludePath = includePath + "/";
+            var key = FieldKeys.Path;
+            query += string.Concat("+",key,":",includePath," +",key,":",excludePath," ");
+            return this;
+        }
+
         public QueryHelper<TModel> AllFields(string value)
         {
             foreach (var k in PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName]){
@@ -334,7 +371,14 @@ namespace puck.core.Helpers
         public QueryHelper<TModel> ExplicitType<AType>()
         {
             string key = FieldKeys.PuckType;
-            query += string.Concat(key, ":", Escape(typeof(AType).AssemblyQualifiedName), " ");
+            query += string.Concat("+",key, ":", Escape(typeof(AType).AssemblyQualifiedName), " ");
+            return this;
+        }
+
+        public QueryHelper<TModel> ExplicitType()
+        {
+            string key = FieldKeys.PuckType;
+            query += string.Concat("+",key, ":", Escape(typeof(TModel).AssemblyQualifiedName), " ");
             return this;
         }
 
@@ -361,7 +405,9 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> Directory(string value) {
             string key = FieldKeys.Path;
-            query += string.Concat("+",key,":",Escape(value).WildCardMulti()," -",key,":",Escape(value).WildCardMulti()+"/".WildCardMulti());
+            if (!value.EndsWith("/"))
+                value += "/";
+            query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/".WildCardMulti());
             return this;
         }
 

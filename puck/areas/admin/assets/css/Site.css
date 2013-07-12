@@ -56,11 +56,14 @@ select.languages{height:200px !important;}
 .settings .group{background:#eeffee;float:left;margin:0 10px 0 0;padding:10px;}
 .settings .settings_type_allowed_types .list{float:left;padding:20px;margin:10px;background:#eeffee;}
 .settings .settings_type_allowed_types .field{cursor:pointer;}
+.settings .settings_type_allowed_types select{width:400px;}
 .settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#fbfbfb;clear:both;padding:0px 10px 0 10px}
 .settings .fieldwrapper h2{font-size:20px;}
 .settings label{text-decoration:underline;}
 .settings select.redirect_type{width:150px;}
 .task_edit button{float:right;padding:20px;}
+.content .content_edit_page{position:relative;}
+.content .content_edit_page .puckpicker{padding:0px;}
 .create_dialog button,.task_create_dialog button,.revision_for_dialog button{float:right;}
 .create_dialog select,.path_locale_dialog select{width:200px;}
 .domain_mapping_dialog input{width:265px;}
@@ -634,7 +637,7 @@ textarea {
     display: none;
 }
 
-input.input-validation-error {
+input.input-validation-error,textarea.input-validation-error  {
     background-color: #ffeeee !important;
 }
 

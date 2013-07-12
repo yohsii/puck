@@ -9,9 +9,9 @@
 }
 <div class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName">
     <ul class="content nomenu">
-        <li class="node" data-children_path="/"></li>
+        <li class="node" data-children_path="/">&nbsp;</li>
     </ul>        
-    <div class="selected_content">
+    <div class="selected_content">&nbsp;
         @if (Model != null)
         {
             foreach (var m in Model)
@@ -54,9 +54,8 @@
         var selectionType = "@settings.SelectionType"; //both|variant|node
         var allowUnpublished = "@settings.AllowUnpublished";
         var allowDuplicates = "@settings.AllowDuplicates";
-
         var setValue = function () {
-            container.find(":hidden").remove();
+            container.find("input:hidden").remove();
             selected_content().each(function (i) {
                 var node = $(this);
                 container.append(

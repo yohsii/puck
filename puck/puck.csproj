@@ -221,17 +221,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="areas\admin\adminAreaRegistration.cs" />
-    <Compile Include="areas\admin\Models\Person.cs" />
-    <Compile Include="areas\admin\Models\PuckImage.cs" />
-    <Compile Include="areas\admin\Models\TextSingle.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Models\PuckImage.cs" />
+    <Compile Include="ViewModels\Homepage.cs" />
+    <Compile Include="ViewModels\Page.cs" />
+    <Compile Include="ViewModels\Section.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="areas\admin\ViewModels\Home.cs" />
-    <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transformers\PuckImageTransformer.cs" />
   </ItemGroup>
@@ -404,19 +401,19 @@
     </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Images\accent.png" />
-    <Content Include="Images\bullet.png" />
-    <Content Include="Images\heroAccent.png" />
-    <Content Include="Images\orderedList0.png" />
-    <Content Include="Images\orderedList1.png" />
-    <Content Include="Images\orderedList2.png" />
-    <Content Include="Images\orderedList3.png" />
-    <Content Include="Images\orderedList4.png" />
-    <Content Include="Images\orderedList5.png" />
-    <Content Include="Images\orderedList6.png" />
-    <Content Include="Images\orderedList7.png" />
-    <Content Include="Images\orderedList8.png" />
-    <Content Include="Images\orderedList9.png" />
+    <Content Include="Content\Images\accent.png" />
+    <Content Include="Content\Images\bullet.png" />
+    <Content Include="Content\Images\heroAccent.png" />
+    <Content Include="Content\Images\orderedList0.png" />
+    <Content Include="Content\Images\orderedList1.png" />
+    <Content Include="Content\Images\orderedList2.png" />
+    <Content Include="Content\Images\orderedList3.png" />
+    <Content Include="Content\Images\orderedList4.png" />
+    <Content Include="Content\Images\orderedList5.png" />
+    <Content Include="Content\Images\orderedList6.png" />
+    <Content Include="Content\Images\orderedList7.png" />
+    <Content Include="Content\Images\orderedList8.png" />
+    <Content Include="Content\Images\orderedList9.png" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
@@ -428,8 +425,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="areas\admin\Config\" />
-    <Folder Include="areas\admin\Controllers\" />
-    <Folder Include="areas\admin\ModelBinders\" />
+    <Folder Include="Filters\" />
     <Folder Include="Media\" />
   </ItemGroup>
   <ItemGroup>
@@ -504,6 +500,7 @@
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsRoles.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsUserVariant.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\rte.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsDisplayImage.cshtml" />
     <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Create.cshtml</LastGenOutput>
@@ -554,6 +551,9 @@
       <LastGenOutput>List.cshtml</LastGenOutput>
     </None>
     <Content Include="Views\Home\Index.iPhone.cshtml" />
+    <Content Include="Views\Home\Homepage.cshtml" />
+    <Content Include="Views\Home\Section.cshtml" />
+    <Content Include="Views\Home\Page.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -573,7 +573,7 @@
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
+          <AutoAssignPort>False</AutoAssignPort>
           <DevelopmentServerPort>49201</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>

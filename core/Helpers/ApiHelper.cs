@@ -168,8 +168,8 @@ namespace puck.core.Helpers
                     throw new Exception("no results with ID:" + id + " Variant:"+variant+" to publish");
 
                 var parentVariants = repo.CurrentRevisionParent(repoItems.First().Path).ToList();
-                //can't publish if parent not published
-                if (parentVariants.Count == 0)
+                //can't publish if parent not published unless root item
+                if (parentVariants.Count == 0 && repoItems.First().Path.Count(c=>c=='/')>1)
                         throw new Exception("you cannot publish an item if it has no parent");
                 
                 if (descendants.Count>0)
@@ -181,8 +181,8 @@ namespace puck.core.Helpers
                             x.Value = JsonConvert.SerializeObject(mod);
                             return mod;
                     }).ToList());
-                //repo.SaveChanges();
-                //indexer.Index(repoItems);
+                repo.SaveChanges();
+                indexer.Index(repoItems);
             }                
         }
         public static void Delete(Guid id, string variant = null) {
@@ -195,13 +195,11 @@ namespace puck.core.Helpers
                 if (!string.IsNullOrEmpty(variant))
                     toDeleteQ.Field(x => x.Variant, variant);
                 var toDelete = toDeleteQ.GetAll();
-                
-                if(toDelete.Count>0)
-                    toDelete.AddRange(toDelete.First().Descendants<BaseModel>());
-                
+
+                var variants = new List<BaseModel>();
                 if (toDelete.Count > 0)
                 {
-                    var variants = toDelete.First().Variants<BaseModel>();
+                    variants = toDelete.First().Variants<BaseModel>();
                     if (variants.Count == 0)
                     {
                         var descendants = toDelete.First().Descendants<BaseModel>();
@@ -209,56 +207,77 @@ namespace puck.core.Helpers
                     }
                 }
 
-                //toDelete.Delete();
+                toDelete.Delete();
                 
                 //remove from repo
                 var repoItemsQ = repo.GetPuckRevision().Where(x => x.Id == id && x.Current);
                 if (!string.IsNullOrEmpty(variant))
                     repoItemsQ = repoItemsQ.Where(x => x.Variant.ToLower().Equals(variant.ToLower()));
                 var repoItems = repoItemsQ.ToList();
+                var repoVariants = new List<PuckRevision>();
                 if (repoItems.Count > 0)
                 {
-                    var variants = repo.CurrentRevisionVariants(repoItems.First().Id, repoItems.First().Variant).ToList();
+                    repoVariants = repo.CurrentRevisionVariants(repoItems.First().Id, repoItems.First().Variant).ToList();
                     if (variants.Count == 0)
                     {
                         var descendants = repo.CurrentRevisionDescendants(repoItems.First().Path).ToList();
                         repoItems.AddRange(descendants);
                     }
                 }
-
                 repoItems.ForEach(x => repo.DeleteRevision(x));
+                
                 //remove localisation setting
-                var lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.StartsWith(toDelete.First().Path)).ToList();
-                lmeta.ForEach(x =>
+                string lookUpPath=string.Empty;
+                if (repoItems.Any())
+                    lookUpPath = repoItems.First().Path;
+                else if (toDelete.Any())
+                    lookUpPath = toDelete.First().Path;
+
+                if (!string.IsNullOrEmpty(lookUpPath))
                 {
-                    repo.DeleteMeta(x);
-                });
-                //remove domain mappings
-                var dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.StartsWith(toDelete.First().Path)).ToList();
-                dmeta.ForEach(x =>
-                {
-                    repo.DeleteMeta(x);
-                });
+                    var lmeta = new List<PuckMeta>();
+                    if(repoVariants.Any())
+                        lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.Equals(lookUpPath.ToLower())).ToList();
+                    else
+                        lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.StartsWith(lookUpPath.ToLower())).ToList();
+                    lmeta.ForEach(x =>
+                    {
+                        repo.DeleteMeta(x);
+                    });
+                    
+                    //remove domain mappings
+                    var dmeta = new List<PuckMeta>();
+                    if(repoVariants.Any())
+                        dmeta =repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.Equals(lookUpPath.ToLower())).ToList();
+                    else
+                        dmeta =repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.StartsWith(lookUpPath)).ToList();
+                    dmeta.ForEach(x =>
+                    {
+                        repo.DeleteMeta(x);
+                    });
+                }
                 ApiHelper.UpdateDomainMappings();
                 ApiHelper.UpdatePathLocaleMappings();
-                //repo.SaveChanges();
+                repo.SaveChanges();
             }             
         }
         public static void SaveContent<T>(T mod) where T : BaseModel {
             lock (_savelck)
             {
                 var repo = Repo;
+                //append nodename to path, which indicates first save
+                //mod.Path = mod.Path.EndsWith("/") ? mod.Path + mod.NodeName.Replace(" ","-") : mod.Path;
                 //get parent check published
-                var parentVariants = repo.CurrentRevisionParent(mod.Path);
+                var parentVariants = repo.CurrentRevisionParent(mod.Path).ToList();
                 if (mod.Path.Count(x => x == '/') > 1 && parentVariants.Count() == 0)
                     throw new Exception("this is not a root node yet doesn't have a parent");
                 //can't publish if parent not published
-                if (!parentVariants.Any(x => x.Published && x.Variant.ToLower().Equals(mod.Variant.ToLower())))
+                if (mod.Path.Count(x => x == '/') > 1 && !parentVariants.Any(x => x.Published && x.Variant.ToLower().Equals(mod.Variant.ToLower())))
                     mod.Published = false;
                 //get sibling nodes
                 mod.Revision += 1;
                 var nodeDirectory = mod.Path.Substring(0, mod.Path.LastIndexOf('/') + 1);
-                mod.Path = nodeDirectory + mod.NodeName;
+                mod.Path = nodeDirectory + mod.NodeName.Replace(" ","-");
                 var nodesAtPath = repo.CurrentRevisionsByPath(nodeDirectory).Where(x => x.Id != mod.Id)
                     .ToList()
                     .Select(x =>
@@ -427,12 +446,12 @@ namespace puck.core.Helpers
             var map301 = new Dictionary<string, string>();
             meta301.ForEach(x =>
             {
-                map301.Add(x.Key, x.Value);
+                map301.Add(x.Key.ToLower(), x.Value.ToLower());
             });
             var map302 = new Dictionary<string, string>();
             meta302.ForEach(x =>
             {
-                map302.Add(x.Key, x.Value);
+                map302.Add(x.Key.ToLower(), x.Value.ToLower());
             });
             PuckCache.Redirect301= map301;
             PuckCache.Redirect302 = map302;
@@ -455,7 +474,7 @@ namespace puck.core.Helpers
             var mapCacheExclude = new HashSet<string>();
             metaCacheExclude.Where(x=>x.Value.ToLower()==bool.TrueString.ToLower()).ToList().ForEach(x =>
             {
-                mapCacheExclude.Add(x.Key);
+                mapCacheExclude.Add(x.Key.ToLower());
             });
             PuckCache.TypeOutputCache = mapTypeCache;
             PuckCache.OutputCacheExclusion = mapCacheExclude;
@@ -465,7 +484,7 @@ namespace puck.core.Helpers
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
             var map = new Dictionary<string, string>();
             meta.ForEach(x => {
-                map.Add(x.Value, x.Key);
+                map.Add(x.Value.ToLower(), x.Key.ToLower());
             });
             PuckCache.DomainRoots = map;
         }
@@ -476,7 +495,7 @@ namespace puck.core.Helpers
             var map = new Dictionary<string, string>();
             meta.ForEach(x =>
             {
-                map.Add(x.Key, x.Value);
+                map.Add(x.Key.ToLower(), x.Value.ToLower());
             });
             PuckCache.PathToLocale = map;
         }

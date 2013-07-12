@@ -319,6 +319,7 @@ namespace puck.core.Controllers
         public JsonResult Edit(FormCollection fc,string p_type,string p_path) {
             var targetType = Type.GetType(p_type);
             var model = Activator.CreateInstance(targetType);
+            string path = "";
             bool success = false;
             string message = "";
             try { 
@@ -327,9 +328,8 @@ namespace puck.core.Controllers
                 ObjectDumper.Transform(model, int.MaxValue);
                 //var npi = ObjectDumper.Write(model, int.MaxValue);
                 var mod = model as BaseModel;
-                //append nodename to path, which indicates first save
-                mod.Path =mod.Path.EndsWith("/")? p_path+mod.NodeName:mod.Path;
                 ApiHelper.SaveContent(mod);
+                path = mod.Path;
                 success = true;
             }
             catch (Exception ex) {
@@ -337,7 +337,7 @@ namespace puck.core.Controllers
                 message = ex.Message;
                 log.Log(ex);
             }
-            return Json(new {success=success,message=message },JsonRequestBehavior.AllowGet);
+            return Json(new {success=success,message=message,path=path },JsonRequestBehavior.AllowGet);
         }
 
         [Auth(Roles = "cache")]

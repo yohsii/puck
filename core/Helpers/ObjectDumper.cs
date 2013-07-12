@@ -26,6 +26,7 @@ namespace puck.core.Helpers
         public bool Ignore { get; set; }
         public Analyzer Analyzer { get; set; }
         public String UniqueKey { get; set; }
+        public bool KeepValueCasing { get; set; }
         public void Transform() {
             //lower case keys
             Key = Key.ToLower();
@@ -35,6 +36,7 @@ namespace puck.core.Helpers
             if (settings.Any())
             {
                 var sattr = (IndexSettings)settings.First();
+                KeepValueCasing = sattr.KeepValueCasing;
                 Ignore = sattr.Ignore;
                 FieldIndexSetting = sattr.FieldIndexSetting;
                 FieldStoreSetting = sattr.FieldStoreSetting;

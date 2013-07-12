@@ -17,6 +17,13 @@ namespace puck.core.Extensions
 {
     public static class ExtensionsMisc
     {
+        public static int GetLevel(this BaseModel m) {
+            int level = m.Path.Count(x=>x=='/');
+            return level;
+        }
+
+
+
         public static List<T> GetAll<T>(this PuckPicker pp) where T : BaseModel
         {
             var qh = new QueryHelper<T>();

@@ -2,7 +2,7 @@
     Layout = null;
     List<Type> types; 
     if(string.IsNullOrEmpty(Request["type"])){
-        types = ApiHelper.Models(true);
+        types = ApiHelper.Models(false);
     }else{
         types = ApiHelper.AllowedTypes(Request["type"]);  
     }    

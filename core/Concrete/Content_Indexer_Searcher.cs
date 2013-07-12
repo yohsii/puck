@@ -187,7 +187,8 @@ namespace puck.core.Concrete
                     }
                     else
                     {
-                        var f = new Field(p.Key, p.Value == null ? string.Empty : p.Value.ToString(), p.FieldStoreSetting, p.FieldIndexSetting);
+                        string value = p.Value == null ? null : (p.KeepValueCasing? p.Value.ToString() : p.Value.ToString().ToLower());
+                        var f = new Field(p.Key,value ?? string.Empty, p.FieldStoreSetting, p.FieldIndexSetting);
                         doc.Add(f);
                     }
                 }
@@ -199,12 +200,7 @@ namespace puck.core.Concrete
             {
                 try
                 {
-                    var model = Activator.CreateInstance(typeof(T));
-                    var props = ObjectDumper.Write(model, int.MaxValue);
-                    var analyzers = new List<KeyValuePair<string, Analyzer>>();
-                    GetFieldSettings(props, null, analyzers);
-                    var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer,analyzers);
-
+                    var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
                     var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
                     SetWriter(false);
                     //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
@@ -226,7 +222,7 @@ namespace puck.core.Concrete
                         
                         Document doc = new Document();
                         //get fields to index
-                        props = ObjectDumper.Write(m, int.MaxValue);
+                        var props = ObjectDumper.Write(m, int.MaxValue);
                         GetFieldSettings(props, doc, null);
                         //add cms properties
                         string jsonDoc = JsonConvert.SerializeObject(m);
@@ -259,14 +255,8 @@ namespace puck.core.Concrete
             {
                 try
                 {
-                    var model = Activator.CreateInstance(typeof(T));
-                    var props = ObjectDumper.Write(model, int.MaxValue);
-                    var analyzers = new List<KeyValuePair<string, Analyzer>>();
-                    GetFieldSettings(props, null, analyzers);
-                    var analyzer = new PerFieldAnalyzerWrapper(StandardAnalyzer, analyzers);
-
+                    var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
                     var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
-                    
                     SetWriter(false);
                     Writer.Flush(true, true, true);
                     var cancelled = new List<BaseModel>();

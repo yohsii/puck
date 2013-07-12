@@ -31,8 +31,6 @@ namespace puck
     
         protected void Application_Start()
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<puck.core.Entities.PuckContext,puck.core.Migrations.Configuration>());
-            
             AreaRegistration.RegisterAllAreas();
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
@@ -46,16 +44,6 @@ namespace puck
                     ("iPhone", StringComparison.OrdinalIgnoreCase) >= 0)
             });
 
-            //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
-
-            /*
-            Content_Indexer_Searcher.RegisterBeforeIndexHandler<puck.areas.admin.ViewModels.Home>("doshit"
-                ,(object o,puck.core.Events.BeforeIndexingEventArgs args) => { 
-                    
-                }
-                ,true
-                );
-            */
             puck.core.Bootstrap.Ini();
         }
     }

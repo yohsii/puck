@@ -369,6 +369,9 @@ var createTask = function () {
         });
     });
 }
+jQuery.validator.setDefaults({
+    ignore:""
+});
 var wireForm = function (form, success, fail) {
     $.validator.unobtrusive.parse(form);
     form.submit(function (e) {
@@ -390,7 +393,11 @@ var wireForm = function (form, success, fail) {
                         fail(data);
                     }
                 }
-            });            
+            });
+        } else {
+            var err_el = cright.find(".input-validation-error:first");
+            cright.find("[href='#" + err_el.parents(".tab-pane").attr("id") + "']").click();
+            err_el.focus();
         }
     });
 }
@@ -490,7 +497,7 @@ var draw = function (data, el, sortable) {
 }
 var displayMarkup = function (path, type, variant,fromVariant) {
     getMarkup(path, type, variant, function (data) {
-        cright.html(data);
+        cright.hide().html(data);
         //get field groups and build tabs
         getFieldGroups(type, function (data) {
             var groups = [];
@@ -536,17 +543,18 @@ var displayMarkup = function (path, type, variant,fromVariant) {
                 else el.appendTo(cright.find("[data-group='default']"));
             })
             afterDom();
+            cright.show();
         });
         //publish btn
         if (userRoles.contains("publish")) {
             console.log("can publish");
             cright.find(".content_publish").click(function () {
-                cright.find("select[name='Published']").val("true");                
+                cright.find("input:hidden[name='Published']").val("true");                
             });
         } else { cright.find(".content_publish").hide(); console.log("cannot publish"); }
         //udpate btn
         cright.find(".content_update").click(function () {
-            cright.find("input[name='Publish']").val("false");
+            cright.find("input:hidden[name='Published']").val("false");
         });
         //preview btn
         if (path.slice(-1) != '/') {
@@ -559,7 +567,9 @@ var displayMarkup = function (path, type, variant,fromVariant) {
 
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
-            getDrawContent(dirOfPath(path),undefined,true);
+            getDrawContent(dirOfPath(path), undefined, true);
+            console.log(data);
+            displayMarkup(data.path, type, variant);
         }, function (data) {
             msg(false, data.message);
         });        
@@ -572,7 +582,7 @@ var msg = function (success, str) {
     var el = $("<div style='display:none;' class='btn " + btnClass + "'>" + str + "</div>");
     var remove = $("<div class='btn btnclose'>x</div>").click(function () { $(this).parent().remove(); });
     el.append(remove);
-    cmsg.append(el);
+    cmsg.html(el);
     el.fadeIn();
 }
 
@@ -737,8 +747,7 @@ cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
     //filter menu items according to permissions -- ie can user access option
     dropdown.find("a[data-action]").each(function () {
         var permission = $(this).attr("data-permission");
-        if (!userRoles.contains(permission)) $(this).parents("li").hide();
-        else $(this).parents("li").show();
+        if (!userRoles.contains(permission)) $(this).parents("li").hide();        
     });
 });
 var dialogForVariants = function (variants) {
@@ -754,7 +763,7 @@ var dialogForVariants = function (variants) {
 }
 var unpublishedVariants = function (path) {
     var variants = [];
-    cleft.find(".node[data-path='" + path + "'] .variant").each(function () {
+    cleft.find(".node[data-path='" + path + "']>.inner>.variant").each(function () {
         if (!$(this).hasClass("published"))
             variants.push($(this).attr("data-variant"));
     });
@@ -762,7 +771,7 @@ var unpublishedVariants = function (path) {
 }
 var publishedVariants = function (path) {
     var variants = [];
-    cleft.find(".node[data-path='" + path + "'] .variant").each(function () {
+    cleft.find(".node[data-path='" + path + "']>.inner>.variant").each(function () {
         if ($(this).hasClass("published"))
             variants.push($(this).attr("data-variant"));
     });
@@ -783,11 +792,15 @@ $(".node-dropdown a").click(function () {
                             if (variant == "" || variant == undefined) {
                                 node.remove();
                             } else {
-                                node.find("span.variant[data-variant='" + variant + "']").remove();
+                                if (node.find("span.variant").length > 1)
+                                    node.find("span.variant[data-variant='" + variant + "']").remove();
+                                else
+                                    node.remove();
                             }
                             overlayClose();
                         } else {
                             msg(false, data.message);
+                            overlayClose();
                         }
                     }, variant);
                 }
@@ -811,6 +824,7 @@ $(".node-dropdown a").click(function () {
                         overlayClose();
                     } else {
                         msg(false, data.message);
+                        overlayClose();
                     }
                 });
             }
@@ -834,6 +848,7 @@ $(".node-dropdown a").click(function () {
                         overlayClose();
                     } else {
                         msg(false, data.message);
+                        overlayClose();
                     }
                 });
             }

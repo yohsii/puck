@@ -66,6 +66,9 @@
                 if (keys.Length < 2) { continue; }
                 var settingsType = Type.GetType(keys[0]);
                 var modelType = Type.GetType(keys[1]);
+                if (settingsType == null || modelType == null){
+                    continue;
+                }
                 var propertyName = keys.Length < 3 ? "" : keys[2];
                 <tr>
                     <td data-type="@settingsType.AssemblyQualifiedName">@settingsType.FullName</td>

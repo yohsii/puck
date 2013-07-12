@@ -11,11 +11,14 @@ using Ninject;
 using Newtonsoft.Json;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
+using System.Data.Entity;
+using puck.core.Entities;
 namespace puck.core
 {
     public static class Bootstrap
     {
         public static void Ini() {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<PuckContext, puck.core.Migrations.Configuration>());
             ApiHelper.UpdateDomainMappings();
             ApiHelper.UpdatePathLocaleMappings();
             ApiHelper.UpdateTaskMappings();
@@ -60,6 +63,16 @@ namespace puck.core
                     };
                 }
             }
+
+            //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
+            /*
+            Content_Indexer_Searcher.RegisterBeforeIndexHandler<puck.areas.admin.ViewModels.Home>("doshit"
+                ,(object o,puck.core.Events.BeforeIndexingEventArgs args) => { 
+                    
+                }
+                ,true
+                );
+            */
 
         }
     }

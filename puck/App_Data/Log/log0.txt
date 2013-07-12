@@ -13686,3 +13686,287 @@ stacktrace:    at System.RuntimeMethodHandle.InvokeMethod(Object target, Object[
    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 299
 
 
+date: 11/07/2013 20:34:25
+message: The model of type 'puck.areas.admin.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 11/07/2013 20:34:29
+message: The model of type 'puck.areas.admin.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 11/07/2013 20:34:41
+message: The model of type 'puck.areas.admin.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 11/07/2013 20:39:29
+message: The model of type 'puck.areas.admin.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 11/07/2013 20:42:34
+message: The model of type 'puck.areas.admin.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 11/07/2013 20:42:39
+message: The model of type 'puck.areas.admin.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 11/07/2013 20:46:21
+message: The model of type 'puck.areas.admin.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 11/07/2013 22:02:18
+message: Unable to create a constant value of type 'puck.core.Base.BaseModel'. Only primitive types or enumeration types are supported in this context.
+stacktrace:    at System.Data.Objects.ELinq.ExpressionConverter.ConstantTranslator.TypedTranslate(ExpressionConverter parent, ConstantExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.NewArrayInitTranslator.<>c__DisplayClass88.<TypedTranslate>b__86(Expression e)
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.EnumerableValidator`3.Validate(IEnumerable`1 argument, String argumentName, Int32 expectedElementCount, Boolean allowEmpty, Func`3 map, Func`2 collect, Func`3 deriveName)
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.EnumerableValidator`3.Validate()
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.ArgumentValidation.CreateExpressionList(IEnumerable`1 arguments, String argumentName, Boolean allowEmpty, Action`2 validationCallback)
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.ArgumentValidation.ValidateNewCollection(IEnumerable`1 elements, DbExpressionList& validElements)
+   at System.Data.Common.CommandTrees.ExpressionBuilder.DbExpressionBuilder.CreateNewCollection(IEnumerable`1 elements)
+   at System.Data.Objects.ELinq.ExpressionConverter.NewArrayInitTranslator.TypedTranslate(ExpressionConverter parent, NewArrayExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.ConstantTranslator.TypedTranslate(ExpressionConverter parent, ConstantExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.UnarySequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.SequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, SequenceMethod sequenceMethod)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.MemberAccessTranslator.TypedTranslate(ExpressionConverter parent, MemberExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateFunctionIntoLike(MethodCallExpression call, Boolean insertPercentAtStart, Boolean insertPercentAtEnd, Func`5 defaultTranslator)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.StartsWithTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.BinaryTranslator.TypedTranslate(ExpressionConverter parent, BinaryExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateLambda(LambdaExpression lambda, DbExpression input)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateLambda(LambdaExpression lambda, DbExpression input, DbExpressionBinding& binding)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, DbExpression& source, DbExpressionBinding& sourceBinding, DbExpression& lambda)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.SequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, SequenceMethod sequenceMethod)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.Convert()
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Data.Entity.Internal.Linq.InternalQuery`1.GetEnumerator()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Collections.Generic.IEnumerable<TResult>.GetEnumerator()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at puck.core.Helpers.ApiHelper.Delete(Guid id, String variant) in c:\project\puck\core\Helpers\ApiHelper.cs:line 231
+   at puck.core.Controllers.ApiController.Delete(Guid id, String variant) in c:\project\puck\core\Controllers\ApiController.cs:line 262
+
+
+date: 11/07/2013 22:05:07
+message: Unable to create a constant value of type 'puck.core.Base.BaseModel'. Only primitive types or enumeration types are supported in this context.
+stacktrace:    at System.Data.Objects.ELinq.ExpressionConverter.ConstantTranslator.TypedTranslate(ExpressionConverter parent, ConstantExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.NewArrayInitTranslator.<>c__DisplayClass88.<TypedTranslate>b__86(Expression e)
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.EnumerableValidator`3.Validate(IEnumerable`1 argument, String argumentName, Int32 expectedElementCount, Boolean allowEmpty, Func`3 map, Func`2 collect, Func`3 deriveName)
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.EnumerableValidator`3.Validate()
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.ArgumentValidation.CreateExpressionList(IEnumerable`1 arguments, String argumentName, Boolean allowEmpty, Action`2 validationCallback)
+   at System.Data.Common.CommandTrees.ExpressionBuilder.Internal.ArgumentValidation.ValidateNewCollection(IEnumerable`1 elements, DbExpressionList& validElements)
+   at System.Data.Common.CommandTrees.ExpressionBuilder.DbExpressionBuilder.CreateNewCollection(IEnumerable`1 elements)
+   at System.Data.Objects.ELinq.ExpressionConverter.NewArrayInitTranslator.TypedTranslate(ExpressionConverter parent, NewArrayExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.ConstantTranslator.TypedTranslate(ExpressionConverter parent, ConstantExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.UnarySequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.SequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, SequenceMethod sequenceMethod)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.MemberAccessTranslator.TypedTranslate(ExpressionConverter parent, MemberExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateFunctionIntoLike(MethodCallExpression call, Boolean insertPercentAtStart, Boolean insertPercentAtEnd, Func`5 defaultTranslator)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.StartsWithTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.BinaryTranslator.TypedTranslate(ExpressionConverter parent, BinaryExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateLambda(LambdaExpression lambda, DbExpression input)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateLambda(LambdaExpression lambda, DbExpression input, DbExpressionBinding& binding)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, DbExpression& source, DbExpressionBinding& sourceBinding, DbExpression& lambda)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.SequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, SequenceMethod sequenceMethod)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.Convert()
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Data.Entity.Internal.Linq.InternalQuery`1.GetEnumerator()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Collections.Generic.IEnumerable<TResult>.GetEnumerator()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at puck.core.Helpers.ApiHelper.Delete(Guid id, String variant) in c:\project\puck\core\Helpers\ApiHelper.cs:line 231
+   at puck.core.Controllers.ApiController.Delete(Guid id, String variant) in c:\project\puck\core\Controllers\ApiController.cs:line 262
+
+
+date: 11/07/2013 22:27:11
+message: The model of type 'puck.areas.admin.ViewModels.Page' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 295
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in c:\project\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 325
+
+
+date: 12/07/2013 12:02:10
+message: Error getting value from 'ReadTimeout' on 'System.Web.HttpInputStream'.
+stacktrace:    at Newtonsoft.Json.Serialization.DynamicValueProvider.GetValue(Object target)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.CalculatePropertyValues(JsonWriter writer, Object value, JsonContainerContract contract, JsonProperty member, JsonProperty property, JsonContract& memberContract, Object& memberValue)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeObject(JsonWriter writer, Object value, JsonObjectContract contract, JsonProperty member, JsonContainerContract collectionContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.SerializeValue(JsonWriter writer, Object value, JsonContract valueContract, JsonProperty member, JsonContainerContract containerContract, JsonProperty containerProperty)
+   at Newtonsoft.Json.Serialization.JsonSerializerInternalWriter.Serialize(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.SerializeInternal(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonSerializer.Serialize(JsonWriter jsonWriter, Object value, Type objectType)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value, Type type, Formatting formatting, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value, Formatting formatting, JsonSerializerSettings settings)
+   at Newtonsoft.Json.JsonConvert.SerializeObject(Object value)
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in c:\project\puck\core\Helpers\ApiHelper.cs:line 341
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 330
+
+
+date: 12/07/2013 13:01:18
+message: you cannot publish an item if it has no parent
+stacktrace:    at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendants, Boolean publish) in c:\project\puck\core\Helpers\ApiHelper.cs:line 173
+   at puck.core.Controllers.ApiController.Publish(Guid id, String variant, String descendants) in c:\project\puck\core\Controllers\ApiController.cs:line 225
+
+
+date: 12/07/2013 13:07:16
+message: you cannot publish an item if it has no parent
+stacktrace:    at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendants, Boolean publish) in c:\project\puck\core\Helpers\ApiHelper.cs:line 173
+   at puck.core.Controllers.ApiController.Publish(Guid id, String variant, String descendants) in c:\project\puck\core\Controllers\ApiController.cs:line 225
+
+
+date: 12/07/2013 13:08:28
+message: you cannot publish an item if it has no parent
+stacktrace:    at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendants, Boolean publish) in c:\project\puck\core\Helpers\ApiHelper.cs:line 173
+   at puck.core.Controllers.ApiController.Publish(Guid id, String variant, String descendants) in c:\project\puck\core\Controllers\ApiController.cs:line 225
+
+
+date: 12/07/2013 20:38:43
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Concrete.Content_Indexer_Searcher.GetFieldSettings(List`1 props, Document doc, List`1 analyzers) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 190
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 242
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in c:\project\puck\core\Helpers\ApiHelper.cs:line 401
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 331
+
+
+date: 12/07/2013 20:39:07
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+
+date: 12/07/2013 20:39:14
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Concrete.Content_Indexer_Searcher.GetFieldSettings(List`1 props, Document doc, List`1 analyzers) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 190
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 242
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in c:\project\puck\core\Helpers\ApiHelper.cs:line 401
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 331
+
+
+date: 12/07/2013 20:39:38
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Concrete.Content_Indexer_Searcher.GetFieldSettings(List`1 props, Document doc, List`1 analyzers) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 190
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 242
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in c:\project\puck\core\Helpers\ApiHelper.cs:line 401
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 331
+
+
+date: 12/07/2013 20:40:11
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+
+date: 12/07/2013 20:44:19
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Concrete.Content_Indexer_Searcher.GetFieldSettings(List`1 props, Document doc, List`1 analyzers) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 190
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 242
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in c:\project\puck\core\Helpers\ApiHelper.cs:line 401
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 331
+
+
+date: 12/07/2013 20:45:58
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Concrete.Content_Indexer_Searcher.GetFieldSettings(List`1 props, Document doc, List`1 analyzers) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 190
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 242
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod) in c:\project\puck\core\Helpers\ApiHelper.cs:line 401
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 331
+
+
+date: 12/07/2013 20:48:25
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+
+date: 12/07/2013 20:48:59
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+
+date: 12/07/2013 20:50:42
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+
+date: 12/07/2013 20:50:48
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+
+date: 12/07/2013 20:50:49
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+
+date: 12/07/2013 20:50:50
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 84
+
+

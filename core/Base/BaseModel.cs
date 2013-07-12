@@ -18,13 +18,14 @@ namespace puck.core.Base
             Updated = DateTime.Now;
             Id = Guid.NewGuid();
             Revision = 0;
-            SortOrder = -1;                
+            SortOrder = -1;
         }
         [UIHint("SettingsReadOnly")]
         [DefaultGUIDTransformer()]
         [IndexSettings(FieldIndexSetting=Lucene.Net.Documents.Field.Index.NOT_ANALYZED,Analyzer=typeof(KeywordAnalyzer))]
         public Guid Id { get; set; }
 
+        [Required]
         [Display(Name="Node Name")]
         public String NodeName { get; set; }
 
@@ -62,6 +63,7 @@ namespace puck.core.Base
         [UIHint("SettingsReadOnly")]
         public int SortOrder { get; set; }
 
+        [Required]
         [Display(Name = "Template Path")]
         [UIHint("SettingsTemplate")]
         [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED, Analyzer = typeof(KeywordAnalyzer))]
@@ -73,7 +75,7 @@ namespace puck.core.Base
         public string TypeChain { get; set; }
 
         [UIHint("SettingsReadOnly")]
-        [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.ANALYZED, Analyzer = typeof(KeywordAnalyzer), FieldStoreSetting = Lucene.Net.Documents.Field.Store.YES)]
+        [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.ANALYZED,KeepValueCasing=true ,Analyzer = typeof(KeywordAnalyzer), FieldStoreSetting = Lucene.Net.Documents.Field.Store.YES)]
         public string Type { get; set; }
     }
 }

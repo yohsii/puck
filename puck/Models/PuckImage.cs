@@ -10,7 +10,7 @@ namespace puck.areas.admin.Models
     [PuckImageTransformer()]
     public class PuckImage
     {
-        [UIHint("SettingsReadOnly")]
+        [UIHint("SettingsDisplayImage")]
         public string Path { get; set; }
         [UIHint("SettingsReadOnly")]
         public string Size {get;set;}

@@ -13,19 +13,18 @@ namespace puck.Transformers
     {
         public PuckImage Transform(BaseModel m,string propertyName,string ukey,PuckImage p)
         {
-            if (p == null || p.File == null)
-                return null;
             try
             {
-                if (p.File != null) {
-                    string filepath = string.Concat("~/Media/", m.Id, "/", m.Variant, "/", ukey, "_", p.File.FileName);
-                    string absfilepath =HttpContext.Current.Server.MapPath(filepath);
-                    new FileInfo(absfilepath).Directory.Create();
-                    p.File.SaveAs(absfilepath);
-                    p.Path = filepath;
-                    p.Size = p.File.InputStream.Length.ToString();
-                    p.Extension=Path.GetExtension(p.File.FileName);
-                }
+                if (p.File == null || string.IsNullOrEmpty(p.File.FileName))
+                    return null;
+            
+                string filepath = string.Concat("~/Media/", m.Id, "/", m.Variant, "/", ukey, "_", p.File.FileName);
+                string absfilepath =HttpContext.Current.Server.MapPath(filepath);
+                new FileInfo(absfilepath).Directory.Create();
+                p.File.SaveAs(absfilepath);
+                p.Path = filepath.TrimStart('~');
+                p.Size = p.File.InputStream.Length.ToString();
+                p.Extension=Path.GetExtension(p.File.FileName);                
             }catch(Exception ex){
                 
             }finally {

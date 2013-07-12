@@ -43,32 +43,37 @@ namespace puck.core.Controllers
                 }
 
                 var dmode = this.GetDisplayModeId();
-                
-                
+                                
                 if (path=="/")
                     path = string.Empty;                
                 
-
-                string domain = Request.Url.Host;
+                string domain = Request.Url.Host.ToLower();
                 string searchPathPrefix;
                 if (!PuckCache.DomainRoots.TryGetValue(domain, out searchPathPrefix))
                 {
                     if (!PuckCache.DomainRoots.TryGetValue("*", out searchPathPrefix))
                         throw new Exception("domain roots not set. DOMAIN:" + domain);
                 }
-                string searchPath = searchPathPrefix + path;
+                string searchPath = (searchPathPrefix + path).ToLower();
 
                 string variant;
                 if (!PuckCache.PathToLocale.TryGetValue(searchPath, out variant))
                 {
                     //get closest ancestor variant
-                    KeyValuePair<string, string>? entry = PuckCache.PathToLocale.Where(x => searchPath.StartsWith(x.Key)).OrderByDescending(x => x.Key.Length).FirstOrDefault();
+                    /*KeyValuePair<string, string>? entry = PuckCache.PathToLocale.Where(x => searchPath.StartsWith(x.Key)).OrderByDescending(x => x.Key.Length).FirstOrDefault();
                     if (entry.HasValue)
                     {
                         variant = entry.Value.Value;
                         PuckCache.PathToLocale[searchPath] = entry.Value.Value;
                     }
                     else
+                        variant = PuckCache.SystemVariant;
+                    */
+                    foreach (var entry in PuckCache.PathToLocale) {
+                        if (searchPath.StartsWith(entry.Key))
+                            variant = entry.Value;
+                    }
+                    if (string.IsNullOrEmpty(variant))
                         variant = PuckCache.SystemVariant;
                 }
                 //set thread culture for future api calls on this thread
@@ -80,19 +85,14 @@ namespace puck.core.Controllers
                         string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
                         );                    
                 }
-                QueryHelper<BaseModel> qht = new QueryHelper<BaseModel>();
-                qht.Field(x => x.Id, "lolface").Field(x => x.NodeName, "lelor").ExplicitType<BaseModel>();
-                using (MiniProfiler.Current.Step("multi field parsing"))
-                {
-                    qht.GetAll();                    
-                }
+                
                 var result = results == null ? null : results.FirstOrDefault();
-                object model = null;
+                BaseModel model = null;
                 if (result != null)
                 {
                     using (MiniProfiler.Current.Step("deserialize"))
                     {
-                        model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], Type.GetType(result[FieldKeys.PuckType]));                        
+                        model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], Type.GetType(result[FieldKeys.PuckType])) as BaseModel;
                     }
                     if (!PuckCache.OutputCacheExclusion.Contains(searchPath))
                     {
