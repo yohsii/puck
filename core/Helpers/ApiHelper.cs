@@ -33,7 +33,28 @@ namespace puck.core.Helpers
             return PuckCache.PuckIndexer;
          }}
 
-
+        public static string UserVariant() {
+            string variant;
+            if (HttpContext.Current.Session["language"] != null)
+            {
+                variant = HttpContext.Current.Session["language"] as string;
+            }
+            else
+            {
+                var repo = PuckCache.PuckRepo;
+                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == HttpContext.Current.User.Identity.Name).FirstOrDefault();
+                if (meta != null && !string.IsNullOrEmpty(meta.Value))
+                {
+                    variant = meta.Value;
+                    HttpContext.Current.Session["language"] = meta.Value;
+                }
+                else
+                {
+                    variant = PuckCache.SystemVariant;
+                }
+            }
+            return variant;
+        }
         public static object RevisionToModel(PuckRevision revision) {
             var model = JsonConvert.DeserializeObject(revision.Value, Type.GetType(revision.Type));
             var mod = model as BaseModel;
@@ -43,6 +64,13 @@ namespace puck.core.Helpers
         public static BaseModel RevisionToBaseModel(PuckRevision revision)
         {
             var model = JsonConvert.DeserializeObject(revision.Value, Type.GetType(revision.Type));
+            var mod = model as BaseModel;
+            mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
+            return mod;
+        }
+        public static BaseModel RevisionToBaseModelCast(PuckRevision revision)
+        {
+            var model = JsonConvert.DeserializeObject(revision.Value, typeof(BaseModel));
             var mod = model as BaseModel;
             mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
             return mod;
@@ -206,8 +234,8 @@ namespace puck.core.Helpers
                         toDelete.AddRange(descendants);
                     }
                 }
-
-                toDelete.Delete();
+                indexer.Delete(toDelete);
+                //toDelete.Delete();
                 
                 //remove from repo
                 var repoItemsQ = repo.GetPuckRevision().Where(x => x.Id == id && x.Current);

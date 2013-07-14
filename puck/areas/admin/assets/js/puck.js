@@ -141,6 +141,7 @@ var showUserMarkup = function (username) {
             showUsers();
             userRoles = $(".overlayinner select[name=Roles]").val();
             getUserLanguage(function (d) { defaultLanguage = d; });
+            startPath = data.startPath;
             overlayClose();
         }, function (data) {
             $(".overlayinner .msg").show().html(data.message);            
@@ -482,7 +483,7 @@ var draw = function (data, el, sortable) {
     el.append(toAppend);
     if (sortable) {
         toAppend.sortable({
-            axis:'y',
+            cursorAt:{top:0,left:0},
             update: function (event, ui) {
                 var parent = ui.item.parents("li[data-children_path]:first");
                 var sortPath = parent.attr("data-children_path");
@@ -960,12 +961,16 @@ var dbcontent = [];
 var defaultLanguage = "en-gb";
 var userRoles = [];
 var languages;
+var startPath;
 getUserLanguage(function (d) { defaultLanguage = d; });
 getUserRoles(function (d) { userRoles = d; });
 getVariants(function (data) {
     languages = data;
 });
 getStartPath(function (d) {
+    cleft.find("ul.content li:first").attr("data-children_path",d);
+    startPath = d;
+    cleft.find(".startpath").html(d);
     getDrawContent(d, undefined, true);
 });
 //extensions

@@ -13,6 +13,7 @@ using System.Web;
 using System.Globalization;
 using Lucene.Net.Search;
 using System.Threading;
+using puck.core.Models;
 
 namespace puck.core.Helpers
 {
@@ -68,40 +69,79 @@ namespace puck.core.Helpers
         {
             return string.Concat("\"", s, "\"");
         }
+        //misc helper extensions
+        public static int GetLevel(this BaseModel m)
+        {
+            int level = m.Path.Count(x => x == '/');
+            return level;
+        }
+
+        public static string Url(this BaseModel m)
+        {
+            //remove root from path - roots are determined by domain
+            if (m.Path.Count(x => x == '/') == 1)
+                return "/";
+            var firstOccurrence = m.Path.IndexOf('/');
+            var secondOccurrence = m.Path.IndexOf('/', firstOccurrence+1);
+            return m.Path.Substring(secondOccurrence);
+        }
+
+        public static List<T> GetAll<T>(this PuckPicker pp) where T : BaseModel
+        {
+            var qh = new QueryHelper<T>();
+            qh.And().ID(pp.Id);
+            if (!string.IsNullOrEmpty(pp.Variant))
+                qh.Variant(pp.Variant);
+            return qh.GetAll();
+        }
+
+        public static T Get<T>(this PuckPicker pp) where T : BaseModel
+        {
+            var qh = new QueryHelper<T>();
+            qh.And().ID(pp.Id);
+            if (!string.IsNullOrEmpty(pp.Variant))
+                qh.Variant(pp.Variant);
+            return qh.Get();
+        }
         //retrieval extensions
-        public static List<T> Parent<T>(this BaseModel n) where T : BaseModel
+        public static List<T> Parent<T>(this BaseModel n,bool currentLanguage = true) where T : BaseModel
         {
             var qh = new QueryHelper<T>();
             string path = n.Path.Substring(0, n.Path.LastIndexOf('/'));
             qh
                 .And()
-                .Field(x => x.Path, path);
+                .Field(x => x.Path, path.ToLower());
+            if (currentLanguage)
+                qh.CurrentLanguage();
             return qh.GetAll();
         }
-        public static List<T> Ancestors<T>(this BaseModel n) where T : BaseModel {
+        public static List<T> Ancestors<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel {
             var qh = new QueryHelper<T>();
-            string nodePath = n.Path;
+            string nodePath = n.Path.ToLower();
             while (nodePath.Count(x => x == '/') > 1)
             {
                 nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
                 qh
-                    .And()
                     .Field(x=>x.Path,nodePath);            
             }
+            if (currentLanguage)
+                qh.CurrentLanguage();
             return qh.GetAll();
         }
-        public static List<T> Siblings<T>(this BaseModel n) where T : BaseModel {
+        public static List<T> Siblings<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh
                     .And()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path).WildCardMulti())
+                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path).WildCardMulti() + "/*")
+                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
                     .Not()
-                    .Field(x => x.Id, n.Id.ToString().Wrap());                   
+                    .Field(x => x.Id, n.Id.ToString().Wrap());
+            if (currentLanguage)
+                qh.CurrentLanguage();
             return qh.GetAll();                
         }
-        public static List<T> Variants<T>(this BaseModel n) where T : BaseModel
+        public static List<T> Variants<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel
         {
             var qh = new QueryHelper<T>();
             qh      
@@ -109,21 +149,28 @@ namespace puck.core.Helpers
                     .Field(x => x.Id, n.Id.ToString())
                     .Not()
                     .Field(x => x.Variant, n.Variant);
+            if (currentLanguage)
+                qh.CurrentLanguage();
             return qh.GetAll();
         }
-        public static List<T> Children<T>(this BaseModel n) where T : BaseModel
+        public static List<T> Children<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel
         {
             var qh = new QueryHelper<T>();
             qh      
                     .And()
-                    .Field(x => x.Path, n.Path + "/".WildCardMulti())
+                    .Field(x => x.Path, n.Path.ToLower() + "/".WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, n.Path+"/".WildCardMulti() + "/*");
+                    .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti() + "/*");
+            if (currentLanguage)
+                qh.CurrentLanguage();
             return qh.GetAll();
         }
-        public static List<T> Descendants<T>(this BaseModel n) where T : BaseModel {
+        public static List<T> Descendants<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel {
             var qh = new QueryHelper<T>();
-            qh.Field(x => x.Path, n.Path+"/".WildCardMulti());
+            qh.And()
+                .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti());
+            if (currentLanguage)
+                qh.CurrentLanguage();
             return qh.GetAll();
         }
         
@@ -137,12 +184,12 @@ namespace puck.core.Helpers
             });
             return d;
         }
-
+        /*
         public static void Delete<T>(this List<T> toDelete) where T:BaseModel {
             var indexer = PuckCache.PuckIndexer;
             indexer.Delete(toDelete);
         }
-
+        */
         public static Dictionary<string, Dictionary<string, T>> GroupByPath<T>(this List<T> items) where T : BaseModel
         {
             var d = new Dictionary<string, Dictionary<string, T>>();
@@ -206,7 +253,7 @@ namespace puck.core.Helpers
 
         public static string Format<TModel>(Expression<Func<TModel, object>> exp, params string[] values)
         {
-            values = values.Select(x => Escape(x)).ToArray();
+            values = values.Select(x => x).ToArray();
             string bodystr = exp.Body.ToString();
             var pmatches =paramRegex.Matches(bodystr);
             var qmatch = queryRegex.Matches(bodystr);
@@ -231,14 +278,14 @@ namespace puck.core.Helpers
 
         public static List<T> CurrentAll<T>() where T : BaseModel
         {
-            string path = HttpContext.Current.Request.Url.LocalPath;
+            string path = HttpContext.Current.Request.Url.AbsolutePath;
             return searcher.Query<T>(string.Format("+{0}:{1} +{2}:{3}",FieldKeys.PuckTypeChain,typeof(T).FullName,FieldKeys.Path,path)).ToList();
         }
 
         public static T Current<T>() where T : BaseModel
         {
             var variant = CultureInfo.CurrentCulture.Name;
-            string path = HttpContext.Current.Request.Url.LocalPath;
+            string path = HttpContext.Current.Request.Url.AbsolutePath;
             return searcher.Query<T>(
                 string.Format("+{0}:{1} +{2}:{3} +{4}:{5}", 
                     FieldKeys.PuckTypeChain, typeof(T).FullName, FieldKeys.Path, path,FieldKeys.Variant,variant
@@ -259,7 +306,7 @@ namespace puck.core.Helpers
 
         //query builders
         public void Clear() {
-            query = "+" + this.Field(FieldKeys.PuckTypeChain, Escape(typeof(TModel).FullName).Wrap()) + " ";
+            query = "+" + this.Field(FieldKeys.PuckTypeChain, typeof(TModel).FullName.Wrap()) + " ";
         }
 
         public QueryHelper<TModel> Format(Expression<Func<TModel, object>> exp) {
@@ -272,65 +319,74 @@ namespace puck.core.Helpers
             query += QueryHelper<TModel>.Format<TModel>(exp,values);
             return this;
         }
-
-        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp,string start,string end,bool inclusiveStart=true,bool inclusiveEnd=true)
+        
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp,string start,string end,bool inclusiveStart,bool inclusiveEnd)
         {
             string key=getName(exp.Body.ToString());
             string openTag = inclusiveStart ? "[" : "{";
             string closeTag = inclusiveEnd ? "]" : "}";
-            query += string.Concat(key , openTag ,Escape(start)," TO ",Escape(end),closeTag," ");
+            query += string.Concat(key,":" , openTag ,start," TO ",end,closeTag," ");
             return this;
         }
-
-        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, int start, int end, bool inclusiveStart = true, bool inclusiveEnd = true)
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, string start, string end, bool inclusiveStart)
+        {
+            return this.Range(exp,start,end,inclusiveStart,true);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, string start, string end)
+        {
+            return this.Range(exp, start, end, true,true);
+        }
+        
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, int start, int end, bool inclusiveStart, bool inclusiveEnd)
         {
             return this.Range(exp,start.ToString(),end.ToString(),inclusiveStart,inclusiveEnd);
         }
-
-        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, DateTime start, DateTime end, bool inclusiveStart = true, bool inclusiveEnd = true)
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, int start, int end, bool inclusiveStart)
         {
-            string key = getName(exp.Body.ToString());
-            string openTag = inclusiveStart ? "[" : "{";
-            string closeTag = inclusiveEnd ? "]" : "}";
-            query += string.Concat(key , openTag, start.ToString(dateFormat), " TO ", end.ToString(dateFormat), closeTag," ");
-            return this;
+            return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, true);
         }
-        /*
-        public QueryHelper<TModel> Sort(Expression<Func<TModel, object>> exp, bool descending)
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, int start, int end)
         {
-            string key = getName(exp.Body.ToString());
-            sort.SetSort(new SortField(key,descending));
-            query += string.Concat(key, ":", value, " ");
-            return this;
-        }
-        */
-
-        public QueryHelper<TModel> CurrentLanguage() {
-            var key = FieldKeys.Variant;
-            var variant = Thread.CurrentThread.CurrentCulture.Name;
-            query += string.Concat("+",key,":",variant," ");
-            return this;
+            return this.Range(exp, start.ToString(), end.ToString(), true,true);
         }
 
-        public QueryHelper<TModel> Level(int level) {
-            var includePath =string.Join("",Enumerable.Range(0, level).ToList().Select(x=>"/*"));
-            var excludePath = includePath + "/";
-            var key = FieldKeys.Path;
-            query += string.Concat("+",key,":",includePath," +",key,":",excludePath," ");
-            return this;
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, long start, long end, bool inclusiveStart, bool inclusiveEnd)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, inclusiveEnd);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, long start, long end, bool inclusiveStart)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, true);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, long start, long end)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), true, true);
         }
 
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, DateTime start, DateTime end, bool inclusiveStart, bool inclusiveEnd)
+        {
+            return this.Range(exp, start.ToString(dateFormat), end.ToString(dateFormat), inclusiveStart, inclusiveEnd);            
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, DateTime start, DateTime end, bool inclusiveStart)
+        {
+            return this.Range(exp, start.ToString(dateFormat), end.ToString(dateFormat), inclusiveStart, true);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, DateTime start, DateTime end)
+        {
+            return this.Range(exp, start.ToString(dateFormat), end.ToString(dateFormat), true,true);
+        }
+        
         public QueryHelper<TModel> AllFields(string value)
         {
             foreach (var k in PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName]){
-                query += string.Concat(k, ":", Escape(value), " ");
+                query += string.Concat(k, ":", value, " ");
             }            
             return this;
         }
 
         public QueryHelper<TModel> Field(string key, string value)
         {
-            query += string.Concat(key, ":", Escape(value)," ");
+            query += string.Concat(key, ":", value," ");
             return this;
         }
 
@@ -344,7 +400,7 @@ namespace puck.core.Helpers
         public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, string value)
         {
             string key = getName(exp.Body.ToString());
-            query += string.Concat(key , ":",  Escape(value)," ");
+            query += string.Concat(key , ":",  value," ");
             return this;
         }
 
@@ -368,38 +424,98 @@ namespace puck.core.Helpers
             return this.Field(exp, lvalue.ToString());
         }
 
+        //filters
+        public QueryHelper<TModel> Ancestors(string path)
+        {
+            string nodePath = path.ToLower();
+            while (nodePath.Count(x => x == '/') > 1)
+            {
+                nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
+                this.And()
+                    .Field(x => x.Path, nodePath);
+            }
+            return this;
+        }
+        public QueryHelper<TModel> Siblings(string path, Guid id)
+        {
+            return this.Siblings(path, id.ToString());
+        }
+        public QueryHelper<TModel> Siblings(string path,string id)
+        {
+            this
+                    .And()
+                    .Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
+                    .Not()
+                    .Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti() + "/*")
+                    .Not()
+                    .Field(x => x.Id, id.Wrap());
+            return this;
+        }
+        public QueryHelper<TModel> Children(string path)
+        {
+            this
+                    .And()
+                    .Field(x => x.Path, path.ToLower() + "/".WildCardMulti())
+                    .Not()
+                    .Field(x => x.Path, path.ToLower() + "/".WildCardMulti() + "/*");
+            return this;
+        }
+        public QueryHelper<TModel> Descendants(string path)
+        {
+            this.And()
+                .Field(x => x.Path, path.ToLower() + "/".WildCardMulti());
+            return this;
+        }
+
+        public QueryHelper<TModel> CurrentLanguage()
+        {
+            var key = FieldKeys.Variant;
+            var variant = Thread.CurrentThread.CurrentCulture.Name;
+            query += string.Concat(key, ":", variant.ToLower(), " ");
+            return this;
+        }
+
+        public QueryHelper<TModel> Level(int level)
+        {
+            var includePath = string.Join("", Enumerable.Range(0, level).ToList().Select(x => "/*"));
+            var excludePath = includePath + "/";
+            var key = FieldKeys.Path;
+            query += string.Concat("+", key, ":", includePath, " -", key, ":", excludePath, " ");
+            return this;
+        }
+
         public QueryHelper<TModel> ExplicitType<AType>()
         {
             string key = FieldKeys.PuckType;
-            query += string.Concat("+",key, ":", Escape(typeof(AType).AssemblyQualifiedName), " ");
+            query += string.Concat("+",key, ":", typeof(AType).AssemblyQualifiedName.Wrap(), " ");
             return this;
         }
 
         public QueryHelper<TModel> ExplicitType()
         {
             string key = FieldKeys.PuckType;
-            query += string.Concat("+",key, ":", Escape(typeof(TModel).AssemblyQualifiedName), " ");
+            query += string.Concat("+",key, ":", typeof(TModel).AssemblyQualifiedName.Wrap(), " ");
             return this;
         }
 
         public QueryHelper<TModel> Variant(string value)
         {
             string key = FieldKeys.Variant;
-            query += string.Concat(key, ":", Escape(value), " ");
+            query += string.Concat("+",key, ":", value, " ");
             return this;
         }
 
         public QueryHelper<TModel> ID(string value)
         {
             string key = FieldKeys.ID;
-            query += string.Concat(key, ":", Escape(value), " ");
+            query += string.Concat("+",key, ":", value, " ");
             return this;
         }
 
         public QueryHelper<TModel> ID(Guid value)
         {
             string key = FieldKeys.ID;
-            query += string.Concat(key, ":", Escape(value.ToString()), " ");
+            query += string.Concat("+",key, ":", value.ToString(), " ");
             return this;
         }
 
@@ -410,7 +526,9 @@ namespace puck.core.Helpers
             query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/".WildCardMulti());
             return this;
         }
+        //end filters
 
+        //logical operators
         public QueryHelper<TModel> And(QueryHelper<TModel> q=null)
         {
             if (q == null)

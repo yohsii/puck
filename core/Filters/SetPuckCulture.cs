@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Threading;
 using System.Globalization;
 using puck.core.Constants;
+using puck.core.Helpers;
 
 namespace puck.core.Filters
 {
@@ -13,23 +14,7 @@ namespace puck.core.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            string variant;
-            if (filterContext.HttpContext.Session["language"] != null)
-            {
-                variant = filterContext.HttpContext.Session["language"] as string;
-            }
-            else {
-                var repo = PuckCache.PuckRepo;
-                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == filterContext.HttpContext.User.Identity.Name).FirstOrDefault();
-                if (meta != null && !string.IsNullOrEmpty(meta.Value))
-                {
-                    variant = meta.Value;
-                    filterContext.HttpContext.Session["language"] = meta.Value;
-                }
-                else {
-                    variant = PuckCache.SystemVariant;
-                }
-            }
+            string variant = ApiHelper.UserVariant();
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(variant);
         }
     }

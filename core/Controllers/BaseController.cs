@@ -24,7 +24,7 @@ namespace puck.core.Controllers
         {
             try
             {
-                string path = Request.Url.AbsolutePath;
+                string path = Request.Url.AbsolutePath.ToLower();
                 //do redirects
                 string redirectUrl;
                 if (PuckCache.Redirect301.TryGetValue(Request.Url.AbsolutePath, out redirectUrl))
@@ -54,7 +54,7 @@ namespace puck.core.Controllers
                     if (!PuckCache.DomainRoots.TryGetValue("*", out searchPathPrefix))
                         throw new Exception("domain roots not set. DOMAIN:" + domain);
                 }
-                string searchPath = (searchPathPrefix + path).ToLower();
+                string searchPath = searchPathPrefix.ToLower() + path;
 
                 string variant;
                 if (!PuckCache.PathToLocale.TryGetValue(searchPath, out variant))
@@ -70,8 +70,10 @@ namespace puck.core.Controllers
                         variant = PuckCache.SystemVariant;
                     */
                     foreach (var entry in PuckCache.PathToLocale) {
-                        if (searchPath.StartsWith(entry.Key))
+                        if (searchPath.StartsWith(entry.Key)){
                             variant = entry.Value;
+                            break;
+                        }
                     }
                     if (string.IsNullOrEmpty(variant))
                         variant = PuckCache.SystemVariant;

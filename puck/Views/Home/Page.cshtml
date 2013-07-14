@@ -1,6 +1,19 @@
 ﻿@model puck.areas.admin.ViewModels.Page
 @{
     ViewBag.Title = "Page";
+
+    var siblings = Model.Siblings<puck.areas.admin.ViewModels.Page>();
+    var parent = Model.Parent<puck.areas.admin.ViewModels.Page>();
+    var ancestors = Model.Ancestors<puck.areas.admin.ViewModels.Page>();
+    @("siblings:"+siblings.Count)
+    @("parent:"+parent.Count)
+    @("ancestors:"+ancestors.Count)
 }
 
-<h2>Page</h2>
+<h2>@Model.Title</h2>
+<div>
+    @Html.Raw(Model.MainContent)
+</div>
+<div>
+    <img alt="@Model.Title" src="@Model.Image.Path" />
+</div>

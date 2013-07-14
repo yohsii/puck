@@ -1,6 +1,20 @@
 ﻿@model puck.areas.admin.ViewModels.Homepage
 @{
     ViewBag.Title = "Homepage";
+    var qh = new QueryHelper<puck.areas.admin.ViewModels.Section>();
+    qh.CurrentLanguage();
+    qh.ExplicitType();
+    var sections = qh.GetAll();
+    @qh.ToString()
+    <br />
+    @sections.Count
 }
 
 <h2>Homepage</h2>
+@foreach (var s in sections) { 
+    <h1>@s.Title</h1>
+    <div>
+        @Html.Raw(s.MainContent)
+    </div>
+    <div><a href="@s.Url()">more</a></div>
+}

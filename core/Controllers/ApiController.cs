@@ -22,7 +22,6 @@ using StackExchange.Profiling;
 using System.Web.Security;
 namespace puck.core.Controllers
 {
-    [Auth]
     [SetPuckCulture]
     public class ApiController : BaseController
     {
@@ -36,9 +35,12 @@ namespace puck.core.Controllers
             this.log = l;
             this.repo = r;
         }
-        public ActionResult Index() {
+        [Auth]
+        public ActionResult Index()
+        {
             return View();
         }
+        [Auth]
         public JsonResult UserLanguage()
         {
             string variant = PuckCache.SystemVariant;
@@ -47,18 +49,24 @@ namespace puck.core.Controllers
                 variant = meta.Value;
             return Json(variant, JsonRequestBehavior.AllowGet);
         }
+        [Auth]
         public JsonResult UserRoles()
         {
             var roles = Roles.GetRolesForUser(User.Identity.Name);
             return Json(roles, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult FieldGroups(string type) {
+        [Auth]
+        public JsonResult FieldGroups(string type)
+        {
             var model = ApiHelper.FieldGroups(type);
             return Json(model,JsonRequestBehavior.AllowGet);
         }
-        public ActionResult CreateDialog(string type) {
+        [Auth]
+        public ActionResult CreateDialog(string type)
+        {
             return View();
         }
+        [Auth]
         public JsonResult Models(string type)
         {
             if(string.IsNullOrEmpty(type))
@@ -66,19 +74,25 @@ namespace puck.core.Controllers
             else
                 return Json(ApiHelper.AllowedTypes(type).Select(x => x.AssemblyQualifiedName), JsonRequestBehavior.AllowGet);
         }
-        public JsonResult Variants() {
+        [Auth]
+        public JsonResult Variants()
+        {
             var model = ApiHelper.Variants();
             return Json(model,JsonRequestBehavior.AllowGet);
         }
+        [Auth]
         public ActionResult Preview(string path, string variant)
         {
             var model = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(path.ToLower()) && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
             return Preview(model);
         }
-        public ActionResult PreviewGuid(Guid id,string variant) {
+        [Auth]
+        public ActionResult PreviewGuid(Guid id, string variant)
+        {
             var model = repo.GetPuckRevision().Where(x => x.Id == id && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
             return Preview(model);
         }
+        [Auth]
         private ActionResult Preview(PuckRevision model)
         {
             var dmode = this.GetDisplayModeId();
@@ -153,13 +167,17 @@ namespace puck.core.Controllers
             return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetPath(Guid id) {
+        [Auth]
+        public JsonResult GetPath(Guid id)
+        {
             var node = repo.GetPuckRevision().Where(x => x.Id == id).FirstOrDefault();
             string path = node == null ? string.Empty : node.Path;
             return Json(path,JsonRequestBehavior.AllowGet);
         }
-        
-        public JsonResult StartPath() {
+
+        [Auth]
+        public JsonResult StartPath()
+        {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == HttpContext.User.Identity.Name).FirstOrDefault();
             if (meta != null)
             {
@@ -169,7 +187,7 @@ namespace puck.core.Controllers
                     var node = repo.GetPuckRevision().Where(x => x.Id == pu.Id).FirstOrDefault();
                     if (node != null)
                     {
-                        return Json(node.Path,JsonRequestBehavior.AllowGet);
+                        return Json(node.Path+"/",JsonRequestBehavior.AllowGet);
                     }
                 }
             }
@@ -183,7 +201,7 @@ namespace puck.core.Controllers
                 resultsRev = repo.CurrentRevisionsByPath(p_path).ToList();
             }
             
-            var results = resultsRev.Select(x =>ApiHelper.RevisionToBaseModel(x)).ToList()
+            var results = resultsRev.Select(x =>ApiHelper.RevisionToBaseModelCast(x)).ToList()
                 .GroupByPath()
                 .OrderBy(x=>x.Value.First().Value.SortOrder)
                 .ToDictionary(x=>x.Key,x=>x.Value);

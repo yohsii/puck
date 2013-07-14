@@ -75,7 +75,7 @@ namespace puck.core.Base
         public string TypeChain { get; set; }
 
         [UIHint("SettingsReadOnly")]
-        [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.ANALYZED,KeepValueCasing=true ,Analyzer = typeof(KeywordAnalyzer), FieldStoreSetting = Lucene.Net.Documents.Field.Store.YES)]
+        [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED,KeepValueCasing=true ,Analyzer = typeof(KeywordAnalyzer), FieldStoreSetting = Lucene.Net.Documents.Field.Store.YES)]
         public string Type { get; set; }
     }
 }

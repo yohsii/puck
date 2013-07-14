@@ -99,6 +99,7 @@ namespace puck.core.Controllers
         {
             bool success = false;
             string message = "";
+            string startPath = "/";
             var model = new PuckUser();
             try
             {
@@ -135,6 +136,10 @@ namespace puck.core.Controllers
                     repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(user.UserName)).ToList().ForEach(x => repo.DeleteMeta(x));
                 }
                 else {
+                    Guid picked_id = user.StartNode.First().Id;
+                    var revision = repo.GetPuckRevision().Where(x => x.Id == picked_id && x.Current).FirstOrDefault();
+                    if (revision != null)
+                        startPath = revision.Path+"/";
                     var metas =  repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(user.UserName)).ToList();
                     PuckMeta meta = null;
                     if (metas.Count > 0) {
@@ -167,7 +172,7 @@ namespace puck.core.Controllers
                 success = false;
                 message = ex.Message;
             }
-            return Json(new {success=success,message=message }, JsonRequestBehavior.AllowGet);
+            return Json(new {success=success,message=message,startPath=startPath }, JsonRequestBehavior.AllowGet);
         }
 
         [Auth(Roles = "users")]

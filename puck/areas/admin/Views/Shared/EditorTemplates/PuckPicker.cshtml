@@ -5,21 +5,27 @@
         ??new puck.core.Models.PuckPickerEditorSettings(){
             AllowDuplicates=false,AllowUnpublished=true,MaxPick=2,SelectionType="both",StartPath=null
         };
-    var startPath = "/";
+    var startPath = "";
+    if(settings.StartPath!=null && settings.StartPath.Count>0){
+        var id = settings.StartPath.First().Id;
+        var revision = PuckCache.PuckRepo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
+        if(revision!=null){
+            startPath = revision.Path;
+        }
+    }
 }
 <div class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName">
     <ul class="content nomenu">
-        <li class="node" data-children_path="/">&nbsp;</li>
+        <li class="node" data-children_path="/"></li>
     </ul>        
-    <div class="selected_content">&nbsp;
+    <div class="selected_content">
         @if (Model != null)
         {
             foreach (var m in Model)
             {
                 if (!string.IsNullOrEmpty(m.Variant))
                 {
-                    var nodes =puck.core.Constants.PuckCache.PuckRepo.GetPuckRevision().Where(x=>x.Id==m.Id).ToList(); 
-                    var node = nodes.Where(x => x.Variant.ToLower().Equals(puck.core.Constants.PuckCache.SystemVariant.ToLower())).FirstOrDefault()??nodes.FirstOrDefault();
+                    var node = puck.core.Constants.PuckCache.PuckRepo.GetPuckRevision().Where(x=>x.Id==m.Id && x.Variant.ToLower().Equals(m.Variant.ToLower())).FirstOrDefault();
                     if (node != null)
                     {
                     <div class="selected_node" data-variant="@m.Variant" data-id="@m.Id">
@@ -30,7 +36,8 @@
                 }
                 else
                 {
-                    var node = puck.core.Constants.PuckCache.PuckRepo.GetPuckRevision().Where(x=>x.Id==m.Id && x.Variant.ToLower().Equals(m.Variant.ToLower())).FirstOrDefault();
+                    var nodes = puck.core.Constants.PuckCache.PuckRepo.GetPuckRevision().Where(x => x.Id == m.Id).ToList();
+                    var node = nodes.Where(x => x.Variant.ToLower().Equals(ApiHelper.UserVariant().ToLower())).FirstOrDefault() ?? nodes.FirstOrDefault();
                     if (node != null)
                     {
                     <div class="selected_node" data-variant="null" data-id="@m.Id">
@@ -49,7 +56,8 @@
         var container = $(".puckpicker_" + propname);
         var selected_container = container.find(".selected_content");
         var selected_content = function () { return selected_container.find(".selected_node"); }
-        var startPath = "@startPath";
+        var _startPath = "@startPath" == ""?startPath:"@startPath";
+        container.find("ul.content li:first").attr("data-children_path",_startPath);
         var maxPick = "@settings.MaxPick";
         var selectionType = "@settings.SelectionType"; //both|variant|node
         var allowUnpublished = "@settings.AllowUnpublished";
@@ -65,8 +73,8 @@
             });
         }
         setValue();
-        el = container.find(".node[data-children_path='/']");
-        getDrawContent(startPath, el);
+        el = container.find(".node:first");
+        getDrawContent(_startPath, el);
         selected_container.on("click", "i", function (e) {
             $(this).parent().remove();
             setValue();
@@ -95,7 +103,7 @@
                 );
             } else if (!isVariantSelection && (selectionType == "node" || selectionType == "both")) {
                 selected_container.append(
-                    "<div class='selected_node' data-variant='null' data-id='" + node.attr("data-id") + "'><span>" + node.attr("data-nodename") + "</span>&nbsp;<i class='icon-remove-sign'></i></div>"
+                    "<div class='selected_node' data-variant='' data-id='" + node.attr("data-id") + "'><span>" + node.attr("data-nodename") + "</span>&nbsp;<i class='icon-remove-sign'></i></div>"
                 );
             }
             setValue();

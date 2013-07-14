@@ -7,6 +7,8 @@
 .main.grid .leftarea{border-right:4px solid #e2e2e2;}
 .main.grid .leftarea,.main.grid .rightarea{height:100%}
 .main.grid .hide{display:none;}
+ul.content > li > ul{margin-left:0px!important;}
+.leftarea .startpath{margin-top:5px;color:#000;font-weight:bolder;background-color:#e2e2e2;font-size:12px;}
 span.variant.published{color:#33aa33;}
 .footer_puck{/*width:100%;height:20px;background:#e2e2e2;*/}
 .main.grid ul.content{margin-top:10px;}
@@ -71,6 +73,7 @@ select.languages{height:200px !important;}
 .cache_exclude_dialog .fieldwrapper {padding:0 5px 0 5px;}
 .user_edit button {float:right;padding:20px;}
 .user_edit select[multiple] {height:200px !important;}
+.user_edit .puckpicker{padding:0px;}
 .puck_mce textarea{width:665px;height:500px;}
 .settings .editor_parameters{}
 .settings .editor_parameters select{width:500px;}
