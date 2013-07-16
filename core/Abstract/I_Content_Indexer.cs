@@ -26,10 +26,10 @@ namespace puck.core.Abstract
         void RegisterAfterIndexHandler<T>(string Name, Action<object, IndexingEventArgs> Handler, bool Propagate = false) where T : BaseModel;
         void RegisterBeforeDeleteHandler<T>(string Name, Action<object, BeforeIndexingEventArgs> Handler, bool Propagate = false) where T : BaseModel;
         void RegisterAfterDeleteHandler<T>(string Name, Action<object, IndexingEventArgs> Handler, bool Propagate = false) where T : BaseModel;
-        void UnRegisterBeforeIndexHandler<T>(string Name);
-        void UnRegisterAfterIndexHandler<T>(string Name);
-        void UnRegisterBeforeDeleteHandler<T>(string Name);
-        void UnRegisterAfterDeleteHandler<T>(string Name);
+        void UnRegisterBeforeIndexHandler(string Name);
+        void UnRegisterAfterIndexHandler(string Name);
+        void UnRegisterBeforeDeleteHandler(string Name);
+        void UnRegisterAfterDeleteHandler(string Name);
 
     }
 }

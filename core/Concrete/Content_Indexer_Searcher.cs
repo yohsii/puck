@@ -111,19 +111,19 @@ namespace puck.core.Concrete
             AfterDeleteActionList.Add(Name, new Tuple<Type, Action<object, IndexingEventArgs>, bool>(typeof(T), Handler, Propagate));
         }
 
-        public void UnRegisterBeforeIndexHandler<T>(string Name)
+        public void UnRegisterBeforeIndexHandler(string Name)
         {
             BeforeIndexActionList.Remove(Name);
         }
-        public void UnRegisterAfterIndexHandler<T>(string Name)
+        public void UnRegisterAfterIndexHandler(string Name)
         {
             AfterIndexActionList.Remove(Name);
         }
-        public void UnRegisterBeforeDeleteHandler<T>(string Name)
+        public void UnRegisterBeforeDeleteHandler(string Name)
         {
             BeforeDeleteActionList.Remove(Name);
         }
-        public void UnRegisterAfterDeleteHandler<T>(string Name)
+        public void UnRegisterAfterDeleteHandler(string Name)
         {
             AfterDeleteActionList.Remove(Name);
         }
