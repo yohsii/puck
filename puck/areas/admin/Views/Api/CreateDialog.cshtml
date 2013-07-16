@@ -4,7 +4,10 @@
     if(string.IsNullOrEmpty(Request["type"])){
         types = ApiHelper.Models(false);
     }else{
-        types = ApiHelper.AllowedTypes(Request["type"]);  
+        types = ApiHelper.AllowedTypes(Request["type"]);
+        if(types.Count==0){
+            types = ApiHelper.Models(false);
+        }
     }    
     var variants = ApiHelper.Variants();    
 }

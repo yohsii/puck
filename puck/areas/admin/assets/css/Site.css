@@ -56,9 +56,9 @@ select.languages{height:200px !important;}
 .settings .fieldgroups .field{cursor:pointer;font-weight:bold;}
 .settings .fieldgroups .field.inherited{color:#999999;cursor:default;}
 .settings .group{background:#eeffee;float:left;margin:0 10px 0 0;padding:10px;}
-.settings .settings_type_allowed_types .list{float:left;padding:20px;margin:10px;background:#eeffee;}
-.settings .settings_type_allowed_types .field{cursor:pointer;}
-.settings .settings_type_allowed_types select{width:400px;}
+.settings .settings_type_allowed_types .list,.settings .settings_type_allowed_templates .list{float:left;padding:20px;margin:10px;background:#eeffee;}
+.settings .settings_type_allowed_types .field,.settings .settings_type_allowed_templates .field{cursor:pointer;}
+.settings .settings_type_allowed_types select,.settings .settings_type_allowed_templates select{width:400px;}
 .settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#fbfbfb;clear:both;padding:0px 10px 0 10px}
 .settings .fieldwrapper h2{font-size:20px;}
 .settings label{text-decoration:underline;}
@@ -89,7 +89,8 @@ table.revisions tr:nth-child(even){background:#fff;}
 table.revisions tr.current{background:#eeffee;}
 
 .user_edit .msg {float:left;clear:both;background:#ffeeee;margin-bottom:20px;padding:5px;display:none;}
-
+.overlayinner .tree_container ul.content>li>ul>li:nth-child(odd){background-color:#fbfbfb;}
+.overlayinner .tree_container .node > .inner:hover{background-color:#eeffee;}
 .overlayinner .compare .grid_5 > span {background:#cccccc;color:#fff;padding:2px;}
 div.compare button{clear:left;float:right;padding:10px 50px 20px 0;}
 .editor-field{word-break:break-all;}
@@ -117,6 +118,8 @@ ul.content.nomenu .node i.menu{display:none;}
 .puckpicker .node {cursor:pointer;}
 .puckpicker .selected_node span{background:#eeffee;}
 .puckpicker .selected_node i{background-color:#ffeeee;margin-left:5px;}
+
+.search_highlight{color:#ffffcc;}
 
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }

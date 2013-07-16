@@ -1,0 +1,70 @@
+﻿@model List<string>
+@{
+    var models = ApiHelper.Models(false);
+    var templates = ApiHelper.Views(new string[] { "~/views/shared/", "~/views/_ViewStart.cshtml" }).Select(x => ApiHelper.ToVirtualPath(x.FullName)).ToList();
+}
+<div class="settings_type_allowed_templates">
+    <select>
+        @foreach (var m in models) { 
+            <option value="@m.AssemblyQualifiedName">@m.FullName</option>
+        }
+    </select>
+    <div class="lists">
+    @foreach (var m in models) { 
+        var included = new List<string>();
+        foreach (var entry in Model) {
+            var kv = entry.Split(new char[]{':'},StringSplitOptions.RemoveEmptyEntries);
+            if (m.AssemblyQualifiedName.Equals(kv[0])) {
+                included.Add(kv[1]);
+            }
+        }
+        var excluded = templates.Where(x=>!included.Any(i=>x.ToLower().Equals(i.ToLower()))).ToList();
+        <div class="type" data-type="@m.AssemblyQualifiedName">
+            <div class="list excluded"><h2>excluded child types</h2>
+                @foreach (var t in excluded) { 
+                    <div data-path="@t" class="field">@t</div>
+                }
+            </div>
+            <div class="list included"><h2>allowed child types</h2>
+                @foreach (var t in included) { 
+                    <div data-path="@t" class="field">@t</div>
+                }
+            </div>
+        </div>
+    }
+    <div class="clearboth"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    onAfterDom(function () {
+        var propertyName = function (i) {
+            return "@ViewData.ModelMetadata.PropertyName";
+        }
+        var container = $(".settings_type_allowed_templates");
+        var select = container.find("select");
+        container.find(".list").hide();
+        container.find(".type[data-type='" + select.val() + "'] .list").show();
+        select.change(function (e) {
+            var val = $(this).val();
+            container.find(".list").hide();
+            container.find(".type[data-type='" + val + "'] .list").show();
+        });
+        var setValue = function () {
+            container.find("input:hidden").remove();
+            container.find(".included .field").each(function (i) {
+                var typeEl = $(this).parents(".type:first");
+                var typeName = typeEl.attr("data-type");
+                var fieldTemplateName = $(this).attr("data-path");
+                container.append(
+                    '<input type="hidden" name="' + propertyName(i) + '" value="' + typeName + ":" + fieldTemplateName + '"/>'
+                );
+            });
+        };
+        $(".list").sortable({
+            cursorAt: { top: 0, left: 0 },
+            connectWith: ".list", items: ".field", update: function (e, ui) {
+                setValue();
+            }
+        });
+    });
+</script>

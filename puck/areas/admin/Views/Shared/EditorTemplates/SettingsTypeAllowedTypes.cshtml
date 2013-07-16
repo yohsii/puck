@@ -61,6 +61,7 @@
             });
         };
         $(".list").sortable({
+            cursorAt: {top:0,left:0},
             connectWith: ".list", items: ".field", update: function (e, ui) {
                 setValue();
             }

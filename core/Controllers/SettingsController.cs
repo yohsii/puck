@@ -117,6 +117,7 @@ namespace puck.core.Controllers
             var typeAllowedTypes = meta.Where(x => x.Name == DBNames.TypeAllowedTypes).Select(x=>x.Key+":"+x.Value).ToList();
             var editorParameters = meta.Where(x => x.Name == DBNames.EditorSettings).Select(x=>x.Key).ToList();
             var cachePolicy = meta.Where(x => x.Name == DBNames.CachePolicy).Select(x=>x.Key+":"+x.Value).ToList();
+            var typeAllowedTemplates = meta.Where(x => x.Name == DBNames.TypeAllowedTemplates).Select(x => x.Key + ":" + x.Value).ToList();
             model.TypeGroupField = new List<string>();
             
             fieldGroups.ForEach(x => {
@@ -125,7 +126,7 @@ namespace puck.core.Controllers
                 string FieldName = x.Value;
                 model.TypeGroupField.Add(string.Concat(typeName,":",groupName,":",FieldName));                
             });
-
+            model.TypeAllowedTemplates = typeAllowedTemplates;
             model.TypeAllowedTypes = typeAllowedTypes;
             model.DefaultLanguage = defaultLanguage == null ? "" : defaultLanguage.Value;
             model.EnableLocalePrefix = enableLocalePrefix == null ? false : bool.Parse(enableLocalePrefix.Value);
@@ -234,6 +235,24 @@ namespace puck.core.Controllers
                         var values = x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                         var newMeta = new PuckMeta();
                         newMeta.Name = DBNames.TypeAllowedTypes;
+                        newMeta.Key = values[0];
+                        newMeta.Value = values[1];
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                //typeallowedtemplates
+                if (model.TypeAllowedTemplates != null && model.TypeAllowedTemplates.Count > 0)
+                {
+                    var typeAllowedTemplatesMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTemplates).ToList();
+                    typeAllowedTemplatesMeta.ForEach(x =>
+                    {
+                        repo.DeleteMeta(x);
+                    });
+                    model.TypeAllowedTemplates.ForEach(x =>
+                    {
+                        var values = x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.TypeAllowedTemplates;
                         newMeta.Key = values[0];
                         newMeta.Value = values[1];
                         repo.AddMeta(newMeta);

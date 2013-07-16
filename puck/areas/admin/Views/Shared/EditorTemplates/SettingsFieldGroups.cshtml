@@ -121,6 +121,7 @@
             });
         }
         container.find(".group").sortable({
+            cursorAt:{top:0,left:0},
             connectWith: ".group", items: ".field[data-inherited='False']"
         });
         container.find("div.type").hide();

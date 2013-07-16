@@ -81,7 +81,7 @@ namespace puck.core.Helpers
                 var repo = Repo;
                 var qh = new QueryHelper<BaseModel>();
                 var indexItems = qh.Directory(path).GetAll();
-                var dbItems = repo.CurrentRevisionsByPath(path).ToList();
+                var dbItems = repo.CurrentRevisionsByDirectory(path).ToList();
                 indexItems.ForEach(n =>
                 {
                     for (var i = 0; i < paths.Count; i++)
@@ -219,23 +219,22 @@ namespace puck.core.Helpers
                 //remove from index
                 var repo = Repo;
                 var qh = new QueryHelper<BaseModel>();
-                var toDeleteQ = qh.And().ID(id);
+                qh.ID(id);
                 if (!string.IsNullOrEmpty(variant))
-                    toDeleteQ.Field(x => x.Variant, variant);
-                var toDelete = toDeleteQ.GetAll();
+                    qh.And().Field(x => x.Variant, variant);
+                var toDelete = qh.GetAll();
 
                 var variants = new List<BaseModel>();
                 if (toDelete.Count > 0)
                 {
                     variants = toDelete.First().Variants<BaseModel>();
-                    if (variants.Count == 0)
+                    if (variants.Count == 0 || string.IsNullOrEmpty(variant))
                     {
                         var descendants = toDelete.First().Descendants<BaseModel>();
                         toDelete.AddRange(descendants);
                     }
                 }
                 indexer.Delete(toDelete);
-                //toDelete.Delete();
                 
                 //remove from repo
                 var repoItemsQ = repo.GetPuckRevision().Where(x => x.Id == id && x.Current);
@@ -246,7 +245,7 @@ namespace puck.core.Helpers
                 if (repoItems.Count > 0)
                 {
                     repoVariants = repo.CurrentRevisionVariants(repoItems.First().Id, repoItems.First().Variant).ToList();
-                    if (variants.Count == 0)
+                    if (variants.Count == 0 || string.IsNullOrEmpty(variant))
                     {
                         var descendants = repo.CurrentRevisionDescendants(repoItems.First().Path).ToList();
                         repoItems.AddRange(descendants);
@@ -264,32 +263,31 @@ namespace puck.core.Helpers
                 if (!string.IsNullOrEmpty(lookUpPath))
                 {
                     var lmeta = new List<PuckMeta>();
-                    if(repoVariants.Any())
-                        lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.Equals(lookUpPath.ToLower())).ToList();
-                    else
-                        lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.StartsWith(lookUpPath.ToLower())).ToList();
-                    lmeta.ForEach(x =>
-                    {
-                        repo.DeleteMeta(x);
-                    });
-                    
-                    //remove domain mappings
                     var dmeta = new List<PuckMeta>();
-                    if(repoVariants.Any())
-                        dmeta =repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.Equals(lookUpPath.ToLower())).ToList();
-                    else
-                        dmeta =repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.StartsWith(lookUpPath)).ToList();
-                    dmeta.ForEach(x =>
+                    var cmeta = new List<PuckMeta>();
+                    //if descendants are being deleted - descendants are included if there are no variants for the deleted node (therefore orphaning descendants) or if variant argument is not present (which means you wan't all variants deleted)
+                    if (repoVariants.Any() && !string.IsNullOrEmpty(variant))
                     {
-                        repo.DeleteMeta(x);
-                    });
+                        lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
+                        dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
+                        cmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
+                    }
+                    else
+                    {
+                        lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().StartsWith(lookUpPath.ToLower())).ToList();
+                        dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().StartsWith(lookUpPath.ToLower())).ToList();
+                        cmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().StartsWith(lookUpPath.ToLower())).ToList();
+                    }
+                    lmeta.ForEach(x => { repo.DeleteMeta(x); });
+                    dmeta.ForEach(x => { repo.DeleteMeta(x); });
+                    cmeta.ForEach(x => { repo.DeleteMeta(x); });
                 }
                 ApiHelper.UpdateDomainMappings();
                 ApiHelper.UpdatePathLocaleMappings();
                 repo.SaveChanges();
             }             
         }
-        public static void SaveContent<T>(T mod) where T : BaseModel {
+        public static void SaveContent<T>(T mod,bool makeRevision=true) where T : BaseModel {
             lock (_savelck)
             {
                 var repo = Repo;
@@ -300,13 +298,14 @@ namespace puck.core.Helpers
                 if (mod.Path.Count(x => x == '/') > 1 && parentVariants.Count() == 0)
                     throw new Exception("this is not a root node yet doesn't have a parent");
                 //can't publish if parent not published
-                if (mod.Path.Count(x => x == '/') > 1 && !parentVariants.Any(x => x.Published && x.Variant.ToLower().Equals(mod.Variant.ToLower())))
+                if (mod.Path.Count(x => x == '/') > 1 && !parentVariants.Any(x => x.Published /*&& x.Variant.ToLower().Equals(mod.Variant.ToLower())*/))
                     mod.Published = false;
                 //get sibling nodes
-                mod.Revision += 1;
+                if(makeRevision)
+                    mod.Revision += 1;
                 var nodeDirectory = mod.Path.Substring(0, mod.Path.LastIndexOf('/') + 1);
                 mod.Path = nodeDirectory + mod.NodeName.Replace(" ","-");
-                var nodesAtPath = repo.CurrentRevisionsByPath(nodeDirectory).Where(x => x.Id != mod.Id)
+                var nodesAtPath = repo.CurrentRevisionsByDirectory(nodeDirectory).Where(x => x.Id != mod.Id)
                     .ToList()
                     .Select(x =>
                         RevisionToBaseModel(x)
@@ -350,7 +349,24 @@ namespace puck.core.Helpers
                     descendantsDb.ForEach(x => { x.Path = regex.Replace(x.Path, mod.Path, 1); });
                 }
                 //add revision
-                var revision = new PuckRevision();
+                PuckRevision revision;
+                if (makeRevision)
+                {
+                    revision = new PuckRevision();
+                    repo.GetPuckRevision()
+                        .Where(x => x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower()) && x.Current)
+                        .ToList()
+                        .ForEach(x => x.Current = false);
+                    repo.AddRevision(revision);
+                }else{
+                    revision = repo.GetPuckRevision()
+                        .Where(x => x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower()) && x.Current).FirstOrDefault();
+                    if (revision == null)
+                    {
+                        revision = new PuckRevision();
+                        repo.AddRevision(revision);
+                    }
+                }
                 revision.LastEditedBy = HttpContext.Current.User.Identity.Name;
                 revision.CreatedBy = mod.CreatedBy;
                 revision.Created = mod.Created;
@@ -367,11 +383,7 @@ namespace puck.core.Helpers
                 revision.Variant = mod.Variant;
                 revision.Current = true;
                 revision.Value = JsonConvert.SerializeObject(mod);
-                repo.GetPuckRevision()
-                    .Where(x => x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower()) && x.Current)
-                    .ToList()
-                    .ForEach(x => x.Current = false);
-                repo.AddRevision(revision);
+                                
                 if (mod.Published)//add to lucene index
                 {
                     var qh = new QueryHelper<BaseModel>();
@@ -379,7 +391,6 @@ namespace puck.core.Helpers
                     var indexOriginalPath = string.Empty;
                     //get current indexed node with same ID and VARIANT
                     var currentMod = qh.And().Field(x => x.Variant, mod.Variant)
-                        .And()
                         .ID(mod.Id)
                         .Get();
                     //if node exists in index
@@ -391,11 +402,11 @@ namespace puck.core.Helpers
                             //means we have changed the path - by changing the nodename
                             changed = true;
                             //set the original path so we can use it for regex replace operation for changing descendants who will otherwise have incorrect paths
-                            originalPath = currentMod.Path;
+                            indexOriginalPath = currentMod.Path;
                         }
                     }
                     //get nodes currently indexed which have the same ID but different VARIANT
-                    var variants = mod.Variants<BaseModel>();
+                    var variants = mod.Variants<BaseModel>(noCast:true);
                     //if any of the variants have different path to the current node
                     if (variants.Any(x => !x.Path.ToLower().Equals(mod.Path.ToLower())))
                     {
@@ -415,9 +426,9 @@ namespace puck.core.Helpers
                         var descendants = new List<BaseModel>();
                         //get descendants - either from currently indexed version of the node we're currently saving (which may be new variant and so not currently indexed) or from its variants.
                         if (currentMod != null)
-                            descendants = currentMod.Descendants<BaseModel>();
+                            descendants = currentMod.Descendants<BaseModel>(currentLanguage:false,noCast:true);
                         else if (variants.Any())
-                            descendants = descendants.First().Descendants<BaseModel>();
+                            descendants = variants.First().Descendants<BaseModel>(currentLanguage:false,noCast:true);
                         //replace portion of path that has changed
                         descendants.ForEach(x => { x.Path = regex.Replace(x.Path, mod.Path, 1); toIndex.Add(x); });
                         //delete previous meta binding
@@ -609,6 +620,13 @@ namespace puck.core.Helpers
             Regex r = new Regex(Regex.Escape(HttpContext.Current.Server.MapPath("~/")), RegexOptions.Compiled);
             p = r.Replace(p, "~/", 1).Replace("\\","/");
             return p;
+        }
+        public static List<FileInfo> AllowedViews(string type,string[] excludePaths = null) {
+            var repo = Repo;
+            var paths = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTemplates && x.Key.Equals(type))
+                .Select(x=>x.Value)
+                .ToList();
+            return Views(excludePaths).Where(x => paths.Contains(ToVirtualPath(x.FullName))).ToList();
         }
         public static List<FileInfo> Views(string[] excludePaths=null) {
             if (excludePaths==null)

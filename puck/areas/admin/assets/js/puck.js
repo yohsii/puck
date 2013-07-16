@@ -56,6 +56,10 @@ var setDelete = function (id, f, variant) {
         path += "&variant="+variant;
     $.get(path, f);
 }
+var setMove = function (from, to, f) {
+    var path = "/admin/api/move?start=" + from+"&destination="+to;
+    $.get(path, f);
+}
 var setDeleteRevision = function (id, f) {
     var path = "/admin/api/deleterevision?id=" + id;
     $.get(path, f);
@@ -126,7 +130,7 @@ var getEditorParametersMarkup = function (f, settingsType, modelType, propertyNa
     $.get("/admin/settings/EditParameters?settingsType=" + settingsType + "&modelType=" + modelType + "&propertyName=" + propertyName, f);
 }
 var getContent = function (path, f) {
-    $.get("/admin/api/content?p_path=" + path, f);
+    $.get("/admin/api/content?path=" + path, f);
 };
 var getPath = function (id, f) {
     $.get("/admin/api/getpath?id=" + id, f);
@@ -545,6 +549,7 @@ var displayMarkup = function (path, type, variant,fromVariant) {
             })
             afterDom();
             cright.show();
+            cright.find(".fieldtabs:first").click();
         });
         //publish btn
         if (userRoles.contains("publish")) {
@@ -745,6 +750,11 @@ cleft.find("ul.content").on("click", "li.node i.menu", function (e) {
     } else {
         dropdown.find("a[data-action='domain']").parents("li").hide();
     }
+    //filter move - disallow root move
+    if (node.attr("data-path").split('/').length - 1 == 1)
+        dropdown.find("a[data-action='move']").parents("li").hide();
+    else
+        dropdown.find("a[data-action='move']").parents("li").show();
     //filter menu items according to permissions -- ie can user access option
     dropdown.find("a[data-action]").each(function () {
         var permission = $(this).attr("data-permission");
@@ -874,6 +884,32 @@ $(".node-dropdown a").click(function () {
         case "create":
             newContent(node.attr("data-children_path"), node.attr("data-type"));
             break;
+        case "move":
+            var markup = $(".interfaces .tree_container").clone();
+            var el = markup.find(".node:first");
+            overlay(markup);
+            $(".overlayinner .msg").html("select new parent node for content <b>"+node.attr("data-nodename")+"</b>");
+            getDrawContent(startPath, el);
+            markup.on("click", ".node span", function (e) {
+                var dest_node = $(this).parents(".node:first");
+                var from = node.attr("data-path");
+                var to = dest_node.attr("data-path");
+                if (!confirm("move " + from + " to " + to+" ?")) {
+                    return;
+                }
+                setMove(from, to, function (d) {
+                    if (d.success) {
+                        if (from.length > to.length)
+                            getDrawContent(to + "/");
+                        else
+                            getDrawContent(dirOfPath(from));
+                    } else {
+                        msg(false, d.message);
+                    }
+                    overlayClose();
+                });
+            });
+            break;
         case "translate":
             getCreateDialog(function (data) {
                 overlay(data, 400, 250);
@@ -942,7 +978,8 @@ var setDomainMapping = function (p) {
         wireForm(form, function (data) {
             overlayClose();
         }, function (data) {
-            msg(false,data.message);
+            msg(false, data.message);
+            overlayClose();
         });
     });
 }
@@ -969,11 +1006,23 @@ getVariants(function (data) {
 });
 getStartPath(function (d) {
     cleft.find("ul.content li:first").attr("data-children_path",d);
+    $(".interfaces .tree_container ul.content .node").attr("data-children_path", startPath);
     startPath = d;
     cleft.find(".startpath").html(d);
     getDrawContent(d, undefined, true);
 });
+
 //extensions
+$.validator.methods.date = function (value, element) {
+    {
+        if (value == '' || Globalize.parseDate(value, "dd/MM/yyyy HH:mm:ss")!=null) {
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}
 String.prototype.isEmpty = function () {
     return this.replace(/\s/g, "").length == 0;
 }

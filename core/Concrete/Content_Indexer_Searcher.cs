@@ -40,7 +40,8 @@ namespace puck.core.Concrete
             AfterDelete += new EventHandler<IndexingEventArgs>(DelegateAfterDelete);
         }
         private static void DelegateBeforeEvent(Dictionary<string,Tuple<Type, Action<object, BeforeIndexingEventArgs>, bool>> list,object n,BeforeIndexingEventArgs e){
-            var type = n.GetType();
+            var type = e.Node.GetType();
+            //refactor:can probably use is operator to implement event propagation
             var types = ApiHelper.BaseTypes(type);
             types.Add(type);
             list.Where(x => x.Value.Item1 == type || (x.Value.Item3 && types.Contains(x.Value.Item1)))
@@ -51,7 +52,8 @@ namespace puck.core.Concrete
         }
         private static void DelegateAfterEvent(Dictionary<string, Tuple<Type, Action<object, IndexingEventArgs>, bool>> list, object n, IndexingEventArgs e)
         {
-            var type = n.GetType();
+            var type = e.Node.GetType();
+            //refactor:can probably use is operator to implement event propagation
             var types = ApiHelper.BaseTypes(type);
             types.Add(type);
             list.Where(x => x.Value.Item1 == type || (x.Value.Item3 && types.Contains(x.Value.Item1)))
@@ -216,7 +218,7 @@ namespace puck.core.Concrete
                             continue;
                         }
                         //delete doc
-                        string removeQuery = "+"+FieldKeys.ID+":"+m.Id.ToString()+ " +"+FieldKeys.Variant+":"+m.Variant;
+                        string removeQuery = "+"+FieldKeys.ID+":"+m.Id.ToString()+ " +"+FieldKeys.Variant+":"+m.Variant.ToLower();
                         var q = parser.Parse(removeQuery);
                         Writer.DeleteDocuments(q);                    
                         
@@ -482,6 +484,22 @@ namespace puck.core.Concrete
 
             var contentQuery = parser.Parse(terms);
             return Query(contentQuery);            
+        }
+        public IList<T> QueryNoCast<T>(string qstr)
+        {
+            var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
+            var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+            var q = parser.Parse(qstr);
+            var hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
+            var results = new List<T>();
+            for (var i = 0; i < hits.Count(); i++)
+            {
+                var doc = Searcher.Doc(hits[i].Doc);
+                var type = Type.GetType(doc.GetValues(FieldKeys.PuckType).FirstOrDefault());
+                T result = (T)JsonConvert.DeserializeObject(doc.GetValues(FieldKeys.PuckValue)[0],type);
+                results.Add(result);
+            }
+            return results;
         }
         public IList<T> Query<T>(string qstr) {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];

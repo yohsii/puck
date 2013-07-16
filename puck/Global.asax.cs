@@ -45,6 +45,16 @@ namespace puck
             });
 
             puck.core.Bootstrap.Ini();
+            //register before index event
+            PuckCache.PuckIndexer.RegisterBeforeIndexHandler<puck.areas.admin.ViewModels.Page>("pageevent",(object o,puck.core.Events.BeforeIndexingEventArgs args)=>{
+                var node = args.Node;                
+            },true);
+            //register after index event
+            PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.ViewModels.Folder>("folderevent", (object o, puck.core.Events.IndexingEventArgs args) =>
+            {
+                var node = args.Node;                
+            }, false);
+
         }
     }
 }

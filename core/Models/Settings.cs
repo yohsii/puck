@@ -34,6 +34,10 @@ namespace puck.core.Models
         [UIHint("SettingsTypeAllowedTypes")]
         public List<string> TypeAllowedTypes { get; set; }
 
+        [Display(Name = "Allowed templates types for a given type")]
+        [UIHint("SettingsAllowedTemplates")]
+        public List<string> TypeAllowedTemplates { get; set; }
+
         [Display(Name="Editor Parameters")]
         [UIHint("SettingsEditorParameters")]
         public List<string> EditorParameters { get; set; }

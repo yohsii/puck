@@ -27,9 +27,11 @@
             <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value - @rtype.Substring(8,3)&nbsp;<span><i class="icon-remove-sign"></i></span></div>
         }        
     </div>
-    <ul class="content nomenu redirect">
-        <li class="node" data-children_path="/"></li>
-    </ul>  
+    <div class="grid_10 push_1 tree_container">
+        <ul class="content nomenu redirect">
+            <li class="node" data-children_path="/"></li>
+        </ul>  
+    </div>    
 </div>
 <script>
     onAfterDom(function () {
@@ -45,13 +47,13 @@
                 el.remove();
             });
         });
-
+        redirectsContainer.find("ul.content .node").attr("data-children_path",startPath);
         redirectsContainer.find("label i").click(function () {
             var target = $(this).parent().siblings("input");
-            var markup = redirectsContainer.find("ul.content").clone();
-            var el = markup.find(".node[data-children_path='/']");
+            var markup = redirectsContainer.find(".tree_container").clone();
+            var el = markup.find(".node:first");
             overlay(markup);
-            getDrawContent("/", el);
+            getDrawContent(startPath, el);
             markup.on("click", ".node span", function (e) {
                 var node = $(this).parents(".node:first");
                 target.val(node.attr("data-path"));

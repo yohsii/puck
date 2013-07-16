@@ -31,14 +31,14 @@ namespace puck.core.Controllers
                 {
                     Response.Cache.SetCacheability(HttpCacheability.Public);
                     Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
-                    //Response.Cache.SetValidUntilExpires(true);
+                    Response.Cache.SetValidUntilExpires(true);
                     Response.RedirectPermanent(redirectUrl, true);
                 }
                 if (PuckCache.Redirect302.TryGetValue(Request.Url.AbsolutePath, out redirectUrl))
                 {
                     Response.Cache.SetCacheability(HttpCacheability.Public);
                     Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
-                    //Response.Cache.SetValidUntilExpires(true);
+                    Response.Cache.SetValidUntilExpires(true);
                     Response.Redirect(redirectUrl, true);
                 }
 
@@ -108,7 +108,7 @@ namespace puck.core.Controllers
                         }
                         Response.Cache.SetCacheability(HttpCacheability.Public);
                         Response.Cache.SetExpires(DateTime.Now.AddMinutes(cacheMinutes));
-                        //Response.Cache.SetValidUntilExpires(true);
+                        Response.Cache.SetValidUntilExpires(true);
                     }
                 }
 

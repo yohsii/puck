@@ -1,4 +1,5 @@
 ﻿@model puck.areas.admin.ViewModels.Homepage
+
 @{
     ViewBag.Title = "Homepage";
     var qh = new QueryHelper<puck.areas.admin.ViewModels.Section>();
@@ -7,14 +8,36 @@
     var sections = qh.GetAll();
     @qh.ToString()
     <br />
-    @sections.Count
+    @("section count: "+sections.Count)
+    <br />
+    var searchQuery = "croydon";
+    var search = new QueryHelper<puck.areas.admin.ViewModels.Page>();
+    var sresults = search.AllFields(searchQuery).GetAll();
+    @("search for '"+searchQuery+"' count: "+sresults.Count)
 }
 
-<h2>Homepage</h2>
+<h2>@Model.Title</h2>
+
+<h3>Carousel Items</h3>
+<div>
+    @foreach (var imageModel in Model.CarouselItems.GetAll<puck.ViewModels.ImageModel>())
+    {                        
+        <img alt="@imageModel.Image.Description" src="@imageModel.Image.Path" />
+    }
+    
+</div>
 @foreach (var s in sections) { 
     <h1>@s.Title</h1>
     <div>
         @Html.Raw(s.MainContent)
     </div>
     <div><a href="@s.Url()">more</a></div>
+}
+
+<h3>Search Results for "@searchQuery"</h3>
+@foreach (var r in sresults) { 
+    <h1>@r.Title</h1>
+    <div>
+        @Html.Raw(r.MainContent.Highlight(searchQuery))
+    </div>
 }

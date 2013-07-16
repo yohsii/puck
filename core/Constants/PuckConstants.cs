@@ -22,6 +22,7 @@ namespace puck.core.Constants
         public static string Unpublish = "unpublish";
         public static string Revert = "revert";
         public static string Sort = "sort";
+        public static string Move = "move";
         public static string Localisation = "localisation";
         public static string Domain = "domain";
         public static string Cache = "cache";
@@ -42,6 +43,7 @@ namespace puck.core.Constants
     }
     public static class DBNames
     {
+        public static string TypeAllowedTemplates = "typeallowedtemplates";
         public static string EditorSettings = "editorsettings";
         public static string Redirect301 = "redirect301:";
         public static string Redirect302 = "redirect302:";

@@ -35,6 +35,12 @@ namespace puck.core.Concrete
             return repo.PuckRevision;
         }
         public IQueryable<PuckRevision> CurrentRevisionsByPath(string path) {
+            var results = repo.PuckRevision
+                .Where(x => x.Path.ToLower().Equals(path.ToLower()) && x.Current);
+            return results;
+        }
+        public IQueryable<PuckRevision> CurrentRevisionsByDirectory(string path)
+        {
             var pathCount = path.Count(x => x == '/');
             var results = repo.PuckRevision
                 .Where(x => x.Path.ToLower().StartsWith(path.ToLower()) && x.Path.Length - x.Path.Replace("/", "").Length == pathCount && x.Current);
@@ -65,7 +71,7 @@ namespace puck.core.Concrete
         {
             if (!path.EndsWith("/"))
                 path = path + "/";
-            return CurrentRevisionsByPath(path);
+            return CurrentRevisionsByDirectory(path);
         }
         public IQueryable<PuckRevision> CurrentRevisionDescendants(string path)
         {

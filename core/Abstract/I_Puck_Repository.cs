@@ -16,6 +16,7 @@ namespace puck.core.Abstract
         void DeleteRevision(PuckRevision meta);
         void AddRevision(PuckRevision meta);
         IQueryable<PuckRevision> CurrentRevisionsByPath(string path);
+        IQueryable<PuckRevision> CurrentRevisionsByDirectory(string path);
         IQueryable<PuckRevision> CurrentRevisionParent(string path);
         IQueryable<PuckRevision> CurrentRevisionAncestors(string path);
         IQueryable<PuckRevision> CurrentRevisionDescendants(string path);

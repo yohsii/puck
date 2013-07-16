@@ -59,6 +59,17 @@
 
                 <div class="fieldwrapper">
                     <div class="editor-label">
+                        @Html.LabelFor(model => model.TypeAllowedTemplates)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.TypeAllowedTemplates)
+                        @Html.ValidationMessageFor(model => model.TypeAllowedTemplates)
+                    </div>
+                </div>
+                <br />
+
+                <div class="fieldwrapper">
+                    <div class="editor-label">
                         @Html.LabelFor(model => model.TypeAllowedTypes)
                     </div>
                     <div class="editor-field">

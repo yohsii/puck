@@ -2,9 +2,11 @@
 @{
     ViewBag.Title = "Page";
 
+    var variants = Model.Variants<puck.areas.admin.ViewModels.Page>();
     var siblings = Model.Siblings<puck.areas.admin.ViewModels.Page>();
     var parent = Model.Parent<puck.areas.admin.ViewModels.Page>();
     var ancestors = Model.Ancestors<puck.areas.admin.ViewModels.Page>();
+    @("variants:"+variants.Count)
     @("siblings:"+siblings.Count)
     @("parent:"+parent.Count)
     @("ancestors:"+ancestors.Count)

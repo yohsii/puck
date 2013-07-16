@@ -86,25 +86,47 @@ namespace puck.core.Helpers
             return m.Path.Substring(secondOccurrence);
         }
 
-        public static List<T> GetAll<T>(this PuckPicker pp) where T : BaseModel
+        public static List<T> GetAll<T>(this List<PuckPicker> pp, bool noCast = false) where T : BaseModel
         {
+            if (pp == null)
+                return new List<T>();
             var qh = new QueryHelper<T>();
-            qh.And().ID(pp.Id);
-            if (!string.IsNullOrEmpty(pp.Variant))
-                qh.Variant(pp.Variant);
-            return qh.GetAll();
+            var qhinner1 = qh.New();
+            foreach (var p in pp) {
+                var qhinner2 = qhinner1.New().ID(p.Id);
+                if (!string.IsNullOrEmpty(p.Variant))
+                    qhinner2.Variant(p.Variant.ToLower());
+                qhinner1.Group(
+                    qhinner2
+                );
+            }
+            qh.And().Group(qhinner1);
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();
         }
 
-        public static T Get<T>(this PuckPicker pp) where T : BaseModel
+        public static List<T> GetAll<T>(this PuckPicker pp,bool noCast=false) where T : BaseModel
         {
+            if (pp == null)
+                return new List<T>();
             var qh = new QueryHelper<T>();
-            qh.And().ID(pp.Id);
+            qh.ID(pp.Id);
             if (!string.IsNullOrEmpty(pp.Variant))
                 qh.Variant(pp.Variant);
-            return qh.Get();
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();
+        }
+
+        public static T Get<T>(this PuckPicker pp,bool noCast=false) where T : BaseModel
+        {
+            return GetAll<T>(pp, noCast).FirstOrDefault();
         }
         //retrieval extensions
-        public static List<T> Parent<T>(this BaseModel n,bool currentLanguage = true) where T : BaseModel
+        public static List<T> Parent<T>(this BaseModel n,bool currentLanguage = true,bool noCast=false) where T : BaseModel
         {
             var qh = new QueryHelper<T>();
             string path = n.Path.Substring(0, n.Path.LastIndexOf('/'));
@@ -113,22 +135,28 @@ namespace puck.core.Helpers
                 .Field(x => x.Path, path.ToLower());
             if (currentLanguage)
                 qh.CurrentLanguage();
-            return qh.GetAll();
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();
         }
-        public static List<T> Ancestors<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel {
+        public static List<T> Ancestors<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             string nodePath = n.Path.ToLower();
             while (nodePath.Count(x => x == '/') > 1)
             {
                 nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
                 qh
-                    .Field(x=>x.Path,nodePath);            
+                    .Field(x=>x.Path,nodePath);
             }
             if (currentLanguage)
                 qh.CurrentLanguage();
-            return qh.GetAll();
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();
         }
-        public static List<T> Siblings<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel {
+        public static List<T> Siblings<T>(this BaseModel n,bool currentLanguage=true,bool noCast=false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh
                     .And()
@@ -139,9 +167,12 @@ namespace puck.core.Helpers
                     .Field(x => x.Id, n.Id.ToString().Wrap());
             if (currentLanguage)
                 qh.CurrentLanguage();
-            return qh.GetAll();                
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();                
         }
-        public static List<T> Variants<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel
+        public static List<T> Variants<T>(this BaseModel n,bool noCast=false) where T : BaseModel
         {
             var qh = new QueryHelper<T>();
             qh      
@@ -149,11 +180,12 @@ namespace puck.core.Helpers
                     .Field(x => x.Id, n.Id.ToString())
                     .Not()
                     .Field(x => x.Variant, n.Variant);
-            if (currentLanguage)
-                qh.CurrentLanguage();
-            return qh.GetAll();
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();
         }
-        public static List<T> Children<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel
+        public static List<T> Children<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false) where T : BaseModel
         {
             var qh = new QueryHelper<T>();
             qh      
@@ -163,15 +195,21 @@ namespace puck.core.Helpers
                     .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti() + "/*");
             if (currentLanguage)
                 qh.CurrentLanguage();
-            return qh.GetAll();
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();
         }
-        public static List<T> Descendants<T>(this BaseModel n,bool currentLanguage=true) where T : BaseModel {
+        public static List<T> Descendants<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh.And()
                 .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti());
             if (currentLanguage)
                 qh.CurrentLanguage();
-            return qh.GetAll();
+            if (noCast)
+                return qh.GetAllNoCast();
+            else
+                return qh.GetAll();
         }
         
         public static Dictionary<string, Dictionary<string, T>> GroupByID<T>(this List<T> items) where T : BaseModel
@@ -206,7 +244,7 @@ namespace puck.core.Helpers
         public static I_Content_Searcher searcher = PuckCache.PuckSearcher;
 
         //query builders append to this string
-        string query;
+        string query="";
         Sort sort = new Sort();
         static string namePattern = @"(?:[A-Za-z0-9]*\()?[A-Za-z0-9]\.([A-Za-z0-9.]*)";
         static string nameArrayPattern = @"\.get_Item\(\d\)";
@@ -378,9 +416,11 @@ namespace puck.core.Helpers
         
         public QueryHelper<TModel> AllFields(string value)
         {
+            query += "+(";
             foreach (var k in PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName]){
                 query += string.Concat(k, ":", value, " ");
-            }            
+            }
+            query+=") ";
             return this;
         }
 
@@ -425,8 +465,13 @@ namespace puck.core.Helpers
         }
 
         //filters
+        private void TrimAnd() {
+            if (query.EndsWith("+"))
+                query = query.TrimEnd('+');
+        }
         public QueryHelper<TModel> Ancestors(string path)
         {
+            TrimAnd();
             string nodePath = path.ToLower();
             while (nodePath.Count(x => x == '/') > 1)
             {
@@ -442,6 +487,7 @@ namespace puck.core.Helpers
         }
         public QueryHelper<TModel> Siblings(string path,string id)
         {
+            TrimAnd();
             this
                     .And()
                     .Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
@@ -453,6 +499,7 @@ namespace puck.core.Helpers
         }
         public QueryHelper<TModel> Children(string path)
         {
+            TrimAnd();
             this
                     .And()
                     .Field(x => x.Path, path.ToLower() + "/".WildCardMulti())
@@ -462,6 +509,7 @@ namespace puck.core.Helpers
         }
         public QueryHelper<TModel> Descendants(string path)
         {
+            TrimAnd();
             this.And()
                 .Field(x => x.Path, path.ToLower() + "/".WildCardMulti());
             return this;
@@ -469,14 +517,16 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> CurrentLanguage()
         {
+            TrimAnd();
             var key = FieldKeys.Variant;
             var variant = Thread.CurrentThread.CurrentCulture.Name;
-            query += string.Concat(key, ":", variant.ToLower(), " ");
+            query += string.Concat("+",key, ":", variant.ToLower(), " ");
             return this;
         }
 
         public QueryHelper<TModel> Level(int level)
         {
+            TrimAnd();
             var includePath = string.Join("", Enumerable.Range(0, level).ToList().Select(x => "/*"));
             var excludePath = includePath + "/";
             var key = FieldKeys.Path;
@@ -486,6 +536,7 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> ExplicitType<AType>()
         {
+            TrimAnd();
             string key = FieldKeys.PuckType;
             query += string.Concat("+",key, ":", typeof(AType).AssemblyQualifiedName.Wrap(), " ");
             return this;
@@ -493,6 +544,7 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> ExplicitType()
         {
+            TrimAnd();
             string key = FieldKeys.PuckType;
             query += string.Concat("+",key, ":", typeof(TModel).AssemblyQualifiedName.Wrap(), " ");
             return this;
@@ -500,6 +552,7 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> Variant(string value)
         {
+            TrimAnd();
             string key = FieldKeys.Variant;
             query += string.Concat("+",key, ":", value, " ");
             return this;
@@ -507,6 +560,7 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> ID(string value)
         {
+            TrimAnd();
             string key = FieldKeys.ID;
             query += string.Concat("+",key, ":", value, " ");
             return this;
@@ -514,12 +568,14 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> ID(Guid value)
         {
+            TrimAnd();
             string key = FieldKeys.ID;
             query += string.Concat("+",key, ":", value.ToString(), " ");
             return this;
         }
 
         public QueryHelper<TModel> Directory(string value) {
+            TrimAnd();
             string key = FieldKeys.Path;
             if (!value.EndsWith("/"))
                 value += "/";
@@ -529,8 +585,15 @@ namespace puck.core.Helpers
         //end filters
 
         //logical operators
+        public QueryHelper<TModel> Group(QueryHelper<TModel> q)
+        {
+            query += string.Concat("(", q.query, ") ");
+            return this;
+        }
+
         public QueryHelper<TModel> And(QueryHelper<TModel> q=null)
         {
+            TrimAnd();
             if (q == null)
             {
                 query += "+";
@@ -577,6 +640,12 @@ namespace puck.core.Helpers
         public List<TModel> GetAll()
         {
             var result = searcher.Query<TModel>(query).ToList();
+            return result;
+        }
+
+        public List<TModel> GetAllNoCast()
+        {
+            var result = searcher.QueryNoCast<TModel>(query).ToList();
             return result;
         }
 

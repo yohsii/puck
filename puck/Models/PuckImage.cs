@@ -12,6 +12,8 @@ namespace puck.areas.admin.Models
     {
         [UIHint("SettingsDisplayImage")]
         public string Path { get; set; }
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
         [UIHint("SettingsReadOnly")]
         public string Size {get;set;}
         [UIHint("SettingsReadOnly")]

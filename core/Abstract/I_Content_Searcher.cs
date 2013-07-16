@@ -13,6 +13,7 @@ namespace puck.core.Abstract
         IList<Dictionary<string, string>> Query(string query);
         IList<Dictionary<string, string>> Query(string query,string typeName);
         IList<T> Query<T>(string query);
+        IList<T> QueryNoCast<T>(string query);
         IList<T> Get<T>();        
     }
 }

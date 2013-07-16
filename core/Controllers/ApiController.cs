@@ -137,7 +137,33 @@ namespace puck.core.Controllers
             }
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
         }
-        
+
+        [Auth(Roles = "move")]
+        public JsonResult Move(string start,string destination)
+        {
+            string message = "";
+            bool success = false;
+            try
+            {
+                if (destination.ToLower().StartsWith(start.ToLower()))
+                    throw new Exception("cannot move parent node to child");
+                if (start.Count(x => x == '/') == 1)
+                    throw new Exception("cannot move root node");
+                var toMove = repo.CurrentRevisionsByPath(start).FirstOrDefault();
+                if(!destination.EndsWith("/"))
+                    destination+="/";
+                toMove.Path = destination + toMove.NodeName;
+                ApiHelper.SaveContent(toMove,makeRevision:false);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                message = ex.Message;
+            }
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);            
+        }
+
         [Auth(Roles = "localisation")]
         public ActionResult LocalisationDialog(string p_path)
         {
@@ -193,12 +219,14 @@ namespace puck.core.Controllers
             }
             return Json("/", JsonRequestBehavior.AllowGet);
         }
-        
-        public JsonResult Content(string p_path = "/") {
+        [Auth]
+        public JsonResult Content(string path = "/") {
+            //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
+            string p_path = path;
             List<PuckRevision> resultsRev;
             using (MiniProfiler.Current.Step("content by path from DB"))
             {
-                resultsRev = repo.CurrentRevisionsByPath(p_path).ToList();
+                resultsRev = repo.CurrentRevisionsByDirectory(p_path).ToList();
             }
             
             var results = resultsRev.Select(x =>ApiHelper.RevisionToBaseModelCast(x)).ToList()
