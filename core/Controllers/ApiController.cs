@@ -83,13 +83,13 @@ namespace puck.core.Controllers
         [Auth]
         public ActionResult Preview(string path, string variant)
         {
-            var model = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(path.ToLower()) && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
+            var model = repo.GetPuckRevision().Where(x => x.Current && x.Path.ToLower().Equals(path.ToLower()) && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
             return Preview(model);
         }
         [Auth]
         public ActionResult PreviewGuid(Guid id, string variant)
         {
-            var model = repo.GetPuckRevision().Where(x => x.Id == id && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
+            var model = repo.GetPuckRevision().Where(x => x.Current && x.Id == id && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
             return Preview(model);
         }
         [Auth]
