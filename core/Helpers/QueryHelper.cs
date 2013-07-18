@@ -335,7 +335,7 @@ namespace puck.core.Helpers
         public QueryHelper(bool prependTypeTerm=true)
         {
             if(prependTypeTerm)
-                query += "+"+this.Field(FieldKeys.PuckTypeChain, typeof(TModel).FullName.Wrap())+" ";
+                this.And().Field(x=>x.TypeChain,typeof(TModel).FullName.Wrap()).And().Field(x=>x.Published,"true");                
         }
 
         public QueryHelper<TModel> New() {
