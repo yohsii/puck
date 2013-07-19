@@ -14214,3 +14214,29 @@ stacktrace:    at Lucene.Net.QueryParsers.QueryParser.Parse(String query) in d:\
    at puck.core.Controllers.ApiController.Delete(Guid id, String variant) in c:\project\puck\core\Controllers\ApiController.cs:line 280
 
 
+date: 19/07/2013 21:52:42
+message: The handle is invalid.
+
+stacktrace:    at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.WriteCore(Byte[] buffer, Int32 offset, Int32 count)
+   at System.IO.FileStream.Write(Byte[] array, Int32 offset, Int32 count)
+   at Lucene.Net.Store.SimpleFSDirectory.SimpleFSIndexOutput.FlushBuffer(Byte[] b, Int32 offset, Int32 size) in d:\Lucene.Net\FullRepo\trunk\src\core\Store\SimpleFSDirectory.cs:line 256
+   at Lucene.Net.Store.BufferedIndexOutput.FlushBuffer(Byte[] b, Int32 len) in d:\Lucene.Net\FullRepo\trunk\src\core\Store\BufferedIndexOutput.cs:line 116
+   at Lucene.Net.Store.BufferedIndexOutput.Flush() in d:\Lucene.Net\FullRepo\trunk\src\core\Store\BufferedIndexOutput.cs:line 102
+   at Lucene.Net.Store.BufferedIndexOutput.Dispose(Boolean disposing) in d:\Lucene.Net\FullRepo\trunk\src\core\Store\BufferedIndexOutput.cs:line 137
+   at Lucene.Net.Store.SimpleFSDirectory.SimpleFSIndexOutput.Dispose(Boolean disposing) in d:\Lucene.Net\FullRepo\trunk\src\core\Store\SimpleFSDirectory.cs:line 278
+   at Lucene.Net.Store.IndexOutput.Dispose() in d:\Lucene.Net\FullRepo\trunk\src\core\Store\IndexOutput.cs:line 230
+   at Lucene.Net.Store.IndexOutput.Close() in d:\Lucene.Net\FullRepo\trunk\src\core\Store\IndexOutput.cs:line 224
+   at Lucene.Net.Index.FieldsWriter.Dispose() in d:\Lucene.Net\FullRepo\trunk\src\core\Index\FieldsWriter.cs:line 210
+   at Lucene.Net.Index.StoredFieldsWriter.CloseDocStore(SegmentWriteState state) in d:\Lucene.Net\FullRepo\trunk\src\core\Index\StoredFieldsWriter.cs:line 105
+   at Lucene.Net.Index.DocFieldProcessor.CloseDocStore(SegmentWriteState state) in d:\Lucene.Net\FullRepo\trunk\src\core\Index\DocFieldProcessor.cs:line 52
+   at Lucene.Net.Index.DocumentsWriter.CloseDocStore() in d:\Lucene.Net\FullRepo\trunk\src\core\Index\DocumentsWriter.cs:line 502
+   at Lucene.Net.Index.DocumentsWriter.Flush(Boolean closeDocStore) in d:\Lucene.Net\FullRepo\trunk\src\core\Index\DocumentsWriter.cs:line 776
+   at Lucene.Net.Index.IndexWriter.DoFlushInternal(Boolean flushDocStores, Boolean flushDeletes) in d:\Lucene.Net\FullRepo\trunk\src\core\Index\IndexWriter.cs:line 4305
+   at Lucene.Net.Index.IndexWriter.DoFlush(Boolean flushDocStores, Boolean flushDeletes) in d:\Lucene.Net\FullRepo\trunk\src\core\Index\IndexWriter.cs:line 4197
+   at Lucene.Net.Index.IndexWriter.Flush(Boolean triggerMerge, Boolean flushDocStores, Boolean flushDeletes) in d:\Lucene.Net\FullRepo\trunk\src\core\Index\IndexWriter.cs:line 4182
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 257
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in c:\project\puck\core\Helpers\ApiHelper.cs:line 440
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 377
+
+

@@ -52,3 +52,12 @@ C:\project\puck\core\bin\Debug\MiniProfiler.pdb
 C:\project\puck\core\bin\Debug\MiniProfiler.xml
 C:\project\puck\core\obj\Debug\puck.core.Migrations.indexes.resources
 C:\project\puck\core\obj\Debug\puck.core.Migrations.indexesMeta.resources
+C:\project\puck\core\bin\Debug\GeoAPI.dll
+C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Spatial.NTS.dll
+C:\project\puck\core\bin\Debug\NetTopologySuite.dll
+C:\project\puck\core\bin\Debug\PowerCollections.dll
+C:\project\puck\core\bin\Debug\Spatial4n.Core.NTS.dll
+C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Spatial.NTS.pdb
+C:\project\puck\core\bin\Debug\Lucene.Net.Contrib.Spatial.NTS.xml
+C:\project\puck\core\bin\Debug\Spatial4n.Core.NTS.pdb
+C:\project\puck\core\bin\Debug\Spatial4n.Core.NTS.xml

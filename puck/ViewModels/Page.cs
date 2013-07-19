@@ -8,6 +8,7 @@ using Lucene.Net.Documents;
 using puck.areas.admin.Models;
 using puck.core.Attributes;
 using puck.core.Base;
+using puck.core.Models;
 
 namespace puck.areas.admin.ViewModels
 {
@@ -34,5 +35,6 @@ namespace puck.areas.admin.ViewModels
         
         public PuckImage Image { get; set; }
 
+        public GeoPosition Location { get; set; }
     }
 }

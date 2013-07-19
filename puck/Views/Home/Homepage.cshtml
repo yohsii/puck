@@ -14,6 +14,12 @@
     var search = new QueryHelper<puck.areas.admin.ViewModels.Page>();
     var sresults = search.AllFields(searchQuery).GetAll();
     @("search for '"+searchQuery+"' count: "+sresults.Count)
+    <br />
+    var geoQuery = new QueryHelper<puck.areas.admin.ViewModels.Page>();
+    geoQuery.WithinMiles(x=>x.Location,51.5171, 0.1062,10);
+    var georesults = geoQuery.GetAll();
+    @("search for locations within 10miles of London(51.5171,0.1062): "+georesults.Count)
+    
 }
 
 <h2>@Model.Title</h2>

@@ -591,7 +591,7 @@ var msg = function (success, str) {
     cmsg.html(el);
     el.fadeIn();
 }
-
+var puckmaxwidth = 960;
 var overlayClose = function () {
     $(".overlayinner,.overlay").remove();
     $("body").css({ overflow: "scroll" });
@@ -616,7 +616,7 @@ var overlay = function (el, width, height, top) {
     height = height || $(window).height() * 0.8;
     if (height)
         inner.css({ height: height + "px" });
-    inner.css({ left: ($(window).width() - width || 960) / 2 + "px" });
+    inner.css({ left: ($(window).width() - (width || $(".overlayinner").width())) / 2 + "px" });
     if (!top)
         inner.css({ top: ($(window).height() - height) / 2 + "px" });
     $("body").css({ overflow: "hidden" });

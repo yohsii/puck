@@ -26,5 +26,6 @@ namespace puck.core.Attributes
         public Type Analyzer { get; set; }
         public bool Ignore { get; set; }
         public bool KeepValueCasing { get; set; }
+        public bool Spatial { get; set; }
     }
 }

@@ -239,6 +239,16 @@
     <Content Include="App_Data\puck_log.ldf">
       <DependentUpon>puck.mdf</DependentUpon>
     </Content>
+    <Content Include="areas\admin\assets\css\1200.css" />
+    <Content Include="areas\admin\assets\css\1200.min.css" />
+    <Content Include="areas\admin\assets\css\1560.css" />
+    <Content Include="areas\admin\assets\css\1560.min.css" />
+    <Content Include="areas\admin\assets\css\1920.css" />
+    <Content Include="areas\admin\assets\css\1920.min.css" />
+    <Content Include="areas\admin\assets\css\720.css" />
+    <Content Include="areas\admin\assets\css\720.min.css" />
+    <Content Include="areas\admin\assets\css\960.css" />
+    <Content Include="areas\admin\assets\css\960.min.css" />
     <Content Include="areas\admin\assets\css\960_12_col.css" />
     <Content Include="areas\admin\assets\css\bootstrap-responsive.css" />
     <Content Include="areas\admin\assets\css\bootstrap-wysihtml5-0.0.2.css" />
@@ -300,6 +310,8 @@
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings-white.png" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings.png" />
+    <Content Include="areas\admin\assets\js\adapt.js" />
+    <Content Include="areas\admin\assets\js\adapt.min.js" />
     <Content Include="areas\admin\assets\js\bootstrap-wysihtml5-0.0.2.js" />
     <Content Include="areas\admin\assets\js\bootstrap.js" />
     <Content Include="areas\admin\assets\js\cultures\globalize.culture.af-ZA.js" />

@@ -88,6 +88,7 @@ table.revisions tr:nth-child(odd){background:#fbfbfb;}
 table.revisions tr:nth-child(even){background:#fff;}
 table.revisions tr.current{background:#eeffee;}
 
+.parameters_edit .parameters_update{float:right;}
 .user_edit .msg {float:left;clear:both;background:#ffeeee;margin-bottom:20px;padding:5px;display:none;}
 .overlayinner .tree_container ul.content>li>ul>li:nth-child(odd){background-color:#fbfbfb;}
 .overlayinner .tree_container .node > .inner:hover{background-color:#eeffee;}
@@ -894,4 +895,151 @@ tr.pager td {
         footer p {
             margin: 0;
         }
+}
+
+.overlayinner.container_12 {
+  margin-left: auto;
+  margin-right: auto;
+  width: 960px;
+}
+.overlayinner.container_12 .grid_1 {
+  width: 60px;
+}
+
+.overlayinner.container_12 .grid_2 {
+  width: 140px;
+}
+
+.overlayinner.container_12 .grid_3 {
+  width: 220px;
+}
+
+.overlayinner.container_12 .grid_4 {
+  width: 300px;
+}
+
+.overlayinner.container_12 .grid_5 {
+  width: 380px;
+}
+
+.overlayinner.container_12 .grid_6 {
+  width: 460px;
+}
+
+.overlayinner.container_12 .grid_7 {
+  width: 540px;
+}
+
+.overlayinner.container_12 .grid_8 {
+  width: 620px;
+}
+
+.overlayinner.container_12 .grid_9 {
+  width: 700px;
+}
+
+.overlayinner.container_12 .grid_10 {
+  width: 780px;
+}
+
+.overlayinner.container_12 .grid_11 {
+  width: 860px;
+}
+
+.overlayinner.container_12 .grid_12 {
+  width: 940px;
+}
+
+/* `Push Space >> 12 Columns
+----------------------------------------------------------------------------------------------------*/
+
+.overlayinner.container_12 .push_1 {
+  left: 80px;
+}
+
+.overlayinner.container_12 .push_2 {
+  left: 160px;
+}
+
+.overlayinner.container_12 .push_3 {
+  left: 240px;
+}
+
+.overlayinner.container_12 .push_4 {
+  left: 320px;
+}
+
+.overlayinner.container_12 .push_5 {
+  left: 400px;
+}
+
+.overlayinner.container_12 .push_6 {
+  left: 480px;
+}
+
+.overlayinner.container_12 .push_7 {
+  left: 560px;
+}
+
+.overlayinner.container_12 .push_8 {
+  left: 640px;
+}
+
+.overlayinner.container_12 .push_9 {
+  left: 720px;
+}
+
+.overlayinner.container_12 .push_10 {
+  left: 800px;
+}
+
+.overlayinner.container_12 .push_11 {
+  left: 880px;
+}
+
+/* `Pull Space >> 12 Columns
+----------------------------------------------------------------------------------------------------*/
+
+.overlayinner.container_12 .pull_1 {
+  left: -80px;
+}
+
+.overlayinner.container_12 .pull_2 {
+  left: -160px;
+}
+
+.overlayinner.container_12 .pull_3 {
+  left: -240px;
+}
+
+.overlayinner.container_12 .pull_4 {
+  left: -320px;
+}
+
+.overlayinner.container_12 .pull_5 {
+  left: -400px;
+}
+
+.overlayinner.container_12 .pull_6 {
+  left: -480px;
+}
+
+.overlayinner.container_12 .pull_7 {
+  left: -560px;
+}
+
+.overlayinner.container_12 .pull_8 {
+  left: -640px;
+}
+
+.overlayinner.container_12 .pull_9 {
+  left: -720px;
+}
+
+.overlayinner.container_12 .pull_10 {
+  left: -800px;
+}
+
+.overlayinner.container_12 .pull_11 {
+  left: -880px;
 }

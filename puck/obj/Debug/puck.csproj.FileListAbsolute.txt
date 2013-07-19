@@ -100,3 +100,12 @@ C:\project\puck\puck\bin\DotNetOpenAuth.OpenId.RelyingParty.xml
 C:\project\puck\puck\obj\Debug\puck.csprojResolveAssemblyReference.cache
 C:\project\puck\puck\obj\Debug\puck.ui.dll
 C:\project\puck\puck\obj\Debug\puck.ui.pdb
+C:\project\puck\puck\bin\Spatial4n.Core.NTS.dll
+C:\project\puck\puck\bin\Lucene.Net.Contrib.Spatial.NTS.dll
+C:\project\puck\puck\bin\GeoAPI.dll
+C:\project\puck\puck\bin\NetTopologySuite.dll
+C:\project\puck\puck\bin\PowerCollections.dll
+C:\project\puck\puck\bin\Spatial4n.Core.NTS.pdb
+C:\project\puck\puck\bin\Spatial4n.Core.NTS.xml
+C:\project\puck\puck\bin\Lucene.Net.Contrib.Spatial.NTS.pdb
+C:\project\puck\puck\bin\Lucene.Net.Contrib.Spatial.NTS.xml

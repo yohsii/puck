@@ -14,6 +14,11 @@ using System.Globalization;
 using Lucene.Net.Search;
 using System.Threading;
 using puck.core.Models;
+using Lucene.Net.Spatial.Queries;
+using Spatial4n.Core.Context;
+using Spatial4n.Core.Distance;
+using Lucene.Net.Spatial;
+using Lucene.Net.Spatial.Vector;
 
 namespace puck.core.Helpers
 {
@@ -242,7 +247,8 @@ namespace puck.core.Helpers
     public class QueryHelper<TModel> where TModel : BaseModel
     {
         public static I_Content_Searcher searcher = PuckCache.PuckSearcher;
-
+        public static SpatialContext ctx = SpatialContext.GEO;
+        public Lucene.Net.Search.Filter filter;
         //query builders append to this string
         string query="";
         Sort sort = new Sort();
@@ -413,7 +419,32 @@ namespace puck.core.Helpers
         {
             return this.Range(exp, start.ToString(dateFormat), end.ToString(dateFormat), true,true);
         }
-        
+
+        private QueryHelper<TModel> GeoFilter(Expression<Func<TModel, object>> exp, double longitude, double latitude, double distDEG)
+        {
+            string name = getName(exp.Body.ToString());
+            name = name.IndexOf('.') > -1 ? name.Substring(0, name.LastIndexOf('.')) : name;
+            SpatialOperation op = SpatialOperation.Intersects;
+            SpatialStrategy strat = new PointVectorStrategy(ctx, name);
+            var point = ctx.MakePoint(longitude, latitude);
+            var shape = ctx.MakeCircle(point, distDEG);
+            var args = new SpatialArgs(op, shape);
+            filter = strat.MakeFilter(args);
+            return this;
+        }
+
+        public QueryHelper<TModel> WithinMiles(Expression<Func<TModel, object>> exp, double longitude,double latitude,int miles)
+        {
+            var distDEG = DistanceUtils.Dist2Degrees(miles, DistanceUtils.EARTH_MEAN_RADIUS_MI);
+            return GeoFilter(exp,longitude,latitude,distDEG);
+        }
+
+        public QueryHelper<TModel> WithinKilometers(Expression<Func<TModel, object>> exp, double longitude, double latitude, int kilometers)
+        {
+            var distDEG = DistanceUtils.Dist2Degrees(kilometers, DistanceUtils.EARTH_MEAN_RADIUS_KM);
+            return GeoFilter(exp, longitude, latitude, distDEG);
+        }
+
         public QueryHelper<TModel> AllFields(string value)
         {
             query += "+(";
@@ -639,19 +670,19 @@ namespace puck.core.Helpers
         //query executors
         public List<TModel> GetAll()
         {
-            var result = searcher.Query<TModel>(query).ToList();
+            var result = searcher.Query<TModel>(query,filter).ToList();
             return result;
         }
 
         public List<TModel> GetAllNoCast()
         {
-            var result = searcher.QueryNoCast<TModel>(query).ToList();
+            var result = searcher.QueryNoCast<TModel>(query,filter).ToList();
             return result;
         }
 
         public TModel Get()
         {
-            var result = searcher.Query<TModel>(query).FirstOrDefault();
+            var result = searcher.Query<TModel>(query,filter).FirstOrDefault();
             return result;
         }
     }

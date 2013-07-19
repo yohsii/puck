@@ -16,6 +16,9 @@ using Newtonsoft.Json;
 using Lucene.Net.Analysis;
 using puck.core.Base;
 using puck.core.Events;
+using Spatial4n.Core.Context;
+using Lucene.Net.Spatial.Vector;
+using Lucene.Net.Spatial.Queries;
 
 namespace puck.core.Concrete
 {
@@ -23,6 +26,7 @@ namespace puck.core.Concrete
     {
         private Lucene.Net.Analysis.Standard.StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
         private Lucene.Net.Analysis.KeywordAnalyzer KeywordAnalyzer = new KeywordAnalyzer();
+        public readonly SpatialContext ctx = SpatialContext.GEO;
         private string INDEXPATH { get { return HttpContext.Current.Server.MapPath("~/App_Data/Lucene"); } }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };
         private IndexSearcher Searcher = null;
@@ -187,10 +191,19 @@ namespace puck.core.Concrete
                         nf.SetDoubleValue(double.Parse(p.Value.ToString()));
                         doc.Add(nf);
                     }
+                    else if (p.Spatial) {
+                        if (p.Value == null || string.IsNullOrEmpty(p.Value.ToString()))
+                            return;
+                        var name = p.Key.IndexOf('.')>-1?p.Key.Substring(0,p.Key.LastIndexOf('.')):p.Key;
+                        var strat = new PointVectorStrategy(ctx,name);
+                        var point = ctx.ReadShape(p.Value.ToString());
+                        var fields = strat.CreateIndexableFields(point);
+                        fields.ToList().ForEach(x=>doc.Add(x));
+                    }
                     else
                     {
-                        string value = p.Value == null ? null : (p.KeepValueCasing? p.Value.ToString() : p.Value.ToString().ToLower());
-                        var f = new Field(p.Key,value ?? string.Empty, p.FieldStoreSetting, p.FieldIndexSetting);
+                        string value = p.Value == null ? null : (p.KeepValueCasing ? p.Value.ToString() : p.Value.ToString().ToLower());
+                        var f = new Field(p.Key, value ?? string.Empty, p.FieldStoreSetting, p.FieldIndexSetting);
                         doc.Add(f);
                     }
                 }
@@ -487,10 +500,18 @@ namespace puck.core.Concrete
         }
         public IList<T> QueryNoCast<T>(string qstr)
         {
+            return QueryNoCast<T>(qstr,null);
+        }
+        public IList<T> QueryNoCast<T>(string qstr, Filter filter)
+        {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
             var q = parser.Parse(qstr);
-            var hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
+            ScoreDoc[] hits;
+            if (filter != null)
+                hits = Searcher.Search(q,filter, int.MaxValue).ScoreDocs;
+            else
+                hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
             var results = new List<T>();
             for (var i = 0; i < hits.Count(); i++)
             {
@@ -501,11 +522,19 @@ namespace puck.core.Concrete
             }
             return results;
         }
-        public IList<T> Query<T>(string qstr) {
+        public IList<T> Query<T>(string qstr)
+        {
+            return Query<T>(qstr,null);
+        }
+        public IList<T> Query<T>(string qstr,Filter filter) {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
-            var hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
+            ScoreDoc[] hits;
+            if(filter!=null)
+                hits= Searcher.Search(q,filter,int.MaxValue).ScoreDocs;
+            else
+                hits = Searcher.Search(q,int.MaxValue).ScoreDocs;
             var results = new List<T>();
             for (var i = 0; i < hits.Count(); i++) {
                 var doc = Searcher.Doc(hits[i].Doc);

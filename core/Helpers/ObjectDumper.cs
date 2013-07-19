@@ -27,6 +27,7 @@ namespace puck.core.Helpers
         public Analyzer Analyzer { get; set; }
         public String UniqueKey { get; set; }
         public bool KeepValueCasing { get; set; }
+        public bool Spatial { get; set; }
         public void Transform() {
             //lower case keys
             Key = Key.ToLower();
@@ -38,6 +39,7 @@ namespace puck.core.Helpers
                 var sattr = (IndexSettings)settings.First();
                 KeepValueCasing = sattr.KeepValueCasing;
                 Ignore = sattr.Ignore;
+                Spatial = sattr.Spatial;
                 FieldIndexSetting = sattr.FieldIndexSetting;
                 FieldStoreSetting = sattr.FieldStoreSetting;
                 if (sattr.Analyzer != null)
