@@ -14,7 +14,7 @@ namespace puck
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                name: "admin generic",
+                name: "admin",
                 url: "admin/{controller}/{action}/{id}",
                 defaults: new {controller = "Home", action = "Index",id=UrlParameter.Optional}
                 ,namespaces:new string[]{"puck.core.Controllers"}    

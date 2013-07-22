@@ -148,12 +148,14 @@ namespace puck.core.Helpers
         public static List<T> Ancestors<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             string nodePath = n.Path.ToLower();
+            var innerQ = qh.New();
             while (nodePath.Count(x => x == '/') > 1)
             {
                 nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
-                qh
+                innerQ
                     .Field(x=>x.Path,nodePath);
             }
+            qh.And(innerQ);
             if (currentLanguage)
                 qh.CurrentLanguage();
             if (noCast)

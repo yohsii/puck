@@ -60,9 +60,9 @@
                 );
             });
         };
-        $(".list").sortable({
+        container.find(".list").sortable({
             cursorAt: {top:0,left:0},
-            connectWith: ".list", items: ".field", update: function (e, ui) {
+            connectWith: ".settings_type_allowed_templates .list", items: ".field", update: function (e, ui) {
                 setValue();
             }
         });

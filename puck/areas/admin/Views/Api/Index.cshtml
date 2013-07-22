@@ -7,10 +7,12 @@
     <div class="grid_12 menutop">
         <ul>
             <li><a class='content' href="/admin"><i class="icon-home"></i></a></li>
-            <li><a class='settings' href="/"><i class="icon-cog"></i></a></li>
-            <li><a class='users' href="/"><i class="icon-user"></i></a></li>
-            <li><a class='tasks' href="/"><i class="icon-wrench"></i></a></li>
+            <li><a data-permission="settings" class='settings' href="/"><i class="icon-cog"></i></a></li>
+            <li><a data-permission="users" class='users' href="/"><i class="icon-user"></i></a></li>
+            <li><a data-permission="tasks" class='tasks' href="/"><i class="icon-wrench"></i></a></li>
+            <li><a class='logout' href="@Url.Action("out","admin")"><i class="icon-circle-arrow-left"></i></a></li>
         </ul>
+        
     </div>
     <div class="grid_3 alpha leftarea">
         <button class="create_default btn btn-link"><i class="icon-plus-sign"></i>&nbsp;create</button>
@@ -85,4 +87,10 @@
     </div>
 </div>
 <div class="footer_puck grid_12"></div>
+<script type="text/javascript">
+    var variantNames = [];
+    @foreach(var v in ApiHelper.AllVariants()){
+        @Html.Raw("variantNames['"+v.Key+"']=\""+v.FriendlyName+"\";");
+    }    
+</script>
 <script src="~/areas/admin/assets/js/puck.js" type="text/javascript"></script>

@@ -144,6 +144,7 @@ var showUserMarkup = function (username) {
         wireForm($(".overlayinner form"), function (data) {
             showUsers();
             userRoles = $(".overlayinner select[name=Roles]").val();
+            hideTopNav();
             getUserLanguage(function (d) { defaultLanguage = d; });
             startPath = data.startPath;
             overlayClose();
@@ -377,8 +378,14 @@ var createTask = function () {
 jQuery.validator.setDefaults({
     ignore:""
 });
+var checkEnter=function(e) {
+    e = e || event;
+    var txtArea = /textarea/i.test((e.target || e.srcElement).tagName);
+    return txtArea || (e.keyCode || e.which || e.charCode || 0) !== 13;
+}
 var wireForm = function (form, success, fail) {
     $.validator.unobtrusive.parse(form);
+    form.keypress(checkEnter);
     form.submit(function (e) {
         if (form.valid()) {
             e.preventDefault();
@@ -417,7 +424,7 @@ var newContent = function (path, type) {
         });
     }, type);
 }
-var getDrawContent = function (path, el, sortable) {
+var getDrawContent = function (path, el, sortable,f) {
     if (el == undefined) {
         var nodeParent = dirOfPath(path);
         el = cleft.find(".node[data-children_path='" + nodeParent + "']");
@@ -435,6 +442,8 @@ var getDrawContent = function (path, el, sortable) {
             if (!haveChildren[n.attr("data-path")])
                 n.find(".expand").css({visibility:"hidden"});
         });
+        if(f!=undefined)
+            f();
     });
 }
 var draw = function (data, el, sortable) {
@@ -460,6 +469,7 @@ var draw = function (data, el, sortable) {
         elnode.append(elinner);
         if (hasUnpublished)
             elnode.addClass("unpublished");
+        elinner.append($("<i class=\"puck_icon\"></i>"))
         elinner.append($("<i class=\"icon-chevron-right expand\"></i>"))
         elinner.append($("<i class=\"icon-cog menu\"></i>"))
                 .append("<span class='nodename'>" + node.NodeName + "&nbsp;" + "</span>");
@@ -503,6 +513,40 @@ var draw = function (data, el, sortable) {
 var displayMarkup = function (path, type, variant,fromVariant) {
     getMarkup(path, type, variant, function (data) {
         cright.hide().html(data);
+        var translations = $("<ul/>").addClass("translations");
+        var node = cleft.find(".node[data-path='" + path + "']");
+        if (node.length > 0) {
+            var dataTranslations = node.attr("data-variants").split(',');
+            if (dataTranslations.length > 1) {
+                for (var i = 0; i < dataTranslations.length; i++) {
+                    (function () {
+                        var dataTranslation = dataTranslations[i];
+                        var published = true;
+
+                        if (dbcontent[path][dataTranslation].Published == false) {
+                            published = false;
+                        }
+                        
+                        var dtli = $("<li/>");
+                        if (!published)
+                            dtli.addClass("unpublished");
+                        if (dataTranslation != variant) {
+                            var lnk = $("<a href='#'/>").html("-" + variantNames[dataTranslation]);
+                            lnk.click(function (e) {
+                                e.preventDefault();
+                                var vcode = dataTranslation;
+                                displayMarkup(path, type, vcode);
+                            });
+                            dtli.append(lnk)
+                        } else {
+                            dtli.append("-" + variantNames[dataTranslation]);
+                        }
+                        translations.append(dtli);
+                    })();
+                }
+                cright.prepend(translations);
+            }
+        }
         //get field groups and build tabs
         getFieldGroups(type, function (data) {
             var groups = [];
@@ -573,9 +617,9 @@ var displayMarkup = function (path, type, variant,fromVariant) {
 
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
-            getDrawContent(dirOfPath(path), undefined, true);
-            console.log(data);
-            displayMarkup(data.path, type, variant);
+            getDrawContent(dirOfPath(path), undefined, true, function () {
+                displayMarkup(data.path, type, variant);
+            });            
         }, function (data) {
             msg(false, data.message);
         });        
@@ -643,6 +687,16 @@ var canChangeMainContent=function(){
         }
         else
             return true;
+}
+var hideTopNav = function () {
+    $(".menutop a[data-permission]").each(function () {
+        var el =$(this);
+        var perm = el.attr("data-permission");
+        if (userRoles.contains(perm))
+            el.show();
+        else
+            el.hide();
+    });
 }
 $('a.settings').click(function (e) {
     e.preventDefault();
@@ -983,12 +1037,14 @@ var setDomainMapping = function (p) {
         });
     });
 }
-cleft.find("ul.content").on("click", "li.node span.variant", function () {
+//cleft.find("ul.content").on("click", "li.node span.variant", function () {
+cleft.find("ul.content").on("click", "li.node span.nodename", function () {
     //get markup
     if (!canChangeMainContent())
         return false;
     var node = $(this).parents(".node");
-    displayMarkup(node.attr("data-path"),node.attr("data-type"),$(this).attr("data-variant"));
+    var firstVariant = node.attr("data-variants").split(",")[0];
+    displayMarkup(node.attr("data-path"),node.attr("data-type"),firstVariant);
 });
 
 //ini
@@ -1000,7 +1056,7 @@ var userRoles = [];
 var languages;
 var startPath;
 getUserLanguage(function (d) { defaultLanguage = d; });
-getUserRoles(function (d) { userRoles = d; });
+getUserRoles(function (d) { userRoles = d; hideTopNav(); });
 getVariants(function (data) {
     languages = data;
 });

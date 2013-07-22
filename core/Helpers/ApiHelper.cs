@@ -32,7 +32,6 @@ namespace puck.core.Helpers
         public static I_Content_Indexer indexer{get{
             return PuckCache.PuckIndexer;
          }}
-
         public static string UserVariant() {
             string variant;
             if (HttpContext.Current.Session["language"] != null)
@@ -416,11 +415,11 @@ namespace puck.core.Helpers
                         if (string.IsNullOrEmpty(indexOriginalPath))
                             indexOriginalPath = variants.First().Path;
                     }
-                    //sync up all the variants so they have the same nodename and path
-                    variants.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; toIndex.Add(x); });
                     //if there was a change in the path
                     if (changed)
                     {
+                        //sync up all the variants so they have the same nodename and path
+                        variants.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; toIndex.Add(x); });
                         //new regex which searches for the current indexed path so it can be replaced with the new one
                         var regex = new Regex(Regex.Escape(indexOriginalPath), RegexOptions.Compiled);
                         var descendants = new List<BaseModel>();

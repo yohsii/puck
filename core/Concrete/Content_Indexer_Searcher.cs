@@ -193,7 +193,7 @@ namespace puck.core.Concrete
                     }
                     else if (p.Spatial) {
                         if (p.Value == null || string.IsNullOrEmpty(p.Value.ToString()))
-                            return;
+                            continue;
                         var name = p.Key.IndexOf('.')>-1?p.Key.Substring(0,p.Key.LastIndexOf('.')):p.Key;
                         var strat = new PointVectorStrategy(ctx,name);
                         var point = ctx.ReadShape(p.Value.ToString());

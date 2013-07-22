@@ -81,6 +81,12 @@ namespace puck.core.Controllers
             return Json(model,JsonRequestBehavior.AllowGet);
         }
         [Auth]
+        public JsonResult AllVariants()
+        {
+            var model = ApiHelper.AllVariants();
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
+        [Auth]
         public ActionResult Preview(string path, string variant)
         {
             var model = repo.GetPuckRevision().Where(x => x.Current && x.Path.ToLower().Equals(path.ToLower()) && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
