@@ -39,7 +39,6 @@ namespace puck.core.Controllers
                 return View(user);
             }
             FormsAuthentication.SetAuthCookie(user.Username,user.PersistentCookie);
-            
             return RedirectToAction("Index", "api", new { area="admin"});
         }
 
@@ -54,7 +53,7 @@ namespace puck.core.Controllers
             return View();
         }
 
-        [Auth(Roles = "users")]
+        [Auth(Roles =PuckRoles.Users)]
         public ActionResult Index()
         {
             var model = new List<PuckUser>();
@@ -75,7 +74,7 @@ namespace puck.core.Controllers
             return View(model);
         }
 
-        [Auth(Roles = "users")]
+        [Auth(Roles =PuckRoles.Users)]
         public ActionResult Edit(string userName=null) {
             var model = new PuckUser();
             if (!string.IsNullOrEmpty(userName)) {
@@ -96,7 +95,7 @@ namespace puck.core.Controllers
         }
 
         [HttpPost]
-        [Auth(Roles="users")]
+        [Auth(Roles=PuckRoles.Users)]
         public JsonResult Edit(PuckUser user,bool edit)
         {
             bool success = false;
@@ -177,7 +176,7 @@ namespace puck.core.Controllers
             return Json(new {success=success,message=message,startPath=startPath }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "users")]
+        [Auth(Roles =PuckRoles.Users)]
         public JsonResult Delete(string username) {
             bool success = false;
             string message = "";

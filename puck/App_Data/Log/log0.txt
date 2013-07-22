@@ -14240,3 +14240,8 @@ stacktrace:    at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFull
    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 377
 
 
+date: 22/07/2013 18:54:59
+message: A username for that e-mail address already exists. Please enter a different e-mail address.
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\core\Controllers\AdminController.cs:line 115
+
+

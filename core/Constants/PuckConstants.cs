@@ -15,20 +15,21 @@ namespace puck.core.Constants
 {
     public static class PuckRoles
     {
-        public static string Create = "create";
-        public static string Edit = "edit";
-        public static string Delete = "delete";
-        public static string Publish = "publish";
-        public static string Unpublish = "unpublish";
-        public static string Revert = "revert";
-        public static string Sort = "sort";
-        public static string Move = "move";
-        public static string Localisation = "localisation";
-        public static string Domain = "domain";
-        public static string Cache = "cache";
-        public static string Settings = "settings";
-        public static string Tasks = "tasks";
-        public static string Users = "users";        
+        public const string Create = "_create";
+        public const string Edit = "_edit";
+        public const string Delete = "_delete";
+        public const string Publish = "_publish";
+        public const string Unpublish = "_unpublish";
+        public const string Revert = "_revert";
+        public const string Sort = "_sort";
+        public const string Move = "_move";
+        public const string Localisation = "_localisation";
+        public const string Domain = "_domain";
+        public const string Cache = "_cache";
+        public const string Settings = "_settings";
+        public const string Tasks = "_tasks";
+        public const string Users = "_users";
+        public const string Puck = "_puck";
     }
     public static class FieldKeys
     {

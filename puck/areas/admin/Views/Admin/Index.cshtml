@@ -35,7 +35,7 @@
             @Html.DisplayFor(modelItem => item.User.Email)
         </td>
         <td>
-            @string.Join(", ",item.Roles)
+            @string.Join(", ",item.Roles.Select(x=>x.Substring(1)))
         </td>
         <td>@Html.DisplayFor(modelItem=>item.UserVariant)</td>
         <td>

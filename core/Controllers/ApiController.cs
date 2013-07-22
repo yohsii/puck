@@ -35,12 +35,12 @@ namespace puck.core.Controllers
             this.log = l;
             this.repo = r;
         }
-        [Auth]
+        [Auth(Roles=PuckRoles.Puck)]
         public ActionResult Index()
         {
             return View();
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult UserLanguage()
         {
             string variant = PuckCache.SystemVariant;
@@ -49,24 +49,24 @@ namespace puck.core.Controllers
                 variant = meta.Value;
             return Json(variant, JsonRequestBehavior.AllowGet);
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult UserRoles()
         {
             var roles = Roles.GetRolesForUser(User.Identity.Name);
             return Json(roles, JsonRequestBehavior.AllowGet);
         }
-        [Auth]
+        [Auth(Roles =PuckRoles.Puck)]
         public JsonResult FieldGroups(string type)
         {
             var model = ApiHelper.FieldGroups(type);
             return Json(model,JsonRequestBehavior.AllowGet);
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public ActionResult CreateDialog(string type)
         {
             return View();
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult Models(string type)
         {
             if(string.IsNullOrEmpty(type))
@@ -74,31 +74,31 @@ namespace puck.core.Controllers
             else
                 return Json(ApiHelper.AllowedTypes(type).Select(x => x.AssemblyQualifiedName), JsonRequestBehavior.AllowGet);
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult Variants()
         {
             var model = ApiHelper.Variants();
             return Json(model,JsonRequestBehavior.AllowGet);
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult AllVariants()
         {
             var model = ApiHelper.AllVariants();
             return Json(model, JsonRequestBehavior.AllowGet);
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public ActionResult Preview(string path, string variant)
         {
             var model = repo.GetPuckRevision().Where(x => x.Current && x.Path.ToLower().Equals(path.ToLower()) && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
             return Preview(model);
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public ActionResult PreviewGuid(Guid id, string variant)
         {
             var model = repo.GetPuckRevision().Where(x => x.Current && x.Id == id && x.Variant.ToLower().Equals(variant.ToLower())).FirstOrDefault();
             return Preview(model);
         }
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         private ActionResult Preview(PuckRevision model)
         {
             var dmode = this.GetDisplayModeId();
@@ -114,19 +114,19 @@ namespace puck.core.Controllers
             var mod = ApiHelper.RevisionToBaseModel(model);
             return View(templatePath, mod);
         }
-        [Auth(Roles = "domain")]
+        [Auth(Roles = PuckRoles.Domain)]
         public ActionResult DomainMappingDialog(string p_path)
         {
             var model = ApiHelper.DomainMapping(p_path);
             return View((object)model);
         }
-        [Auth(Roles = "domain")]
+        [Auth(Roles = PuckRoles.Domain)]
         public JsonResult DomainMapping(string p_path)
         {
             var model = ApiHelper.DomainMapping(p_path);
             return Json(model,JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles = "domain")]
+        [Auth(Roles = PuckRoles.Domain)]
         [HttpPost]
         public JsonResult DomainMapping(string p_path,string domains) {
             string message = "";
@@ -144,7 +144,7 @@ namespace puck.core.Controllers
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "move")]
+        [Auth(Roles = PuckRoles.Move)]
         public JsonResult Move(string start,string destination)
         {
             string message = "";
@@ -170,18 +170,18 @@ namespace puck.core.Controllers
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);            
         }
 
-        [Auth(Roles = "localisation")]
+        [Auth(Roles = PuckRoles.Localisation)]
         public ActionResult LocalisationDialog(string p_path)
         {
             var model = ApiHelper.PathLocalisation(p_path);
             return View((object)model);
         }
-        [Auth(Roles = "localisation")]
+        [Auth(Roles = PuckRoles.Localisation)]
         public JsonResult Localisation(string p_path) {
             var model = ApiHelper.PathLocalisation(p_path);
             return Json(model,JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles = "localisation")]
+        [Auth(Roles = PuckRoles.Localisation)]
         [HttpPost]
         public JsonResult Localisation(string p_path,string variant)
         {
@@ -199,7 +199,7 @@ namespace puck.core.Controllers
             return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult GetPath(Guid id)
         {
             var node = repo.GetPuckRevision().Where(x => x.Id == id).FirstOrDefault();
@@ -207,7 +207,7 @@ namespace puck.core.Controllers
             return Json(path,JsonRequestBehavior.AllowGet);
         }
 
-        [Auth]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult StartPath()
         {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == HttpContext.User.Identity.Name).FirstOrDefault();
@@ -225,7 +225,7 @@ namespace puck.core.Controllers
             }
             return Json("/", JsonRequestBehavior.AllowGet);
         }
-        [Auth]
+        [Auth(Roles=PuckRoles.Puck)]
         public JsonResult Content(string path = "/") {
             //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
             string p_path = path;
@@ -250,7 +250,7 @@ namespace puck.core.Controllers
             return Json(new { current=results,published=publishedContent,children=haveChildren }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "sort")]
+        [Auth(Roles = PuckRoles.Sort)]
         public JsonResult Sort(string p_path,List<string> items) {
             string message = "";
             bool success = false;
@@ -266,7 +266,7 @@ namespace puck.core.Controllers
             return Json(new {success=success,message=message },JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "publish")]
+        [Auth(Roles = PuckRoles.Publish)]
         public JsonResult Publish(Guid id,string variant,string descendants)
         {
             var message = string.Empty;
@@ -286,7 +286,7 @@ namespace puck.core.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "unpublish")]
+        [Auth(Roles = PuckRoles.Unpublish)]
         public JsonResult UnPublish(Guid id,string variant,string descendants)
         {
             var message = string.Empty;
@@ -306,7 +306,7 @@ namespace puck.core.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "delete")]
+        [Auth(Roles = PuckRoles.Delete)]
         public JsonResult Delete(Guid id,string variant = null){
             var message = string.Empty;
             var success = false;
@@ -322,7 +322,7 @@ namespace puck.core.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "edit")]
+        [Auth(Roles = PuckRoles.Edit)]
         public ActionResult Edit(string type,string p_path="/",string variant="",string fromVariant="") {
             //empty model of type
             var modelType= Type.GetType(type);
@@ -365,7 +365,7 @@ namespace puck.core.Controllers
             return View(model);
         }
 
-        [Auth(Roles = "edit")]
+        [Auth(Roles = PuckRoles.Edit)]
         [HttpPost]
         [ValidateInput(false)]
         public JsonResult Edit(FormCollection fc,string p_type,string p_path) {
@@ -392,7 +392,7 @@ namespace puck.core.Controllers
             return Json(new {success=success,message=message,path=path },JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "cache")]
+        [Auth(Roles = PuckRoles.Cache)]
         public JsonResult CacheInfo(string p_path) {
             bool success = false;
             string message = "";
@@ -413,7 +413,7 @@ namespace puck.core.Controllers
             return Json(new {result=model, success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "cache")]
+        [Auth(Roles = PuckRoles.Cache)]
         [HttpPost]
         public JsonResult CacheInfo(string p_path,bool value)
         {
@@ -440,12 +440,12 @@ namespace puck.core.Controllers
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
-        [Auth(Roles = "revert")]
+        [Auth(Roles = PuckRoles.Revert)]
         public ActionResult Revisions(Guid id,string variant) {
             var model = repo.GetPuckRevision().Where(x => x.Id == id && x.Variant.ToLower().Equals(variant.ToLower())).OrderByDescending(x=>x.Revision).ToList();
             return View(model);
         }
-        [Auth(Roles = "revert")]
+        [Auth(Roles = PuckRoles.Revert)]
         public ActionResult Compare(int id)
         {
             var compareTo = repo.GetPuckRevision().Where(x => x.RevisionID == id).FirstOrDefault();
@@ -459,7 +459,7 @@ namespace puck.core.Controllers
             }
             return View(model);
         }
-        [Auth(Roles = "revert")]
+        [Auth(Roles = PuckRoles.Revert)]
         public ActionResult Revert(int id)
         {
             bool success = false;
@@ -499,7 +499,7 @@ namespace puck.core.Controllers
             }
             return Json(new { success = success, message = message,path=path,type=type,variant=variant }, JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles = "revert")]
+        [Auth(Roles = PuckRoles.Revert)]
         public JsonResult DeleteRevision(int id)
         {
             var message = string.Empty;

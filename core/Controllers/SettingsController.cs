@@ -16,7 +16,7 @@ namespace puck.core.Controllers
 {
 
     [SetPuckCulture]
-    [Auth(Roles="settings")]
+    [Auth(Roles=PuckRoles.Settings)]
     public class SettingsController : BaseController
     {
         I_Content_Indexer indexer;

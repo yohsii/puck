@@ -596,8 +596,7 @@ var displayMarkup = function (path, type, variant,fromVariant) {
             cright.find(".fieldtabs:first").click();
         });
         //publish btn
-        if (userRoles.contains("publish")) {
-            console.log("can publish");
+        if (userRoles.contains("_publish")) {
             cright.find(".content_publish").click(function () {
                 cright.find("input:hidden[name='Published']").val("true");                
             });
