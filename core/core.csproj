@@ -165,6 +165,7 @@
     <Compile Include="Helpers\ObjectDumper.cs" />
     <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Extensions\ViewExtensions.cs" />
+    <Compile Include="PuckLucene\PuckQueryParser.cs" />
     <Compile Include="Migrations\201307080849396_indexes.cs" />
     <Compile Include="Migrations\201307080849396_indexes.Designer.cs">
       <DependentUpon>201307080849396_indexes.cs</DependentUpon>

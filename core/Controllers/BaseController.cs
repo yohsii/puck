@@ -27,14 +27,14 @@ namespace puck.core.Controllers
                 string path = Request.Url.AbsolutePath.ToLower();
                 //do redirects
                 string redirectUrl;
-                if (PuckCache.Redirect301.TryGetValue(Request.Url.AbsolutePath, out redirectUrl))
+                if (PuckCache.Redirect301.TryGetValue(path, out redirectUrl))
                 {
                     Response.Cache.SetCacheability(HttpCacheability.Public);
                     Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
                     Response.Cache.SetValidUntilExpires(true);
                     Response.RedirectPermanent(redirectUrl, true);
                 }
-                if (PuckCache.Redirect302.TryGetValue(Request.Url.AbsolutePath, out redirectUrl))
+                if (PuckCache.Redirect302.TryGetValue(path, out redirectUrl))
                 {
                     Response.Cache.SetCacheability(HttpCacheability.Public);
                     Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));

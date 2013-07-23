@@ -421,6 +421,33 @@ namespace puck.core.Helpers
         {
             return this.Range(exp, start.ToString(dateFormat), end.ToString(dateFormat), true,true);
         }
+        //extended range
+        public QueryHelper<TModel> GreaterThanEqualTo(Expression<Func<TModel, object>> exp, DateTime start)
+        {
+            return this.Range(exp, start.ToString(dateFormat), DateTime.MaxValue.ToString(dateFormat), true, true);
+        }
+        public QueryHelper<TModel> LessThanEqualTo(Expression<Func<TModel, object>> exp, DateTime end)
+        {
+            return this.Range(exp, DateTime.MinValue.ToString(dateFormat), end.ToString(dateFormat), true, true);
+        }
+
+        public QueryHelper<TModel> GreaterThanEqualTo(Expression<Func<TModel, object>> exp, int start)
+        {
+            return this.Range(exp, start.ToString(), int.MaxValue.ToString(), true, true);
+        }
+        public QueryHelper<TModel> LessThanEqualTo(Expression<Func<TModel, object>> exp, int end)
+        {
+            return this.Range(exp, int.MinValue.ToString(), end.ToString(), true, true);
+        }
+
+        public QueryHelper<TModel> GreaterThanEqualTo(Expression<Func<TModel, object>> exp, long start)
+        {
+            return this.Range(exp, start.ToString(), long.MaxValue.ToString(), true, true);
+        }
+        public QueryHelper<TModel> LessThanEqualTo(Expression<Func<TModel, object>> exp, long end)
+        {
+            return this.Range(exp, long.MinValue.ToString(), end.ToString(), true, true);
+        }
 
         private QueryHelper<TModel> GeoFilter(Expression<Func<TModel, object>> exp, double longitude, double latitude, double distDEG)
         {
@@ -451,7 +478,7 @@ namespace puck.core.Helpers
         {
             query += "+(";
             foreach (var k in PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName]){
-                query += string.Concat(k, ":", value, " ");
+                query += string.Concat(k.Key, ":", value, " ");
             }
             query+=") ";
             return this;

@@ -87,7 +87,7 @@ namespace puck.core.Constants
         public static bool UpdateTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool UpdateRecurringTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool TaskCatchUp = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckTaskCatchUp"]) && ConfigurationManager.AppSettings["PuckTaskCatchUp"].ToLower() == bool.TrueString.ToLower();
-        public static int RedirectOuputCacheMinutes = 10;
+        public static int RedirectOuputCacheMinutes = 1;
         public static int DefaultOutputCacheMinutes = 0;
         public static string SystemVariant = "en-GB";
         public static List<Variant> Variants { get; set; }
@@ -97,7 +97,8 @@ namespace puck.core.Constants
         public static Dictionary<string, string> Redirect301 { get; set; }
         public static Dictionary<string, string> Redirect302 { get; set; }
         public static Dictionary<string, int> TypeOutputCache { get; set; }
-        public static Dictionary<string, List<string>> TypeFields { get; set; }
+        //public static Dictionary<string, List<string>> TypeFields { get; set; }
+        public static Dictionary<string, Dictionary<string,string>> TypeFields { get; set; }
         public static HashSet<string> OutputCacheExclusion { get; set; }
         public static IKernel NinjectKernel { get; set; }
         public static I_Task_Dispatcher PuckDispatcher { get { return NinjectKernel.Get<I_Task_Dispatcher>(); } }

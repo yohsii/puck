@@ -252,8 +252,10 @@ var showCompare = function (id) {
             var el = $(this);
             setRevert(el.attr("data-id"), function (d) {
                 if (d.success) {
+                    overlayClose();
                     displayMarkup(d.path, d.type, d.variant);
                 } else {
+                    overlayClose();
                     msg(false, d.message);
                 }
             });
@@ -265,8 +267,8 @@ var showCompare = function (id) {
             var el = $(this);
             var propName = el.attr("data-fieldname");
             var el2 = second.find(".fieldwrapper[data-fieldname='" + propName + "']");
-            var elval = el.find(".editor-field");
-            var el2val = el2.find(".editor-field");
+            var elval = el.find(".editor-field").addClass("compared");
+            var el2val = el2.find(".editor-field").addClass("compared");
             if (el2.length == 0 || elval.html() != el2val.html()) {
                 elval.css({ backgroundColor: "#ffeeee" });
                 el2val.css({ backgroundColor: "#ffeeee" });
@@ -275,7 +277,7 @@ var showCompare = function (id) {
                 el2val.css({ backgroundColor: "#eeffee" });
             }
         });
-
+        second.find(".fieldwrapper:not(.complex) .editor-field:not(.compared)").css({ backgroundColor: "#ffeeee" });
     });
 }
 var showCacheInfo = function (path) {
@@ -389,8 +391,10 @@ var wireForm = function (form, success, fail) {
     form.submit(function (e) {
         if (form.valid()) {
             e.preventDefault();
+            if(tinyMCE!=undefined){
+                tinyMCE.triggerSave();
+            }
             var values = form.serialize();
-            console.log("serialized data: %s", values);
             var fd = new FormData(form.get(0));
             $.ajax({
                 url: form.attr("action"),
@@ -600,19 +604,18 @@ var displayMarkup = function (path, type, variant,fromVariant) {
             cright.find(".content_publish").click(function () {
                 cright.find("input:hidden[name='Published']").val("true");                
             });
-        } else { cright.find(".content_publish").hide(); console.log("cannot publish"); }
+        } else { cright.find(".content_publish").hide();}
         //udpate btn
         cright.find(".content_update").click(function () {
             cright.find("input:hidden[name='Published']").val("false");
         });
         //preview btn
         if (path.slice(-1) != '/') {
-            console.log("path not dir");
             cright.find(".content_preview").click(function (e) {
                 e.preventDefault();
                 window.open("/admin/api/preview?path=" + path +"&variant=" + variant, "_blank");
             });
-        } else { cright.find(".content_preview").hide(); console.log("path is dir"); }
+        } else { cright.find(".content_preview").hide();}
 
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
@@ -749,7 +752,6 @@ $(".menutop .users").click(function (e) { e.preventDefault(); showUsers(); });
 $("body").on("click", "ul.content li.node i.expand", function () {
     //get children content
     var node = $(this).parents(".node:first");
-    console.log(node);
     var descendants = node.find("ul");
     if (descendants.length > 0) {//show
         if (descendants.first().is(":hidden")) {

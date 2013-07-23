@@ -19,6 +19,7 @@ using puck.core.Events;
 using Spatial4n.Core.Context;
 using Lucene.Net.Spatial.Vector;
 using Lucene.Net.Spatial.Queries;
+using puck.core.PuckLucene;
 
 namespace puck.core.Concrete
 {
@@ -216,7 +217,7 @@ namespace puck.core.Concrete
                 try
                 {
                     var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
+                    var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
                     SetWriter(false);
                     //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
                     Writer.Flush(true, true, true);
@@ -271,7 +272,7 @@ namespace puck.core.Concrete
                 try
                 {
                     var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+                    var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
                     SetWriter(false);
                     Writer.Flush(true, true, true);
                     var cancelled = new List<BaseModel>();
@@ -498,14 +499,14 @@ namespace puck.core.Concrete
             var contentQuery = parser.Parse(terms);
             return Query(contentQuery);            
         }
-        public IList<T> QueryNoCast<T>(string qstr)
+        public IList<T> QueryNoCast<T>(string qstr) where T:BaseModel
         {
             return QueryNoCast<T>(qstr,null);
         }
-        public IList<T> QueryNoCast<T>(string qstr, Filter filter)
+        public IList<T> QueryNoCast<T>(string qstr, Filter filter) where T:BaseModel
         {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-            var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+            var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
             var q = parser.Parse(qstr);
             ScoreDoc[] hits;
             if (filter != null)
@@ -522,13 +523,13 @@ namespace puck.core.Concrete
             }
             return results;
         }
-        public IList<T> Query<T>(string qstr)
+        public IList<T> Query<T>(string qstr) where T:BaseModel
         {
             return Query<T>(qstr,null);
         }
-        public IList<T> Query<T>(string qstr,Filter filter) {
+        public IList<T> Query<T>(string qstr,Filter filter) where T:BaseModel {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-            var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
+            var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
             ScoreDoc[] hits;
             if(filter!=null)

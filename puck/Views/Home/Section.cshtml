@@ -8,6 +8,14 @@
     qh.And().Range(x => x.Updated, 20130712112820,20130712112833, true, true);
     var results = qh.GetAll();
     @("rangequery:"+results.Count);
+    <br />
+    var qh2 = new QueryHelper<puck.core.Base.BaseModel>();
+    var res2= qh2.And().GreaterThanEqualTo(x=>x.SortOrder,0).GetAll();
+    //var res2 = qh2.And().Range(x=>x.SortOrder,1,3,true,true).GetAll();
+    //var res2 = qh2.And().Field(x => x.SortOrder, 1).GetAll();
+    @("rangequery2:"+res2.Count)
+    @qh2.ToString()
+    <br />
 }    
 
 @("children:"+pages.Count)

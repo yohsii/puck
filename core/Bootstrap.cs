@@ -27,14 +27,14 @@ namespace puck.core
             ApiHelper.UpdateRedirectMappings();
             PuckCache.Analyzers = new List<Lucene.Net.Analysis.Analyzer>();
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
-            PuckCache.TypeFields = new Dictionary<string, List<string>>();
+            PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
             foreach(var t in ApiHelper.Models(true)){
                 var instance = Activator.CreateInstance(t);
                 var dmp = ObjectDumper.Write(instance,int.MaxValue);
                 var analyzers = new List<KeyValuePair<string, Analyzer>>();
-                PuckCache.TypeFields[t.AssemblyQualifiedName] = new List<string>();
+                PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string,string>();
                 foreach (var p in dmp) {
-                    PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key);
+                    PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key,p.Type.AssemblyQualifiedName);
                     if (p.Analyzer == null)
                         continue;
                     if (!PuckCache.Analyzers.Any(x => x.GetType() == p.Analyzer.GetType())) {

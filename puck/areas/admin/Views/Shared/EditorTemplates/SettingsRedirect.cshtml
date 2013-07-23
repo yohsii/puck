@@ -1,4 +1,5 @@
-﻿@model Dictionary<string,string>
+﻿
+@model Dictionary<string,string>
 <div class="redirects">
     <ul>
         <li>
@@ -56,7 +57,12 @@
             getDrawContent(startPath, el);
             markup.on("click", ".node span", function (e) {
                 var node = $(this).parents(".node:first");
-                target.val(node.attr("data-path"));
+                var path = node.attr("data-path").slice(1);
+                if (path.indexOf("/") > -1)
+                    path = path.substring(path.indexOf("/"));
+                else
+                    path = "/";
+                target.val(path);
                 overlayClose();
             });
         });        

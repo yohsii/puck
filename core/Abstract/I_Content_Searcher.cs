@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Lucene.Net.Search;
+using puck.core.Base;
 
 
 namespace puck.core.Abstract
@@ -12,10 +13,10 @@ namespace puck.core.Abstract
         IList<Dictionary<string, string>> Query(Query query);
         IList<Dictionary<string, string>> Query(string query);
         IList<Dictionary<string, string>> Query(string query,string typeName);
-        IList<T> Query<T>(string query);
-        IList<T> QueryNoCast<T>(string query);
-        IList<T> Query<T>(string query,Filter filter);
-        IList<T> QueryNoCast<T>(string query,Filter filter);
-        IList<T> Get<T>();        
+        IList<T> Query<T>(string query) where T:BaseModel;
+        IList<T> QueryNoCast<T>(string query) where T:BaseModel;
+        IList<T> Query<T>(string query,Filter filter) where T:BaseModel;
+        IList<T> QueryNoCast<T>(string query,Filter filter) where T:BaseModel;
+        IList<T> Get<T>();
     }
 }
