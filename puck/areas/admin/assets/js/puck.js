@@ -1050,7 +1050,9 @@ cleft.find("ul.content").on("click", "li.node span.nodename", function () {
     //get markup
     if (!canChangeMainContent())
         return false;
-    var node = $(this).parents(".node");
+    var node = $(this).parents(".node:first");
+    cleft.find(".node").removeClass("selected");
+    node.addClass("selected");
     var firstVariant = node.attr("data-variants").split(",")[0];
     displayMarkup(node.attr("data-path"),node.attr("data-type"),firstVariant);
 });
