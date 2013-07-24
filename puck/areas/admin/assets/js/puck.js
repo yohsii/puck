@@ -143,10 +143,12 @@ var showUserMarkup = function (username) {
         overlay(d, 580);
         wireForm($(".overlayinner form"), function (data) {
             showUsers();
-            userRoles = $(".overlayinner select[name=Roles]").val();
-            hideTopNav();
-            getUserLanguage(function (d) { defaultLanguage = d; });
-            startPath = data.startPath;
+            if ($(".overlayinner input[name=UserName]").val() == userName) {
+                userRoles = $(".overlayinner select[name=Roles]").val();
+                hideTopNav();
+                getUserLanguage(function (d) { defaultLanguage = d; });
+                startPath = data.startPath;
+            }
             overlayClose();
         }, function (data) {
             $(".overlayinner .msg").show().html(data.message);            
@@ -699,6 +701,11 @@ var hideTopNav = function () {
         else
             el.hide();
     });
+    if (userRoles.contains("_create")) {
+        $(".create_default").show();
+    } else {
+        $(".create_default").hide();
+    }
 }
 $('a.settings').click(function (e) {
     e.preventDefault();

@@ -88,6 +88,7 @@
 </div>
 <div class="footer_puck grid_12"></div>
 <script type="text/javascript">
+    var userName = "@User.Identity.Name";
     var variantNames = [];
     @foreach(var v in ApiHelper.AllVariants()){
         @Html.Raw("variantNames['"+v.Key+"']=\""+v.FriendlyName+"\";");

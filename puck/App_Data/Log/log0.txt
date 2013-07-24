@@ -14245,3 +14245,36 @@ message: A username for that e-mail address already exists. Please enter a diffe
 stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\core\Controllers\AdminController.cs:line 115
 
 
+date: 24/07/2013 00:59:42
+message: The user 'admin' is already in role '_puck'.
+stacktrace:    at System.Web.Security.SqlRoleProvider.AddUsersToRolesCore(SqlConnection conn, String usernames, String roleNames)
+   at System.Web.Security.SqlRoleProvider.AddUsersToRoles(String[] usernames, String[] roleNames)
+   at System.Web.Security.Roles.AddUserToRoles(String username, String[] roleNames)
+   at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\core\Controllers\AdminController.cs:line 139
+
+
+date: 24/07/2013 01:07:23
+message: The password provided is invalid. Please enter a valid password value.
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\core\Controllers\AdminController.cs:line 116
+
+
+date: 24/07/2013 01:09:22
+message: A username for that e-mail address already exists. Please enter a different e-mail address.
+stacktrace:    at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\core\Controllers\AdminController.cs:line 116
+
+
+date: 24/07/2013 01:20:34
+message: The length of parameter 'newPassword' needs to be greater or equal to '5'.
+stacktrace:    at System.Web.Security.SqlMembershipProvider.ChangePassword(String username, String oldPassword, String newPassword)
+   at System.Web.Security.MembershipUser.ChangePassword(String oldPassword, String newPassword)
+   at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\core\Controllers\AdminController.cs:line 124
+
+
+date: 24/07/2013 01:21:02
+message: The array parameter 'roleNames' should not be empty.
+Parameter name: roleNames
+stacktrace:    at System.Web.Util.SecUtility.CheckArrayParameter(String[]& param, Boolean checkForNull, Boolean checkIfEmpty, Boolean checkForCommas, Int32 maxSize, String paramName)
+   at System.Web.Security.Roles.AddUserToRoles(String username, String[] roleNames)
+   at puck.core.Controllers.AdminController.Edit(PuckUser user, Boolean edit) in c:\project\puck\core\Controllers\AdminController.cs:line 148
+
+

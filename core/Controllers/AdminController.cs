@@ -57,8 +57,7 @@ namespace puck.core.Controllers
         public ActionResult Index()
         {
             var model = new List<PuckUser>();
-            int totalUsers;
-            var userCollection = Membership.Providers["puck"].GetAllUsers(0,int.MaxValue,out totalUsers);
+            var userCollection = Roles.GetUsersInRole(PuckRoles.Puck).ToList().Select(x=>Membership.Providers["puck"].GetUser(x,false)).ToList();
             foreach (MembershipUser mu in userCollection) {
                 var pu = new PuckUser();
                 pu.User = mu;
@@ -124,12 +123,32 @@ namespace puck.core.Controllers
                 }
 
                 var roles = Roles.GetRolesForUser(muser.UserName);
+                //never remove Puck role
+                if(roles!=null && roles.Contains(PuckRoles.Puck)){
+                    var rolesList = roles.ToList();
+                    rolesList.RemoveAll(x => x.Equals(PuckRoles.Puck));
+                    roles = rolesList.ToArray();
+                }
                 if (roles.Length > 0)
                 {
                     Roles.RemoveUserFromRoles(user.UserName, roles);
                 }
                 if(user.Roles!=null && user.Roles.Count>0){
-                    Roles.AddUserToRoles(user.UserName, user.Roles.ToArray());
+                    if (edit)
+                    {
+                        user.Roles.RemoveAll(x => x.Equals(PuckRoles.Puck));
+                    }
+                    else {
+                        if (!user.Roles.Contains(PuckRoles.Puck)) {
+                            user.Roles.Add(PuckRoles.Puck);
+                        }
+                    }
+                    if(user.Roles.Count>0)
+                        Roles.AddUserToRoles(user.UserName, user.Roles.ToArray());
+                }else{
+                    if (!Roles.IsUserInRole(muser.UserName, PuckRoles.Puck)) {
+                        Roles.AddUserToRole(muser.UserName, PuckRoles.Puck);
+                    }
                 }
 
                 if (user.StartNode == null || user.StartNode.Count==0)
@@ -158,11 +177,11 @@ namespace puck.core.Controllers
                     }
                     meta.Value = JsonConvert.SerializeObject(user.StartNode.First());
                 }
-                var userVariantMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
+                var userVariantMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == muser.UserName).FirstOrDefault();
                 if (userVariantMeta != null)
                     userVariantMeta.Value = user.UserVariant;
                 else {
-                    userVariantMeta = new PuckMeta() {Name=DBNames.UserVariant,Key = User.Identity.Name,Value=user.UserVariant };
+                    userVariantMeta = new PuckMeta() {Name=DBNames.UserVariant,Key = muser.UserName,Value=user.UserVariant };
                     repo.AddMeta(userVariantMeta);
                 }
                 repo.SaveChanges();
