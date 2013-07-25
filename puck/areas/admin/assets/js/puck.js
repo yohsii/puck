@@ -600,6 +600,7 @@ var displayMarkup = function (path, type, variant,fromVariant) {
             afterDom();
             cright.show();
             cright.find(".fieldtabs:first").click();
+            highlightSelectedNode(path);
         });
         //publish btn
         if (userRoles.contains("_publish")) {
@@ -1045,14 +1046,16 @@ var setDomainMapping = function (p) {
         });
     });
 }
-//cleft.find("ul.content").on("click", "li.node span.variant", function () {
+var highlightSelectedNode = function (path) {
+    cleft.find(".node").removeClass("selected");
+    cleft.find(".node[data-path='"+path+"']").addClass("selected");
+}
+
 cleft.find("ul.content").on("click", "li.node span.nodename", function () {
     //get markup
     if (!canChangeMainContent())
         return false;
     var node = $(this).parents(".node:first");
-    cleft.find(".node").removeClass("selected");
-    node.addClass("selected");
     var firstVariant = node.attr("data-variants").split(",")[0];
     displayMarkup(node.attr("data-path"),node.attr("data-type"),firstVariant);
 });
