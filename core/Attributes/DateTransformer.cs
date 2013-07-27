@@ -8,7 +8,7 @@ using puck.core.Base;
 namespace puck.core.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
-    class DateTransformer :Attribute, I_Property_Transformer<DateTime,String>
+    public class DateTransformer :Attribute, I_Property_Transformer<DateTime,String>
     {
         public string Transform(BaseModel m,string propertyName,string ukey,DateTime dt)
         {

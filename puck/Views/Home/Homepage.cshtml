@@ -12,7 +12,7 @@
     <br />
     var searchQuery = "croydon";
     var search = new QueryHelper<puck.areas.admin.ViewModels.Page>();
-    var sresults = search.AllFields(searchQuery).GetAll();
+    var sresults = search.AllFields(searchQuery).CurrentLanguage().GetAll();
     @("search for '"+searchQuery+"' count: "+sresults.Count)
     <br />
     var geoQuery = new QueryHelper<puck.areas.admin.ViewModels.Page>();

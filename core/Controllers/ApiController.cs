@@ -324,6 +324,8 @@ namespace puck.core.Controllers
 
         [Auth(Roles = PuckRoles.Edit)]
         public ActionResult Edit(string type,string p_path="/",string variant="",string fromVariant="") {
+            if (variant == "null")
+                variant = PuckCache.SystemVariant;
             //empty model of type
             var modelType= Type.GetType(type);
             object model = Activator.CreateInstance(modelType);
@@ -378,7 +380,6 @@ namespace puck.core.Controllers
                 UpdateModelDynamic(model,fc.ToValueProvider());
                 ObjectDumper.BindImages(model, int.MaxValue);
                 ObjectDumper.Transform(model, int.MaxValue);
-                //var npi = ObjectDumper.Write(model, int.MaxValue);
                 var mod = model as BaseModel;
                 ApiHelper.SaveContent(mod);
                 path = mod.Path;

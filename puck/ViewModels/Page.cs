@@ -35,6 +35,6 @@ namespace puck.areas.admin.ViewModels
         
         public PuckImage Image { get; set; }
 
-        public GeoPosition Location { get; set; }
+        public GeoPosition Location { get; set; }                
     }
 }

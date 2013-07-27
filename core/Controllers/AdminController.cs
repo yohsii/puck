@@ -117,7 +117,11 @@ namespace puck.core.Controllers
                 muser = Membership.Providers["puck"].GetUser(user.UserName, false);
                 if (muser == null)
                     throw new Exception("could not find user for edit");
-                muser.Email = user.Email;
+                if (!muser.Email.Equals(user.Email)) {
+                    muser.Email = user.Email;
+                    Membership.UpdateUser(muser);
+                }                
+                
                 if (!string.IsNullOrEmpty(user.NewPassword)) {
                     muser.ChangePassword(user.Password, user.NewPassword);
                 }
@@ -177,12 +181,19 @@ namespace puck.core.Controllers
                     }
                     meta.Value = JsonConvert.SerializeObject(user.StartNode.First());
                 }
-                var userVariantMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == muser.UserName).FirstOrDefault();
-                if (userVariantMeta != null)
-                    userVariantMeta.Value = user.UserVariant;
+                if (!string.IsNullOrEmpty(user.UserVariant))
+                {
+                    var userVariantMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == muser.UserName).FirstOrDefault();
+                    if (userVariantMeta != null)
+                        userVariantMeta.Value = user.UserVariant;
+                    else
+                    {
+                        userVariantMeta = new PuckMeta() { Name = DBNames.UserVariant, Key = muser.UserName, Value = user.UserVariant };
+                        repo.AddMeta(userVariantMeta);
+                    }
+                }
                 else {
-                    userVariantMeta = new PuckMeta() {Name=DBNames.UserVariant,Key = muser.UserName,Value=user.UserVariant };
-                    repo.AddMeta(userVariantMeta);
+                    repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == muser.UserName).ToList().ForEach(x=>repo.DeleteMeta(x));
                 }
                 repo.SaveChanges();
                 success = true;

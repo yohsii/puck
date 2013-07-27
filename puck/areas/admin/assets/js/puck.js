@@ -391,11 +391,11 @@ var wireForm = function (form, success, fail) {
     $.validator.unobtrusive.parse(form);
     form.keypress(checkEnter);
     form.submit(function (e) {
+        if (tinyMCE != undefined) {
+            tinyMCE.triggerSave();
+        }
         if (form.valid()) {
-            e.preventDefault();
-            if(tinyMCE!=undefined){
-                tinyMCE.triggerSave();
-            }
+            e.preventDefault();            
             var values = form.serialize();
             var fd = new FormData(form.get(0));
             $.ajax({
@@ -643,7 +643,7 @@ var msg = function (success, str) {
 var puckmaxwidth = 960;
 var overlayClose = function () {
     $(".overlayinner,.overlay").remove();
-    $("body").css({ overflow: "scroll" });
+    $("body").css({ overflow: "initial" });
     $(document).unbind("keyup");
 }
 var overlay = function (el, width, height, top) {
@@ -868,9 +868,12 @@ $(".node-dropdown a").click(function () {
                             } else {
                                 if (node.find("span.variant").length > 1)
                                     node.find("span.variant[data-variant='" + variant + "']").remove();
-                                else
-                                    node.remove();
+                                //else
+                                    //node.remove();
                             }
+                            getDrawContent(dirOfPath(node.attr("data-path")), undefined, undefined, function () {
+                                highlightSelectedNode(node.attr("data-path"));
+                            });
                             overlayClose();
                         } else {
                             msg(false, data.message);
@@ -887,7 +890,7 @@ $(".node-dropdown a").click(function () {
                         doDelete(node.attr("data-id"), dialog.find("select").val());
                     });
                 } else {
-                    doDelete(node.attr("data-id"), variants[0]);
+                    doDelete(node.attr("data-id"));
                 }
             }; break;
         case "publish":
@@ -1072,6 +1075,12 @@ getUserLanguage(function (d) { defaultLanguage = d; });
 getUserRoles(function (d) { userRoles = d; hideTopNav(); });
 getVariants(function (data) {
     languages = data;
+    if (languages.length == 0) {
+        onAfterDom(function () {
+            msg(0, "take a moment to setup puck. at the very least, choose your languages!");
+        });
+        $(".menutop .settings").click();        
+    }
 });
 getStartPath(function (d) {
     cleft.find("ul.content li:first").attr("data-children_path",d);

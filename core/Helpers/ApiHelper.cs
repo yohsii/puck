@@ -267,9 +267,9 @@ namespace puck.core.Helpers
                     //if descendants are being deleted - descendants are included if there are no variants for the deleted node (therefore orphaning descendants) or if variant argument is not present (which means you wan't all variants deleted)
                     if (repoVariants.Any() && !string.IsNullOrEmpty(variant))
                     {
-                        lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
-                        dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
-                        cmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
+                        //lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
+                        //dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
+                        //cmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().Equals(lookUpPath.ToLower())).ToList();
                     }
                     else
                     {
@@ -290,8 +290,6 @@ namespace puck.core.Helpers
             lock (_savelck)
             {
                 var repo = Repo;
-                //append nodename to path, which indicates first save
-                //mod.Path = mod.Path.EndsWith("/") ? mod.Path + mod.NodeName.Replace(" ","-") : mod.Path;
                 //get parent check published
                 var parentVariants = repo.CurrentRevisionParent(mod.Path).ToList();
                 if (mod.Path.Count(x => x == '/') > 1 && parentVariants.Count() == 0)
@@ -457,7 +455,7 @@ namespace puck.core.Helpers
                             Key = mod.Path,
                             Value = "*"
                         };
-                        repo.AddMeta(lMeta);
+                        repo.AddMeta(dMeta);
                     }
                 }
                 repo.SaveChanges();

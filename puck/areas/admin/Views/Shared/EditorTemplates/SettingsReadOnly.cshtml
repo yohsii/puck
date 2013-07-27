@@ -5,4 +5,14 @@
         @Model.ToString();
     }    
 </div>
-@Html.Hidden("",Model==null?null:Model.ToString())
+@{
+    var value = "";
+    if(Model!=null){
+        if (Model is DateTime){
+            value = ((DateTime)Model).ToString("dd/MM/yyyy hh:mm:ss");
+        }else{
+            value = Model.ToString();
+        }
+    }
+}
+@Html.Hidden("",value)

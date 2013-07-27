@@ -861,7 +861,6 @@
     <Content Include="Content\Images\orderedList8.png" />
     <Content Include="Content\Images\orderedList9.png" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config">
@@ -937,11 +936,6 @@
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsCachePolicy.cshtml" />
     <Content Include="areas\admin\Views\Admin\Index.cshtml" />
     <Content Include="areas\admin\Views\Admin\Edit.cshtml" />
-    <Content Include="CodeTemplates\AddView\CSHTML\Create.cshtml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Create.tt</DependentUpon>
-    </Content>
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsRoles.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsUserVariant.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\rte.cshtml" />
@@ -956,56 +950,6 @@
     <Content Include="areas\admin\assets\js\tinymceMIN\js\tinymce\skins\lightgray\fonts\icomoon.ttf" />
     <Content Include="areas\admin\assets\js\tinymceMIN\js\tinymce\skins\lightgray\fonts\icomoon.woff" />
     <Content Include="areas\admin\assets\js\tinymceMIN\js\tinymce\skins\lightgray\fonts\readme.md" />
-    <None Include="CodeTemplates\AddView\CSHTML\Create.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Create.cshtml</LastGenOutput>
-    </None>
-    <Content Include="CodeTemplates\AddView\CSHTML\Delete.cshtml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Delete.tt</DependentUpon>
-    </Content>
-    <None Include="CodeTemplates\AddView\CSHTML\Delete.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Delete.cshtml</LastGenOutput>
-    </None>
-    <Content Include="CodeTemplates\AddView\CSHTML\Details.cshtml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Details.tt</DependentUpon>
-    </Content>
-    <None Include="CodeTemplates\AddView\CSHTML\Details.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Details.cshtml</LastGenOutput>
-    </None>
-    <Content Include="CodeTemplates\AddView\CSHTML\Edit.cshtml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Edit.tt</DependentUpon>
-    </Content>
-    <None Include="CodeTemplates\AddView\CSHTML\Edit.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Edit.cshtml</LastGenOutput>
-    </None>
-    <Content Include="CodeTemplates\AddView\CSHTML\Empty.cshtml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Empty.tt</DependentUpon>
-    </Content>
-    <None Include="CodeTemplates\AddView\CSHTML\Empty.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Empty.cshtml</LastGenOutput>
-    </None>
-    <Content Include="CodeTemplates\AddView\CSHTML\List.cshtml">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>List.tt</DependentUpon>
-    </Content>
-    <None Include="CodeTemplates\AddView\CSHTML\List.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>List.cshtml</LastGenOutput>
-    </None>
-    <Content Include="Views\Home\Index.iPhone.cshtml" />
     <Content Include="Views\Home\Homepage.cshtml" />
     <Content Include="Views\Home\Section.cshtml" />
     <Content Include="Views\Home\Page.cshtml" />

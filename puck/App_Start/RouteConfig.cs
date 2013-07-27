@@ -20,21 +20,14 @@ namespace puck
                 ,namespaces:new string[]{"puck.core.Controllers"}    
             );
             
+            //add any specific routes before the following catch-all
             routes.MapRoute(
                 name: "default",
                 url: "{*path}",
                 defaults: new {controller="Home",action="Index",path=UrlParameter.Optional}
                 ,namespaces: new string[]{"puck.Controllers"}
             );
-
-            /*
-            routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-                , namespaces: new string[] { "puck.Controllers" }
-            );
-            */
+            
         }
     }
 }
