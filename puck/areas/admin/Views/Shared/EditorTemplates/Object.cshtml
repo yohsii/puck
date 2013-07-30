@@ -10,6 +10,7 @@
         <div data-fieldname="@propName" class="fieldwrapper @(prop.IsComplexType?"complex":"") @(complexChild?"complex_child":"")">
             <div class="editor-label" style="">
                 @Html.Label(string.IsNullOrEmpty(prop.DisplayName)?prop.PropertyName:prop.DisplayName)
+                @Html.ValidationMessage(prop.PropertyName)
             </div>
             <div class="editor-field">
                 @Html.Editor(prop.PropertyName)            
