@@ -21,7 +21,7 @@
 @("children:"+pages.Count)
 @("descendants"+descendants.Count)
 
-<h2>Section</h2>
+<h2>Section - @Model.Title</h2>
 @foreach (var p in pages) { 
     <h1>@p.Title</h1>
     <time>@p.Updated</time>

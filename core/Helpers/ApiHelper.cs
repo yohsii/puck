@@ -79,7 +79,7 @@ namespace puck.core.Helpers
             {
                 var repo = Repo;
                 var qh = new QueryHelper<BaseModel>();
-                var indexItems = qh.Directory(path).GetAll();
+                var indexItems = qh.Directory(path).GetAllNoCast();
                 var dbItems = repo.CurrentRevisionsByDirectory(path).ToList();
                 indexItems.ForEach(n =>
                 {
