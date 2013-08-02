@@ -230,11 +230,14 @@ namespace puck.core.Controllers
             //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
             string p_path = path;
             List<PuckRevision> resultsRev;
+#if DEBUG
             using (MiniProfiler.Current.Step("content by path from DB"))
             {
                 resultsRev = repo.CurrentRevisionsByDirectory(p_path).ToList();
             }
-            
+#else
+            resultsRev = repo.CurrentRevisionsByDirectory(p_path).ToList();
+#endif
             var results = resultsRev.Select(x =>ApiHelper.RevisionToBaseModelCast(x)).ToList()
                 .GroupByPath()
                 .OrderBy(x=>x.Value.First().Value.SortOrder)

@@ -65,21 +65,30 @@ namespace puck.core.Controllers
                 //set thread culture for future api calls on this thread
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(variant);
                 IList<Dictionary<string, string>> results;
+#if DEBUG
                 using (MiniProfiler.Current.Step("lucene"))
                 {
                     results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
                         string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
                         );                    
                 }
-                
+#else                
+                results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
+                        string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
+                        );           
+#endif
                 var result = results == null ? null : results.FirstOrDefault();
                 BaseModel model = null;
                 if (result != null)
                 {
+#if DEBUG
                     using (MiniProfiler.Current.Step("deserialize"))
                     {
                         model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], Type.GetType(result[FieldKeys.PuckType])) as BaseModel;
                     }
+#else
+                    model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], Type.GetType(result[FieldKeys.PuckType])) as BaseModel;
+#endif
                     if (!PuckCache.OutputCacheExclusion.Contains(searchPath))
                     {
                         int cacheMinutes;
