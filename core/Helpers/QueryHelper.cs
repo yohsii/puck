@@ -322,21 +322,34 @@ namespace puck.core.Helpers
             return searcher.Get<T>().ToList();
         }
 
-        public static List<T> CurrentAll<T>() where T : BaseModel
-        {
-            string path = HttpContext.Current.Request.Url.AbsolutePath;
-            return searcher.Query<T>(string.Format("+{0}:{1} +{2}:{3}",FieldKeys.PuckTypeChain,typeof(T).FullName,FieldKeys.Path,path)).ToList();
+        public static string PathPrefix() {
+            string domain = HttpContext.Current.Request.Url.Host.ToLower();
+            string searchPathPrefix;
+            if (!PuckCache.DomainRoots.TryGetValue(domain, out searchPathPrefix))
+            {
+                if (!PuckCache.DomainRoots.TryGetValue("*", out searchPathPrefix))
+                    throw new Exception("domain roots not set. DOMAIN:" + domain);
+            }
+            return searchPathPrefix.ToLower();
         }
 
-        public static T Current<T>() where T : BaseModel
+        public static List<TModel> CurrentAll()
         {
-            var variant = CultureInfo.CurrentCulture.Name;
-            string path = HttpContext.Current.Request.Url.AbsolutePath;
-            return searcher.Query<T>(
-                string.Format("+{0}:{1} +{2}:{3} +{4}:{5}", 
-                    FieldKeys.PuckTypeChain, typeof(T).FullName, FieldKeys.Path, path,FieldKeys.Variant,variant
-                ))
-                .FirstOrDefault();
+            string absPath = HttpContext.Current.Request.Url.AbsolutePath.ToLower();
+            string path = PathPrefix() + (absPath == "/" ? "" : absPath);
+            var qh = new QueryHelper<TModel>();
+            qh.And().Field(x => x.Path, path);
+            return qh.GetAll();
+        }
+
+        public static TModel Current()
+        {
+            var variant = CultureInfo.CurrentCulture.Name.ToLower();
+            string absPath = HttpContext.Current.Request.Url.AbsolutePath.ToLower();
+            string path = PathPrefix() + (absPath == "/" ? "" : absPath);
+            var qh = new QueryHelper<TModel>();
+            qh.And().Field(x => x.Path, path).Variant(variant);
+            return qh.Get();
         }
 
         //constructor
@@ -614,7 +627,7 @@ namespace puck.core.Helpers
         {
             TrimAnd();
             string key = FieldKeys.Variant;
-            query += string.Concat("+",key, ":", value, " ");
+            query += string.Concat("+",key, ":", value.ToLower(), " ");
             return this;
         }
 
