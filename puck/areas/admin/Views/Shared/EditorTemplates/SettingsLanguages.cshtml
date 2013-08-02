@@ -1,10 +1,14 @@
 ﻿@using System.Globalization;
 @model List<string>
 
-<select name="@ViewData.ModelMetadata.PropertyName" class="languages" multiple>
+<select data-placeholder="choose your languages.." name="@ViewData.ModelMetadata.PropertyName" class="languages" multiple>
     @foreach (var v in ApiHelper.AllVariants()) {
         var selected = Model.Contains(v.Key);
         <option @(selected?"selected":"") value="@v.Key.ToLower()">@v.FriendlyName</option>
     }
 </select>
-
+<script type="text/javascript">
+    onAfterDom(function () {
+        $("select[name='@ViewData.ModelMetadata.PropertyName']").chosen();
+    });
+</script>

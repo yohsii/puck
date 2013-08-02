@@ -37,7 +37,7 @@ html,body{height:100%;}
 .overlayinner{background:#fff;z-index:100000;opacity:1;position:fixed;overflow:hidden;overflow-y:scroll;}
 .overlayinner .close{clear:both;}
 div.settings{padding-top:0px;}
-select.languages{height:200px !important;}
+select.languages{height:200px !important;width:550px !important;}
 .nodisplay{display:none;}
 .settings .redirects{padding-bottom:20px;}
 .settings .redirects ul{padding:0px;margin:0px;}

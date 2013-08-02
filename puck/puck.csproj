@@ -273,6 +273,7 @@
     <Content Include="areas\admin\assets\css\bootstrap-responsive.css" />
     <Content Include="areas\admin\assets\css\bootstrap-wysihtml5-0.0.2.css" />
     <Content Include="areas\admin\assets\css\bootstrap.css" />
+    <Content Include="areas\admin\assets\css\chosen.min.css" />
     <Content Include="areas\admin\assets\css\Site.css" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -334,6 +335,7 @@
     <Content Include="areas\admin\assets\js\adapt.min.js" />
     <Content Include="areas\admin\assets\js\bootstrap-wysihtml5-0.0.2.js" />
     <Content Include="areas\admin\assets\js\bootstrap.js" />
+    <Content Include="areas\admin\assets\js\chosen.jquery.min.js" />
     <Content Include="areas\admin\assets\js\cultures\globalize.culture.af-ZA.js" />
     <Content Include="areas\admin\assets\js\cultures\globalize.culture.af.js" />
     <Content Include="areas\admin\assets\js\cultures\globalize.culture.am-ET.js" />
