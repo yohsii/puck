@@ -479,7 +479,6 @@ namespace puck.core.Controllers
                 var current = repo.GetPuckRevision().Where(x => x.Id == rnode.Id && x.Variant.ToLower().Equals(rnode.Variant.ToLower()) && x.Current).ToList();
                 current.ForEach(x => x.Current = false);
                 rnode.Current = true;
-                repo.SaveChanges();
                 if (current.Any()) {
                     //don't want to revert change node/path because it has consequences for children/descendants
                     rnode.NodeName = current.FirstOrDefault().NodeName;
@@ -493,6 +492,7 @@ namespace puck.core.Controllers
                 path = rnode.Path;
                 type = rnode.Type;
                 variant = rnode.Variant;
+                repo.SaveChanges();                
                 success = true;
             }
             catch (Exception ex)

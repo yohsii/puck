@@ -290,6 +290,9 @@ namespace puck.core.Helpers
             lock (_savelck)
             {
                 var repo = Repo;
+                if (makeRevision)
+                    mod.Revision = repo.GetPuckRevision().Where(x=>x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower())).Max(x=>x.Revision) + 1;
+                mod.Updated = DateTime.Now;
                 //get parent check published
                 var parentVariants = repo.CurrentRevisionParent(mod.Path).ToList();
                 if (mod.Path.Count(x => x == '/') > 1 && parentVariants.Count() == 0)
@@ -298,8 +301,6 @@ namespace puck.core.Helpers
                 if (mod.Path.Count(x => x == '/') > 1 && !parentVariants.Any(x => x.Published /*&& x.Variant.ToLower().Equals(mod.Variant.ToLower())*/))
                     mod.Published = false;
                 //get sibling nodes
-                if(makeRevision)
-                    mod.Revision += 1;
                 var nodeDirectory = mod.Path.Substring(0, mod.Path.LastIndexOf('/') + 1);
                 mod.Path = nodeDirectory + mod.NodeName.Replace(" ","-");
                 var nodesAtPath = repo.CurrentRevisionsByDirectory(nodeDirectory).Where(x => x.Id != mod.Id)
