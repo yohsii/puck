@@ -7,7 +7,7 @@
             <input class="from" />
         </li>
         <li>
-            <label>To (<i class="icon-pencil"></i>)</label>
+            <label>To (<i class="icon-pencil to"></i>)</label>
             <input class="to" />
         </li>
         <li>
@@ -46,10 +46,12 @@
             var el = $(this);
             el.find("i").click(function () {
                 el.remove();
+                setValue();
             });
         });
         redirectsContainer.find("ul.content .node").attr("data-children_path",startPath);
         redirectsContainer.find("label i").click(function () {
+            var to = $(this).hasClass("to");
             var target = $(this).parent().siblings("input");
             var markup = redirectsContainer.find(".tree_container").clone();
             var el = markup.find(".node:first");
@@ -57,11 +59,14 @@
             getDrawContent(startPath, el);
             markup.on("click", ".node span", function (e) {
                 var node = $(this).parents(".node:first");
-                var path = node.attr("data-path").slice(1);
-                if (path.indexOf("/") > -1)
-                    path = path.substring(path.indexOf("/"));
-                else
-                    path = "/";
+                var path = node.attr("data-path");
+                if (to) {
+                    path = path.slice(1);
+                    if (path.indexOf("/") > -1)
+                        path = path.substring(path.indexOf("/"));
+                    else
+                        path = "/";
+                }
                 target.val(path);
                 overlayClose();
             });
@@ -84,6 +89,12 @@
                         + "<input type='hidden' name='" + getPropNameValue(i) + "' value='" + value + "'/>"
                     );
             });
+            if (redirectsContainer.find("input:hidden").length == 0) {
+                redirectsContainer.append(
+                        "<input type='hidden' name='" + getPropNameKey(0) + "' value=''/>"
+                        + "<input type='hidden' name='" + getPropNameValue(0) + "' value=''/>"
+                    );
+            }
         }
         redirectsContainer.find("button").click(function (e) {
             e.preventDefault();

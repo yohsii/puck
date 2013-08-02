@@ -25,23 +25,7 @@ namespace puck.core.Controllers
             try
             {
                 string path = Request.Url.AbsolutePath.ToLower();
-                //do redirects
-                string redirectUrl;
-                if (PuckCache.Redirect301.TryGetValue(path, out redirectUrl))
-                {
-                    Response.Cache.SetCacheability(HttpCacheability.Public);
-                    Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
-                    Response.Cache.SetValidUntilExpires(true);
-                    Response.RedirectPermanent(redirectUrl, true);
-                }
-                if (PuckCache.Redirect302.TryGetValue(path, out redirectUrl))
-                {
-                    Response.Cache.SetCacheability(HttpCacheability.Public);
-                    Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
-                    Response.Cache.SetValidUntilExpires(true);
-                    Response.Redirect(redirectUrl, true);
-                }
-
+                
                 var dmode = this.GetDisplayModeId();
                                 
                 if (path=="/")
@@ -56,19 +40,19 @@ namespace puck.core.Controllers
                 }
                 string searchPath = searchPathPrefix.ToLower() + path;
 
+                //do redirects
+                string redirectUrl;
+                if (PuckCache.Redirect301.TryGetValue(searchPath, out redirectUrl) || PuckCache.Redirect302.TryGetValue(searchPath, out redirectUrl))
+                {
+                    Response.Cache.SetCacheability(HttpCacheability.Public);
+                    Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
+                    Response.Cache.SetValidUntilExpires(true);
+                    Response.RedirectPermanent(redirectUrl, true);
+                }
+                
                 string variant;
                 if (!PuckCache.PathToLocale.TryGetValue(searchPath, out variant))
                 {
-                    //get closest ancestor variant
-                    /*KeyValuePair<string, string>? entry = PuckCache.PathToLocale.Where(x => searchPath.StartsWith(x.Key)).OrderByDescending(x => x.Key.Length).FirstOrDefault();
-                    if (entry.HasValue)
-                    {
-                        variant = entry.Value.Value;
-                        PuckCache.PathToLocale[searchPath] = entry.Value.Value;
-                    }
-                    else
-                        variant = PuckCache.SystemVariant;
-                    */
                     foreach (var entry in PuckCache.PathToLocale) {
                         if (searchPath.StartsWith(entry.Key)){
                             variant = entry.Value;
@@ -158,8 +142,7 @@ namespace puck.core.Controllers
                     return modes[i].DisplayModeId;
                 }
             }
-            return null;
-            //throw new Exception("No display mode could be found for the sent context.");
+            return null;            
         }
         internal static bool IsPropertyAllowed(string propertyName, string[] includeProperties, string[] excludeProperties)
         {

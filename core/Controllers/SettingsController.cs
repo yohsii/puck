@@ -202,13 +202,18 @@ namespace puck.core.Controllers
                     redirectMeta.ForEach(x => {
                         repo.DeleteMeta(x);
                     });
-                    model.Redirect.ToList().ForEach(x => {
-                        var newMeta = new PuckMeta();
-                        newMeta.Name = x.Key.StartsWith(DBNames.Redirect301)?DBNames.Redirect301:DBNames.Redirect302;
-                        newMeta.Key = x.Key.Substring(newMeta.Name.Length);
-                        newMeta.Value = x.Value;
-                        repo.AddMeta(newMeta);
-                    });
+                    //count of 1 and key/value of null indicates delete only so inserts are skipped
+                    if (!(model.Redirect.Count == 1 && string.IsNullOrEmpty(model.Redirect.First().Key)))
+                    {
+                        model.Redirect.ToList().ForEach(x =>
+                        {
+                            var newMeta = new PuckMeta();
+                            newMeta.Name = x.Key.StartsWith(DBNames.Redirect301) ? DBNames.Redirect301 : DBNames.Redirect302;
+                            newMeta.Key = x.Key.Substring(newMeta.Name.Length);
+                            newMeta.Value = x.Value;
+                            repo.AddMeta(newMeta);
+                        });
+                    }
                 }
                 //fieldgroup
                 if (model.TypeGroupField!=null&&model.TypeGroupField.Count > 0) {

@@ -527,7 +527,7 @@ namespace puck.core.Helpers
         public static void UpdatePathLocaleMappings()
         {
             var repo = Repo;
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale).ToList();
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale).OrderByDescending(x=>x.Key.Length).ToList();
             var map = new Dictionary<string, string>();
             meta.ForEach(x =>
             {
