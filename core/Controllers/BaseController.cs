@@ -69,12 +69,12 @@ namespace puck.core.Controllers
                 using (MiniProfiler.Current.Step("lucene"))
                 {
                     results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
-                        string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
+                        string.Concat("+",FieldKeys.Published,":true"," +", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
                         );                    
                 }
 #else                
                 results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
-                        string.Concat("+", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
+                        string.Concat("+",FieldKeys.Published,":true"," +", FieldKeys.Path, ":", searchPath, " +", FieldKeys.Variant, ":", variant)
                         );           
 #endif
                 var result = results == null ? null : results.FirstOrDefault();
