@@ -90,6 +90,7 @@ namespace puck.core.Constants
         public static bool TaskCatchUp = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckTaskCatchUp"]) && ConfigurationManager.AppSettings["PuckTaskCatchUp"].ToLower() == bool.TrueString.ToLower();
         public static int RedirectOuputCacheMinutes = 1;
         public static int DefaultOutputCacheMinutes = 0;
+        public static int DisplayModesCacheMinutes = 10;
         public static string SystemVariant = "en-GB";
         public static List<Variant> Variants { get; set; }
         public static Dictionary<string,string> DomainRoots {get;set;}

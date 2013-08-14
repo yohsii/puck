@@ -6,6 +6,7 @@
     
     var qh = new QueryHelper<puck.core.Base.BaseModel>();
     qh.And().Range(x => x.Updated, 20130712112820,20130712112833, true, true);
+    //qh.And().Range(x => x.Updated, new DateTime(2013, 7, 12, 11, 28, 20), new DateTime(2013, 7, 12, 11, 28, 33), true, true);
     var results = qh.GetAll();
     @("rangequery:"+results.Count);
     <br />

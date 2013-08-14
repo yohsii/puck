@@ -19,6 +19,8 @@ namespace puck.core.Extensions
     {
         public static string Highlight(this string text,string term)
         {
+            if (string.IsNullOrEmpty(text))
+                return string.Empty;
             var bq = new BooleanQuery();
             term.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList()

@@ -125,7 +125,7 @@ namespace puck.core.Controllers
                         {
                             templatePath = dpath;
                         }
-                        HttpContext.Cache.Insert(cacheKey, templatePath, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(10));
+                        HttpContext.Cache.Insert(cacheKey, templatePath, null, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(PuckCache.DisplayModesCacheMinutes));
                     }
                 }
                 return View(templatePath, model);
