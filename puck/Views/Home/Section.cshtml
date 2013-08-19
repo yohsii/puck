@@ -11,10 +11,10 @@
     @("rangequery:"+results.Count);
     <br />
     var qh2 = new QueryHelper<puck.core.Base.BaseModel>();
-    var res2= qh2.And().GreaterThanEqualTo(x=>x.SortOrder,0).GetAll();
+    var res2= qh2.And().GreaterThanEqualTo(x=>x.SortOrder,0).GetAll(500,1);
     //var res2 = qh2.And().Range(x=>x.SortOrder,1,3,true,true).GetAll();
     //var res2 = qh2.And().Field(x => x.SortOrder, 1).GetAll();
-    @("rangequery2:"+res2.Count)
+    @("rangequery2:"+res2.Count +"|total:"+qh2.TotalHits)
     @qh2.ToString()
     <br />
 }    

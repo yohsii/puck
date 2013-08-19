@@ -501,22 +501,26 @@ namespace puck.core.Concrete
         }
         public IList<T> QueryNoCast<T>(string qstr) where T:BaseModel
         {
-            return QueryNoCast<T>(qstr,null);
+            int total;
+            return QueryNoCast<T>(qstr,null,null,out total);
         }
-        public IList<T> QueryNoCast<T>(string qstr, Filter filter) where T:BaseModel
+        public IList<T> QueryNoCast<T>(string qstr, Filter filter,Sort sort,out int total,int limit=500,int skip=0) where T:BaseModel
         {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
             var q = parser.Parse(qstr);
-            ScoreDoc[] hits;
-            if (filter != null)
-                hits = Searcher.Search(q,filter, int.MaxValue).ScoreDocs;
+            TopDocs docs;
+            if (sort == null)
+                docs = Searcher.Search(q, filter, limit);
             else
-                hits = Searcher.Search(q, int.MaxValue).ScoreDocs;
+                docs = Searcher.Search(q, filter, limit, sort);
+            total = docs.TotalHits;
             var results = new List<T>();
-            for (var i = 0; i < hits.Count(); i++)
+            for (var i = 0; i < docs.ScoreDocs.Count(); i++)
             {
-                var doc = Searcher.Doc(hits[i].Doc);
+                if (!(i >= skip))
+                    continue;
+                var doc = Searcher.Doc(docs.ScoreDocs[i].Doc);
                 var type = Type.GetType(doc.GetValues(FieldKeys.PuckType).FirstOrDefault());
                 T result = (T)JsonConvert.DeserializeObject(doc.GetValues(FieldKeys.PuckValue)[0],type);
                 results.Add(result);
@@ -525,20 +529,24 @@ namespace puck.core.Concrete
         }
         public IList<T> Query<T>(string qstr) where T:BaseModel
         {
-            return Query<T>(qstr,null);
+            int total;
+            return Query<T>(qstr,null,null,out total);
         }
-        public IList<T> Query<T>(string qstr,Filter filter) where T:BaseModel {
+        public IList<T> Query<T>(string qstr,Filter filter,Sort sort,out int total,int limit=500,int skip=0) where T:BaseModel {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
-            ScoreDoc[] hits;
-            if(filter!=null)
-                hits= Searcher.Search(q,filter,int.MaxValue).ScoreDocs;
+            TopDocs docs;
+            if(sort==null)
+                docs = Searcher.Search(q,filter,limit);
             else
-                hits = Searcher.Search(q,int.MaxValue).ScoreDocs;
+                docs = Searcher.Search(q, filter, limit, sort);
+            total = docs.TotalHits;
             var results = new List<T>();
-            for (var i = 0; i < hits.Count(); i++) {
-                var doc = Searcher.Doc(hits[i].Doc);
+            for (var i = 0; i < docs.ScoreDocs.Count(); i++) {
+                if (!(i >= skip))
+                    continue;
+                var doc = Searcher.Doc(docs.ScoreDocs[i].Doc);
                 T result = JsonConvert.DeserializeObject<T>(doc.GetValues(FieldKeys.PuckValue)[0]);
                 results.Add(result);
             }
@@ -546,9 +554,13 @@ namespace puck.core.Concrete
         }
         public IList<T> Get<T>()
         {
+            return Get<T>(int.MaxValue);
+        }
+        public IList<T> Get<T>(int limit)
+        {
             var t = new Term(FieldKeys.PuckTypeChain,typeof(T).FullName);
             var q = new TermQuery(t);
-            var hits=Searcher.Search(q,int.MaxValue).ScoreDocs;
+            var hits=Searcher.Search(q,limit).ScoreDocs;
             var results = new List<T>();
             for (var i = 0; i < hits.Count(); i++)
             {

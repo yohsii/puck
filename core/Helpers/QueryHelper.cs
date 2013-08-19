@@ -253,7 +253,10 @@ namespace puck.core.Helpers
         public Lucene.Net.Search.Filter filter;
         //query builders append to this string
         string query="";
-        Sort sort = new Sort();
+        int totalHits=-1;
+        Sort sort = null;
+        List<SortField> sorts = null;
+        public int TotalHits { get { return totalHits; } }
         static string namePattern = @"(?:[A-Za-z0-9]*\()?[A-Za-z0-9]\.([A-Za-z0-9.]*)";
         static string nameArrayPattern = @"\.get_Item\(\d\)";
         static string paramPattern = @"((?:[a-zA-Z0-9]+\.?)+)\)";
@@ -364,6 +367,36 @@ namespace puck.core.Helpers
         }
 
         //query builders
+        public QueryHelper<TModel> Sort(Expression<Func<TModel, object>> exp, bool descending=false)
+        {
+            if (sort == null)
+            {
+                sort = new Sort();
+                sorts = new List<SortField>();
+            }
+            string key = getName(exp.Body.ToString());
+            int sortField = SortField.STRING;
+            string fieldTypeName = PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName][key];
+            if (fieldTypeName.Equals(typeof(int).AssemblyQualifiedName))
+            {
+                sortField = SortField.INT;
+            }
+            else if (fieldTypeName.Equals(typeof(long).AssemblyQualifiedName))
+            {
+                sortField = SortField.LONG;
+            }
+            else if (fieldTypeName.Equals(typeof(float).AssemblyQualifiedName))
+            {
+                sortField = SortField.FLOAT;
+            }
+            else if (fieldTypeName.Equals(typeof(double).AssemblyQualifiedName))
+            {
+                sortField = SortField.DOUBLE;
+            }
+            sorts.Add(new SortField(key,sortField,descending));
+            sort.SetSort(sorts.ToArray());
+            return this;
+        }
         public void Clear() {
             query = "+" + this.Field(FieldKeys.PuckTypeChain, typeof(TModel).FullName.Wrap()) + " ";
         }
@@ -710,21 +743,21 @@ namespace puck.core.Helpers
         }
 
         //query executors
-        public List<TModel> GetAll()
+        public List<TModel> GetAll(int limit=500,int skip = 0)
         {
-            var result = searcher.Query<TModel>(query,filter).ToList();
+            var result = searcher.Query<TModel>(query,filter,sort,out totalHits,limit,skip).ToList();
             return result;
         }
 
-        public List<TModel> GetAllNoCast()
+        public List<TModel> GetAllNoCast(int limit=500,int skip = 0)
         {
-            var result = searcher.QueryNoCast<TModel>(query,filter).ToList();
+            var result = searcher.QueryNoCast<TModel>(query,filter,sort,out totalHits,limit,skip).ToList();
             return result;
         }
 
         public TModel Get()
         {
-            var result = searcher.Query<TModel>(query,filter).FirstOrDefault();
+            var result = searcher.Query<TModel>(query,filter,sort,out totalHits,1,0).FirstOrDefault();
             return result;
         }
     }
