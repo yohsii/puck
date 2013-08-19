@@ -367,7 +367,7 @@ namespace puck.core.Helpers
         }
 
         //query builders
-        public QueryHelper<TModel> Sort(Expression<Func<TModel, object>> exp, bool descending=false)
+        public QueryHelper<TModel> Sort(Expression<Func<TModel, object>> exp, bool descending=false,int sortField=-1)
         {
             if (sort == null)
             {
@@ -375,23 +375,25 @@ namespace puck.core.Helpers
                 sorts = new List<SortField>();
             }
             string key = getName(exp.Body.ToString());
-            int sortField = SortField.STRING;
-            string fieldTypeName = PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName][key];
-            if (fieldTypeName.Equals(typeof(int).AssemblyQualifiedName))
-            {
-                sortField = SortField.INT;
-            }
-            else if (fieldTypeName.Equals(typeof(long).AssemblyQualifiedName))
-            {
-                sortField = SortField.LONG;
-            }
-            else if (fieldTypeName.Equals(typeof(float).AssemblyQualifiedName))
-            {
-                sortField = SortField.FLOAT;
-            }
-            else if (fieldTypeName.Equals(typeof(double).AssemblyQualifiedName))
-            {
-                sortField = SortField.DOUBLE;
+            if (sortField==-1){
+                sortField = SortField.STRING;
+                string fieldTypeName = PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName][key];
+                if (fieldTypeName.Equals(typeof(int).AssemblyQualifiedName))
+                {
+                    sortField = SortField.INT;
+                }
+                else if (fieldTypeName.Equals(typeof(long).AssemblyQualifiedName))
+                {
+                    sortField = SortField.LONG;
+                }
+                else if (fieldTypeName.Equals(typeof(float).AssemblyQualifiedName))
+                {
+                    sortField = SortField.FLOAT;
+                }
+                else if (fieldTypeName.Equals(typeof(double).AssemblyQualifiedName))
+                {
+                    sortField = SortField.DOUBLE;
+                }
             }
             sorts.Add(new SortField(key,sortField,descending));
             sort.SetSort(sorts.ToArray());
