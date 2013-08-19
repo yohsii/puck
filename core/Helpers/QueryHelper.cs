@@ -253,7 +253,7 @@ namespace puck.core.Helpers
         public Lucene.Net.Search.Filter filter;
         //query builders append to this string
         string query="";
-        int totalHits=-1;
+        int totalHits=0;
         Sort sort = null;
         List<SortField> sorts = null;
         public int TotalHits { get { return totalHits; } }
