@@ -290,8 +290,13 @@ namespace puck.core.Helpers
             lock (_savelck)
             {
                 var repo = Repo;
-                if (makeRevision)
-                    mod.Revision = repo.GetPuckRevision().Where(x=>x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower())).Max(x=>x.Revision) + 1;
+                if (makeRevision){
+                    var revisions = repo.GetPuckRevision().Where(x => x.Id.Equals(mod.Id) && x.Variant.ToLower().Equals(mod.Variant.ToLower()));
+                    if (revisions.Count() == 0)
+                        mod.Revision = 1;
+                    else
+                        mod.Revision = revisions.Max(x => x.Revision) + 1;
+                }
                 mod.Updated = DateTime.Now;
                 //get parent check published
                 var parentVariants = repo.CurrentRevisionParent(mod.Path).ToList();
