@@ -17,6 +17,7 @@ span.variant.published{color:#33aa33;}
 div.search{float:right;}
 button.search{}
 input.search{width:0px;height: 10px;margin-top:0px;opacity:0;}
+.search_options{padding:0px !important;padding-left:12px !important;opacity:0;display:none !important;}
 .btnclose{padding:0px 5px 0px 5px !important;margin:0 0 0 10px;}
 .rightarea{/*position:relative;*/}
 .rightarea .message .btn{border-radius:0px !important;}
@@ -24,6 +25,22 @@ h1.right_style{font-family:courier;color:#6e6e6e;font-size:30px;border-bottom:6p
 html,body{height:100%;}
 .login button{float:right;}
 .login .error{clear:both;}
+div.search_results th
+{
+    padding:10px;
+}
+div.search_results tr:nth-child(even)
+{
+    background:#fbfbfb;
+}
+div.search_results tr:hover
+{
+    cursor:default;
+}
+div.search_results tr:hover
+{
+    background:#eeffee;
+}
 .overlay {
     position: fixed;
     top: 0;

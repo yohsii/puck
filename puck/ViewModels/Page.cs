@@ -22,9 +22,11 @@ namespace puck.areas.admin.ViewModels
         [Required]
         [Display(Name = "Description")]
         [DataType(DataType.MultilineText)]
+        [IndexSettings(FieldIndexSetting = Field.Index.ANALYZED, Analyzer = typeof(SnowballAnalyzer))]
         public string MetaDescription { get; set; }
         
         [Required]
+        [IndexSettings(FieldIndexSetting = Field.Index.ANALYZED, Analyzer = typeof(SnowballAnalyzer))]
         public string Title { get; set; }
         
         [Required]

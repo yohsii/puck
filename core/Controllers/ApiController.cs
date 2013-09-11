@@ -225,6 +225,26 @@ namespace puck.core.Controllers
             }
             return Json("/", JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = PuckRoles.Puck)]
+        public ActionResult Search(string q)
+        {
+            var qs = " ";
+            foreach (var t in PuckCache.TypeFields) {
+                foreach (var f in t.Value) {
+                    if (qs.IndexOf(" " + f.Key+":") > -1)
+                        continue;
+                    qs += string.Concat(f.Key, ":", q," ");
+                }
+            }
+            qs.Trim();
+            var results = PuckCache.PuckSearcher.Query(qs);
+            var model = new List<BaseModel>();
+            foreach (var res in results) {
+                var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue], Type.GetType(res[FieldKeys.PuckType])) as BaseModel;
+                model.Add(mod);
+            }
+            return View(model);
+        }
         [Auth(Roles=PuckRoles.Puck)]
         public JsonResult Content(string path = "/") {
             //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method

@@ -30,9 +30,11 @@ namespace puck.core.Base
         public String NodeName { get; set; }
 
         [UIHint("SettingsReadOnly")]
+        [Display(Name = "Last Edited By")]
         public string LastEditedBy { get; set; }
         
         [UIHint("SettingsReadOnly")]
+        [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
         
         [UIHint("SettingsReadOnly")]
