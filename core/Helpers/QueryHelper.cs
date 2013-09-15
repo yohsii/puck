@@ -145,7 +145,7 @@ namespace puck.core.Helpers
             else
                 return qh.GetAll();
         }
-        public static List<T> Ancestors<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false) where T : BaseModel {
+        public static List<T> Ancestors<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false,bool ExplicitType=false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             string nodePath = n.Path.ToLower();
             var innerQ = qh.New();
@@ -156,6 +156,8 @@ namespace puck.core.Helpers
                     .Field(x=>x.Path,nodePath);
             }
             qh.And(innerQ);
+            if (ExplicitType)
+                qh.ExplicitType();
             if (currentLanguage)
                 qh.CurrentLanguage();
             if (noCast)
@@ -163,7 +165,7 @@ namespace puck.core.Helpers
             else
                 return qh.GetAll();
         }
-        public static List<T> Siblings<T>(this BaseModel n,bool currentLanguage=true,bool noCast=false) where T : BaseModel {
+        public static List<T> Siblings<T>(this BaseModel n,bool currentLanguage=true,bool noCast=false,bool ExplicitType=false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh
                     .And()
@@ -172,6 +174,8 @@ namespace puck.core.Helpers
                     .Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
                     .Not()
                     .Field(x => x.Id, n.Id.ToString().Wrap());
+            if (ExplicitType)
+                qh.ExplicitType();
             if (currentLanguage)
                 qh.CurrentLanguage();
             if (noCast)
@@ -192,7 +196,7 @@ namespace puck.core.Helpers
             else
                 return qh.GetAll();
         }
-        public static List<T> Children<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false) where T : BaseModel
+        public static List<T> Children<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false,bool ExplicitType=false) where T : BaseModel
         {
             var qh = new QueryHelper<T>();
             qh      
@@ -200,6 +204,8 @@ namespace puck.core.Helpers
                     .Field(x => x.Path, n.Path.ToLower() + "/".WildCardMulti())
                     .Not()
                     .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti() + "/*");
+            if (ExplicitType)
+                qh.ExplicitType();
             if (currentLanguage)
                 qh.CurrentLanguage();
             if (noCast)
@@ -207,10 +213,12 @@ namespace puck.core.Helpers
             else
                 return qh.GetAll();
         }
-        public static List<T> Descendants<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false) where T : BaseModel {
+        public static List<T> Descendants<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false,bool ExplicitType=false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh.And()
                 .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti());
+            if (ExplicitType)
+                qh.ExplicitType();
             if (currentLanguage)
                 qh.CurrentLanguage();
             if (noCast)
