@@ -30,11 +30,11 @@ namespace puck.core.Models
         [UIHint("SettingsFieldGroups")]
         public List<string> TypeGroupField { get; set; }
         
-        [Display(Name="Allowed child types for a given type")]
+        [Display(Name="Allowed child models for a given model")]
         [UIHint("SettingsTypeAllowedTypes")]
         public List<string> TypeAllowedTypes { get; set; }
 
-        [Display(Name = "Allowed templates types for a given type")]
+        [Display(Name = "Allowed templates for a given model")]
         [UIHint("SettingsAllowedTemplates")]
         public List<string> TypeAllowedTemplates { get; set; }
 
@@ -45,5 +45,10 @@ namespace puck.core.Models
         [Display(Name="Cache Policy")]
         [UIHint("SettingsCachePolicy")]
         public List<string> CachePolicy { get; set; }
+
+        [Display(Name = "Orphaned Models")]
+        [UIHint("SettingsOrphans")]
+        public Dictionary<string,string> Orphans { get; set; }
+
     }
 }

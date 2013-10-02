@@ -289,6 +289,15 @@ namespace puck.core.Controllers
                 //delete unset
                 repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy && !cacheTypes.Contains(x.Key)).ToList().ForEach(x => repo.DeleteMeta(x));
                 
+                //orphan types
+                if (model.Orphans != null && model.Orphans.Count > 0)
+                {
+                    foreach (var entry in model.Orphans) {
+                        var t1 = entry.Key;
+                        var t2 = entry.Value;
+                        ApiHelper.RenameOrphaned(t1, t2);
+                    }
+                }
                 repo.SaveChanges();
                 ApiHelper.UpdateDefaultLanguage();
                 ApiHelper.UpdateCacheMappings();

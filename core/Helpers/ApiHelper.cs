@@ -17,6 +17,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Ninject;
 using puck.core.Entities;
+using puck.core.Exceptions;
 namespace puck.core.Helpers
 {
     public class ApiHelper
@@ -301,7 +302,7 @@ namespace puck.core.Helpers
                 //get parent check published
                 var parentVariants = repo.CurrentRevisionParent(mod.Path).ToList();
                 if (mod.Path.Count(x => x == '/') > 1 && parentVariants.Count() == 0)
-                    throw new Exception("this is not a root node yet doesn't have a parent");
+                    throw new NoParentExistsException("this is not a root node yet doesn't have a parent");
                 //can't publish if parent not published
                 if (mod.Path.Count(x => x == '/') > 1 && !parentVariants.Any(x => x.Published /*&& x.Variant.ToLower().Equals(mod.Variant.ToLower())*/))
                     mod.Published = false;
@@ -318,7 +319,7 @@ namespace puck.core.Helpers
                     mod.SortOrder = nodesAtPath.Count;
                 //check node name is unique at path
                 if (nodesAtPath.Any(x => x.Value.Any(y => y.Value.NodeName.ToLower().Equals(mod.NodeName))))
-                    throw new Exception("Nodename exists at this path, choose another.");
+                    throw new NodeNameExistsException("Nodename exists at this path, choose another.");
                 //check this is an update or create
                 var original = repo.CurrentRevision(mod.Id, mod.Variant);
                 var toIndex = new List<BaseModel>();
@@ -705,7 +706,64 @@ namespace puck.core.Helpers
             var excluded = new List<Type>() { typeof(PuckRevision)};
             return FindDerivedClasses(typeof(BaseModel),excluded,inclusive).ToList();
         }
-        
+        public static List<string> OrphanedTypeNames() {
+            var repo = Repo;
+            var loadedTypes = Models().Select(x => x.AssemblyQualifiedName).ToList();
+            var names = repo.GetPuckRevision().Where(x => !loadedTypes.Contains(x.Type)).Select(x => x.Type).Distinct().ToList();
+            return names;
+        }
+        public static void RenameOrphaned(string orphanTypeName,string newTypeName)
+        {
+            var repo = Repo;
+            var newType = Type.GetType(newTypeName);
+            var newTypeChain = TypeChain(newType);
+            var indexChecked = new HashSet<string>();
+            //determines how many db revisions to get at once and also the reindex threshhold - useful for handling large amount of data without raping server resources.
+            var step = 1000;
+            var toIndex = new List<BaseModel>();
+            //we're doing this in chunks - while there are still chunks to process
+            while (repo.GetPuckRevision().Where(x => x.Type.Equals(orphanTypeName)).Count()>0)
+            {
+                //get next chunk from database
+                var records = repo.GetPuckRevision().Where(x => x.Type.Equals(orphanTypeName)).Take(step).ToList();
+                records.ForEach(x => {
+                    //set database revision type to new type
+                    x.Type = newTypeName;
+                    //update typechain
+                    x.TypeChain = newTypeChain;
+                    //update json string
+                    var valueobj = JsonConvert.DeserializeObject(x.Value, newType) as BaseModel;
+                    valueobj.Type = x.Type;
+                    valueobj.TypeChain = x.TypeChain;
+                    x.Value = JsonConvert.SerializeObject(valueobj);
+                    //update indexed values, check this hasn't been indexed before
+                    if (!indexChecked.Contains(string.Concat(x.Id.ToString(),x.Variant)))
+                    {
+                        var qh = new QueryHelper<BaseModel>();
+                        var result = qh.ID(x.Id).Variant(x.Variant).GetAllNoCast().FirstOrDefault();
+                        if (result != null) {
+                            //basically grab currently indexed node, change type information and add to reindex list
+                            result.TypeChain = x.TypeChain;
+                            result.Type = x.Type;
+                            toIndex.Add(result);
+                            indexChecked.Add(string.Concat(x.Id.ToString(),x.Variant));
+                        }
 
+                    }
+                });
+                //commit current chunk to db
+                repo.SaveChanges();
+                //since committing index is slow, only commit once reindex list grows to certain size to avoid frequent expensive operations on index
+                if (toIndex.Count >= step)
+                {
+                    indexer.Index(toIndex);
+                    toIndex.Clear();
+                }
+            }
+            //if there's anything left to reindex, reindex.
+            if (toIndex.Count > 0)
+                indexer.Index(toIndex);
+            
+        }
     }
 }

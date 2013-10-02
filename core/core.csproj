@@ -152,6 +152,7 @@
     <Compile Include="Entities\PuckMeta.cs" />
     <Compile Include="Entities\PuckRevision.cs" />
     <Compile Include="Events\PuckEventArgs.cs" />
+    <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Extensions\ExtensionsMisc.cs" />
     <Compile Include="Filters\Auth.cs" />
     <Compile Include="Filters\CacheValidate.cs" />
