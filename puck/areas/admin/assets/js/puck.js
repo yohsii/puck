@@ -138,16 +138,16 @@ var getPath = function (id, f) {
 var getStartPath = function (f) {
     $.get("/admin/api/startpath", f);
 };
-var getSearch = function (term,f) {
-    $.get("/admin/api/search?q="+term, f,"html");
+var getSearch = function (term,f,type,root) {
+    $.get("/admin/api/search?q="+term+"&type="+type+"&root="+root, f,"html");
 }
-var showSearch = function (term) {
+var showSearch = function (term,type,root) {
     getSearch(term, function (d) {
         if (canChangeMainContent()) {
             cright.html(d);
             afterDom();
         }
-    });
+    },type,root);
 }
 var showUserMarkup = function (username) {
     getUserMarkup(username, function (d) {
@@ -611,6 +611,7 @@ var displayMarkup = function (path, type, variant,fromVariant) {
             afterDom();
             cright.show();
             cright.find(".fieldtabs:first").click();
+            setChangeTracker();
             highlightSelectedNode(path);
         });
         //publish btn
@@ -640,6 +641,12 @@ var displayMarkup = function (path, type, variant,fromVariant) {
             msg(false, data.message);
         });        
     },fromVariant);
+}
+var setChangeTracker = function () {
+    changed = false;
+    cright.find(":input").change(function (e) {
+        changed = true;
+    });
 }
 var msg = function (success, str) {
     var btnClass = "";
@@ -694,9 +701,11 @@ var afterDom = function () {
         afterDomActions.pop()();
     }
 }
+var changed = false;
 var canChangeMainContent=function(){
-    if(cright.find(".fieldwrapper").length>0)
+    if(cright.find(".fieldwrapper").length> 0 && changed)
         if (confirm("sure you want to move away from this page?")) {
+            changed = false;
             return true;
         } else {
             return false;
@@ -736,6 +745,7 @@ $('a.settings').click(function (e) {
         }, function (data) {
             msg(false, d.message);
         });
+        setChangeTracker();
     });
 });
 var dirOfPath = function (s) {
@@ -769,7 +779,7 @@ $("input.search").keypress(function (e) {
     e = e || event;
     if ((e.keyCode || e.which || e.charCode || 0) === 13) {
         var term = $(this).val();
-        showSearch(term);
+        showSearch(term,searchType,searchRoot);
     };
 });
     //root new content button
@@ -1085,7 +1095,46 @@ $("input.search").keypress(function (e) {
         displayMarkup(node.attr("data-path"),node.attr("data-type"),firstVariant);
     });
 
-    //ini
+    cleft.on("click", ".search_options", function () {
+        var el = $(".interfaces .search_ops").clone();
+        overlay(el, 500, 400);
+        el.on("click",".node span",function (e) {
+            var node = $(this).parents(".node:first");
+            var path = node.attr("data-path");
+            var close = $('<i class="icon-remove-sign"></i>');
+            var pathspan = $("<span/>").html(path);
+            el.find(".pathvalue").html('').append(pathspan).append(close);
+            close.click(function () {
+                el.find(".pathvalue").html('');
+            });
+        });
+        getDrawContent(startPath, el.find(".node"));
+        el.find("button").click(function () {
+            searchType = el.find("select").val();
+            searchRoot = el.find(".pathvalue span").html()||'';
+            overlayClose();
+            if (!searchRoot.isEmpty() || !searchType.isEmpty()) {
+                $(".search_options i").addClass("active");
+            } else {
+                $(".search_options i").removeClass("active");
+            }
+        });
+        if (!searchType.isEmpty()) {
+            el.find("select option[value='" + searchType + "']").attr("selected", "selected");
+        }
+        if (!searchRoot.isEmpty()) {
+            var close = $('<i class="icon-remove-sign"></i>');
+            var pathspan = $("<span/>").html(searchRoot);
+            el.find(".pathvalue").html('').append(pathspan).append(close);
+            close.click(function () {
+                el.find(".pathvalue").html('');
+            });
+        }
+    });
+
+//ini
+    var searchType = '';
+    var searchRoot = '';
     var publishedContent = [];
     var haveChildren = [];
     var dbcontent = [];

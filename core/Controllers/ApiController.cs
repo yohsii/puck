@@ -226,18 +226,37 @@ namespace puck.core.Controllers
             return Json("/", JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
-        public ActionResult Search(string q)
+        public ActionResult Search(string q,string type,string root)
         {
-            var qs = " ";
-            foreach (var t in PuckCache.TypeFields) {
-                foreach (var f in t.Value) {
-                    if (qs.IndexOf(" " + f.Key+":") > -1)
-                        continue;
-                    qs += string.Concat(f.Key, ":", q," ");
+            var results = new List<Dictionary<string, string>>();
+            var qs = "(";
+            if (string.IsNullOrEmpty(type))
+            {
+                foreach (var t in PuckCache.TypeFields)
+                {
+                    foreach (var f in t.Value)
+                    {
+                        if (qs.IndexOf(" " + f.Key + ":") > -1)
+                            continue;
+                        qs += string.Concat(f.Key, ":", q, " ");
+                    }
+                }                
+            }
+            else {
+                foreach (var f in PuckCache.TypeFields[type])
+                {
+                    qs += string.Concat(f.Key, ":", q, " ");
                 }
             }
+            qs += ")";
             qs.Trim();
-            var results = PuckCache.PuckSearcher.Query(qs);
+            if (!string.IsNullOrEmpty(root)) { 
+                qs=string.Concat(qs," AND ",FieldKeys.Path,":",root,"/*");
+            }
+            if (!string.IsNullOrEmpty(type))
+                results = PuckCache.PuckSearcher.Query(qs,type).ToList();
+            else
+                results = PuckCache.PuckSearcher.Query(qs).ToList();
             var model = new List<BaseModel>();
             foreach (var res in results) {
                 var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue], Type.GetType(res[FieldKeys.PuckType])) as BaseModel;

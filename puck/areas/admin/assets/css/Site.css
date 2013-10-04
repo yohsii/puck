@@ -17,7 +17,19 @@ span.variant.published{color:#33aa33;}
 div.search{float:right;}
 button.search{}
 input.search{width:0px;height: 10px;margin-top:0px;opacity:0;}
-.search_options{padding:0px !important;padding-left:12px !important;opacity:0;display:none !important;}
+.search_options{padding:0px !important;padding-left:12px !important;opacity:0;}
+.search_ops button{float:right;}
+.pathvalue span
+{
+    padding-right:10px;    
+}
+.pathvalue i
+{
+    cursor:pointer;
+}
+button.search_options{padding-right:2px !important;}
+.search button{padding-left:10px !important;}
+.search_options i.active{outline:#bbffbb 2px solid;}
 .btnclose{padding:0px 5px 0px 5px !important;margin:0 0 0 10px;}
 .rightarea{/*position:relative;*/}
 .rightarea .message .btn{border-radius:0px !important;}
