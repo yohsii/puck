@@ -199,7 +199,7 @@ namespace puck.core.Helpers
                 var parentVariants = repo.CurrentRevisionParent(repoItems.First().Path).ToList();
                 //can't publish if parent not published unless root item
                 if (parentVariants.Count == 0 && repoItems.First().Path.Count(c=>c=='/')>1)
-                        throw new Exception("you cannot publish an item if it has no parent");
+                        throw new NoParentExistsException("you cannot publish an item if it has no parent");
                 
                 if (descendants.Count>0)
                     repoItems.AddRange(
