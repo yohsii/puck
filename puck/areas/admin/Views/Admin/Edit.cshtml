@@ -47,12 +47,12 @@
             {
                 <div class="fieldwrapper">
                 @Html.LabelFor(x => x.Password)
-                @Html.TextBoxFor(x => x.Password)
+                @Html.EditorFor(x => x.Password)
                 </div>
 
                 <div class="fieldwrapper">
                 @Html.LabelFor(x => x.PasswordConfirm)
-                @Html.TextBoxFor(x => x.PasswordConfirm)
+                @Html.EditorFor(x => x.PasswordConfirm)
                 </div>
             }
             else
@@ -62,12 +62,12 @@
                 
                 <div class="fieldwrapper">
                 @Html.LabelFor(x => x.NewPassword)
-                @Html.TextBoxFor(x => x.NewPassword)
+                @Html.EditorFor(x => x.NewPassword)
                 </div>
 
                 <div class="fieldwrapper">
                 @Html.LabelFor(x => x.NewPasswordConfirm)
-                @Html.TextBoxFor(x => x.NewPasswordConfirm)
+                @Html.EditorFor(x => x.NewPasswordConfirm)
                 </div>
             }
         </fieldset>

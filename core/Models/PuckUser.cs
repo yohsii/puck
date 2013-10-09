@@ -30,15 +30,19 @@ namespace puck.core.Models
         public List<PuckPicker> StartNode { get; set; }
         
         [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
-        
-        [Display(Name="Confirm Password")]
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
         [System.Web.Mvc.Compare("Password")]
         public string PasswordConfirm { get; set; }
 
-        [Display(Name="Password")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
         public string NewPassword { get; set; }
-        
+
+        [DataType(DataType.Password)]
         [Display(Name = "Confirm Password")]
         [System.Web.Mvc.Compare("NewPassword")]
         public string NewPasswordConfirm { get; set; }
