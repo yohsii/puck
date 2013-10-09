@@ -33,6 +33,7 @@ namespace puck.core.Helpers
         public static I_Content_Indexer indexer{get{
             return PuckCache.PuckIndexer;
          }}
+        public static I_Log logger { get { return PuckCache.PuckLog; } }
         public static string UserVariant() {
             string variant;
             if (HttpContext.Current.Session["language"] != null)
@@ -726,29 +727,42 @@ namespace puck.core.Helpers
             {
                 //get next chunk from database
                 var records = repo.GetPuckRevision().Where(x => x.Type.Equals(orphanTypeName)).Take(step).ToList();
+                var recordCounter = 0;
                 records.ForEach(x => {
-                    //set database revision type to new type
-                    x.Type = newTypeName;
-                    //update typechain
-                    x.TypeChain = newTypeChain;
-                    //update json string
-                    var valueobj = JsonConvert.DeserializeObject(x.Value, newType) as BaseModel;
-                    valueobj.Type = x.Type;
-                    valueobj.TypeChain = x.TypeChain;
-                    x.Value = JsonConvert.SerializeObject(valueobj);
-                    //update indexed values, check this hasn't been indexed before
-                    if (!indexChecked.Contains(string.Concat(x.Id.ToString(),x.Variant)))
+                    try
                     {
-                        var qh = new QueryHelper<BaseModel>();
-                        var result = qh.ID(x.Id).Variant(x.Variant).GetAllNoCast().FirstOrDefault();
-                        if (result != null) {
-                            //basically grab currently indexed node, change type information and add to reindex list
-                            result.TypeChain = x.TypeChain;
-                            result.Type = x.Type;
-                            toIndex.Add(result);
-                            indexChecked.Add(string.Concat(x.Id.ToString(),x.Variant));
-                        }
+                        //update json string
+                        var valueobj = JsonConvert.DeserializeObject(x.Value, newType) as BaseModel;
+                        //set database revision type to new type
+                        x.Type = newTypeName;
+                        //update typechain
+                        x.TypeChain = newTypeChain;
+                        valueobj.Type = x.Type;
+                        valueobj.TypeChain = x.TypeChain;
+                        x.Value = JsonConvert.SerializeObject(valueobj);
+                        //update indexed values, check this hasn't been indexed before
+                        if (!indexChecked.Contains(string.Concat(x.Id.ToString(), x.Variant)))
+                        {
+                            var qh = new QueryHelper<BaseModel>();
+                            var result = qh.ID(x.Id).Variant(x.Variant).GetAllNoCast().FirstOrDefault();
+                            if (result != null)
+                            {
+                                //basically grab currently indexed node, change type information and add to reindex list
+                                result.TypeChain = x.TypeChain;
+                                result.Type = x.Type;
+                                toIndex.Add(result);
+                                indexChecked.Add(string.Concat(x.Id.ToString(), x.Variant));
+                            }
 
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var exc = new Exception(ex.Message + string.Format(" -- errored on record {0} with id {1} and variant {2}", recordCounter, records[recordCounter].Id, records[recordCounter].Variant), ex);
+                        logger.Log(exc);
+                    }
+                    finally {
+                        recordCounter++;
                     }
                 });
                 //commit current chunk to db
@@ -760,6 +774,36 @@ namespace puck.core.Helpers
                     toIndex.Clear();
                 }
             }
+
+            //update relevant meta entries
+            var metaTypeAllowedTypes = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTypes && (x.Key.Equals(orphanTypeName) || x.Value.Equals(orphanTypeName))).ToList();
+            metaTypeAllowedTypes.ForEach(x => {
+                if (x.Key.Equals(orphanTypeName))
+                    x.Key = newTypeName;
+                if (x.Value.Equals(orphanTypeName))
+                    x.Value = newTypeName;
+            });
+            
+            var metaEditorSettings = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(orphanTypeName)).ToList();
+            metaEditorSettings.ForEach(x =>
+            {
+                x.Key = newTypeName;                
+            });
+
+            var metaTypeAllowedTemplates = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTemplates && x.Key.Equals(orphanTypeName)).ToList();
+            metaTypeAllowedTemplates.ForEach(x =>
+            {
+                x.Key = newTypeName;
+            });
+
+            var metaFieldGroups = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups+orphanTypeName)).ToList();
+            metaFieldGroups.ForEach(x =>
+            {
+                x.Name = DBNames.FieldGroups+newTypeName;
+            });
+
+            repo.SaveChanges();
+
             //if there's anything left to reindex, reindex.
             if (toIndex.Count > 0)
                 indexer.Index(toIndex);

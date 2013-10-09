@@ -5,8 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.WebPages;
 using puck.core.Models;
-
-namespace puck.areas.admin.ViewModels
+using puck.ViewModels;
+//using puck.areas.admin.ViewModels;
+namespace puck.ViewModels
 {
     public class Homepage:Page
     {

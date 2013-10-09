@@ -140,7 +140,7 @@ namespace puck.core.Controllers
 
         //
         // POST: /admin/Settings/Edit/5
-
+        [ValidateInput(enableValidation:false)]
         [HttpPost]
         public JsonResult Edit(Settings model)
         {
@@ -217,10 +217,14 @@ namespace puck.core.Controllers
                 }
                 //fieldgroup
                 if (model.TypeGroupField!=null&&model.TypeGroupField.Count > 0) {
-                    var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
-                    fieldGroupMeta.ForEach(x => {
-                        repo.DeleteMeta(x);
-                    });
+                    foreach (var mod in ApiHelper.Models())
+                    {
+                        var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups+mod.AssemblyQualifiedName)).ToList();
+                        fieldGroupMeta.ForEach(x =>
+                        {
+                            repo.DeleteMeta(x);
+                        });
+                    }
                     model.TypeGroupField.ForEach(x => {
                         var values = x.Split(new char[]{':'},StringSplitOptions.RemoveEmptyEntries);
                         var newMeta = new PuckMeta();

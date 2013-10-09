@@ -743,7 +743,7 @@ $('a.settings').click(function (e) {
                 languages = data;
             });
         }, function (data) {
-            msg(false, d.message);
+            msg(false, data.message);
         });
         setChangeTracker();
     });

@@ -10,7 +10,7 @@ using puck.core.Attributes;
 using puck.core.Base;
 using puck.core.Models;
 
-namespace puck.areas.admin.ViewModels
+namespace puck.ViewModels
 {
     public class Page:BaseModel
     {
