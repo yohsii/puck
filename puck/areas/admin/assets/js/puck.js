@@ -635,6 +635,8 @@ var displayMarkup = function (path, type, variant,fromVariant) {
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
             getDrawContent(dirOfPath(path), undefined, true, function () {
+                var pnode = cleft.find(".node[data-path='" + dirOfPath(path).substring(0,dirOfPath(path).length-1) + "']");
+                pnode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
                 displayMarkup(data.path, type, variant);
             });            
         }, function (data) {
@@ -983,7 +985,7 @@ $("input.search").keypress(function (e) {
                 newContent(node.attr("data-children_path"), node.attr("data-type"));
                 break;
             case "move":
-                var markup = $(".interfaces .tree_container").clone();
+                var markup = $(".interfaces .tree_container.move").clone();
                 var el = markup.find(".node:first");
                 overlay(markup);
                 $(".overlayinner .msg").html("select new parent node for content <b>"+node.attr("data-nodename")+"</b>");
@@ -997,10 +999,11 @@ $("input.search").keypress(function (e) {
                     }
                     setMove(from, to, function (d) {
                         if (d.success) {
-                            if (from.length > to.length)
-                                getDrawContent(to + "/");
-                            else
-                                getDrawContent(dirOfPath(from));
+                            cleft.find(".node[data-path='"+from+"']").remove();
+                            var tonode = cleft.find(".node[data-path='" + to + "']");
+                            console.log({el:tonode});
+                            tonode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({visibility:"visible"});
+                            getDrawContent(to + "/");
                         } else {
                             msg(false, d.message);
                         }
