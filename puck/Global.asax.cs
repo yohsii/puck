@@ -52,7 +52,7 @@ namespace puck
             puck.core.Bootstrap.Ini();
             //register before index event
             PuckCache.PuckIndexer.RegisterBeforeIndexHandler<puck.core.Base.BaseModel>("before",(object o,puck.core.Events.BeforeIndexingEventArgs args)=>{
-                var node = args.Node;                
+                //args.Cancel=true;                
             },true);
             
             //unregister
@@ -61,7 +61,7 @@ namespace puck
             //register after index event
             PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("after", (object o, puck.core.Events.IndexingEventArgs args) =>
             {
-                var node = args.Node;                
+                //var node = args.Node;                
             }, false);
 
         }

@@ -743,14 +743,17 @@ namespace puck.core.Helpers
                         //update indexed values, check this hasn't been indexed before
                         if (!indexChecked.Contains(string.Concat(x.Id.ToString(), x.Variant)))
                         {
-                            var qh = new QueryHelper<BaseModel>();
-                            var result = qh.ID(x.Id).Variant(x.Variant).GetAllNoCast().FirstOrDefault();
+                            var results = puck.core.Helpers.QueryHelper<BaseModel>.Query(
+                                string.Concat("+", FieldKeys.ID,":", x.Id.ToString(), " +", FieldKeys.Variant, ":", x.Variant)
+                                );
+                            var result = results.FirstOrDefault();
                             if (result != null)
                             {
+                                var indexNode = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], newType) as BaseModel;
                                 //basically grab currently indexed node, change type information and add to reindex list
-                                result.TypeChain = x.TypeChain;
-                                result.Type = x.Type;
-                                toIndex.Add(result);
+                                indexNode.TypeChain = x.TypeChain;
+                                indexNode.Type = x.Type;
+                                toIndex.Add(indexNode);
                                 indexChecked.Add(string.Concat(x.Id.ToString(), x.Variant));
                             }
 

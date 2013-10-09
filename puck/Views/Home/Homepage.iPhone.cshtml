@@ -1,8 +1,8 @@
-﻿@model puck.areas.admin.ViewModels.Homepage
-
+﻿@using Page = puck.ViewModels.Page;
+@model puck.ViewModels.Homepage
 @{
     ViewBag.Title = "Homepage";
-    var qh = new QueryHelper<puck.areas.admin.ViewModels.Section>();
+    var qh = new QueryHelper<Section>();
     qh.CurrentLanguage();
     qh.ExplicitType();
     var sections = qh.GetAll();
@@ -11,11 +11,11 @@
     @("section count: "+sections.Count)
     <br />
     var searchQuery = "croydon";
-    var search = new QueryHelper<puck.areas.admin.ViewModels.Page>();
+    var search = new QueryHelper<Page>();
     var sresults = search.AllFields(searchQuery).CurrentLanguage().GetAll();
     @("search for '"+searchQuery+"' count: "+sresults.Count)
     <br />
-    var geoQuery = new QueryHelper<puck.areas.admin.ViewModels.Page>();
+    var geoQuery = new QueryHelper<Page>();
     geoQuery.WithinMiles(x => x.Location, 51.5171, 0.1062, 10);
     var georesults = geoQuery.GetAll();
     @("search for locations within 10miles of London(51.5171,0.1062): "+georesults.Count)
@@ -26,7 +26,7 @@
 
 <h3>Carousel Items</h3>
 <div>
-    @foreach (var imageModel in Model.CarouselItems.GetAll<puck.ViewModels.ImageModel>())
+    @foreach (var imageModel in Model.CarouselItems.GetAll<ImageModel>())
     {                        
         <img width="700" alt="@imageModel.Image.Description" src="@imageModel.Image.Path" />
     }

@@ -1,16 +1,17 @@
-﻿@model puck.areas.admin.ViewModels.Section
+﻿@using Page = puck.ViewModels.Page;
+@model puck.ViewModels.Section
 @{
     ViewBag.Title = "Section";
-    var pages = Model.Children<puck.areas.admin.ViewModels.Page>();
-    var descendants = Model.Descendants<puck.areas.admin.ViewModels.Page>();
+    var pages = Model.Children<Page>();
+    var descendants = Model.Descendants<Page>();
     
-    var qh = new QueryHelper<puck.core.Base.BaseModel>();
+    var qh = new QueryHelper<BaseModel>();
     qh.And().Range(x => x.Updated, 20130712112820,20130712112833, true, true);
     //qh.And().Range(x => x.Updated, new DateTime(2013, 7, 12, 11, 28, 20), new DateTime(2013, 7, 12, 11, 28, 33), true, true);
     var results = qh.GetAll();
     @("rangequery:"+results.Count);
     <br />
-    var qh2 = new QueryHelper<puck.core.Base.BaseModel>();
+    var qh2 = new QueryHelper<BaseModel>();
     var res2= qh2.And().GreaterThanEqualTo(x=>x.SortOrder,0).Sort(x=>x.Updated,true).GetAll(500,1);
     //var res2 = qh2.And().Range(x=>x.SortOrder,1,3,true,true).GetAll();
     //var res2 = qh2.And().Field(x => x.SortOrder, 1).GetAll();
