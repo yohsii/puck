@@ -1,0 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using puck.core.Abstract;
+using puck.core.Models;
+using puck.core.Constants;
+using System.Web.Script.Serialization;
+using puck.core.Entities;
+using puck.core.Helpers;
+using puck.core.Filters;
+using Newtonsoft.Json;
+using puck.core.CodeGenerator;
+
+namespace puck.Model.Generated
+{
+
+    public class TheModel:puck.core.Base.BaseModel
+    {
+			public string Title{get;set;}
+	}
+}

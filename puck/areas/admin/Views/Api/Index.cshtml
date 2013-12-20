@@ -57,7 +57,7 @@
                 <select>
                     <option value="">All node types</option>
                     @foreach(var m in ApiHelper.Models()){
-                        <option value="@m.AssemblyQualifiedName">@m.FullName</option>
+                        <option value="@m.AssemblyQualifiedName">@m.Name</option>
                     }
                 </select>
             </div>

@@ -20,12 +20,12 @@
         }
         var excluded = templates.Where(x=>!included.Any(i=>x.ToLower().Equals(i.ToLower()))).ToList();
         <div class="type" data-type="@m.AssemblyQualifiedName">
-            <div class="list excluded"><h2>excluded child types</h2>
+            <div class="list excluded"><h2>excluded templates</h2>
                 @foreach (var t in excluded) { 
                     <div data-path="@t" class="field">@t</div>
                 }
             </div>
-            <div class="list included"><h2>allowed child types</h2>
+            <div class="list included"><h2>allowed templates</h2>
                 @foreach (var t in included) { 
                     <div data-path="@t" class="field">@t</div>
                 }

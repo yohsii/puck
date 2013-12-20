@@ -8,7 +8,7 @@
 .main.grid .leftarea,.main.grid .rightarea{height:100%}
 .main.grid .hide{display:none;}
 ul.content > li > ul{margin-left:0px!important;}
-.leftarea .startpath{clear:both;margin-top:5px;color:#000;font-weight:bolder;background-color:#e2e2e2;font-size:12px;}
+.leftarea .startpath{clear:both;margin-top:5px;color:#000;font-weight:bolder;background-color:#f7f7f7;font-size:12px;}
 span.variant.published{color:#33aa33;}
 .footer_puck{/*width:100%;height:20px;background:#e2e2e2;*/}
 .main.grid ul.content{margin-top:10px;}
@@ -92,7 +92,7 @@ select.languages{height:200px !important;width:550px !important;}
 .settings .settings_type_allowed_types .list,.settings .settings_type_allowed_templates .list{float:left;padding:20px;margin:10px;background:#eeffee;}
 .settings .settings_type_allowed_types .field,.settings .settings_type_allowed_templates .field{cursor:pointer;}
 .settings .settings_type_allowed_types select,.settings .settings_type_allowed_templates select{width:400px;}
-.settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#fbfbfb;clear:both;padding:0px 10px 0 10px}
+.settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#f7f7f7;clear:both;padding:0px 10px 0 10px}
 .settings .fieldwrapper h2{font-size:20px;}
 .settings label{text-decoration:underline;}
 .settings select.redirect_type{width:150px;}
@@ -160,7 +160,19 @@ ul.content.nomenu .node i.menu{display:none;}
 .leftarea .node span.variant{display:none;}
 .leftarea .node.selected>.inner{border-top:1px solid #0088cc;border-bottom:1px solid #0088cc;}
 .search_highlight{color:#ffffcc;}
-.puck_icon{display:none;}
+.puck_icon{
+    display:none;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("../img/glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+    background-position: -24px -24px;
+}
 /* css for timepicker */
 .ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
 .ui-timepicker-div dl { text-align: left; }

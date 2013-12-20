@@ -11,6 +11,7 @@ using puck.core.Entities;
 using puck.core.Helpers;
 using puck.core.Filters;
 using Newtonsoft.Json;
+using puck.core.CodeGenerator;
 
 namespace puck.core.Controllers
 {
@@ -28,6 +29,13 @@ namespace puck.core.Controllers
             this.searcher = s;
             this.log = l;
             this.repo = r;
+        }
+
+        public JsonResult EditViewModels() {
+            var source = "";
+            source = System.IO.File.ReadAllText(Server.MapPath("~/App_Data/source.txt"));
+            PuckCompiler.CompileCode(source);
+            return Json("",JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult DeleteParameters(string key) {

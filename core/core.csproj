@@ -135,6 +135,7 @@
     <Compile Include="Base\BaseModel.cs" />
     <Compile Include="Base\BaseTask.cs" />
     <Compile Include="Bootstrap.cs" />
+    <Compile Include="CodeGenerator\PuckCompiler.cs" />
     <Compile Include="Concrete\Content_Indexer_Searcher.cs" />
     <Compile Include="Concrete\DefaultCache.cs" />
     <Compile Include="Concrete\Dispatcher.cs" />
