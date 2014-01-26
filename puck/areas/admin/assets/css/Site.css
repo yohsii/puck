@@ -71,6 +71,7 @@ div.search_results tr:hover
 div.settings{padding-top:0px;}
 select.languages{height:200px !important;width:550px !important;}
 .nodisplay{display:none;}
+.settings fieldset{min-width:initial !important;}
 .settings .redirects,.settings .orphans{padding-bottom:20px;}
 .settings .redirects ul,.settings .orphans ul{padding:0px;margin:0px;}
 .settings .redirects li,.settings .orphans li{float:left;margin-left:10px;}
