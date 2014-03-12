@@ -1852,3 +1852,267 @@ stacktrace:    at puck.core.Helpers.QueryExtensions.<GroupByID>b__11[T](T x) in 
    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 427
 
 
+date: 12/03/2014 18:40:56
+message: LINQ to Entities does not recognize the method 'System.String ToString()' method, and this method cannot be translated into a store expression.
+stacktrace:    at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.DefaultTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.BinaryTranslator.TypedTranslate(ExpressionConverter parent, BinaryExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.BinaryTranslator.TypedTranslate(ExpressionConverter parent, BinaryExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateFunctionIntoLike(MethodCallExpression call, Boolean insertPercentAtStart, Boolean insertPercentAtEnd, Func`5 defaultTranslator)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.StringContainsTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateLambda(LambdaExpression lambda, DbExpression input)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateLambda(LambdaExpression lambda, DbExpression input, DbExpressionBinding& binding)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, DbExpression& source, DbExpressionBinding& sourceBinding, DbExpression& lambda)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.SequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, SequenceMethod sequenceMethod)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, DbExpression& source, DbExpressionBinding& sourceBinding, DbExpression& lambda)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.SequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, SequenceMethod sequenceMethod)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, DbExpression& source, DbExpressionBinding& sourceBinding, DbExpression& lambda)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.OneLambdaTranslator.Translate(ExpressionConverter parent, MethodCallExpression call)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.SequenceMethodTranslator.Translate(ExpressionConverter parent, MethodCallExpression call, SequenceMethod sequenceMethod)
+   at System.Data.Objects.ELinq.ExpressionConverter.MethodCallTranslator.TypedTranslate(ExpressionConverter parent, MethodCallExpression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TypedTranslator`1.Translate(ExpressionConverter parent, Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.TranslateExpression(Expression linq)
+   at System.Data.Objects.ELinq.ExpressionConverter.Convert()
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Data.Entity.Internal.Linq.InternalQuery`1.GetEnumerator()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Collections.Generic.IEnumerable<TResult>.GetEnumerator()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at puck.core.Helpers.ApiHelper.UsersToNotify(String path, NotifyActions action) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 776
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 72
+   at puck.core.Concrete.Content_Indexer_Searcher.<>c__DisplayClass6.<DelegateAfterEvent>b__4(KeyValuePair`2 x) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 67
+   at System.Collections.Generic.List`1.ForEach(Action`1 action)
+   at puck.core.Concrete.Content_Indexer_Searcher.DelegateAfterEvent(Dictionary`2 list, Object n, IndexingEventArgs e) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 64
+   at puck.core.Concrete.Content_Indexer_Searcher.DelegateAfterIndexing(Object n, IndexingEventArgs e) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 75
+   at puck.core.Concrete.Content_Indexer_Searcher.OnAfterIndex(Object s, IndexingEventArgs args) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 144
+   at puck.core.Concrete.Content_Indexer_Searcher.<Index>b__f[T](T x) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 254
+   at System.Collections.Generic.List`1.ForEach(Action`1 action)
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 258
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 433
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 457
+
+
+date: 12/03/2014 18:50:26
+message: The specified string is not in the form required for an e-mail address.
+stacktrace:    at System.Net.Mail.MailAddressParser.ReadCfwsAndThrowIfIncomplete(String data, Int32 index)
+   at System.Net.Mail.MailAddressParser.ParseDomain(String data, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data, Boolean expectMultipleAddresses, Int32& index)
+   at System.Net.Mail.MailAddressParser.ParseAddress(String data)
+   at System.Net.Mail.MailAddress..ctor(String address, String displayName, Encoding displayNameEncoding)
+   at System.Net.Mail.Message..ctor(String from, String to)
+   at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 177
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 79
+
+
+date: 12/03/2014 19:01:21
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 186
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 19:04:22
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 186
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 19:05:44
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 186
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 19:58:48
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 186
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 20:51:48
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 187
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 21:41:01
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 187
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 21:41:19
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 187
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 22:14:41
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 187
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 96
+
+
+date: 12/03/2014 22:18:36
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 22:18:36
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 96
+
+
+date: 12/03/2014 22:19:17
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 22:19:17
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 96
+
+
+date: 12/03/2014 22:20:13
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 22:20:16
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 96
+
+
+date: 12/03/2014 22:20:47
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 22:20:47
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 96
+
+
+date: 12/03/2014 22:22:20
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 22:22:20
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 96
+
+
+date: 12/03/2014 22:24:42
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 80
+
+
+date: 12/03/2014 22:24:42
+message: The parameter 'to' cannot be an empty string.
+Parameter name: to
+stacktrace:    at System.Net.Mail.MailMessage..ctor(String from, String to)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 178
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 96
+
+
+date: 12/03/2014 23:16:14
+message: Sequence contains no elements
+stacktrace:    at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at puck.core.Helpers.ApiHelper.DelegateAfterMoveEvent(Dictionary`2 list, Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 75
+   at puck.core.Helpers.ApiHelper.DelegateAfterMove(Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 108
+   at puck.core.Helpers.ApiHelper.OnAfterMove(Object s, MoveEventArgs args) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 219
+   at puck.core.Helpers.ApiHelper.Move(String start, String destination) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 592
+   at puck.core.Controllers.ApiController.Move(String start, String destination) in c:\project\puck\core\Controllers\ApiController.cs:line 178
+
+
+date: 12/03/2014 23:17:12
+message: Sequence contains no elements
+stacktrace:    at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at puck.core.Helpers.ApiHelper.DelegateAfterMoveEvent(Dictionary`2 list, Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 75
+   at puck.core.Helpers.ApiHelper.DelegateAfterMove(Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 108
+   at puck.core.Helpers.ApiHelper.OnAfterMove(Object s, MoveEventArgs args) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 219
+   at puck.core.Helpers.ApiHelper.Move(String start, String destination) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 592
+   at puck.core.Controllers.ApiController.Move(String start, String destination) in c:\project\puck\core\Controllers\ApiController.cs:line 178
+
+
+date: 12/03/2014 23:24:27
+message: Sequence contains no elements
+stacktrace:    at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at puck.core.Helpers.ApiHelper.DelegateAfterMoveEvent(Dictionary`2 list, Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 75
+   at puck.core.Helpers.ApiHelper.DelegateAfterMove(Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 108
+   at puck.core.Helpers.ApiHelper.OnAfterMove(Object s, MoveEventArgs args) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 219
+   at puck.core.Helpers.ApiHelper.Move(String start, String destination) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 592
+   at puck.core.Controllers.ApiController.Move(String start, String destination) in c:\project\puck\core\Controllers\ApiController.cs:line 178
+
+
+date: 12/03/2014 23:26:32
+message: Sequence contains no elements
+stacktrace:    at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at puck.core.Helpers.ApiHelper.DelegateAfterMoveEvent(Dictionary`2 list, Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 75
+   at puck.core.Helpers.ApiHelper.DelegateAfterMove(Object n, MoveEventArgs e) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 108
+   at puck.core.Helpers.ApiHelper.OnAfterMove(Object s, MoveEventArgs args) in c:\project\puck\core\Helpers\ApiHelper_Events.cs:line 219
+   at puck.core.Helpers.ApiHelper.Move(String start, String destination) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 592
+   at puck.core.Controllers.ApiController.Move(String start, String destination) in c:\project\puck\core\Controllers\ApiController.cs:line 178
+
+

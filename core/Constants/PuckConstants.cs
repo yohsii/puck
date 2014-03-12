@@ -90,9 +90,18 @@ namespace puck.core.Constants
         public static Field.Store FieldStoreSetting = Field.Store.YES;
 
     }
+    
     public static class PuckCache
     {
-        public static List<string> NotifyActions = new List<string>() {"Edit","Publish","Delete","Move"};
+        public enum NotifyActions{
+            Edit,Publish,Delete,Move
+        }
+        public static string SmtpFrom = "";
+        public const string SmtpHost = "localhost";
+        public static string EmailTemplatePublishPath = "~/app_data/notification_publish_template.txt";
+        public static string EmailTemplateEditPath = "~/app_data/notification_edit_template.txt";
+        public static string EmailTemplateDeletePath = "~/app_data/notification_delete_template.txt";
+        public static string EmailTemplateMovePath = "~/app_data/notification_move_template.txt";
         public static string TemplateDirectory = "~/views/";
         public static string Path404 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck404Path"]) ? "~/views/Puck404.cshtml" : ConfigurationManager.AppSettings["Puck404Path"];
         public static string Path500 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck500Path"]) ? "~/views/Puck500.cshtml" : ConfigurationManager.AppSettings["Puck500Path"];

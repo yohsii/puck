@@ -1,0 +1,23 @@
+﻿<html>
+<head>
+
+</head>
+<body>
+<h1>puck notification</h1>
+	content <!--NodeName--> has been <!--__VerbPast__--> 
+</body>
+</html>
+<!--Id-->
+<!--NodeName-->
+<!--LastEditedBy-->
+<!--CreatedBy-->
+<!--Path-->
+<!--Created-->
+<!--Updated-->
+<!--Revision-->
+<!--Variant-->
+<!--Published-->
+<!--SortOrder-->
+<!--TemplatePath-->
+<!--TypeChain-->
+<!--Type-->

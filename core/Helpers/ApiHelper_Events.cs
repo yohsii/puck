@@ -97,7 +97,7 @@ namespace puck.core.Helpers
         }
         private static void DelegateAfterDelete(object n, IndexingEventArgs e)
         {
-            DelegateAfterEvent(AfterIndexActionList, n, e);
+            DelegateAfterEvent(AfterDeleteActionList, n, e);
         }
         private static void DelegateBeforeMove(object n, BeforeMoveEventArgs e)
         {

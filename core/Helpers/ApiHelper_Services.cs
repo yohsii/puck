@@ -587,7 +587,7 @@ namespace puck.core.Helpers
             if (!beforeArgs.Cancel)
             {
                 SaveContent(toMove, makeRevision: false);
-                startRevisions = repo.CurrentRevisionsByPath(start).ToList().Cast<BaseModel>().ToList();
+                startRevisions = repo.CurrentRevisionsByPath(toMove.Path).ToList().Cast<BaseModel>().ToList();
                 var afterArgs = new MoveEventArgs {Nodes=startRevisions, DestinationNodes=destinationRevisions };
                 OnAfterMove(null,afterArgs);
             }
@@ -615,7 +615,10 @@ namespace puck.core.Helpers
             var repo = Repo;
             var username = HttpContext.Current.User.Identity.Name;
             var model = new Notify { Path = path, Actions = new List<string>(), Users = new List<string>() };
-            var notify = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.Notify+":" +username)).FirstOrDefault();
+            var notify = repo.GetPuckMeta()
+                .Where(x => x.Name.StartsWith(DBNames.Notify+":" +username))
+                .Where(x => x.Key.Equals(path))
+                .FirstOrDefault();
             if (notify != null)
             {
                 var actions = notify.Name.Substring((DBNames.Notify+":" + username+":*").Length);
@@ -625,7 +628,7 @@ namespace puck.core.Helpers
                 model.Users = usersList;
                 model.Recursive = notify.Name.Contains(":*");
             }
-            model.AllActions = PuckCache.NotifyActions.Select(x => new SelectListItem() { Text = x, Value = x, Selected = model.Actions.Contains(x) });
+            model.AllActions = Enum.GetNames(typeof(PuckCache.NotifyActions)).Select(x => new SelectListItem() { Text = x, Value = x, Selected = model.Actions.Contains(x) });
             model.AllUsers = Roles.GetUsersInRole(PuckRoles.Puck).ToList().Select(x => new SelectListItem() { Text = x, Value = x, Selected = model.Users.Contains(x) });
             return model;
         }
@@ -637,6 +640,7 @@ namespace puck.core.Helpers
             var dbvalue = string.Join("", model.Users.Select(x => ":" + x + ":"));
             repo.GetPuckMeta()
                 .Where(x => x.Name.StartsWith(DBNames.Notify + ":" + username + ":"))
+                .Where(x=>x.Key.Equals(model.Path))
                 .ToList()
                 .ForEach(x => repo.DeleteMeta(x));
             var newMeta = new PuckMeta { 
@@ -770,7 +774,26 @@ namespace puck.core.Helpers
             var result = meta.Select(x=>ApiHelper.GetType(x.Value)).ToList();
             return result;
         }
-                
+        public static List<MembershipUser> UsersToNotify(string path,PuckCache.NotifyActions action) { 
+            var repo = Repo;
+            var user = HttpContext.Current.User.Identity.Name;
+            var strAction = action.ToString();
+            var metas = repo.GetPuckMeta()
+                .Where(x=>x.Name.Contains(":"+strAction+":"))
+                .Where(
+                    x=>x.Key.Equals(path) &&  x.Name.Contains(":.:")
+                    ||
+                    x.Key.StartsWith(path) && x.Name.Contains(":*:")
+                )
+                .Where(x=>
+                    string.IsNullOrEmpty(x.Value)
+                    ||
+                    x.Value.Contains(":"+user+":")
+                ).ToList();
+            var usernames = metas.Select(x => x.Name.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[1]).ToList();
+            var users = usernames.Select(x => Membership.GetUser(x)).ToList();
+            return users;
+        }
         public static List<Type> AllModels(bool inclusive = false) {
             var models = Models(inclusive);
             var gmodels = GeneratedModelTypes();

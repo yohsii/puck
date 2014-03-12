@@ -255,6 +255,10 @@
     <Compile Include="Transformers\PuckImageTransformer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\notification_move_template.txt" />
+    <Content Include="App_Data\notification_edit_template.txt" />
+    <Content Include="App_Data\notification_publish_template.txt" />
+    <Content Include="App_Data\notification_delete_template.txt" />
     <Content Include="App_Data\puck.mdf" />
     <Content Include="App_Data\puck_log.ldf">
       <DependentUpon>puck.mdf</DependentUpon>

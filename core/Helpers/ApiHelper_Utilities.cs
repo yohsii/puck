@@ -172,16 +172,39 @@ namespace puck.core.Helpers
             var types = FindDerivedClasses(typeof(I_GeneratedOption)).ToList();
             return types;
         }
-        public static void Email(string from,string to,string host,string subject,string body) {
+        public static void Email(string to, string subject, string body, string host = PuckCache.SmtpHost, string from = null,bool isHtml=true)
+        {
+            from = from ?? PuckCache.SmtpFrom;
             MailMessage mail = new MailMessage(from, to);
             SmtpClient client = new SmtpClient();
             client.Port = 25;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
             client.Host = host;
+            mail.IsBodyHtml = isHtml;
             mail.Subject = subject;
             mail.Body = body;
             client.Send(mail);
+        }
+        public static string EmailTransform(string template, BaseModel model,PuckCache.NotifyActions action) {
+            template = template
+                .Replace("<!--Id-->", model.Id.ToString())
+                .Replace("<!--NodeName-->", model.NodeName)
+                .Replace("<!--LastEditedBy-->", model.LastEditedBy)
+                .Replace("<!--CreatedBy-->", model.CreatedBy)
+                .Replace("<!--Path-->", model.Path)
+                .Replace("<!--Created-->", model.Created.ToString("dd/MM/yyyy hh:mm:ss"))
+                .Replace("<!--Updated-->", model.Updated.ToString("dd/MM/yyyy hh:mm:ss"))
+                .Replace("<!--Revision-->", model.Revision.ToString())
+                .Replace("<!--Variant-->", model.Variant)
+                .Replace("<!--Published-->", model.Published.ToString())
+                .Replace("<!--SortOrder-->", model.SortOrder.ToString())
+                .Replace("<!--TemplatePath-->", model.TemplatePath)
+                .Replace("<!--TypeChain-->", model.TypeChain)
+                .Replace("<!--Type-->", model.Type)
+                .Replace("<!--__Verb__",action.ToString())
+                ;
+            return template;
         }
     }
 }
