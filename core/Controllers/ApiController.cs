@@ -25,6 +25,7 @@ namespace puck.core.Controllers
     [SetPuckCulture]
     public class ApiController : BaseController
     {
+        private static readonly object _savelck = new object();
         I_Content_Indexer indexer;
         I_Content_Searcher searcher;
         I_Log log;
@@ -114,6 +115,29 @@ namespace puck.core.Controllers
             var mod = ApiHelper.RevisionToBaseModel(model);
             return View(templatePath, mod);
         }
+        [Auth(Roles= PuckRoles.Notify)]
+        public JsonResult Notify(string p_path){
+            var model = ApiHelper.NotifyModel(p_path);
+            return Json(model,JsonRequestBehavior.AllowGet);
+        }
+        [Auth(Roles=PuckRoles.Notify)]
+        public ActionResult NotifyDialog(string p_path){
+            var model = ApiHelper.NotifyModel(p_path);
+            return View(model);
+        }
+        [Auth(Roles=PuckRoles.Notify)]
+        [HttpPost]
+        public JsonResult Notify(Notify model){
+            string message="";
+            bool success=false;
+            try{
+                ApiHelper.SetNotify(model);
+                success=true;
+            }catch(Exception ex){
+                message = ex.Message;
+            }
+            return Json(new{success=success,message=message});
+        }
         [Auth(Roles = PuckRoles.Domain)]
         public ActionResult DomainMappingDialog(string p_path)
         {
@@ -151,15 +175,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                if (destination.ToLower().StartsWith(start.ToLower()))
-                    throw new Exception("cannot move parent node to child");
-                if (start.Count(x => x == '/') == 1)
-                    throw new Exception("cannot move root node");
-                var toMove = repo.CurrentRevisionsByPath(start).FirstOrDefault();
-                if(!destination.EndsWith("/"))
-                    destination+="/";
-                toMove.Path = destination + toMove.NodeName;
-                ApiHelper.SaveContent(toMove,makeRevision:false);
+                ApiHelper.Move(start,destination);
                 success = true;
             }
             catch (Exception ex)
@@ -259,7 +275,7 @@ namespace puck.core.Controllers
                 results = PuckCache.PuckSearcher.Query(qs).ToList();
             var model = new List<BaseModel>();
             foreach (var res in results) {
-                var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue], Type.GetType(res[FieldKeys.PuckType])) as BaseModel;
+                var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue],ApiHelper.ConcreteType(ApiHelper.GetType(res[FieldKeys.PuckType]))) as BaseModel;
                 model.Add(mod);
             }
             return View(model);
@@ -311,73 +327,85 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Publish)]
         public JsonResult Publish(Guid id,string variant,string descendants)
         {
-            var message = string.Empty;
-            var success = false;
-            try
+            lock (_savelck)
             {
-                var arrDescendants = descendants.Split(new char[]{','},StringSplitOptions.RemoveEmptyEntries).ToList();
-                ApiHelper.Publish(id,variant,arrDescendants,true);
-                success = true;
+                var message = string.Empty;
+                var success = false;
+                try
+                {
+                    var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    ApiHelper.Publish(id, variant, arrDescendants, true);
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    log.Log(ex);
+                    success = false;
+                    message = ex.Message;
+                }
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
-            {
-                log.Log(ex);
-                success = false;
-                message = ex.Message;
-            }
-            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         [Auth(Roles = PuckRoles.Unpublish)]
         public JsonResult UnPublish(Guid id,string variant,string descendants)
         {
-            var message = string.Empty;
-            var success = false;
-            try
+            lock (_savelck)
             {
-                var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                ApiHelper.Publish(id,variant,arrDescendants,false);
-                success = true;
+                var message = string.Empty;
+                var success = false;
+                try
+                {
+                    var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    ApiHelper.Publish(id, variant, arrDescendants, false);
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    log.Log(ex);
+                    success = false;
+                    message = ex.Message;
+                }
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex)
-            {
-                log.Log(ex);
-                success = false;
-                message = ex.Message;
-            }
-            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
 
         [Auth(Roles = PuckRoles.Delete)]
         public JsonResult Delete(Guid id,string variant = null){
-            var message = string.Empty;
-            var success = false;
-            try {
-                ApiHelper.Delete(id,variant);
-                success = true;
+            lock (_savelck)
+            {
+                var message = string.Empty;
+                var success = false;
+                try
+                {
+                    ApiHelper.Delete(id, variant);
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    log.Log(ex);
+                    success = false;
+                    message = ex.Message;
+                }
+                return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex) {
-                log.Log(ex);
-                success = false;
-                message = ex.Message;
-            }
-            return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
         }
-
+        
         [Auth(Roles = PuckRoles.Edit)]
         public ActionResult Edit(string type,string p_path="/",string variant="",string fromVariant="") {
             if (variant == "null")
                 variant = PuckCache.SystemVariant;
             //empty model of type
-            var modelType= Type.GetType(type);
-            object model = Activator.CreateInstance(modelType);
+            var modelType=ApiHelper.GetType(type);
+            var concreteType = ApiHelper.ConcreteType(modelType);
+            object model = ApiHelper.CreateInstance(concreteType);
             //if creating new, return early
             if (p_path.EndsWith("/"))
             {
                 var basemodel = (BaseModel)model;
                 basemodel.Path = p_path;
                 basemodel.Variant = variant;
-                basemodel.TypeChain =ApiHelper.TypeChain(modelType);
+                basemodel.TypeChain = ApiHelper.TypeChain(concreteType);
                 basemodel.Type = modelType.AssemblyQualifiedName;
                 basemodel.CreatedBy = User.Identity.Name;
                 basemodel.LastEditedBy = basemodel.CreatedBy;
@@ -413,26 +441,31 @@ namespace puck.core.Controllers
         [HttpPost]
         [ValidateInput(false)]
         public JsonResult Edit(FormCollection fc,string p_type,string p_path) {
-            var targetType = Type.GetType(p_type);
-            var model = Activator.CreateInstance(targetType);
-            string path = "";
-            bool success = false;
-            string message = "";
-            try { 
-                UpdateModelDynamic(model,fc.ToValueProvider());
-                ObjectDumper.BindImages(model, int.MaxValue);
-                ObjectDumper.Transform(model, int.MaxValue);
-                var mod = model as BaseModel;
-                ApiHelper.SaveContent(mod);
-                path = mod.Path;
-                success = true;
+            lock (_savelck)
+            {
+                var targetType = ApiHelper.ConcreteType(ApiHelper.GetType(p_type));
+                var model = ApiHelper.CreateInstance(targetType);
+                string path = "";
+                bool success = false;
+                string message = "";
+                try
+                {
+                    UpdateModelDynamic(model, fc.ToValueProvider());
+                    ObjectDumper.BindImages(model, int.MaxValue);
+                    ObjectDumper.Transform(model, int.MaxValue);
+                    var mod = model as BaseModel;
+                    ApiHelper.SaveContent(mod);
+                    path = mod.Path;
+                    success = true;
+                }
+                catch (Exception ex)
+                {
+                    success = false;
+                    message = ex.Message;
+                    log.Log(ex);
+                }
+                return Json(new { success = success, message = message, path = path }, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception ex) {
-                success = false;
-                message = ex.Message;
-                log.Log(ex);
-            }
-            return Json(new {success=success,message=message,path=path },JsonRequestBehavior.AllowGet);
         }
 
         [Auth(Roles = PuckRoles.Cache)]
@@ -496,8 +529,8 @@ namespace puck.core.Controllers
             var model = new RevisionCompare{Current=null,Revision=null,RevisionID=-1};
             if (compareTo != null && current != null)
             {
-                var mCompareTo = JsonConvert.DeserializeObject(compareTo.Value, Type.GetType(compareTo.Type)) as BaseModel;
-                var mCurrent = JsonConvert.DeserializeObject(current.Value, Type.GetType(current.Type)) as BaseModel;
+                var mCompareTo = JsonConvert.DeserializeObject(compareTo.Value,ApiHelper.ConcreteType(ApiHelper.GetType(compareTo.Type))) as BaseModel;
+                var mCurrent = JsonConvert.DeserializeObject(current.Value,ApiHelper.ConcreteType(ApiHelper.GetType(current.Type))) as BaseModel;
                 model = new RevisionCompare { Current = mCurrent, Revision = mCompareTo,RevisionID=compareTo.RevisionID};
             }
             return View(model);
@@ -525,7 +558,7 @@ namespace puck.core.Controllers
                 }
                 if (current.Any(x => x.Published))
                 {
-                    var model = JsonConvert.DeserializeObject(rnode.Value, Type.GetType(rnode.Type)) as BaseModel;
+                    var model = JsonConvert.DeserializeObject(rnode.Value,ApiHelper.ConcreteType(ApiHelper.GetType(rnode.Type))) as BaseModel;
                     indexer.Index(new List<BaseModel>(){model});
                 }
                 path = rnode.Path;

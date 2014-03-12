@@ -25,7 +25,7 @@
         @foreach(var m in Model){
             var kvp = m.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
             try{
-                var ctype = Type.GetType(kvp[0]);
+                var ctype = ApiHelper.GetType(kvp[0]);
                 var mins=0;
                 var error = false;
                 if(ctype==null || !int.TryParse(kvp[1],out mins)){

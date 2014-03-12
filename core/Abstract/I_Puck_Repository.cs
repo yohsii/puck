@@ -8,6 +8,18 @@ namespace puck.core.Abstract
 {
     public interface I_Puck_Repository
     {
+        IQueryable<GeneratedModel> GetGeneratedModel();
+        IQueryable<GeneratedProperty> GetGeneratedProperty();
+        IQueryable<GeneratedAttribute> GetGeneratedAttribute();
+        
+        void AddGeneratedModel(GeneratedModel gm);
+        void AddGeneratedProperty(GeneratedProperty gm);
+        void AddGeneratedAttribute(GeneratedAttribute gm);
+        
+        void DeleteGeneratedModel(GeneratedModel gm);
+        void DeleteGeneratedProperty(GeneratedProperty gm);
+        void DeleteGeneratedAttribute(GeneratedAttribute gm);
+        
         IQueryable<PuckMeta> GetPuckMeta();
         void DeleteMeta(string name, string key, string value);
         void DeleteMeta(PuckMeta meta);

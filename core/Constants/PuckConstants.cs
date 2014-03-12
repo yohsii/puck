@@ -13,6 +13,12 @@ using System.Configuration;
 using Ninject;
 namespace puck.core.Constants
 {
+    public static class GeneratorValues { 
+        public static Dictionary<string,string> PropertyType = new Dictionary<string,string>(){
+            {"Single Line Text","string"},
+            {"Number","int"}
+        };
+    }
     public static class PuckRoles
     {
         public const string Create = "_create";
@@ -26,6 +32,7 @@ namespace puck.core.Constants
         public const string Localisation = "_localisation";
         public const string Domain = "_domain";
         public const string Cache = "_cache";
+        public const string Notify = "_notify";
         public const string Settings = "_settings";
         public const string Tasks = "_tasks";
         public const string Users = "_users";
@@ -59,9 +66,12 @@ namespace puck.core.Constants
         public static string CacheExclude = "cacheexclude";
         public static string UserStartNode = "userstartnode";
         public static string UserVariant = "uservariant";
+        public static string GeneratedModel = "generatedmodel";
+        public static string Notify = "notify";
     }
     public static class DBKeys
     {
+        //public static string ObjectCacheMinutes = "objectcachemin";
         public static string ObjectCacheMinutes = "objectcachemin";
         public static string Languages = "languages";
         public static string DefaultLanguage = "defaultlanguage";
@@ -82,6 +92,8 @@ namespace puck.core.Constants
     }
     public static class PuckCache
     {
+        public static List<string> NotifyActions = new List<string>() {"Edit","Publish","Delete","Move"};
+        public static string TemplateDirectory = "~/views/";
         public static string Path404 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck404Path"]) ? "~/views/Puck404.cshtml" : ConfigurationManager.AppSettings["Puck404Path"];
         public static string Path500 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck500Path"]) ? "~/views/Puck500.cshtml" : ConfigurationManager.AppSettings["Puck500Path"];
         public static bool Debug = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckDebug"]) && ConfigurationManager.AppSettings["PuckDebug"].ToLower() == bool.TrueString.ToLower();
@@ -99,7 +111,7 @@ namespace puck.core.Constants
         public static Dictionary<string, string> Redirect301 { get; set; }
         public static Dictionary<string, string> Redirect302 { get; set; }
         public static Dictionary<string, int> TypeOutputCache { get; set; }
-        //public static Dictionary<string, List<string>> TypeFields { get; set; }
+        public static Dictionary<string, Type> IGeneratedToModel { get; set; }
         public static Dictionary<string, Dictionary<string,string>> TypeFields { get; set; }
         public static HashSet<string> OutputCacheExclusion { get; set; }
         public static IKernel NinjectKernel { get; set; }
@@ -110,6 +122,7 @@ namespace puck.core.Constants
         public static I_Log PuckLog { get { return NinjectKernel.Get<I_Log>(); } }
         public static List<Analyzer> Analyzers { get; set; }
         public static Dictionary<Type, Analyzer> AnalyzerForModel { get; set; }
+
     }
 
     

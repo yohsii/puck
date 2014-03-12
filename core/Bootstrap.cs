@@ -19,6 +19,7 @@ namespace puck.core
     {
         public static void Ini() {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<PuckContext, puck.core.Migrations.Configuration>());
+            ApiHelper.SetGeneratedMappings();
             ApiHelper.UpdateDomainMappings();
             ApiHelper.UpdatePathLocaleMappings();
             ApiHelper.UpdateTaskMappings();
@@ -29,7 +30,7 @@ namespace puck.core
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
             foreach(var t in ApiHelper.Models(true)){
-                var instance = Activator.CreateInstance(t);
+                var instance = ApiHelper.CreateInstance(t);
                 var dmp = ObjectDumper.Write(instance,int.MaxValue);
                 var analyzers = new List<KeyValuePair<string, Analyzer>>();
                 PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string,string>();
@@ -63,6 +64,28 @@ namespace puck.core
                     };
                 }
             }
+            //bind notification handlers
+            //publish
+            PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_publish_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
+            {
+                //var node = args.Node;                
+            }, false);
+            //edit
+            ApiHelper.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_edit_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
+            {
+                //var node = args.Node;                
+            }, false);
+            //delete
+            ApiHelper.RegisterAfterDeleteHandler<puck.core.Base.BaseModel>("puck_delete_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
+            {
+                //var node = args.Node;                
+            }, false);
+            //move
+            ApiHelper.RegisterAfterMoveHandler<puck.core.Base.BaseModel>("puck_move_notification", (object o, puck.core.Events.MoveEventArgs args) =>
+            {
+                //var node = args.Node;                
+            }, false);
+
 
             //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
             /*

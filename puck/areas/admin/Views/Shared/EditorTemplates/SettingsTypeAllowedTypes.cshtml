@@ -15,7 +15,7 @@
         foreach (var entry in Model) {
             var kv = entry.Split(new char[]{':'},StringSplitOptions.RemoveEmptyEntries);
             if (m.AssemblyQualifiedName.Equals(kv[0])) {
-                included.Add(Type.GetType(kv[1]));
+                included.Add(ApiHelper.GetType(kv[1]));
             }
         }
         var excluded = models.Where(x=>!included.Any(i=>x.AssemblyQualifiedName.Equals(i.AssemblyQualifiedName))).ToList();

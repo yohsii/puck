@@ -16,4 +16,13 @@ namespace puck.core.Events
     public class DispatchEventArgs:EventArgs {
         public BaseTask Task { get; set; }
     }
+
+    public class MoveEventArgs : EventArgs
+    {
+        public List<BaseModel> Nodes { get; set; }
+        public List<BaseModel> DestinationNodes { get; set; }
+    }
+    public class BeforeMoveEventArgs : MoveEventArgs {
+        public bool Cancel{get;set;}
+    }
 }

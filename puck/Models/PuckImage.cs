@@ -18,6 +18,10 @@ namespace puck.areas.admin.Models
         public string Size {get;set;}
         [UIHint("SettingsReadOnly")]
         public string Extension { get; set; }
+        [UIHint("SettingsReadOnly")]
+        public int Width { get; set; }
+        [UIHint("SettingsReadOnly")]
+        public int Height { get; set; }
         public HttpPostedFileBase File { get; set; }
     }
 }

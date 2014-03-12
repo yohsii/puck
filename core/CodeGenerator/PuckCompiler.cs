@@ -37,8 +37,7 @@ namespace puck.core.CodeGenerator
             CompilerParameters compilerparams = new CompilerParameters();
             compilerparams.GenerateExecutable = false;
             compilerparams.GenerateInMemory = false;
-
-
+            
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {

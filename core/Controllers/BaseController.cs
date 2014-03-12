@@ -84,10 +84,10 @@ namespace puck.core.Controllers
 #if DEBUG
                     using (MiniProfiler.Current.Step("deserialize"))
                     {
-                        model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], Type.GetType(result[FieldKeys.PuckType])) as BaseModel;
+                        model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], ApiHelper.GetType(result[FieldKeys.PuckType])) as BaseModel;
                     }
 #else
-                    model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], Type.GetType(result[FieldKeys.PuckType])) as BaseModel;
+                    model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], ApiHelper.GetType(result[FieldKeys.PuckType])) as BaseModel;
 #endif
                     if (!PuckCache.OutputCacheExclusion.Contains(searchPath))
                     {

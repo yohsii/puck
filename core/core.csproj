@@ -118,6 +118,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\I_Generated.cs" />
+    <Compile Include="Abstract\I_GeneratedOption.cs" />
     <Compile Include="Abstract\I_Puck_Cache.cs" />
     <Compile Include="Abstract\I_Puck_Editor_Settings.cs" />
     <Compile Include="Abstract\I_Puck_Repository.cs">
@@ -150,6 +152,7 @@
     <Compile Include="Concrete\PuckContext.cs" />
     <Compile Include="Controllers\SettingsController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Entities\GeneratedEntities.cs" />
     <Compile Include="Entities\PuckMeta.cs" />
     <Compile Include="Entities\PuckRevision.cs" />
     <Compile Include="Events\PuckEventArgs.cs" />
@@ -163,10 +166,17 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PuckLabels.resx</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\ApiHelper.cs" />
+    <Compile Include="Helpers\ApiHelper_Services.cs" />
+    <Compile Include="Helpers\ApiHelper_Events.cs" />
+    <Compile Include="Helpers\ApiHelper_Utilities.cs" />
     <Compile Include="Helpers\ObjectDumper.cs" />
     <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Extensions\ViewExtensions.cs" />
+    <Compile Include="Models\GeneratedModel.cs" />
+    <Compile Include="Models\NotifyDialog.cs" />
+    <Compile Include="Models\RegexOption.cs" />
+    <Compile Include="Models\TasksModel.cs" />
+    <Compile Include="Models\TemplateModels.cs" />
     <Compile Include="PuckLucene\PuckQueryParser.cs" />
     <Compile Include="Migrations\201307080849396_indexes.cs" />
     <Compile Include="Migrations\201307080849396_indexes.Designer.cs">

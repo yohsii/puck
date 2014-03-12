@@ -15,6 +15,52 @@ namespace puck.core.Concrete
             return repo.PuckMeta;
         }
 
+        public IQueryable<GeneratedModel> GetGeneratedModel()
+        {
+            return repo.GeneratedModel;
+        }
+
+        public IQueryable<GeneratedProperty> GetGeneratedProperty()
+        {
+            return repo.GeneratedProperty;
+        }
+
+        public IQueryable<GeneratedAttribute> GetGeneratedAttribute()
+        {
+            return repo.GeneratedAttribute;
+        }
+               
+        
+        public void AddGeneratedModel(GeneratedModel gm) {
+            repo.GeneratedModel.Add(gm);            
+        }
+
+        public void AddGeneratedProperty(GeneratedProperty gp)
+        {
+            repo.GeneratedProperty.Add(gp);
+        }
+
+        public void AddGeneratedAttribute(GeneratedAttribute ga)
+        {
+            repo.GeneratedAttribute.Add(ga);
+        }
+                
+        public void DeleteGeneratedModel(GeneratedModel gm)
+        {
+            repo.GeneratedModel.Remove(gm);
+        }
+
+        public void DeleteGeneratedProperty(GeneratedProperty gp)
+        {
+            repo.GeneratedProperty.Remove(gp);
+        }
+
+        public void DeleteGeneratedAttribute(GeneratedAttribute ga)
+        {
+            repo.GeneratedAttribute.Remove(ga);
+        }
+
+        
         public void AddMeta(PuckMeta meta) {
             repo.PuckMeta.Add(meta);
             //repo.SaveChanges();
@@ -93,7 +139,7 @@ namespace puck.core.Concrete
                 .Where(x => x.Id == id && x.Current && x.Variant.ToLower().Equals(variant.ToLower()));
             return results.FirstOrDefault();
         }
-
+        
         public void DeleteMeta(string name,string key,string value)
         {
             var metas = GetPuckMeta();

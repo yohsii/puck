@@ -24,7 +24,10 @@ namespace puck.Transformers
                 p.File.SaveAs(absfilepath);
                 p.Path = filepath.TrimStart('~');
                 p.Size = p.File.InputStream.Length.ToString();
-                p.Extension=Path.GetExtension(p.File.FileName);                
+                p.Extension=Path.GetExtension(p.File.FileName);
+                var img = System.Drawing.Image.FromStream(p.File.InputStream);
+                p.Width = img.Width;
+                p.Height = img.Height;
             }catch(Exception ex){
                 
             }finally {

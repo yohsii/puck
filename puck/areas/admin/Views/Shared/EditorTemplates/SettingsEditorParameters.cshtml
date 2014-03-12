@@ -64,8 +64,8 @@
             {
                 var keys = entry.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 if (keys.Length < 2) { continue; }
-                var settingsType = Type.GetType(keys[0]);
-                var modelType = Type.GetType(keys[1]);
+                var settingsType = ApiHelper.GetType(keys[0]);
+                var modelType = ApiHelper.GetType(keys[1]);
                 if (settingsType == null || modelType == null){
                     continue;
                 }

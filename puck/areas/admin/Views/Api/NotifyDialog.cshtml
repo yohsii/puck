@@ -1,0 +1,39 @@
+﻿@model puck.core.Models.Notify
+@{
+    Layout = null;
+    List<Type> types; 
+    if(string.IsNullOrEmpty(Request["type"])){
+        types = ApiHelper.AllModels(false);
+    }else{
+        types = ApiHelper.AllowedTypes(Request["type"]);
+        if(types.Count==0){
+            types = ApiHelper.Models(false);
+        }
+    }    
+    var variants = ApiHelper.Variants();    
+}
+<div class="create_dialog settings">
+    @using(Html.BeginForm("Notify","Api")){
+        @Html.HiddenFor(x=>x.Path)
+    <div class="grid_3 push_1">
+        <span>
+        Set email notifications for <b>@Model.Path.Substring(Model.Path.LastIndexOf("/")+1)</b>
+        </span>    
+        <div class="fieldwrapper">
+            <label>Actions</label>
+            @Html.ListBoxFor(x=>x.Actions,Model.AllActions)
+        </div>
+        <div class="fieldwrapper">
+            <label>Recursive</label>
+            @Html.CheckBoxFor(x=>x.Recursive)
+        </div>
+        <div class="fieldwrapper">
+            <label>Users</label>
+            @Html.ListBoxFor(x=>x.Users,Model.AllUsers)
+        </div>        
+        <div>
+            <button class='btn-link'>Create</button>
+        </div>        
+    </div>
+    }
+</div>

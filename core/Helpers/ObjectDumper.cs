@@ -384,7 +384,7 @@ namespace puck.core.Helpers
                                     Model = topElement,
                                     Key = prefix + p.Name,
                                     Value = p.GetValue(element, null),
-                                    Type = Type.GetType(p.PropertyType.AssemblyQualifiedName),
+                                    Type = ApiHelper.GetType(p.PropertyType.AssemblyQualifiedName),
                                     Attributes = p.GetCustomAttributes(false)
                                 });
                             }
@@ -469,7 +469,7 @@ namespace puck.core.Helpers
                                 {
                                     Key = prefix+m.Name
                                     ,Value = f != null ? f.GetValue(element) : p.GetValue(element, null)!=null?p.GetValue(element, null):null
-                                    ,Type = f != null ? Type.GetType(f.FieldType.AssemblyQualifiedName) : Type.GetType(p.PropertyType.AssemblyQualifiedName)
+                                    ,Type = f != null ? ApiHelper.GetType(f.FieldType.AssemblyQualifiedName) : ApiHelper.GetType(p.PropertyType.AssemblyQualifiedName)
                                     ,Attributes = m.GetCustomAttributes(false)
                                 });                                
                             }

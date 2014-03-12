@@ -4,6 +4,8 @@
 .main.grid ul{list-style-type:none;margin-left:0px;}
 .main.grid .menutop li{float:left;margin-right:10px;}
 .main.grid .menutop li a{border-bottom:2px solid #e2e2e2;font-weight:bold;font-size:20px;}
+.main.grid .menutop li.selected a{border-bottom:2px solid #0088cc;}
+
 .main.grid .leftarea{border-right:4px solid #e2e2e2;}
 .main.grid .leftarea,.main.grid .rightarea{height:100%}
 .main.grid .hide{display:none;}
@@ -71,6 +73,14 @@ div.search_results tr:hover
 div.settings{padding-top:0px;}
 select.languages{height:200px !important;width:550px !important;}
 .nodisplay{display:none;}
+.btn-group.template-dropdown, .btn-group.node-dropdown
+{
+    position:absolute;
+}
+.settings fieldset
+{
+    min-width:initial !important;
+}
 .settings .redirects,.settings .orphans{padding-bottom:20px;}
 .settings .redirects ul,.settings .orphans ul{padding:0px;margin:0px;}
 .settings .redirects li,.settings .orphans li{float:left;margin-left:10px;}
@@ -92,7 +102,7 @@ select.languages{height:200px !important;width:550px !important;}
 .settings .settings_type_allowed_types .list,.settings .settings_type_allowed_templates .list{float:left;padding:20px;margin:10px;background:#eeffee;}
 .settings .settings_type_allowed_types .field,.settings .settings_type_allowed_templates .field{cursor:pointer;}
 .settings .settings_type_allowed_types select,.settings .settings_type_allowed_templates select{width:400px;}
-.settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#f7f7f7;clear:both;padding:0px 10px 0 10px}
+.settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#f9f9f9;clear:both;padding:0px 10px 10px 10px}
 .settings .fieldwrapper h2{font-size:20px;}
 .settings label{text-decoration:underline;}
 .settings select.redirect_type{width:150px;}
@@ -145,6 +155,8 @@ button.content_publish{position:absolute;top:0px;right:0px;}
 .path_locale_dialog button{float:right;}
 .domain_mapping_dialog button{float:right;}
 .tasklist th{padding:10px;font-size:13px;}
+.tasklist table{width:100%;}
+.tasklist tr:nth-child(2n+1){background:#e2e2e2;}
 .fieldwrapper{margin-top:10px;}
 .fieldwrapper label{font-weight:bold;}
 .fieldwrapper.complex{}
@@ -160,6 +172,16 @@ ul.content.nomenu .node i.menu{display:none;}
 .leftarea .node span.variant{display:none;}
 .leftarea .node.selected>.inner{border-top:1px solid #0088cc;border-bottom:1px solid #0088cc;}
 .search_highlight{color:#ffffcc;}
+.view_edit .save_button_container{
+    margin:20px 0 0 0;
+    float:right;
+}
+.view_edit .save{margin-top:-10px;}
+.view_edit .node.selected
+{
+    background:#eeffee;
+}
+
 .puck_icon{
     display:none;
     display: inline-block;

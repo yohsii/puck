@@ -1,63 +1,119 @@
-﻿@model List<puck.core.Base.BaseTask>
+﻿@model puck.core.Models.TasksModel
 
 @{
     Layout = null;
 }
-
-<div class="tasklist">
-    <p>
-        <a class="btn-link create_task" href="@Url.Action("Create")">
-            <i class="icon-plus-sign"></i>
-            New Task
-        </a>
+<div class="developer settings">
+    <ul class="nav nav-tabs">
+        <li class="active"><a class="fieldtabs" href="#fieldtabs0">Views</a></li>
+        <li class=""><a class="fieldtabs" href="#fieldtabs1">Generated Models</a></li>
+        <li class=""><a class="fieldtabs" href="#fieldtabs2">Tasks</a></li>
+    </ul>
         
-    </p>
-    <table>
-        <tr>
-            <th>Type</th>
-            <th>
-                Name
-            </th>
-            <th>
-                Recurring
-            </th>
-            <th>
-                Interval (min)
-            </th>
-            <th>
-                Run On
-            </th>
-            <th>
-                Last Run
-            </th>
-            <th></th>
-        </tr>
+    <div id="fieldtabs0" class="fieldwrapper">
+        <div class="editor-label">
+        @Html.Label("Views")
+        </div>
+        <div class="editor-field">
+            @{
+            Html.RenderPartial("SettingsViewEdit");   
+            }
+            
+        </div>
+        
+    </div>
     
-    @foreach (var item in Model) {
-        <tr>
-            <td>@item.GetType().Name<br /><sub>@item.GetType().Namespace</sub></td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Recurring)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IntervalMinutes)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RunOn)
-            </td>
-            <td>
-                @*Html.DisplayFor(modelItem => item.LastRun)*@
-                @item.LastRun
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.ID }) <br />
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class="delete"})                
-            </td>
-        </tr>
-    }
+    <div id="fieldtabs1" class="fieldwrapper">
+        <div class="editor-label">
+        @Html.LabelFor(model => model.GeneratedModels)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.GeneratedModels)
+            @Html.ValidationMessageFor(model => model.GeneratedModels)
+        </div>
+    </div>
     
-    </table>
+    <div id="fieldtabs2" class="tasklist fieldwrapper">
+        @Html.LabelFor(model => model.Tasks)
+        <p>
+            <a class="btn-link create_task" href="@Url.Action("Create")">
+                <i class="icon-plus-sign"></i>
+                New Task
+            </a>
+        
+        </p>
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Recurring
+                </th>
+                <th>
+                    Interval (min)
+                </th>
+                <th>
+                    Run On
+                </th>
+                <th>
+                    Last Run
+                </th>
+                <th></th>
+            </tr>
+    
+        @foreach (var item in Model.Tasks) {
+            <tr>
+                <td>@item.GetType().Name<br /><sub>@item.GetType().Namespace</sub></td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Recurring)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IntervalMinutes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RunOn)
+                </td>
+                <td>
+                    @*Html.DisplayFor(modelItem => item.LastRun)*@
+                    @item.LastRun
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.ID }) <br />
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID }, new { @class="delete"})                
+                </td>
+            </tr>
+        }
+    
+        </table>
+    </div>    
+    
 </div>
+
+<style>
+    #fieldtabs1
+    {
+        display:none;
+    }
+    #fieldtabs2
+    {
+        display:none;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $("ul.nav li").click(function (e) {
+            e.preventDefault();
+            $("ul.nav li").removeClass("active");
+            $(this).addClass("active");
+            $("div.fieldwrapper").hide();
+            $($(this).find("a").attr("href")).show();
+            codeMirror.refresh();
+
+        });
+    });
+</script>

@@ -1,0 +1,87 @@
+﻿@{
+    var views = ApiHelper.Views();    
+}
+<div class="view_edit">
+    <div class="template_root">
+        <ul data-dropdown="template-dropdown" class="content templates">
+            <li class="node" data-children_path="/" data-type="folder" data-id="/" data-path="/" data-name="Root" data-has_children="true">
+                <div class="inner">
+                    <i class="icon-cog menu"></i>
+                    <span class="nodename">Root&nbsp;</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    <textarea>
+
+    </textarea>
+
+    <div class="save_button_container clearboth">
+        <a class="btn btn-success save">save</a>
+    </div>
+
+    <div class="clearboth"></div>
+
+    <div class="btn-group template-dropdown puck-dropdown">
+        <ul class="dropdown-menu">
+            <li><a href="#" data-action="template_create" data-permission="_tasks"><i class="icon-plus-sign"></i> Create</a></li>
+            <li><a href="#" data-action="template_new_folder" data-permission="_tasks"><i class="icon-file"></i> New Folder</a></li>
+            <li><a href="#" data-action="template_delete" data-permission="_tasks"><i class="icon-file"></i> Delete</a></li>
+            <li><a href="#" data-action="template_move" data-permission="_tasks"><i class="icon-file"></i> Move</a></li>
+        </ul>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    onAfterDom(function () {
+        var container = $(".view_edit");
+        var ta = container.find("textarea");
+
+        var editor = CodeMirror.fromTextArea(ta.get(0), {
+            mode: "text/html"
+        });
+        window.codeMirror = editor;
+        var select = container.find("select");
+        var saveBtn = container.find(".save");
+        var selectedNode;
+        container.on("click", ".node[data-type='file']", function () {
+            selectedNode = $(this);
+            container.find(".node").removeClass("selected");
+            selectedNode.addClass("selected");
+            var fp = selectedNode.attr("data-path");
+            getFile(fp);
+        });
+        
+        var getFile = function (fp) {
+            $.get("/admin/task/getviewfilecontent?fp=" + fp, function (data) {
+                editor.setValue(data);                
+            });
+        }
+
+        var saveFile = function (fp,val) {
+            $.post("/admin/task/savefilecontent",{fp:fp,content:val}, function (data) {
+                if (data.success) {
+                    console.log(data.success);
+                } else {
+                    console.log(data.message);
+                }
+            });
+        }
+
+        saveBtn.click(function () {
+            if (selectedNode == null)
+                return false;
+            var fp = selectedNode.attr("data-path");
+            var value = editor.getValue();
+            saveFile(fp,value);
+        });
+                
+        getDrawTemplates("", container.find("ul.content.templates .node"), function () { });
+
+        $("div.CodeMirror").css({height: $(window).height()- 200 - $("div.CodeMirror").offset().top + "px"});
+
+    });
+
+</script>

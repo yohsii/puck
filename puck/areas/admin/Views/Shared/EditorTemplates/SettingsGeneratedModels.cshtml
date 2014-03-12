@@ -1,0 +1,407 @@
+﻿@model List<puck.core.Entities.GeneratedModel>
+<style>
+    .settings_generated_models h3{font-size:15px;margin-bottom:0px;}
+    .settings_generated_models ._interfaces{display:none;}
+    .settings_generated_models .field_group > div{float:left;}
+    .settings_generated_models .update_models{float:right;}
+    .settings_generated_models .model{/*background:#fefefe;*/padding:4px;}
+    .settings_generated_models .properties{/*background:#f7f7f7;*/padding:0px 10px 5px 10px;}
+    .settings_generated_models .model .buttons{padding:24px 0 0 22px;}
+    .settings_generated_models .model .values{display:none;}
+    .settings_generated_models .properties, .settings_generated_models .attributes, .settings_generated_models .options
+    {
+        clear:both;
+    }
+    .settings_generated_models .properties{margin-left:20px;display:none;}
+    .settings_generated_models .attributes{position:relative;margin-left:50px;padding-bottom:5px;}
+    .settings_generated_models .attributes>div>a{vertical-align:top;margin-top:5px;}
+    .settings_generated_models .opt_select{position:absolute;top:1px;left:75px;}
+    .settings_generated_models .options{margin-left:20px;padding-bottom:5px;}
+    .settings_generated_models .property{/*background:#fefefe;*//*margin:5px 0 5px 0;*/}
+    .settings_generated_models .attribute{/*background:#f7f7f7;*//*margin:5px 0 5px 0;*/width:99%;}
+    .settings_generated_models .option{/*background:#fffeef;*/margin:5px 0 5px 0;width:99%;}
+    .settings_generated_models .model{/*margin:5px 0 5px 0;*/}
+    .settings_generated_models h3{margin:0px;text-decoration:underline;}
+    .settings_generated_models a{padding-top:0px;padding-bottom:0px;}
+    .settings_generated_models .generate_model{float:right;text-decoration:underline;}
+</style>
+<div class="settings_generated_models">
+    <h2><a class="new_model btn btn-link"><i class="icon-plus-sign"></i> New Model</a></h2>
+    <div class="models">
+        
+    </div>    
+    <div class="clearboth"></div>
+    <div class="_interfaces">
+        <div class="properties">
+            <h3>Properties<a class="btn btn-link add"><i class="icon-plus-sign"></i></a></h3>            
+            <div class="list"></div>
+        </div>
+        <div class="attributes">
+            <h3>Options</h3>
+            <div class="opt_select">
+                <select class="optionType">
+                @{
+                    var optionTypes = ApiHelper.GeneratedOptions();
+                    foreach(var opt in optionTypes){
+                        <option value="@opt.AssemblyQualifiedName">@opt.Name</option>
+                    }
+                }
+                </select>
+                <a class="btn btn-link add"><i class="icon-plus-sign"></i></a>
+            </div>
+            <div class="list"></div>
+        </div>
+        <div class="options">
+            <h3>Options <a class="btn btn-link add">New option</a></h3>            
+            <div class="list"></div>
+        </div>        
+        <div class="property">
+          <a class="btn btn-link"></a> <i class="icon-trash"></i>
+        </div>
+        <div class="attribute">
+          <a class="btn btn-link"></a> <i class="icon-trash"></i>
+        </div>
+        <div class="option">
+           - <a class="btn btn-link"></a>
+        </div>        
+    </div>    
+</div>
+
+<script>
+    onAfterDom(function () {
+        $(document).unbind("click.expand_generated_models");
+        $(document).unbind("click.generate_model");
+        $(document).on("click.generate_model", ".generate_model", function () {
+            var el = $(this);
+            var id = el.parents(".model").attr("data-id");
+            $.post("/admin/Task/GenerateModel/" + id, function (d) {
+                console.log(d);
+                if (d.success) {
+                    msg(true,"model generated");
+                } else {
+                    msg(false,d.message);
+                }
+            });
+        });
+        $(document).on("click.expand_generated_models", ".model i", function () {
+            var el = $(this);
+            var modelContainer = el.parents(".model");
+            if (modelContainer.find(".properties").is(":visible")) {
+                el.removeClass("icon-chevron-down");
+                el.addClass("icon-chevron-right");
+                modelContainer.find(".properties").hide();
+            } else {
+                el.removeClass("icon-chevron-right");
+                el.addClass("icon-chevron-down");
+                modelContainer.find(".properties").show();
+            }
+        });
+        var toLoad = [
+            @for (var i = 0; i < Model.Count;i++ ){
+                var mod = Model[i];
+                @Html.Raw(
+                "{"
+                +"name:'"+mod.Name+"',base:'"+mod.Inherits+"',id:"+mod.ID
+                +",properties:[")
+                if(mod.Properties!=null){
+                    for(var ii=0;ii<mod.Properties.Count;ii++){
+                        var prop = mod.Properties.ToList()[ii];
+                        @Html.Raw("{name:'"+prop.Name+"',id:"+prop.ID+",attributes:[")
+                        if(prop.Attributes!=null){
+                            for (var iii = 0; iii < prop.Attributes.Count;iii++ ){
+                                var att = prop.Attributes.ToList()[iii];
+                                var attType = ApiHelper.GetType(att.Type);
+                                if(attType == null){
+                                    continue;
+                                }
+                                var attName = attType.Name; 
+                                @Html.Raw("{name:'"+attName+"',type:'"+att.Type+"',id:"+att.ID+",options:[")
+                                  
+                                @Html.Raw("]}")
+                                @(iii==prop.Attributes.Count-1?"":",")
+                            }                            
+                        }
+                        @Html.Raw("]}")                        
+                        @(ii==mod.Properties.Count-1?"":",")
+                    }                
+                }
+                @Html.Raw("]}")
+                @Html.Raw(i==Model.Count-1?"":",")
+            }
+        ];
+        var addOpt = function (o,con) {
+            console.log("opt:%o",o);
+            if (container.find(".option[data-id=" + o.id + "]").length > 0) {
+                container.find(".option[data-id=" + o.id + "]>a").html(""+o.name);
+                return;
+            }
+            var el = $("<div/>").addClass("option").attr("data-id", o.id);
+            var lnk = $("<a class='btn btn-link' href='#'/>").html(""+o.name);
+            el.append(lnk);
+            con.append(el);            
+        }
+        var addAtt = function (a, con) {
+            console.log("att:%o", a);
+            if (container.find(".attribute[data-id=" + a.id + "]").length > 0) {
+                container.find(".attribute[data-id=" + a.id + "]>a").html(""+a.name);
+                return;
+            }
+            var el = $("<div/>").addClass("attribute").attr("data-id", a.id).attr("data-type",a.type);
+            var del = $("<i class='icon-trash'></i>");
+            var lnk = $("<a class='btn btn-link' href='#'/>").html("- " + a.name);
+            el.append(lnk).append(del);
+            con.append(el);
+            //var optContainer = intf("options");
+            //el.append(optContainer);
+            //$(a.options).each(function (i) {
+                //addOpt(this, optContainer);
+            //});
+        }
+        var addProp = function (p,con) {
+            console.log("prop:%o", p,con);
+            if (container.find(".property[data-id=" + p.id + "]").length > 0) {
+                container.find(".property[data-id=" + p.id + "]>a").html(""+p.name);
+                return;
+            }
+            var el = $("<div/>").addClass("property").attr("data-id", p.id);
+            var del = $("<i class='icon-trash'></i>");
+            var lnk = $("<a class='btn btn-link' href='#'/>").html("- " + p.name);
+            el.append(lnk).append(del);
+            con.append(el);
+            var attContainer = intf("attributes");
+            el.append(attContainer);
+            $(p.attributes).each(function (i) {
+                addAtt(this,attContainer.find(".list"));
+            });
+        }
+        var addMod = function (m) {
+            console.log("loading: %o", m);
+            if (container.find(".model[data-id=" + m.id + "]").length > 0) {
+                container.find(".model[data-id=" + m.id + "]>a").html(""+m.name);
+                return;
+            }
+            var el = $("<div/>").addClass("model").attr("data-id", m.id);
+            var del = $("<i class='icon-trash'></i>");
+            var lnk = $("<a class='btn btn-link' href='#'/>").html("" + m.name);
+            el.append('<i class="icon-chevron-right"></i>');
+            el.append('<button class="generate_model btn btn-link">Generate Model</button>');
+            el.append(lnk);
+            el.append(del);
+            var propContainer = intf("properties");
+            el.append(propContainer);
+            $(m.properties).each(function (i) {
+                addProp(this,propContainer.find(".list"));
+            });
+            models.append(el);
+        }
+        var init = function () {
+            for (var i = 0; i < toLoad.length; i++) {
+                var mod = toLoad[i];
+                addMod(mod);
+            }
+        }
+        var propertyName = function (i) {
+            return "@ViewData.ModelMetadata.PropertyName";
+        }
+        var container = $(".settings_generated_models");
+        //bind new buttons
+        container.on("click", ".properties>h3>a.add", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var pid = $(this).parents(".model").attr("data-id");
+            var dest = $(this).parents(".properties").find(">.list");
+            editProperty(dest, -1,pid);
+        });
+        container.on("click", ".attributes>.opt_select>a.add", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var pid = $(this).parents(".property").attr("data-id");
+            var dest = $(this).parents(".attributes").find(">.list");
+            var optionType = $(this).parents(".attributes").find("select").val();
+            console.log(optionType);
+            editAttribute(dest, -1, pid,optionType);
+        });
+        container.on("click", ".options>h3>a.add", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var pid = $(this).parents(".attribute").attr("data-id");
+            var dest = $(this).parents(".options").find(">.list");
+            editAttributeOption(dest, -1,pid);
+        });
+        container.on("click", ".new_model", function (e) {
+            editModel();
+        });
+        //bind edit buttons
+        container.on("click", ".property>a", function (e) {
+            var pid = $(this).parents(".model").attr("data-id");
+            var id = $(this).parents(".property").attr("data-id");
+            var dest = $(this).parents(".properties").find(">.list");
+            console.log("pid:%s id:%s",pid,id);
+            editProperty(dest, id,pid);
+        });
+        container.on("click", ".attribute>a", function (e) {
+            var pid = $(this).parents(".property").attr("data-id");
+            var id = $(this).parents(".attribute").attr("data-id");
+            var type = $(this).parents(".attribute").attr("data-type");
+            var dest = $(this).parents(".attributes").find(">.list");
+            editAttribute(dest, id,pid,type);
+        });
+        container.on("click", ".option>a", function (e) {
+            var pid = $(this).parents(".attribute").attr("data-id");
+            var id = $(this).parents(".option").attr("data-id");
+            var dest = $(this).parents(".options").find(">.list");
+            editAttributeOption(dest, id,pid);
+        });
+        container.on("click", ".model>a", function (e) {
+            var id = $(this).parents(".model").attr("data-id");
+            var dest = $(this).parents(".models").find(">.list");
+            editModel(dest, id);
+        });
+        //delete buttons
+        container.on("click", ".model>.icon-trash", function (e) {
+            e.stopPropagation()
+            var el = $(this);
+            var att = el.parents(".model");
+            var prop = att.find("a").html();
+            var id = att.attr("data-id");
+            if (!confirm("are you sure you wan't to delete the model " + prop + " ?"))
+                return;
+            $.post("/admin/task/DeleteModel/?id=" + id, function (d) {
+                if (d.success) {
+                    att.remove();
+                } else {
+                    msg(false, d.message);
+                }
+            });
+        });
+        container.on("click", ".property>.icon-trash", function (e) {
+            e.stopPropagation()
+            var el = $(this);
+            var att = el.parents(".property");
+            var prop = att.find("a").html();
+            var id = att.attr("data-id");
+            if (!confirm("are you sure you wan't to delete the property " + prop + " ?"))
+                return;
+            $.post("/admin/task/DeleteProperty/?id=" + id, function (d) {
+                if (d.success) {
+                    att.remove();
+                } else {
+                    msg(false, d.message);
+                }
+            });
+        });
+        container.on("click", ".attribute>.icon-trash", function (e) {
+            e.stopPropagation()
+            var el = $(this);
+            var att = el.parents(".attribute");
+            var prop = att.find("a").html();
+            var id = att.attr("data-id");
+            if (!confirm("are you sure you wan't to delete the attribute "+prop+" ?"))
+                return;
+            $.post("/admin/task/DeleteAttribute/?id="+id, function (d) {
+                if (d.success) {
+                    att.remove();
+                } else {
+                    msg(false, d.message);
+                }
+            });
+        });
+        //edit functions
+        var editAttributeOption = function (con, id,aid) {
+            id = id || -1;
+            $.get("/admin/task/editattributeoption/?id=" + id+"&aid="+aid, function (d) {
+                overlay(d, 420, 600);
+                var form = $(".overlayinner form");
+                console.log("form: %o", form);
+                wireForm(form, function (d) {
+                    overlayClose();
+                    var mName = form.find("input[name='Name']").val();
+                    var id = d.id;
+                    addOpt({name:mName,id:id},con);
+                }, function (d) {
+
+                });
+            });
+        }
+        var editAttribute = function (con,id,pid,optionType) {
+            id = id || -1;
+            $.get("/admin/task/editattribute/?id=" + id+"&pid="+pid+"&optionType="+optionType, function (d) {
+                overlay(d, 420, 600);
+                var form = $(".overlayinner form");
+                console.log("form: %o", form);
+                wireForm(form, function (d) {
+                    overlayClose();
+                    var mName = container.find("select option[value='" + optionType + "']").html();
+                    var id = d.id;
+                    addAtt({name:mName,id:id,type:optionType}, con);
+                }, function (d) {
+
+                });
+            });
+        }
+        var editProperty = function (con, id,mid) {
+            id = id || -1;
+            $.get("/admin/task/editproperty/?id=" + id+"&mid="+mid, function (d) {
+                overlay(d, 420, 600);
+                var form = $(".overlayinner form");
+                console.log("form: %o", form);
+                wireForm(form, function (d) {
+                    overlayClose();
+                    var mName = form.find("input[name='Name']").val();
+                    var id = d.id;
+                    addProp({name:mName,id:id},con);
+                }, function (d) {
+
+                });
+            });
+        }
+        var editModel= function (con,id) {
+            id = id || -1;
+            $.get("/admin/task/editmodel/" + id, function (d) {
+                overlay(d, 420, 300);
+                var form = $(".overlayinner form");
+                wireForm(form, function (d) {
+                    overlayClose();
+                    var mName = form.find("input[name='Name']").val();
+                    var inherits = form.find("input[name='Inherits']").val();
+                    var id = d.id;
+                    addMod({name:mName,id:id,inherits:inherits});
+                }, function (d) {
+
+                });
+            });
+        }
+
+        var models = container.find(".models");
+        var newmodel = container.find(".new_model");
+        var interfaces = container.find("._interfaces");
+        var intf = function (cname) {
+            return interfaces.find("."+cname).clone();
+        }
+        var setValue = function (model) {
+            
+        };
+        
+        var push = function (success,fail) {
+            var form = container.find("form");
+            var fd = new FormData(form.get(0));
+            $.ajax({
+                url: form.attr("action"),
+                data: fd,
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                success: function (data) {
+                    if (data.success == true) {
+                        success(data);
+                    } else {
+                        fail(data);
+                    }
+                }
+            });
+        };
+        init();
+
+    });
+
+</script>

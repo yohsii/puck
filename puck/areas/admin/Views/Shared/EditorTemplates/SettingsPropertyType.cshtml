@@ -1,0 +1,7 @@
+﻿@model string
+
+<select name="@ViewData.ModelMetadata.PropertyName">
+    @foreach(var entry in puck.core.Constants.GeneratorValues.PropertyType){
+        <option value="@entry.Value">@entry.Key</option>
+    }
+</select>

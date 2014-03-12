@@ -1,0 +1,8 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "test";
+    var siblings = QueryExtensions.Siblings<BaseModel>(Model);
+}
+
+<h2>@Model.Surname</h2>

@@ -274,6 +274,7 @@
     <Content Include="areas\admin\assets\css\bootstrap-wysihtml5-0.0.2.css" />
     <Content Include="areas\admin\assets\css\bootstrap.css" />
     <Content Include="areas\admin\assets\css\chosen.min.css" />
+    <Content Include="areas\admin\assets\css\codemirror.css" />
     <Content Include="areas\admin\assets\css\Site.css" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -336,6 +337,7 @@
     <Content Include="areas\admin\assets\js\bootstrap-wysihtml5-0.0.2.js" />
     <Content Include="areas\admin\assets\js\bootstrap.js" />
     <Content Include="areas\admin\assets\js\chosen.jquery.min.js" />
+    <Content Include="areas\admin\assets\js\codemirror.js" />
     <Content Include="areas\admin\assets\js\cultures\globalize.culture.af-ZA.js" />
     <Content Include="areas\admin\assets\js\cultures\globalize.culture.af.js" />
     <Content Include="areas\admin\assets\js\cultures\globalize.culture.am-ET.js" />
@@ -706,7 +708,9 @@
     <Content Include="areas\admin\assets\js\knockout-2.1.0.debug.js" />
     <Content Include="areas\admin\assets\js\knockout-2.1.0.js" />
     <Content Include="areas\admin\assets\js\modernizr-2.5.3.js" />
-    <Content Include="areas\admin\assets\js\puck.js" />
+    <Content Include="areas\admin\assets\js\puck.get_set.js" />
+    <Content Include="areas\admin\assets\js\puck.actions.js" />
+    <Content Include="areas\admin\assets\js\puck.handlers.js" />
     <Content Include="areas\admin\assets\js\tinymceMIN\changelog.txt" />
     <Content Include="areas\admin\assets\js\tinymceMIN\js\tinymce\license.txt" />
     <Content Include="areas\admin\assets\js\tinymceMIN\js\tinymce\plugins\advlist\plugin.min.js" />
@@ -858,6 +862,8 @@
     <Content Include="Scripts\knockout-2.1.0.debug.js" />
     <Content Include="Scripts\knockout-2.1.0.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="App_Data\Generated\cs_template.txt" />
+    <Content Include="App_Data\Generated\i_template.txt" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -987,6 +993,42 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsOrphans.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsGeneratedModels.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Shared\SettingsViewEdit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Task\EditModel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Task\EditProperty.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Task\EditAttribute.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Task\EditAttributeOption.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsGeneratedInherits.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsPropertyType.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\test.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Task\CreateTemplate.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Task\CreateFolder.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Api\NotifyDialog.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

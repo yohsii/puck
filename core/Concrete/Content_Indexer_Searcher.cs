@@ -488,7 +488,7 @@ namespace puck.core.Concrete
             QueryParser parser;
             if (!string.IsNullOrEmpty(typeName))
             {
-                var type = Type.GetType(typeName);
+                var type = ApiHelper.GetType(typeName);
                 var analyzer = PuckCache.AnalyzerForModel[type];
                 parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
             }
@@ -521,7 +521,7 @@ namespace puck.core.Concrete
                 if (!(i >= skip))
                     continue;
                 var doc = Searcher.Doc(docs.ScoreDocs[i].Doc);
-                var type = Type.GetType(doc.GetValues(FieldKeys.PuckType).FirstOrDefault());
+                var type = ApiHelper.GetType(doc.GetValues(FieldKeys.PuckType).FirstOrDefault());
                 T result = (T)JsonConvert.DeserializeObject(doc.GetValues(FieldKeys.PuckValue)[0],type);
                 results.Add(result);
             }

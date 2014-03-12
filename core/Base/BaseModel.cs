@@ -9,6 +9,7 @@ using puck.core.Abstract;
 using puck.core.Attributes;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
+using Newtonsoft.Json;
 namespace puck.core.Base
 {
     public class BaseModel
@@ -19,6 +20,14 @@ namespace puck.core.Base
             Id = Guid.NewGuid();
             Revision = 0;
             SortOrder = -1;
+        }
+        private dynamic _model;
+        public dynamic Get() {
+            if (this._model == null) {
+                var modelStr = JsonConvert.SerializeObject(this);
+                this._model = JsonConvert.DeserializeObject(modelStr);
+            }
+            return this._model;            
         }
         [UIHint("SettingsReadOnly")]
         [DefaultGUIDTransformer()]
