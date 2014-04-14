@@ -252,6 +252,7 @@ namespace puck.core.Helpers
                 var lmeta = new List<PuckMeta>();
                 var dmeta = new List<PuckMeta>();
                 var cmeta = new List<PuckMeta>();
+                var nmeta = new List<PuckMeta>();
                 //if descendants are being deleted - descendants are included if there are no variants for the deleted node (therefore orphaning descendants) or if variant argument is not present (which means you wan't all variants deleted)
                 if (repoVariants.Any() && !string.IsNullOrEmpty(variant))
                 {
@@ -264,10 +265,15 @@ namespace puck.core.Helpers
                     lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().StartsWith(lookUpPath.ToLower())).ToList();
                     dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().StartsWith(lookUpPath.ToLower())).ToList();
                     cmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().StartsWith(lookUpPath.ToLower())).ToList();
+                    nmeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.Notify) && (
+                         x.Key.ToLower().Equals(lookUpPath.ToLower())
+                        || (lookUpPath.ToLower().StartsWith(x.Key.ToLower()) && x.Name.Contains(":*:"))
+                        )).ToList();
                 }
                 lmeta.ForEach(x => { repo.DeleteMeta(x); });
                 dmeta.ForEach(x => { repo.DeleteMeta(x); });
                 cmeta.ForEach(x => { repo.DeleteMeta(x); });
+                nmeta.ForEach(x => { repo.DeleteMeta(x); });
             }
             ApiHelper.UpdateDomainMappings();
             ApiHelper.UpdatePathLocaleMappings();
@@ -340,6 +346,11 @@ namespace puck.core.Helpers
                 //update path of decendants
                 var descendantsDb = repo.CurrentRevisionDescendants(originalPath).ToList();
                 descendantsDb.ForEach(x => { x.Path = regex.Replace(x.Path, mod.Path, 1); });
+                repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.Notify))
+                        .Where(x => x.Key.ToLower().Equals(originalPath.ToLower())
+                        || originalPath.ToLower().StartsWith(x.Key.ToLower()) && x.Name.Contains(":*:"))
+                        .ToList()
+                        .ForEach(x => x.Key = mod.Path);
             }
             //add revision
             PuckRevision revision;
@@ -428,7 +439,7 @@ namespace puck.core.Helpers
                     repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
                         .ForEach(x => x.Key = mod.Path);
                     repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
-                        .ForEach(x => x.Key = mod.Path);
+                        .ForEach(x => x.Key = mod.Path);                    
                 }
                 indexer.Index(toIndex);
             }
@@ -634,6 +645,8 @@ namespace puck.core.Helpers
         }
         public static void SetNotify(Notify model) {
             var repo = Repo;
+            model.Actions = model.Actions ?? new List<string>();
+            model.Users = model.Users ?? new List<string>();
             var username = HttpContext.Current.User.Identity.Name;
             var dbname = string.Concat(DBNames.Notify, ":", username, ":", model.Recursive ? "*" : ".", string.Join("", model.Actions.Select(x => ":" + x)));
             var dbkey = model.Path;

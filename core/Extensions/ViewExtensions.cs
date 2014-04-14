@@ -10,10 +10,22 @@ using puck.core.Abstract;
 using Ninject;
 using Newtonsoft.Json;
 using puck.core.Controllers;
+using System.Linq.Expressions;
 namespace puck.core.Extensions
 {
     public static class ViewExtensions
     {
+        public static MvcHtmlString InputName<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression) 
+        {
+            var name = ExpressionHelper.GetExpressionText(expression);
+            var fullHtmlFieldName = htmlHelper
+                .ViewContext
+                .ViewData
+                .TemplateInfo
+                .GetFullHtmlFieldName(name);
+            return new MvcHtmlString(fullHtmlFieldName);
+        }
+
         public static T PuckEditorSettings<T>(this WebViewPage page) {
             var repo = PuckCache.PuckRepo;
 

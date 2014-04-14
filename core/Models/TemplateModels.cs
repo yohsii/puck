@@ -15,6 +15,8 @@ namespace puck.core.Models
         [Required]
         public string Name { get; set; }
         public string Path { get; set; }
+        [Display(Name="Model")]
+        public string TemplateModel { get; set; }
     }
     public class CreateFolder {
         [RegularExpression(@"^[\w\-. ]+$", ErrorMessage = "Invalid folder name")]

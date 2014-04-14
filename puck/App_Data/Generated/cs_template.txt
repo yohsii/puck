@@ -9,6 +9,7 @@ using puck.ViewModels;
 using puck.core.Abstract;
 using puck.core.Base;
 using puck.Generated.Abstract;
+using System.ComponentModel;
 
 namespace puck.Generated.ViewModels
 {

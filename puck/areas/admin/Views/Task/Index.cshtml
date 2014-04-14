@@ -106,14 +106,14 @@
 </style>
 <script>
     $(document).ready(function () {
-        $("ul.nav li").click(function (e) {
+        var container = $("div.developer.settings");
+        container.find("ul.nav li").click(function (e) {
             e.preventDefault();
-            $("ul.nav li").removeClass("active");
+            container.find("ul.nav li").removeClass("active");
             $(this).addClass("active");
-            $("div.fieldwrapper").hide();
+            container.find("div.fieldwrapper").hide();
             $($(this).find("a").attr("href")).show();
             codeMirror.refresh();
-
         });
     });
 </script>

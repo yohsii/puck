@@ -46,8 +46,8 @@
         var select = container.find("select");
         var saveBtn = container.find(".save");
         var selectedNode;
-        container.on("click", ".node[data-type='file']", function () {
-            selectedNode = $(this);
+        container.on("click", ".node[data-type='file'] span", function () {
+            selectedNode = $(this).parents(".node:first");
             container.find(".node").removeClass("selected");
             selectedNode.addClass("selected");
             var fp = selectedNode.attr("data-path");

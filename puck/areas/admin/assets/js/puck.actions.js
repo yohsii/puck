@@ -28,9 +28,11 @@ var newTemplateFolder = function (p) {
 }
 var newTemplate = function (p) {
     getTemplateCreateDialog(function (d) {
-        overlay(d, 500,300);
+        overlay(d, 500, 300);
         wireForm($(".overlayinner form"), function (data) {
-            getDrawTemplates(p);
+            getDrawTemplates(p, undefined, function () {
+                cright.find(".node[data-id='"+data.name+"']").click();
+            });
             overlayClose();
         }, function (data) {
             $(".overlayinner .msg").show().html(data.message);
@@ -341,7 +343,7 @@ var newContent = function (path, type) {
 var getDrawTemplates = function (path,el,f) {
     if (el == undefined) {
         var nodeParent = dirOfPath(path);
-        el = $("ul.templates .node[data-children_path='" + nodeParent + "']");
+        el = $("ul.templates .node[data-path='" + nodeParent + "']");
     }
     getTemplates(path, function (data) {
         drawTemplates(data,el);

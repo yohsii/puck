@@ -132,6 +132,7 @@
     <Compile Include="Attributes\DateTransformer.cs" />
     <Compile Include="Abstract\I_Property_Transformer.cs" />
     <Compile Include="Attributes\DefaultGUIDTransformer.cs" />
+    <Compile Include="Attributes\FriendlyClassName.cs" />
     <Compile Include="Attributes\GeoTransform.cs" />
     <Compile Include="Attributes\IndexSettings.cs" />
     <Compile Include="Base\BaseModel.cs" />

@@ -380,7 +380,7 @@ cleft.find("ul.content").on("click", "li.node span.nodename", function () {
 
 cleft.on("click", ".search_options", function () {
     var el = $(".interfaces .search_ops").clone();
-    alert(el.html());
+    //alert(el.html());
     overlay(el, 500, 400);
     el.on("click", ".node span", function (e) {
         var node = $(this).parents(".node:first");

@@ -219,18 +219,25 @@ namespace puck.core.Controllers
                     var errors = string.Join("<br/>", ModelState.SelectMany(x => x.Value.Errors).Select(x => x.ErrorMessage));
                     throw new Exception(errors);
                 }
+                string modelname = "";
+                if (!string.IsNullOrEmpty(model.TemplateModel)) {
+                    var type = ApiHelper.GetType(model.TemplateModel);
+                    modelname = type.Name;
+                }
                 var destPath = PuckCache.TemplateDirectory + model.Path + model.Name + ".cshtml";
                 var absDestPath = Server.MapPath(destPath);
                 if (System.IO.File.Exists(absDestPath))
                     throw new Exception("file with that name already exists");
-                System.IO.File.WriteAllText(absDestPath, "");
+                System.IO.File.WriteAllText(absDestPath, 
+                    string.IsNullOrEmpty(modelname)?"":string.Concat("@model ",modelname)
+                    );
                 success = true;
             }
             catch (Exception ex)
             {
                 message = ex.Message;
             }
-            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
+            return Json(new {name=model.Path+model.Name+".cshtml", message = message, success = success }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetViewFileContent(string fp) {
@@ -512,8 +519,8 @@ namespace puck.core.Controllers
             var stamp = DateTime.Now;
             var stampstr = stamp.ToString("yyyyMMddHHmmss");
 
-            var iname = string.Concat("I_", gm.Name, "_", stampstr);
-            var cname = string.Concat(gm.Name, "_", stampstr);
+            var iname = string.Concat("I_", ApiHelper.SanitizeClassName(gm.Name), "_", stampstr);
+            var cname = string.Concat(ApiHelper.SanitizeClassName(gm.Name), "_", stampstr);
 
             var sourceBasePath = string.Concat("~/app_data/generated/");
 
@@ -542,7 +549,8 @@ namespace puck.core.Controllers
                 new FileInfo(sourcePIPath).Directory.Create();
                 var isource = itemplate
                     .Replace("//{interfacename}", string.Concat(iname))
-                    .Replace("//{baseinterface}", string.Concat("I_Generated"));
+                    .Replace("//{baseinterface}", string.Concat("I_Generated"))
+                    .Replace("//{name}",gm.Name);
                 var iassembly = CodeGenerator.PuckCompiler.CompileCode(isource);
 
                 System.IO.File.Copy(iassembly.Location, sourcePIPath, true);
@@ -574,8 +582,9 @@ namespace puck.core.Controllers
                         log.Log(ex);
                     }  
                 });
+                properties.AppendLine(string.Format("[DisplayName(\"{0}\")]",prop.Name));
                 properties.AppendLine(
-                    string.Concat("public ", prop.Type, " ", Regex.Replace(prop.Name, @"\s+", ""), "{get;set;}")
+                    string.Concat("public ", prop.Type, " ", ApiHelper.SanitizePropertyName(prop.Name), "{get;set;}")
                 );
             };
             var inherits = "BaseModel";

@@ -21,6 +21,7 @@ using puck.core.Exceptions;
 using puck.core.Events;
 using System.Web.Security;
 using System.Net.Mail;
+using puck.core.Attributes;
 namespace puck.core.Helpers
 {
     public partial class ApiHelper
@@ -171,6 +172,26 @@ namespace puck.core.Helpers
         {
             var types = FindDerivedClasses(typeof(I_GeneratedOption)).ToList();
             return types;
+        }
+        public static string FriendlyClassName(Type t) {
+            string name = t.Name;
+            var att = t.GetCustomAttribute<FriendlyClassNameAttribute>();
+            if (att != null)
+                name = att.Name;
+            return name;
+        }
+        public static string SanitizeClassName(string name) {
+            var result = Regex.Replace(name, @"\W", "");
+            return result;
+        }
+        public static string SanitizePropertyName(string name)
+        {
+            var result = Regex.Replace(name, @"\W", "");
+            return result;
+        }
+        public static string SanitizeUrl(string url) {
+            var result = url;
+            return result;
         }
         public static void Email(string to, string subject, string body, string host = PuckCache.SmtpHost, string from = null,bool isHtml=true)
         {

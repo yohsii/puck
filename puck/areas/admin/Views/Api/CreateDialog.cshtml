@@ -17,7 +17,7 @@
             <label>Type</label>
             <select name="type">
                 @foreach(var t in types){
-                    <option value="@t.AssemblyQualifiedName">@t.Name</option>
+                    <option value="@t.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(t)</option>
                 }
             </select>
         </div>
