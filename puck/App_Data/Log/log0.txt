@@ -2116,3 +2116,8 @@ stacktrace:    at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
    at puck.core.Controllers.ApiController.Move(String start, String destination) in c:\project\puck\core\Controllers\ApiController.cs:line 178
 
 
+date: 14/04/2014 15:58:20
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 36
+
+
