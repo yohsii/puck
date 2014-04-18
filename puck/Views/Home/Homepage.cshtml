@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Homepage";
     var qh = new QueryHelper<Section>()
+        .Descendants(Model.Path)
         .CurrentLanguage()
         .ExplicitType();
                 
@@ -13,6 +14,7 @@
     <br />
     var searchQuery = "croydon";
     var search = new QueryHelper<Page>()
+        .CurrentRoot(Model)
         .AllFields(searchQuery)
         .CurrentLanguage();
     var sresults = search.GetAll();

@@ -48,10 +48,10 @@ var showSearch = function (term,type,root) {
         }
     },type,root);
 }
-var searchDialog = function (root) {
+var searchDialog = function (root,f) {
     getSearchTypes(root, function (d) {
         if ($(".search_ops:visible").length > 0) {
-            $(".search_ops:visible").fadeOut();
+            $(".search_ops:visible").fadeOut(function () { $(this).remove();});
             return;
         }
         if (!searchRoot.isEmpty() || !searchType.isEmpty()) {
@@ -63,7 +63,7 @@ var searchDialog = function (root) {
         var el = $(".interfaces .search_ops").clone();
         el.css({ left: cright.offset().left - 30 + "px", width: "0px",top:"90px",height:$(window).height()-90+"px" });
         cright.append(el);
-        el.animate({ width: "280px" }, 200);
+        el.animate({ width: "280px" }, 200, function () { if (f) f();});
         $("input.search").animate({ width: 205, opacity: 1 }, 500);
         var types = el.find("select");
         types.html("<option value=''>None</option>");
@@ -118,6 +118,7 @@ var searchDialog = function (root) {
                 showSearch(term, searchType, searchRoot);
             };
         });
+        cright.find(".search_ops input.search").focus();
     });
 }
 var showUserMarkup = function (username) {
@@ -514,6 +515,7 @@ var draw = function (data, el, sortable) {
         elnode.append(elinner);
         if (hasUnpublished)
             elnode.addClass("unpublished");
+        elinner.append($("<i class=\"icon-search\"></i>"));
         elinner.append($("<i class=\"puck_icon\"></i>"))
         elinner.append($("<i class=\"icon-chevron-right expand\"></i>"))
         elinner.append($("<i class=\"icon-cog menu\"></i>"))

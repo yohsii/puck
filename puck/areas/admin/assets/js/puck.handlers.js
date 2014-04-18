@@ -357,7 +357,11 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             break;
     }
 });
-
+cleft.on("click", ".node .icon-search", function () {
+    var el = $(this).parents(".node:first");
+    searchRoot = el.attr("data-path");
+    searchDialog(el.attr("data-path"));
+});
 cleft.find("ul.content").on("click", "li.node span.nodename", function () {
     //get markup
     if (!canChangeMainContent())
