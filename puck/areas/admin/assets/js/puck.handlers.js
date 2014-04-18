@@ -19,17 +19,6 @@ $('a.settings').click(function (e) {
         setChangeTracker();
     });
 });
-$("button.search").click(function () {
-    $("input.search").animate({ width: 100, opacity: 1 }, 500);
-    $(".search_options").animate({ opacity: 1 }, 500);
-});
-$("input.search").keypress(function (e) {
-    e = e || event;
-    if ((e.keyCode || e.which || e.charCode || 0) === 13) {
-        var term = $(this).val();
-        showSearch(term, searchType, searchRoot);
-    };
-});
 //root new content button
 $(".create_default").show().click(function () { newContent("/"); });
 //task list
@@ -377,48 +366,9 @@ cleft.find("ul.content").on("click", "li.node span.nodename", function () {
     var firstVariant = node.attr("data-variants").split(",")[0];
     displayMarkup(node.attr("data-path"), node.attr("data-type"), firstVariant);
 });
-
-cleft.on("click", ".search_options", function () {
-    var el = $(".interfaces .search_ops").clone();
-    //alert(el.html());
-    overlay(el, 500, 400);
-    el.on("click", ".node span", function (e) {
-        var node = $(this).parents(".node:first");
-        var path = node.attr("data-path");
-        var close = $('<i class="icon-remove-sign"></i>');
-        var pathspan = $("<span/>").html(path);
-        el.find(".pathvalue").html('').append(pathspan).append(close);
-        close.click(function () {
-            el.find(".pathvalue").html('');
-        });
-    });
-    getDrawContent(startPath, el.find(".node"));
-    
-    el.find("button").click(function () {
-        searchType = el.find("select").val();
-        searchRoot = el.find(".pathvalue span").html() || '';
-        overlayClose();
-        if (!searchRoot.isEmpty() || !searchType.isEmpty()) {
-            $(".search_options i").addClass("active");
-        } else {
-            $(".search_options i").removeClass("active");
-        }
-
-        if (!searchType.isEmpty()) {
-            el.find("select option[value='" + searchType + "']").attr("selected", "selected");
-        }
-
-        if (!searchRoot.isEmpty()) {
-            var close = $('<i class="icon-remove-sign"></i>');
-            var pathspan = $("<span/>").html(searchRoot);
-            el.find(".pathvalue").html('').append(pathspan).append(close);
-            close.click(function () {
-                el.find(".pathvalue").html('');
-            });
-        }
-    });
+$("button.search").click(function () {
+    searchDialog("");
 });
-
 //extensions
 $.validator.methods.date = function (value, element) {
     {

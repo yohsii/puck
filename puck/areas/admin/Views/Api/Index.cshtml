@@ -17,7 +17,7 @@
     <div class="grid_3 alpha leftarea">
         <button class="create_default btn btn-link"><i class="icon-plus-sign"></i>&nbsp;create</button>
         <div class="search">
-            <input class="search" /><button class="search_options btn btn-link"><i title="specifying the type of content you're searching for will improve results" class="icon-list"></i></button><button class="search btn btn-link"><i class="icon-search"></i></button>
+            <button class="search btn btn-link"><i class="icon-search"></i></button>
         </div>
         <div class="startpath"></div>
         <ul data-dropdown="node-dropdown" class="content">
@@ -54,27 +54,33 @@
         </div>
     </div>
     <div class="hide interfaces">
-        <div class="search_ops grid_5 push_1">
-            <div class="fieldwrapper">
-                <label>Search for specific node type</label>
-                <select>
-                    <option value="">All node types</option>
-                    @foreach(var m in ApiHelper.Models()){
-                        <option value="@m.AssemblyQualifiedName">@m.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="tree_container fieldwrapper">
-                <label>Search root</label>
-                <ul class="content nomenu redirect">
-                    <li class="node" data-children_path="/"></li>
-                </ul>  
-                <div class="pathvalue"></div>
-                <div class="clearboth">&nbsp;</div>
-            </div>
-            <div class="clearboth">
-                <button class="btn btn-link">Set</button>
-            </div>
+        <div class="search_ops grid_5">
+            <div class="inner">
+                <div class="fieldwrapper">
+                    <label>Search term</label>
+                    <input class="search" />
+                </div>
+                <div class="fieldwrapper">
+                    <label>Specific type</label>
+                    <select>
+                        <option value="">All</option>
+                        @foreach(var m in ApiHelper.Models()){
+                            <option value="@m.AssemblyQualifiedName">@m.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="tree_container fieldwrapper">
+                    <label>Search root</label>
+                    <ul class="content nomenu redirect">
+                        <li class="node" data-children_path="/"></li>
+                    </ul>  
+                    <div class="pathvalue"></div>
+                    <div class="clearboth">&nbsp;</div>
+                </div>
+                <div class="clearboth">
+                    <button class="btn btn-link">Search</button>
+                </div>
+            </div>            
         </div>
         <div class="cache_exclude_dialog settings">
             <div class="grid_3 push_1">

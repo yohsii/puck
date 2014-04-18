@@ -7,6 +7,7 @@ var cright = $(".rightarea .content");
 var cmsg = $(".rightarea .message");
 var searchType = '';
 var searchRoot = '';
+var searchTerm = '';
 var publishedContent = [];
 var haveChildren = [];
 var dbcontent = [];
@@ -46,6 +47,78 @@ var showSearch = function (term,type,root) {
             afterDom();
         }
     },type,root);
+}
+var searchDialog = function (root) {
+    getSearchTypes(root, function (d) {
+        if ($(".search_ops:visible").length > 0) {
+            $(".search_ops:visible").fadeOut();
+            return;
+        }
+        if (!searchRoot.isEmpty() || !searchType.isEmpty()) {
+            $(".search_options i").addClass("active");
+        } else {
+            $(".search_options i").removeClass("active");
+        }
+
+        var el = $(".interfaces .search_ops").clone();
+        el.css({ left: cright.offset().left - 30 + "px", width: "0px",top:"90px",height:$(window).height()-90+"px" });
+        cright.append(el);
+        el.animate({ width: "280px" }, 200);
+        $("input.search").animate({ width: 205, opacity: 1 }, 500);
+        var types = el.find("select");
+        types.html("<option value=''>None</option>");
+        $(d).each(function () {
+            types.append(
+                "<option value='"+this.Type+"'>"+this.Name+"</option>"
+            );
+        });
+
+        if (!searchTerm.isEmpty()) {
+            el.find("input.search").val(searchTerm);
+        }
+
+        if (!searchType.isEmpty()) {
+            el.find("select option[value='" + searchType + "']").attr("selected", "selected");
+        }
+
+        if (!searchRoot.isEmpty()) {
+            var close = $('<i class="icon-remove-sign"></i>');
+            var pathspan = $("<span/>").html(searchRoot);
+            el.find(".pathvalue").html('').append(pathspan).append(close);
+            close.click(function () {
+                el.find(".pathvalue").html('');
+            });
+        }
+
+        el.on("click", ".node span", function (e) {
+            var node = $(this).parents(".node:first");
+            var path = node.attr("data-path");
+            var close = $('<i class="icon-remove-sign"></i>');
+            var pathspan = $("<span/>").html(path);
+            el.find(".pathvalue").html('').append(pathspan).append(close);
+            close.click(function () {
+                el.find(".pathvalue").html('');
+            });
+        });
+        getDrawContent(startPath, el.find(".node"));
+        el.find("button.btn").click(function () {
+            searchType = el.find("select").val();
+            searchRoot = el.find(".pathvalue span").html() || '';
+            var term = el.find(".search").val();
+            searchTerm = term;
+            showSearch(term, searchType, searchRoot);
+        });
+        el.find("input.search").keypress(function (e) {
+            searchType = el.find("select").val();
+            searchRoot = el.find(".pathvalue span").html() || '';
+            var term = $(this).val();
+            searchTerm = term;
+            e = e || event;
+            if ((e.keyCode || e.which || e.charCode || 0) === 13) {
+                showSearch(term, searchType, searchRoot);
+            };
+        });
+    });
 }
 var showUserMarkup = function (username) {
     getUserMarkup(username, function (d) {

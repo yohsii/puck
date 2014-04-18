@@ -40,6 +40,7 @@ namespace puck.core.Constants
     }
     public static class FieldKeys
     {
+        public static string Score = "score";
         public static string Published = "published";
         public static string PuckDefaultField = "";
         public static string PuckValue = "_puckvalue";

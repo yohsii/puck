@@ -21,6 +21,17 @@ button.search{}
 input.search{width:0px;height: 10px;margin-top:0px;opacity:0;}
 .search_options{padding:0px !important;padding-left:12px !important;opacity:0;}
 .search_ops button{float:right;}
+.search_ops{
+top:90px;
+position: absolute !important;
+background-color: #fcfcfc;
+border: 4px solid #6f6f6f;
+border-left: none;
+}
+.search_ops>.inner
+{
+    margin-left:40px;
+}
 .pathvalue span
 {
     padding-right:10px;    
@@ -102,7 +113,7 @@ select.languages{height:200px !important;width:550px !important;}
 .settings .settings_type_allowed_types .list,.settings .settings_type_allowed_templates .list{float:left;padding:20px;margin:10px;background:#eeffee;}
 .settings .settings_type_allowed_types .field,.settings .settings_type_allowed_templates .field{cursor:pointer;}
 .settings .settings_type_allowed_types select,.settings .settings_type_allowed_templates select{width:400px;}
-.settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#f9f9f9;clear:both;padding:0px 10px 10px 10px}
+.settings .fieldwrapper,.content_edit_page .fieldwrapper {background:#fcfcfc;clear:both;padding:0px 10px 10px 10px}
 .settings .fieldwrapper h2{font-size:20px;}
 .settings label{text-decoration:underline;}
 .settings select.redirect_type{width:150px;}

@@ -16,6 +16,11 @@ var sortNodes = function (path, items, f) {
         datatype: "json"
     });
 }
+var getSearchTypes = function (root,f) {
+    $.get("/admin/api/searchtypes?root=" + root, function (d) {
+        f(d);
+    });
+}
 var getMarkup = function (path, type, variant, f, fromVariant) {
     $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&p_path=" + path + "&fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
 }

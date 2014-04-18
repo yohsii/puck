@@ -216,14 +216,17 @@ namespace puck.core.Concrete
             {
                 try
                 {
-                    var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-                    var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
                     SetWriter(false);
                     //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
                     Writer.Flush(true, true, true);
                     var cancelled = new List<BaseModel>();
                     foreach (var m in models)
                     {
+                        var type = ApiHelper.GetType(m.Type);
+                        if (type == null)
+                            continue;
+                        var analyzer = PuckCache.AnalyzerForModel[type];
+                        var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
                         var args= new BeforeIndexingEventArgs() {Node=m,Cancel=false };
                         OnBeforeIndex(this, args);
                         if (args.Cancel)
@@ -244,7 +247,7 @@ namespace puck.core.Concrete
                         string jsonDoc = JsonConvert.SerializeObject(m);
                         //doc in json form for deserialization later
                         doc.Add(new Field(FieldKeys.PuckValue, jsonDoc, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                        Writer.AddDocument(doc);
+                        Writer.AddDocument(doc,analyzer);
                     }
                     Writer.Flush(true,true,true);
                     Writer.Commit();
@@ -475,6 +478,7 @@ namespace puck.core.Concrete
                 d.Add(FieldKeys.Path, doc.GetValues(FieldKeys.Path).FirstOrDefault() ?? "");
                 d.Add(FieldKeys.Variant, doc.GetValues(FieldKeys.Variant).FirstOrDefault() ?? "");
                 d.Add(FieldKeys.TemplatePath, doc.GetValues(FieldKeys.TemplatePath).FirstOrDefault() ?? "");
+                d.Add(FieldKeys.Score, hits[i].Score.ToString());
                 result.Add(d);
             }
             return result;            

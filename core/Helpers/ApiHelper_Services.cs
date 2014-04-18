@@ -387,16 +387,21 @@ namespace puck.core.Helpers
             revision.Variant = mod.Variant;
             revision.Current = true;
             revision.Value = JsonConvert.SerializeObject(mod);
-                                
-            if (mod.Published)//add to lucene index
+
+            //index related operations
+            var qh = new QueryHelper<BaseModel>();
+            //get current indexed node with same ID and VARIANT
+            var currentMod = qh.And().Field(x => x.Variant, mod.Variant)
+                .ID(mod.Id)
+                .Get();
+            if (mod.Published || currentMod==null)//add to lucene index if published or no such node exists in index
+                /*note that you can only have one node with particular id/variant in index at any one time
+                 * the reason that you want to add node to index when it's not published but there is no such node currently in index
+                 * is to make sure there is always at least one version of the node in the index for back office search operations
+                 */
             {
-                var qh = new QueryHelper<BaseModel>();
                 var changed = false;
                 var indexOriginalPath = string.Empty;
-                //get current indexed node with same ID and VARIANT
-                var currentMod = qh.And().Field(x => x.Variant, mod.Variant)
-                    .ID(mod.Id)
-                    .Get();
                 //if node exists in index
                 if (currentMod != null)
                 {

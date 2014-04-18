@@ -2121,3 +2121,17 @@ message: Object reference not set to an instance of an object.
 stacktrace:    at puck.core.Controllers.BaseController.Puck() in c:\project\puck\core\Controllers\BaseController.cs:line 36
 
 
+date: 18/04/2014 19:10:18
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 208
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 98
+
+
+date: 18/04/2014 19:10:33
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 208
+   at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 98
+
+

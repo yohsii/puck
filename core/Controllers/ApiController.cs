@@ -242,37 +242,64 @@ namespace puck.core.Controllers
             return Json("/", JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
+        public ActionResult SearchTypes(string root)
+        {
+            var typeGroups = repo.GetPuckRevision().Where(x=>x.Path.StartsWith(root+"/") && x.Current).GroupBy(x=>x.Type);
+            var typeStrings = typeGroups.Select(x=>x.Key);
+            var result = new List<dynamic>();
+            foreach (var typeString in typeStrings) {
+                var type = ApiHelper.GetType(typeString);
+                if (type != null) {
+                    result.Add(new {Name=ApiHelper.FriendlyClassName(type),Type=typeString});
+                }
+            }
+            return Json(result,JsonRequestBehavior.AllowGet);
+        }
+        [Auth(Roles = PuckRoles.Puck)]
         public ActionResult Search(string q,string type,string root)
         {
             var results = new List<Dictionary<string, string>>();
-            var qs = "(";
+
+            var typeGroups = repo.GetPuckRevision().Where(x => x.Path.StartsWith(root + "/") && x.Current).GroupBy(x => x.Type);
+            var typeStrings = typeGroups.Select(x => x.Key);
+            
             if (string.IsNullOrEmpty(type))
             {
-                foreach (var t in PuckCache.TypeFields)
-                {
-                    foreach (var f in t.Value)
+                foreach (var typeString in typeStrings) {
+                    var tqs = "(";
+                    foreach (var t in PuckCache.TypeFields[typeString])
                     {
-                        if (qs.IndexOf(" " + f.Key + ":") > -1)
+                        if (tqs.IndexOf(" " + t.Key + ":") > -1)
                             continue;
-                        qs += string.Concat(f.Key, ":", q, " ");
+                            tqs += string.Concat(t.Key, ":", q, " ");
                     }
-                }                
+                    tqs = tqs.Trim();
+                    tqs += ")";
+                    tqs += string.Concat(" AND ", FieldKeys.PuckType, ":", "\"",typeString,"\"");
+                    if (!string.IsNullOrEmpty(root))
+                    {
+                        tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root, "/*");
+                    }
+                    results.AddRange(PuckCache.PuckSearcher.Query(tqs,typeString));
+                }
+                results = results.OrderByDescending(x => float.Parse(x[FieldKeys.Score])).ToList();
             }
             else {
+                var tqs = "(";
                 foreach (var f in PuckCache.TypeFields[type])
                 {
-                    qs += string.Concat(f.Key, ":", q, " ");
+                    tqs += string.Concat(f.Key, ":", q, " ");
                 }
+                tqs=tqs.Trim();
+                tqs+=")";
+                tqs +=string.Concat(" AND ",FieldKeys.PuckType,":","\"",type,"\"");
+                if (!string.IsNullOrEmpty(root))
+                {
+                    tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root, "/*");
+                }
+                results.AddRange(PuckCache.PuckSearcher.Query(tqs,type));
             }
-            qs += ")";
-            qs.Trim();
-            if (!string.IsNullOrEmpty(root)) { 
-                qs=string.Concat(qs," AND ",FieldKeys.Path,":",root,"/*");
-            }
-            if (!string.IsNullOrEmpty(type))
-                results = PuckCache.PuckSearcher.Query(qs,type).ToList();
-            else
-                results = PuckCache.PuckSearcher.Query(qs).ToList();
+            
             var model = new List<BaseModel>();
             foreach (var res in results) {
                 var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue],ApiHelper.ConcreteType(ApiHelper.GetType(res[FieldKeys.PuckType]))) as BaseModel;
