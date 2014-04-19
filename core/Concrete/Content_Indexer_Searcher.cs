@@ -224,7 +224,7 @@ namespace puck.core.Concrete
                     {
                         var type = ApiHelper.GetType(m.Type);
                         if (type == null)
-                            continue;
+                            type = typeof(BaseModel);
                         var analyzer = PuckCache.AnalyzerForModel[type];
                         var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
                         var args= new BeforeIndexingEventArgs() {Node=m,Cancel=false };
