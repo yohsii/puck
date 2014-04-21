@@ -1,7 +1,7 @@
 ﻿@using puck.core.Models;
 @model List<string>
 @{
-    var models = ApiHelper.Models(inclusive:true);
+    var models = ApiHelper.AllModels(inclusive:true);
     var dic = new Dictionary<string, Dictionary<string, List<string>>>();
     foreach(var s in Model){
         var nkv = s.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
@@ -24,7 +24,7 @@
     <li>
         <select>
         @foreach(var m in models){
-            <option value="@m.AssemblyQualifiedName">@m.FullName</option>
+            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(m)</option>
         }
         </select>
     </li>

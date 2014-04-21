@@ -2,7 +2,7 @@
 <div class="editor_parameters editor_parameters_@ViewData.ModelMetadata.PropertyName">
 @{
     var settingTypes = ApiHelper.EditorSettingTypes();
-    var models = ApiHelper.Models();
+    var models = ApiHelper.AllModels();
     var propsForType = new Dictionary<string, List<System.Reflection.PropertyInfo>>();
     
     if(settingTypes.Count==0){
@@ -13,7 +13,7 @@
         <td><label>parameters:</label></td>
         <td><select class="stype">
         @foreach(var setting in settingTypes){
-            <option value="@setting.AssemblyQualifiedName">@setting.FullName</option>    
+            <option value="@setting.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(setting)</option>    
         }
         </select>
         </td>
@@ -24,7 +24,7 @@
         <td><select class="mtype">
         @foreach (var mod in models)
         {
-            <option value="@mod.AssemblyQualifiedName">@mod.FullName</option>
+            <option value="@mod.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(mod)</option>
             var props = mod.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
             propsForType[mod.AssemblyQualifiedName] = props.ToList();
         }

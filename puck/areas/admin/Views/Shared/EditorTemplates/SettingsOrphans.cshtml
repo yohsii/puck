@@ -16,7 +16,7 @@
         <li>
             <label>New Assembly Qualified Name</label>
             <select class="to">
-                @foreach (var t in ApiHelper.Models()) { 
+                @foreach (var t in ApiHelper.AllModels()) { 
                     <option value="@t.AssemblyQualifiedName">@t.AssemblyQualifiedName</option>
                 }
             </select>

@@ -1,12 +1,12 @@
 ﻿@model List<string>
 @{
-    var models = ApiHelper.Models(false);
+    var models = ApiHelper.AllModels(false);
     var templates = ApiHelper.Views(new string[] { "~/views/shared/", "~/views/_ViewStart.cshtml" }).Select(x => ApiHelper.ToVirtualPath(x.FullName)).ToList();
 }
 <div class="settings_type_allowed_templates">
     <select>
         @foreach (var m in models) { 
-            <option value="@m.AssemblyQualifiedName">@m.FullName</option>
+            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(m)</option>
         }
     </select>
     <div class="lists">

@@ -1,7 +1,7 @@
 ﻿@model List<string>
 <div class="cachepolicy cachepolicy_@ViewData.ModelMetadata.PropertyName">
 @{
-    var models = ApiHelper.Models(true);
+    var models = ApiHelper.AllModels(true);
     <table>
     <tr>
         <td>Model Type</td>
@@ -12,7 +12,7 @@
         <td>
             <select>
             @foreach(var m in models){
-                <option value="@m.AssemblyQualifiedName">@m.FullName</option>
+                <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(m)</option>
             }
             </select>
         </td>
