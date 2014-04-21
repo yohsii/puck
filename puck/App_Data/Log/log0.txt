@@ -2135,3 +2135,43 @@ stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
    at puck.core.Bootstrap.<Ini>b__5(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 98
 
 
+date: 21/04/2014 17:23:24
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 261
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 449
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 484
+
+
+date: 21/04/2014 17:23:33
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 261
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 449
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 484
+
+
+date: 21/04/2014 17:24:06
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 261
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 449
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 484
+
+
+date: 21/04/2014 17:24:33
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 261
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 449
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 484
+
+
+date: 21/04/2014 17:27:08
+message: The given key was not present in the dictionary.
+stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at puck.core.Concrete.Content_Indexer_Searcher.Index[T](List`1 models) in c:\project\puck\core\Concrete\Content_Indexer_Searcher.cs:line 261
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in c:\project\puck\core\Helpers\ApiHelper_Services.cs:line 449
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 484
+
+

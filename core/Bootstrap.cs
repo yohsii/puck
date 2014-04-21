@@ -31,7 +31,7 @@ namespace puck.core
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
             PuckCache.SmtpFrom = "puck@"+HttpContext.Current.Request.Url.Host;
-            foreach(var t in ApiHelper.Models(true)){
+            foreach(var t in ApiHelper.AllModels(true)){
                 var instance = ApiHelper.CreateInstance(t);
                 var dmp = ObjectDumper.Write(instance,int.MaxValue);
                 var analyzers = new List<KeyValuePair<string, Analyzer>>();

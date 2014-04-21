@@ -64,7 +64,7 @@
                     <label>Specific type</label>
                     <select>
                         <option value="">All</option>
-                        @foreach(var m in ApiHelper.Models()){
+                        @foreach(var m in ApiHelper.AllModels()){
                             <option value="@m.AssemblyQualifiedName">@m.Name</option>
                         }
                     </select>
