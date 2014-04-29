@@ -8,6 +8,7 @@ using puck.core.Abstract;
 
 namespace puck.core.Models
 {
+    [puck.core.Attributes.FriendlyClassName(Name="Regex Option")]
     public class RegexOption : I_GeneratedOption
     {
         [Display(Name="Regex Rule")]

@@ -14,9 +14,9 @@ using Ninject;
 namespace puck.core.Constants
 {
     public static class GeneratorValues { 
-        public static Dictionary<string,string> PropertyType = new Dictionary<string,string>(){
-            {"Single Line Text","string"},
-            {"Number","int"}
+        public static Dictionary<string,GeneratedPropertySelection> PropertyType = new Dictionary<string,GeneratedPropertySelection>(){
+            {"SingleLineText",new GeneratedPropertySelection{Name="Single Line Text",Type="string",AttributeString=""}},
+            {"Number",new GeneratedPropertySelection{Name="Number",Type="int",AttributeString=""}}           
         };
     }
     public static class PuckRoles

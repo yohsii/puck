@@ -569,6 +569,7 @@ namespace puck.core.Controllers
 
             foreach (var prop in propList)
             {
+                var propertyEntry = GeneratorValues.PropertyType[prop.Type];
                 prop.Attributes.ToList().ForEach(x => {
                     try
                     {
@@ -583,8 +584,9 @@ namespace puck.core.Controllers
                     }  
                 });
                 properties.AppendLine(string.Format("[DisplayName(\"{0}\")]",prop.Name));
+                properties.AppendLine(propertyEntry.AttributeString);
                 properties.AppendLine(
-                    string.Concat("public ", prop.Type, " ", ApiHelper.SanitizePropertyName(prop.Name), "{get;set;}")
+                    string.Concat("public ", propertyEntry.Type, " ", ApiHelper.SanitizePropertyName(prop.Name), "{get;set;}")
                 );
             };
             var inherits = "BaseModel";

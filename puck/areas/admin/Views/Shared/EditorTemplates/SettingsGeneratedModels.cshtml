@@ -32,7 +32,7 @@
                 @{
                     <option>-- Select Option --</option>
                     foreach(var opt in optionTypes){
-                        <option value="@opt.AssemblyQualifiedName">@opt.Name</option>
+                        <option value="@opt.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(opt)</option>
                     }
                 }
                 </select>
@@ -129,7 +129,7 @@
                                 if(attType == null){
                                     continue;
                                 }
-                                var attName = attType.Name; 
+                                var attName = ApiHelper.FriendlyClassName(attType); 
                                 @Html.Raw("{name:'"+attName+"',type:'"+att.Type+"',id:"+att.ID+",propId:"+prop.ID+",options:[")
                                   
                                 @Html.Raw("]}")
@@ -255,7 +255,7 @@
         container.on("click", ".property>a", function (e) {
             var pid = $(this).parents(".mod_container").find(".model").attr("data-id");
             var id = $(this).parents(".property").attr("data-id");
-            var dest = $(this).parents(".properties").find(">.list");
+            var dest = $(this).parents(".properties");
             console.log("pid:%s id:%s",pid,id);
             editProperty(dest, id,pid);
         });
@@ -263,12 +263,12 @@
             var pid = $(this).parents(".mod_container").find(".property").attr("data-id");
             var id = $(this).parents(".attribute").attr("data-id");
             var type = $(this).parents(".attribute").attr("data-type");
-            var dest = $(this).parents(".attributes").find(">.list");
+            var dest = $(this).parents(".attributes");
             editAttribute(dest, id,pid,type);
         });
         container.on("click", ".model>a", function (e) {
             var id = $(this).parents(".model").attr("data-id");
-            var dest = $(this).parents(".models").find(">.list");
+            var dest = $(this).parents(".models");
             editModel(dest, id);
         });
         //delete buttons
@@ -368,7 +368,17 @@
                     overlayClose();
                     var mName = form.find("input[name='Name']").val();
                     var id = d.id;
-                    addProp({name:mName,id:id,attributes:[]},con);
+                    var obj = con.parents(".mod_container").data("model");
+                    console.log("edit prop obj:%o and id %s and mid %s",obj,id,mid);
+                    var attributes = [];
+                    for (var i = 0; i < obj.properties.length; i++) {
+                        if (obj.properties[i].id == id) {
+                            attributes = obj.properties[i].attributes;
+                            break;
+                        }
+                    }
+                    console.log("attributes: %o",attributes);
+                    addProp({name:mName,id:id,attributes:attributes},con);
                 }, function (d) {
 
                 });
@@ -385,7 +395,8 @@
                     var mName = form.find("input[name='Name']").val();
                     var inherits = form.find("input[name='Inherits']").val();
                     var id = d.id;
-                    addMod({name:mName,id:id,inherits:inherits,properties:[]});
+                    var obj = con.find(".model[data-id="+id+"]").parents(".mod_container").data("model");
+                    addMod({ name: mName, id: id, inherits: inherits, properties: obj.properties });
                 }, function (d) {
 
                 });
