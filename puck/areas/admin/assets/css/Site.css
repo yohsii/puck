@@ -186,6 +186,32 @@ ul.content.nomenu .node i.menu{display:none;}
 .leftarea .node > .inner:hover .icon-search{display:block;}
 .node>.inner .icon-search{position:absolute;right:0px;top:3px;display:none;}
 .search_highlight{color:#ffffcc;}
+
+.settings_generated_models h3{font-size:15px;margin-bottom:0px;}
+.settings_generated_models ._interfaces{display:none;}
+.settings_generated_models .attributes>div>a{vertical-align:top;}
+.settings_generated_models .opt_select{position:absolute;top:1px;left:75px;}
+.settings_generated_models .options{margin-left:20px;padding-bottom:5px;}
+.settings_generated_models .option{margin:5px 0 5px 0;}
+.settings_generated_models .model{clear:both;}
+.settings_generated_models h3{margin:0px;text-decoration:underline;}
+.settings_generated_models a{padding-top:0px;padding-bottom:0px;}
+.settings_generated_models .generate_model{text-decoration:underline;}
+.settings_generated_models h2{font-size:16px !important;margin:0px;}
+.settings_generated_models .btn-group{position:absolute;display:none;}
+.settings_generated_models .mod_container > div{padding:4px 0 4px 0;}
+.settings_generated_models .mod_container{clear:both;margin:3px 0 0 0;border-bottom:1px solid #cfcfcf;}
+
+.view_edit .inspect_model{float:right;clear:both;}
+.view_edit textarea{clear:both;}
+.view_edit .CodeMirror{clear:both;}
+.view_edit .interfaces{display:none;}
+.overlayinner .choose_model h3,.overlayinner .model_properties h3{font-size:18px !important;}
+.overlayinner .choose_model li:hover,.overlayinner .model_properties li:hover{background:lightblue;cursor:pointer;}
+.overlayinner .choose_model a.all_models, .overlayinner .model_properties a.all_models{float:right;}
+.overlayinner .model_properties div.path span{background:#ffffee;font-weight:bold;padding:5px 2px 5px 2px;margin:0 3px 0 3px;cursor:pointer;}
+.overlayinner .model_properties ul{margin-top:4px;}
+
 .view_edit .save_button_container{
     margin:20px 0 0 0;
     float:right;

@@ -405,3 +405,42 @@ Array.prototype.contains = function (v) {
             contains = true;
     return contains;
 }
+var location_hash = "";
+var checkHash = function () {
+    if (window.location.hash != location_hash) {
+        $(document).trigger("puck.hash_change", {oldHash:location_hash,newHash:window.location.hash});
+        location_hash = window.location.hash;        
+    }
+    setTimeout(checkHash, 500);
+}
+checkHash(true);
+$(document).on("puck.hash_change", function (e,obj) {
+    handleHash(obj.newHash);
+    //msg(false, "old hash " + obj.oldHash + "|| new hash " + obj.newHash + " " + Math.random());
+});
+var handleHash = function (hash) {
+    if (/^#content/.test(hash)) {
+        var h = hash.replace("#content?", "");
+        var kvp = h.split("&");
+        var path;
+        var variant;
+        for (var i = 0; i < kvp.length;i++){
+            var k = kvp[i].split("=")[0];
+            var v = kvp[i].split("=")[1];
+            if (k == "path")
+                path = v;
+            if (k == "variant")
+                variant = v;
+        }
+        displayMarkup(path,"",variant);
+    } else if (/^#settings/.test(hash)) {
+        $(".menutop .settings").click();
+    } else if (/^#users/.test(hash)) {
+        $(".menutop .users").click();
+    } else if (/^#tasks/.test(hash)) {
+        $(".menutop .tasks").click();
+    }
+}
+$(document).ready(function () {
+    handleHash(window.location.hash);
+});

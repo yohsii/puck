@@ -54,6 +54,7 @@ var searchDialog = function (root,f) {
             $(".search_ops:visible").fadeOut(function () { $(this).remove();});
             return;
         }
+
         if (!searchRoot.isEmpty() || !searchType.isEmpty()) {
             $(".search_options i").addClass("active");
         } else {
@@ -87,6 +88,7 @@ var searchDialog = function (root,f) {
             el.find(".pathvalue").html('').append(pathspan).append(close);
             close.click(function () {
                 el.find(".pathvalue").html('');
+                searchRoot = "";
             });
         }
 
@@ -95,9 +97,11 @@ var searchDialog = function (root,f) {
             var path = node.attr("data-path");
             var close = $('<i class="icon-remove-sign"></i>');
             var pathspan = $("<span/>").html(path);
+            searchRoot = path;
             el.find(".pathvalue").html('').append(pathspan).append(close);
             close.click(function () {
                 el.find(".pathvalue").html('');
+                searchRoot = "";
             });
         });
         getDrawContent(startPath, el.find(".node"));

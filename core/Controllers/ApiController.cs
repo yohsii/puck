@@ -68,14 +68,6 @@ namespace puck.core.Controllers
             return View();
         }
         [Auth(Roles = PuckRoles.Puck)]
-        public JsonResult Models(string type)
-        {
-            if(string.IsNullOrEmpty(type))
-                return Json(ApiHelper.Models().Select(x=>x.AssemblyQualifiedName),JsonRequestBehavior.AllowGet);
-            else
-                return Json(ApiHelper.AllowedTypes(type).Select(x => x.AssemblyQualifiedName), JsonRequestBehavior.AllowGet);
-        }
-        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult Variants()
         {
             var model = ApiHelper.Variants();
@@ -417,26 +409,85 @@ namespace puck.core.Controllers
                 return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
             }
         }
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult Models(string type)
+        {
+            if (string.IsNullOrEmpty(type))
+                return Json(ApiHelper.AllModels().Select(x =>
+                    new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
+                    ), JsonRequestBehavior.AllowGet);
+            else
+                return Json(ApiHelper.AllowedTypes(type).Select(x =>
+                    new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
+                    ), JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult ModelOptions(string type) {
+            var models = ApiHelper.AllModels();
+            
+            var modelMatches = models.Where(x => x.FullName.EndsWith(type)).ToList();
+            var result = (modelMatches == null ? models : new List<Type> (modelMatches))
+                .Select(x => new {Name=ApiHelper.FriendlyClassName(x),AssemblyName=x.AssemblyQualifiedName})
+                .ToList();
+            return Json(result,JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult InspectModel(string type,string opath="") {
+            var tType = ApiHelper.GetType(type);
+            var props = tType.GetProperties();
+            var parts = opath.Split(new char[]{'.'},StringSplitOptions.RemoveEmptyEntries);
+            var str = opath;
+            
+            var currentT = tType;
+
+            var result = new List<dynamic>();
+
+            parts.ToList().ForEach(x=>{
+                var t = currentT.GetProperties().Where(xx => xx.Name.Equals(x)).FirstOrDefault().PropertyType;
+                currentT = t;    
+            });
+
+            currentT.GetProperties().ToList().ForEach(x =>
+            {
+                var isArray = x.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null && !(x.PropertyType == typeof(string));
+                result.Add(
+                new
+                {
+                    Name = x.Name,
+                    IsArray = isArray,
+                    IsComplexType = x.PropertyType.IsClass && !isArray && !(x.PropertyType == typeof(string)),
+                    Type = x.PropertyType.Name,
+                    InsertString = "@Model."+(string.IsNullOrEmpty(opath)?"":opath+".")+x.Name,
+                    IterateString = string.Format("@foreach(var el in Model.{0}){{\n\n}}",
+                        (string.IsNullOrEmpty(opath)?"":opath+".")+x.Name),
+                    InspectString = (string.IsNullOrEmpty(opath)?"":opath+".")+x.Name
+                });
+            });
+
+            return Json(new { Data=result,Path=opath,Type=type,Name=ApiHelper.FriendlyClassName(tType),FullName=tType.FullName }, JsonRequestBehavior.AllowGet);
+        }
         
         [Auth(Roles = PuckRoles.Edit)]
         public ActionResult Edit(string type,string p_path="/",string variant="",string fromVariant="") {
             if (variant == "null")
                 variant = PuckCache.SystemVariant;
-            //empty model of type
-            var modelType=ApiHelper.GetType(type);
-            var concreteType = ApiHelper.ConcreteType(modelType);
-            object model = ApiHelper.CreateInstance(concreteType);
-            //if creating new, return early
-            if (p_path.EndsWith("/"))
+            object model=null;
+            if (!string.IsNullOrEmpty(type))
             {
-                var basemodel = (BaseModel)model;
-                basemodel.Path = p_path;
-                basemodel.Variant = variant;
-                basemodel.TypeChain = ApiHelper.TypeChain(concreteType);
-                basemodel.Type = modelType.AssemblyQualifiedName;
-                basemodel.CreatedBy = User.Identity.Name;
-                basemodel.LastEditedBy = basemodel.CreatedBy;
-                return View(model);
+                //empty model of type
+                var modelType = ApiHelper.GetType(type);
+                var concreteType = ApiHelper.ConcreteType(modelType);
+                model = ApiHelper.CreateInstance(concreteType);
+                //if creating new, return early
+                if (p_path.EndsWith("/"))
+                {
+                    var basemodel = (BaseModel)model;
+                    basemodel.Path = p_path;
+                    basemodel.Variant = variant;
+                    basemodel.TypeChain = ApiHelper.TypeChain(concreteType);
+                    basemodel.Type = modelType.AssemblyQualifiedName;
+                    basemodel.CreatedBy = User.Identity.Name;
+                    basemodel.LastEditedBy = basemodel.CreatedBy;
+                    return View(model);
+                }
             }
             //else we'll need to get current data to edit for node or return node to translate
            

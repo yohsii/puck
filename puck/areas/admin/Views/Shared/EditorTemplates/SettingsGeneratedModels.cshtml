@@ -1,100 +1,115 @@
 ﻿@model List<puck.core.Entities.GeneratedModel>
-<style>
-    .settings_generated_models h3{font-size:15px;margin-bottom:0px;}
-    .settings_generated_models ._interfaces{display:none;}
-    .settings_generated_models .field_group > div{float:left;}
-    .settings_generated_models .update_models{float:right;}
-    .settings_generated_models .model{/*background:#fefefe;*/padding:4px;}
-    .settings_generated_models .properties{/*background:#f7f7f7;*/padding:0px 10px 5px 10px;}
-    .settings_generated_models .model .buttons{padding:24px 0 0 22px;}
-    .settings_generated_models .model .values{display:none;}
-    .settings_generated_models .properties, .settings_generated_models .attributes, .settings_generated_models .options
-    {
-        clear:both;
-    }
-    .settings_generated_models .properties{margin-left:20px;display:none;}
-    .settings_generated_models .attributes{position:relative;margin-left:50px;padding-bottom:5px;}
-    .settings_generated_models .attributes>div>a{vertical-align:top;margin-top:5px;}
-    .settings_generated_models .opt_select{position:absolute;top:1px;left:75px;}
-    .settings_generated_models .options{margin-left:20px;padding-bottom:5px;}
-    .settings_generated_models .property{/*background:#fefefe;*//*margin:5px 0 5px 0;*/}
-    .settings_generated_models .attribute{/*background:#f7f7f7;*//*margin:5px 0 5px 0;*/width:99%;}
-    .settings_generated_models .option{/*background:#fffeef;*/margin:5px 0 5px 0;width:99%;}
-    .settings_generated_models .model{/*margin:5px 0 5px 0;*/}
-    .settings_generated_models h3{margin:0px;text-decoration:underline;}
-    .settings_generated_models a{padding-top:0px;padding-bottom:0px;}
-    .settings_generated_models .generate_model{float:right;text-decoration:underline;}
-</style>
+@{
+    var optionTypes = ApiHelper.GeneratedOptions();
+                    
+}
 <div class="settings_generated_models">
     <h2><a class="new_model btn btn-link"><i class="icon-plus-sign"></i> New Model</a></h2>
+    
+    <div class="grid_3 alpha omega"><h2>models</h2></div>
+    <div class="grid_3 alpha omega"><h2>properties</h2></div>
+    <div class="grid_3 alpha omega"><h2>options</h2></div>
+    
     <div class="models">
         
     </div>    
     <div class="clearboth"></div>
     <div class="_interfaces">
-        <div class="properties">
-            <h3>Properties<a class="btn btn-link add"><i class="icon-plus-sign"></i></a></h3>            
-            <div class="list"></div>
-        </div>
-        <div class="attributes">
-            <h3>Options</h3>
-            <div class="opt_select">
+        <div class="grid_3 alpha omega col3"></div>        
+    </div>
+    <div class="btn-group puck-dropdown open model" data-context="">
+        <ul class="dropdown-menu">
+            <li><a href="#" data-action="generate"><i class="icon-off"></i> Generate</a></li>
+            <li><a href="#" data-action="add_property"><i class="icon-plus-sign"></i> Add property</a></li>
+            <li><a href="#" data-action="delete_model"><i class="icon-trash"></i> Delete</a></li>            
+        </ul>
+    </div>
+    <div class="btn-group puck-dropdown open property" data-context="">
+        <ul class="dropdown-menu">
+            <li>
+                <a><i class="icon-plus-sign"></i> Add option<br />
                 <select class="optionType">
                 @{
-                    var optionTypes = ApiHelper.GeneratedOptions();
+                    <option>-- Select Option --</option>
                     foreach(var opt in optionTypes){
                         <option value="@opt.AssemblyQualifiedName">@opt.Name</option>
                     }
                 }
                 </select>
-                <a class="btn btn-link add"><i class="icon-plus-sign"></i></a>
-            </div>
-            <div class="list"></div>
-        </div>
-        <div class="options">
-            <h3>Options <a class="btn btn-link add">New option</a></h3>            
-            <div class="list"></div>
-        </div>        
-        <div class="property">
-          <a class="btn btn-link"></a> <i class="icon-trash"></i>
-        </div>
-        <div class="attribute">
-          <a class="btn btn-link"></a> <i class="icon-trash"></i>
-        </div>
-        <div class="option">
-           - <a class="btn btn-link"></a>
-        </div>        
-    </div>    
+                </a>
+            </li>
+            <li><a href="#" data-action="delete_property"><i class="icon-trash"></i> Delete</a></li>                
+        </ul>
+    </div>
+    <div class="btn-group puck-dropdown open attribute" data-context="">
+        <ul class="dropdown-menu">
+            <li><a href="#" data-action="delete_attribute"><i class="icon-trash"></i> Delete</a></li>                
+        </ul>
+    </div>
 </div>
+
 
 <script>
     onAfterDom(function () {
-        $(document).unbind("click.expand_generated_models");
-        $(document).unbind("click.generate_model");
-        $(document).on("click.generate_model", ".generate_model", function () {
+        var container = $(".settings_generated_models");
+        $(document).on("click.model_options", ".mod_container i.icon-cog", function () {
+            var pos = $(this).position();
+            var con = $(this).parents(".mod_container");
+            var parent = $(this).parent();
+            var el;
+            if (parent.hasClass("model"))
+                el = $(".puck-dropdown.model");
+            else if (parent.hasClass("property"))
+                el = $(".puck-dropdown.property");
+            else
+                el = $(".puck-dropdown.attribute");
+            el.attr("data-context",parent.attr("data-id"));
+            el.css({ top: pos.top + 30, left: pos.left, display: "block" });
+            $(document).on("click.model_options_out",function (e) {
+                if (jQuery.contains(el.get(0), e.target))
+                    return;
+                container.find(".puck-dropdown").hide();
+                $(document).unbind("click.model_options_out");
+            });
+        });
+        container.on("click.generate_model", "[data-action=generate]", function () {
             var el = $(this);
-            var id = el.parents(".model").attr("data-id");
+            var id = el.parents(".puck-dropdown").attr("data-context");
+            container.find(".puck-dropdown").hide();
             $.post("/admin/Task/GenerateModel/" + id, function (d) {
                 console.log(d);
                 if (d.success) {
-                    msg(true,"model generated");
+                    msg(true, "model generated");                    
                 } else {
                     msg(false,d.message);
                 }
             });
         });
-        $(document).on("click.expand_generated_models", ".model i", function () {
+        container.on("click.expand_generated_models", ".model>i.icon-chevron-right", function () {
             var el = $(this);
-            var modelContainer = el.parents(".model");
-            if (modelContainer.find(".properties").is(":visible")) {
-                el.removeClass("icon-chevron-down");
-                el.addClass("icon-chevron-right");
-                modelContainer.find(".properties").hide();
-            } else {
-                el.removeClass("icon-chevron-right");
-                el.addClass("icon-chevron-down");
-                modelContainer.find(".properties").show();
-            }
+            var modelContainer = el.parents(".mod_container");
+            var obj = modelContainer.data("model");
+            $(obj.properties).each(function () {
+                addProp(this,modelContainer.find(".properties"));
+            });
+        });
+        container.on("click.property_expand", ".property>i.icon-chevron-right", function () {
+            var el = $(this);
+            var modelContainer = el.parents(".mod_container");
+            var pid = el.parents(".property").attr("data-id");
+            el.parents(".properties").find(".property").css({ backgroundColor: "transparent" });
+            el.parents(".property").css({ backgroundColor: "#eeffee" });
+            var obj = modelContainer.data("model");
+            var attContainer = modelContainer.find(".attributes");
+            attContainer.empty();
+            var property;
+            $(obj.properties).each(function () {
+                if (this.id == pid)
+                    property = this;
+            });
+            $(property.attributes).each(function () {
+                addAtt(this, attContainer);
+            });
         });
         var toLoad = [
             @for (var i = 0; i < Model.Count;i++ ){
@@ -115,7 +130,7 @@
                                     continue;
                                 }
                                 var attName = attType.Name; 
-                                @Html.Raw("{name:'"+attName+"',type:'"+att.Type+"',id:"+att.ID+",options:[")
+                                @Html.Raw("{name:'"+attName+"',type:'"+att.Type+"',id:"+att.ID+",propId:"+prop.ID+",options:[")
                                   
                                 @Html.Raw("]}")
                                 @(iii==prop.Attributes.Count-1?"":",")
@@ -129,50 +144,52 @@
                 @Html.Raw(i==Model.Count-1?"":",")
             }
         ];
-        var addOpt = function (o,con) {
-            console.log("opt:%o",o);
-            if (container.find(".option[data-id=" + o.id + "]").length > 0) {
-                container.find(".option[data-id=" + o.id + "]>a").html(""+o.name);
-                return;
-            }
-            var el = $("<div/>").addClass("option").attr("data-id", o.id);
-            var lnk = $("<a class='btn btn-link' href='#'/>").html(""+o.name);
-            el.append(lnk);
-            con.append(el);            
-        }
         var addAtt = function (a, con) {
+            var mcon = con.parents(".mod_container");
+            var obj = mcon.data("model");
+            console.log(a);
+            var prop;
+            for (var i = 0; i < obj.properties.length; i++) {
+                if (obj.properties[i].id == a.propId)
+                    prop = obj.properties[i];
+            }
+            for (var i = 0; i < prop.attributes.length; i++) {
+                if (prop.attributes[i].id == a.id)
+                    prop.attributes.splice(i, 1);
+            }
+            prop.attributes.push(a);
             console.log("att:%o", a);
             if (container.find(".attribute[data-id=" + a.id + "]").length > 0) {
                 container.find(".attribute[data-id=" + a.id + "]>a").html(""+a.name);
                 return;
             }
-            var el = $("<div/>").addClass("attribute").attr("data-id", a.id).attr("data-type",a.type);
-            var del = $("<i class='icon-trash'></i>");
-            var lnk = $("<a class='btn btn-link' href='#'/>").html("- " + a.name);
-            el.append(lnk).append(del);
+            var el = $("<div/>").addClass("attribute").attr("data-id", a.id).attr("data-pid",a.propId).attr("data-type",a.type);
+            var lnk = $("<a class='btn btn-link' href='#'/>").html(a.name);
+            el.append('<i class="icon-cog"></i>');
+            el.append(lnk);
             con.append(el);
-            //var optContainer = intf("options");
-            //el.append(optContainer);
-            //$(a.options).each(function (i) {
-                //addOpt(this, optContainer);
-            //});
         }
         var addProp = function (p,con) {
-            console.log("prop:%o", p,con);
+            var mcon = con.parents(".mod_container");
+            var obj = mcon.data("model");
+            console.log(p);
+            for (var i = 0; i < obj.properties.length; i++) {
+                if (obj.properties[i].id == p.id)
+                    obj.properties.splice(i, 1);
+            }
+            obj.properties.push(p);
+
+            console.log("prop:%o", p, con);
             if (container.find(".property[data-id=" + p.id + "]").length > 0) {
                 container.find(".property[data-id=" + p.id + "]>a").html(""+p.name);
                 return;
             }
             var el = $("<div/>").addClass("property").attr("data-id", p.id);
-            var del = $("<i class='icon-trash'></i>");
-            var lnk = $("<a class='btn btn-link' href='#'/>").html("- " + p.name);
-            el.append(lnk).append(del);
+            var lnk = $("<a class='btn btn-link' href='#'/>").html(p.name);
+            el.append('<i class="icon-chevron-right"></i>');
+            el.append('<i class="icon-cog"></i>');
+            el.append(lnk);
             con.append(el);
-            var attContainer = intf("attributes");
-            el.append(attContainer);
-            $(p.attributes).each(function (i) {
-                addAtt(this,attContainer.find(".list"));
-            });
         }
         var addMod = function (m) {
             console.log("loading: %o", m);
@@ -180,19 +197,20 @@
                 container.find(".model[data-id=" + m.id + "]>a").html(""+m.name);
                 return;
             }
-            var el = $("<div/>").addClass("model").attr("data-id", m.id);
-            var del = $("<i class='icon-trash'></i>");
+            var mcon = $("<div/>").addClass("mod_container");
+            mcon.data("model", m);
+            var el = $("<div/>").addClass("model grid_3 alpha omega").attr("data-id", m.id);
             var lnk = $("<a class='btn btn-link' href='#'/>").html("" + m.name);
             el.append('<i class="icon-chevron-right"></i>');
-            el.append('<button class="generate_model btn btn-link">Generate Model</button>');
+            el.append('<i class="icon-cog"></i>');
             el.append(lnk);
-            el.append(del);
-            var propContainer = intf("properties");
-            el.append(propContainer);
-            $(m.properties).each(function (i) {
-                addProp(this,propContainer.find(".list"));
-            });
-            models.append(el);
+            mcon.append(el);
+            var propContainer = intf("col3").addClass("properties");
+            var attContainer = intf("col3").addClass("attributes");
+            mcon.append(propContainer);
+            mcon.append(attContainer);
+            mcon.append("<div class='clearboth'></div>");
+            models.append(mcon);
         }
         var init = function () {
             for (var i = 0; i < toLoad.length; i++) {
@@ -203,54 +221,50 @@
         var propertyName = function (i) {
             return "@ViewData.ModelMetadata.PropertyName";
         }
-        var container = $(".settings_generated_models");
         //bind new buttons
-        container.on("click", ".properties>h3>a.add", function (e) {
+        container.on("click", "[data-action=add_property]", function (e) {
             e.preventDefault();
             e.stopPropagation();
-            var pid = $(this).parents(".model").attr("data-id");
-            var dest = $(this).parents(".properties").find(">.list");
-            editProperty(dest, -1,pid);
+            var mid = $(this).parents(".puck-dropdown").attr("data-context");
+            var dest = container.find(".model[data-id=" + mid + "]").parents(".mod_container").find(".properties");
+            editProperty(dest, -1,mid);
         });
-        container.on("click", ".attributes>.opt_select>a.add", function (e) {
+        container.find(".optionType").change(function (e) {
+            var el = $(this);
+            handleChangeType(e,el);
+        });
+        var handleChangeType = function (e,el) {
+            container.find(".optionType").unbind();
             e.preventDefault();
             e.stopPropagation();
-            var pid = $(this).parents(".property").attr("data-id");
-            var dest = $(this).parents(".attributes").find(">.list");
-            var optionType = $(this).parents(".attributes").find("select").val();
-            console.log(optionType);
-            editAttribute(dest, -1, pid,optionType);
-        });
-        container.on("click", ".options>h3>a.add", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var pid = $(this).parents(".attribute").attr("data-id");
-            var dest = $(this).parents(".options").find(">.list");
-            editAttributeOption(dest, -1,pid);
-        });
+            var pid = el.parents(".puck-dropdown").attr("data-context");
+            var dest = container.find(".property[data-id=" + pid + "]").parents(".mod_container").find(".attributes");
+            var optionType = container.find("select.optionType").val();
+            container.find("select.optionType option").removeAttr("selected");
+            editAttribute(dest, -1, pid, optionType);
+            container.find(".puck-dropdown").hide();
+            container.find(".optionType").change(function (e) {
+                var el = $(this);
+                handleChangeType(e,el);
+            });
+        }
         container.on("click", ".new_model", function (e) {
             editModel();
         });
         //bind edit buttons
         container.on("click", ".property>a", function (e) {
-            var pid = $(this).parents(".model").attr("data-id");
+            var pid = $(this).parents(".mod_container").find(".model").attr("data-id");
             var id = $(this).parents(".property").attr("data-id");
             var dest = $(this).parents(".properties").find(">.list");
             console.log("pid:%s id:%s",pid,id);
             editProperty(dest, id,pid);
         });
         container.on("click", ".attribute>a", function (e) {
-            var pid = $(this).parents(".property").attr("data-id");
+            var pid = $(this).parents(".mod_container").find(".property").attr("data-id");
             var id = $(this).parents(".attribute").attr("data-id");
             var type = $(this).parents(".attribute").attr("data-type");
             var dest = $(this).parents(".attributes").find(">.list");
             editAttribute(dest, id,pid,type);
-        });
-        container.on("click", ".option>a", function (e) {
-            var pid = $(this).parents(".attribute").attr("data-id");
-            var id = $(this).parents(".option").attr("data-id");
-            var dest = $(this).parents(".options").find(">.list");
-            editAttributeOption(dest, id,pid);
         });
         container.on("click", ".model>a", function (e) {
             var id = $(this).parents(".model").attr("data-id");
@@ -258,48 +272,67 @@
             editModel(dest, id);
         });
         //delete buttons
-        container.on("click", ".model>.icon-trash", function (e) {
+        container.on("click", "[data-action=delete_model]", function (e) {
+            container.find(".puck-dropdown").hide();
             e.stopPropagation()
             var el = $(this);
-            var att = el.parents(".model");
-            var prop = att.find("a").html();
-            var id = att.attr("data-id");
-            if (!confirm("are you sure you wan't to delete the model " + prop + " ?"))
+            var id = el.parents(".puck-dropdown").attr("data-context");
+            var mod = container.find(".model[data-id="+id+"]");
+            var name = mod.find("a").html();
+            if (!confirm("are you sure you wan't to delete the model - "+name+"?"))
                 return;
             $.post("/admin/task/DeleteModel/?id=" + id, function (d) {
                 if (d.success) {
-                    att.remove();
+                    mod.parents(".mod_container").remove();
                 } else {
                     msg(false, d.message);
                 }
             });
         });
-        container.on("click", ".property>.icon-trash", function (e) {
+        container.on("click", "[data-action=delete_property]", function (e) {
+            container.find(".puck-dropdown").hide();
             e.stopPropagation()
             var el = $(this);
-            var att = el.parents(".property");
-            var prop = att.find("a").html();
-            var id = att.attr("data-id");
-            if (!confirm("are you sure you wan't to delete the property " + prop + " ?"))
+            var id = el.parents(".puck-dropdown").attr("data-context");
+            var prop = container.find(".property[data-id=" + id + "]");
+            var name = prop.find("a").html();
+            if (!confirm("are you sure you wan't to delete the property - " + name + "?"))
                 return;
             $.post("/admin/task/DeleteProperty/?id=" + id, function (d) {
                 if (d.success) {
-                    att.remove();
+                    var obj = prop.parents(".mod_container").data("model");
+                    for (var i = 0; i < obj.properties.length; i++) {
+                        if (obj.properties[i].id == id)
+                            obj.properties.splice(i, 1);
+                    }
+                    container.find(".attribute[data-pid="+id+"]").remove();
+                    prop.remove();
                 } else {
                     msg(false, d.message);
                 }
             });
         });
-        container.on("click", ".attribute>.icon-trash", function (e) {
+        container.on("click", "[data-action=delete_attribute]", function (e) {
+            container.find(".puck-dropdown").hide();
             e.stopPropagation()
             var el = $(this);
-            var att = el.parents(".attribute");
-            var prop = att.find("a").html();
-            var id = att.attr("data-id");
-            if (!confirm("are you sure you wan't to delete the attribute "+prop+" ?"))
+            var id = el.parents(".puck-dropdown").attr("data-context");
+            var att = container.find(".attribute[data-id=" + id + "]");
+            var name = att.find("a").html();
+            if (!confirm("are you sure you wan't to delete the option - " + name + "?"))
                 return;
-            $.post("/admin/task/DeleteAttribute/?id="+id, function (d) {
+            $.post("/admin/task/DeleteAttribute/?id=" + id, function (d) {
                 if (d.success) {
+                    var obj = att.parents(".mod_container").data("model");
+                    var prop;
+                    for (var i = 0; i < obj.properties.length; i++) {
+                        if (obj.properties[i].id == att.attr("data-pid"))
+                            prop = obj.properties[i];
+                    }
+                    for (var i = 0; i < prop.attributes.length; i++) {
+                        if (prop.attributes[i].id == id)
+                            prop.attributes.splice(i, 1);
+                    }
                     att.remove();
                 } else {
                     msg(false, d.message);
@@ -307,23 +340,8 @@
             });
         });
         //edit functions
-        var editAttributeOption = function (con, id,aid) {
-            id = id || -1;
-            $.get("/admin/task/editattributeoption/?id=" + id+"&aid="+aid, function (d) {
-                overlay(d, 420, 600);
-                var form = $(".overlayinner form");
-                console.log("form: %o", form);
-                wireForm(form, function (d) {
-                    overlayClose();
-                    var mName = form.find("input[name='Name']").val();
-                    var id = d.id;
-                    addOpt({name:mName,id:id},con);
-                }, function (d) {
-
-                });
-            });
-        }
         var editAttribute = function (con,id,pid,optionType) {
+            container.find(".puck-dropdown").hide();
             id = id || -1;
             $.get("/admin/task/editattribute/?id=" + id+"&pid="+pid+"&optionType="+optionType, function (d) {
                 overlay(d, 420, 600);
@@ -333,13 +351,14 @@
                     overlayClose();
                     var mName = container.find("select option[value='" + optionType + "']").html();
                     var id = d.id;
-                    addAtt({name:mName,id:id,type:optionType}, con);
+                    addAtt({name:mName,id:id,type:optionType,propId:pid}, con);
                 }, function (d) {
 
                 });
             });
         }
-        var editProperty = function (con, id,mid) {
+        var editProperty = function (con, id, mid) {
+            container.find(".puck-dropdown").hide();
             id = id || -1;
             $.get("/admin/task/editproperty/?id=" + id+"&mid="+mid, function (d) {
                 overlay(d, 420, 600);
@@ -349,13 +368,14 @@
                     overlayClose();
                     var mName = form.find("input[name='Name']").val();
                     var id = d.id;
-                    addProp({name:mName,id:id},con);
+                    addProp({name:mName,id:id,attributes:[]},con);
                 }, function (d) {
 
                 });
             });
         }
-        var editModel= function (con,id) {
+        var editModel = function (con, id) {
+            container.find(".puck-dropdown").hide();
             id = id || -1;
             $.get("/admin/task/editmodel/" + id, function (d) {
                 overlay(d, 420, 300);
@@ -365,7 +385,7 @@
                     var mName = form.find("input[name='Name']").val();
                     var inherits = form.find("input[name='Inherits']").val();
                     var id = d.id;
-                    addMod({name:mName,id:id,inherits:inherits});
+                    addMod({name:mName,id:id,inherits:inherits,properties:[]});
                 }, function (d) {
 
                 });
