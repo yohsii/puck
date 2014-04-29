@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using puck.core.Abstract;
 using System.ComponentModel.DataAnnotations;
+using puck.core.Attributes;
 
 namespace puck.core.Models
 {
     public enum PuckPickerSelectionType { node, variant, both };
-    
+    [FriendlyClassName(Name="Puck Picker Editor Settings")]
     public class PuckPickerEditorSettings:I_Puck_Editor_Settings
     {   
         [UIHint("PuckPicker")]
