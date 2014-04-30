@@ -224,12 +224,13 @@
             });
         }
 
-        var saveFile = function (fp,val) {
+        var saveFile = function (fp, val) {
+            cright.find(">.message .btnclose").click();
             $.post("/admin/task/savefilecontent",{fp:fp,content:val}, function (data) {
                 if (data.success) {
-                    console.log(data.success);
+                    msg(true, "view updated");
                 } else {
-                    console.log(data.message);
+                    msg(false,data.message);
                 }
             });
         }

@@ -1205,6 +1205,9 @@
   <ItemGroup>
     <Content Include="areas\admin\assets\js\code_mirror_modes\livescript\livescript.ls" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Task\PreviewEditor.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

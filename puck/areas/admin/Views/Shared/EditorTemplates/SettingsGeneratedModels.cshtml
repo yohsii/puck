@@ -363,6 +363,17 @@
             $.get("/admin/task/editproperty/?id=" + id+"&mid="+mid, function (d) {
                 overlay(d, 420, 600);
                 var form = $(".overlayinner form");
+                var showPreview = function (type) {
+                    getEditorPreview(type, function (d) {
+                        $(".preview_container").remove();
+                        form.after(d);
+                        afterDom();
+                    });
+                }
+                showPreview(form.find("select[name=Type]").val());
+                form.find("select[name=Type]").change(function () {
+                    showPreview(form.find("select[name=Type]").val());
+                });
                 console.log("form: %o", form);
                 wireForm(form, function (d) {
                     overlayClose();
@@ -402,7 +413,11 @@
                 });
             });
         }
-
+        var getEditorPreview = function (type,f) {
+            $.get("/admin/task/previeweditor?type=" + type, function (d) {
+                f(d);
+            },"html");
+        }
         var models = container.find(".models");
         var newmodel = container.find(".new_model");
         var interfaces = container.find("._interfaces");

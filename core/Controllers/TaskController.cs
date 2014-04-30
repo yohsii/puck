@@ -631,6 +631,23 @@ namespace puck.core.Controllers
 
         }
 
+        public ActionResult PreviewEditor(string type) {
+            var cstemplate = System.IO.File.ReadAllText(HttpContext.Server.MapPath("~/app_data/generated/cs_template.txt"));
+            var propertyEntry = GeneratorValues.PropertyType[type];
+            var reg = new Regex("using\\s[a-zA-Z0-9\\.]+;");
+            var matches = reg.Matches(cstemplate);
+            var uses = "";
+            for(var i=0;i < matches.Count;i++) { 
+                uses += matches[i].Value;
+            }
+            var source = string.Format("{0} \n public class test_{1} {{ {2} public {3} Preview {{ get;set; }} }}",
+                uses,DateTime.Now.ToString("yyyyMMddHHmmss"),propertyEntry.AttributeString,propertyEntry.Type);
+            var assembly = CodeGenerator.PuckCompiler.CompileCode(source);
+            var t = assembly.GetTypes().First();
+            var instance = Activator.CreateInstance(t);
+            return View(instance);
+        }
+
         //
         // GET: /admin/Task/
 
