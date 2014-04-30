@@ -3,7 +3,7 @@
     Layout = null;
     
 }
-<div class="grid_3 push_1">
+<div class="grid_3 push_1 edit_generated_property">
 @using (Html.BeginForm("editproperty", "task", new {mid=ViewBag.mid }))
 {
     @Html.ValidationSummary(true)
@@ -32,5 +32,7 @@
         </p>
     </fieldset>
 }
-
+    <div class="spinner">
+        <div class="loading"></div>
+    </div>
 </div>

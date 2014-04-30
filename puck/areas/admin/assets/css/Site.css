@@ -202,6 +202,10 @@ ul.content.nomenu .node i.menu{display:none;}
 .settings_generated_models .mod_container > div{padding:4px 0 4px 0;}
 .settings_generated_models .mod_container{clear:both;margin:3px 0 0 0;border-bottom:1px solid #cfcfcf;}
 
+.edit_generated_property .spinner .loading{
+    display:none;height:24px;width:24px;margin-left:90px;background:url(../img/ajax-loader.gif);
+}
+
 .view_edit .inspect_model{float:right;clear:both;}
 .view_edit textarea{clear:both;}
 .view_edit .CodeMirror{clear:both;}

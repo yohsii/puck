@@ -364,8 +364,10 @@
                 overlay(d, 420, 600);
                 var form = $(".overlayinner form");
                 var showPreview = function (type) {
+                    $(".preview_container").remove();
+                    $(".edit_generated_property .spinner .loading").show();
                     getEditorPreview(type, function (d) {
-                        $(".preview_container").remove();
+                        $(".edit_generated_property .spinner .loading").hide();
                         form.after(d);
                         afterDom();
                     });
