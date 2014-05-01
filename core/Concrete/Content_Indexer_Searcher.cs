@@ -251,6 +251,7 @@ namespace puck.core.Concrete
                     }
                     Writer.Flush(true,true,true);
                     Writer.Commit();
+                    Optimize();
                     models
                         .Where(x=>!cancelled.Contains(x))
                         .ToList()
@@ -353,6 +354,7 @@ namespace puck.core.Concrete
                     }
                     Writer.AddDocument(doc);
                     Writer.Commit();
+                    Optimize();
                 }
                 catch (Exception ex)
                 {
@@ -397,7 +399,11 @@ namespace puck.core.Concrete
                 try
                 {
                     SetWriter(false);
-                    Writer.Optimize();                    
+                    Writer.Optimize();
+                }
+                catch (OutOfMemoryException ex) {
+                    CloseWriter();
+                    throw;
                 }
                 catch (Exception ex)
                 {
