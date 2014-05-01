@@ -27,6 +27,7 @@ namespace puck.ViewModels
         
         [Required]
         [IndexSettings(FieldIndexSetting = Field.Index.ANALYZED, Analyzer = typeof(SnowballAnalyzer))]
+        [Display(Description="enter a description here")]
         public string Title { get; set; }
         
         [Required]
@@ -36,7 +37,7 @@ namespace puck.ViewModels
         public string MainContent { get; set; }
         
         public PuckImage Image { get; set; }
-
+        [UIHint("PuckGoogleLongLat")]
         public GeoPosition Location { get; set; }                
     }
 }

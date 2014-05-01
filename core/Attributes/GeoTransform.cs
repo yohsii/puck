@@ -15,7 +15,7 @@ namespace puck.core.Attributes
         public GeoPosition Transform(BaseModel m, string propertyName, string ukey, GeoPosition pos)
         {
             if(pos.Longitude.HasValue && pos.Latitude.HasValue)
-                pos.LongLat = string.Concat(pos.Latitude, ",", pos.Longitude);
+                pos.LatLong = string.Concat(pos.Latitude, ",", pos.Longitude);
             return pos;
         }
     }

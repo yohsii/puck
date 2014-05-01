@@ -639,7 +639,7 @@ var displayMarkup = function (path, type, variant,fromVariant) {
                 var el = $(this);
                 var fieldname = el.attr("data-fieldname");
                 if (fieldname.split(".").length > 1)
-                    cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']").append(el);
+                    cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']>.editor-field>.fields").append(el);
                 else el.appendTo(cright.find("[data-group='default']"));
             })
             afterDom();

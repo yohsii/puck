@@ -135,6 +135,7 @@
     <Compile Include="Attributes\FriendlyClassName.cs" />
     <Compile Include="Attributes\GeoTransform.cs" />
     <Compile Include="Attributes\IndexSettings.cs" />
+    <Compile Include="Attributes\PuckHint.cs" />
     <Compile Include="Base\BaseModel.cs" />
     <Compile Include="Base\BaseTask.cs" />
     <Compile Include="Bootstrap.cs" />

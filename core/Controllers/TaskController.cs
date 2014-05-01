@@ -16,6 +16,7 @@ using System.IO;
 using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
+using puck.core.Attributes;
 
 namespace puck.core.Controllers
 {
@@ -583,10 +584,15 @@ namespace puck.core.Controllers
                         log.Log(ex);
                     }  
                 });
+                var uiHint = propertyEntry.Type.GetCustomAttributes(typeof(PuckHint), false).FirstOrDefault() as PuckHint;
+                if (uiHint != null && !string.IsNullOrEmpty(uiHint.Name))
+                {
+                    properties.AppendLine(string.Format("[UIHint(\"{0}\")]", uiHint.Name));
+                }
                 properties.AppendLine(string.Format("[DisplayName(\"{0}\")]",prop.Name));
                 properties.AppendLine(propertyEntry.AttributeString);
                 properties.AppendLine(
-                    string.Concat("public ", propertyEntry.Type, " ", ApiHelper.SanitizePropertyName(prop.Name), "{get;set;}")
+                    string.Concat("public ", propertyEntry.Type.FullName, " ", ApiHelper.SanitizePropertyName(prop.Name), "{get;set;}")
                 );
             };
             var inherits = "BaseModel";

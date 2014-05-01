@@ -334,6 +334,7 @@
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.slider.min.css" />
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="areas\admin\assets\css\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="areas\admin\assets\img\ajax-loader.gif" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings-white.png" />
     <Content Include="areas\admin\assets\img\glyphicons-halflings.png" />
     <Content Include="areas\admin\assets\js\adapt.js" />
@@ -1207,6 +1208,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="areas\admin\Views\Task\PreviewEditor.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\PuckGoogleLongLat.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

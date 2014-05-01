@@ -19,6 +19,6 @@ namespace puck.core.Models
         
         [HiddenInput(DisplayValue=false)]
         [IndexSettings(Spatial=true)]
-        public string LongLat { get; set; }
+        public string LatLong { get; set; }
     }
 }
