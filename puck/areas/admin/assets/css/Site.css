@@ -55,9 +55,12 @@ div.search_results th
 {
     padding:10px;
 }
+div.search_results tr td{
+    border-top:1px solid #f9f9f9;
+}
 div.search_results tr:nth-child(even)
 {
-    background:#fbfbfb;
+    /*background:#fbfbfb;*/
 }
 div.search_results tr:hover
 {
