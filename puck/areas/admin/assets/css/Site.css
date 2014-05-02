@@ -150,9 +150,10 @@ select.languages{height:200px !important;width:550px !important;}
 /*
 .main.grid table{border-collapse:separate;border-spacing:10px;}
 */
-table.revisions tr:nth-child(odd){background:#fbfbfb;}
-table.revisions tr:nth-child(even){background:#fff;}
+table.revisions tr:nth-child(odd){/*background:#fbfbfb;*/}
+table.revisions tr:nth-child(even){/*background:#fff;*/}
 table.revisions tr.current{background:#eeffee;}
+table.revisions tr td{border-top:1px solid #f9f9f9;}
 
 .parameters_edit .parameters_update{float:right;}
 .user_edit .msg {float:left;clear:both;background:#ffeeee;margin-bottom:20px;padding:5px;display:none;}
@@ -211,7 +212,8 @@ ul.content.nomenu .node i.menu{display:none;}
 .settings_generated_models h2{font-size:13px !important;margin:0px;}
 .settings_generated_models .btn-group{position:absolute;display:none;}
 .settings_generated_models .mod_container > div{padding:4px 0 4px 0;}
-.settings_generated_models .mod_container{clear:both;margin:3px 0 0 0;border-top:1px solid #f9f9f9;}
+.settings_generated_models .mod_container > div.clearboth{padding:0px;}
+.settings_generated_models .mod_container{clear:both;margin:0 0 0 0;border-top:1px solid #f9f9f9;}
 
 .edit_generated_property .spinner .loading{
     display:none;height:24px;width:24px;margin-left:90px;background:url(../img/ajax-loader.gif);
