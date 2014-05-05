@@ -299,6 +299,12 @@ namespace puck.core.Controllers
             }
             return View(model);
         }
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult VariantsForNode(string path){
+            var nodes = repo.CurrentRevisionsByPath(path);
+            var result = nodes.Select(x => new { Variant=x.Variant,Published=x.Published});
+            return Json(result,JsonRequestBehavior.AllowGet);
+        }
         [Auth(Roles=PuckRoles.Puck)]
         public JsonResult Content(string path = "/") {
             //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method

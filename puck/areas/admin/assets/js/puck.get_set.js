@@ -39,6 +39,9 @@ var getSettings = function (f) {
 var getVariants = function (f) {
     $.get("/admin/api/variants", f);
 }
+var getVariantsForPath = function (path,f) {
+    $.get("/admin/api/variantsfornode/?path="+path, f);
+}
 var setDeleteTemplate = function (p, f) {
     $.post("/admin/task/deletetemplate?path=" + p, f);
 }

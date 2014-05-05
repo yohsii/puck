@@ -22,6 +22,7 @@ input.search{width:0px;height: 10px;margin-top:0px;opacity:0;}
 .search_options{padding:0px !important;padding-left:12px !important;opacity:0;}
 .search_ops button{float:right;}
 .search_ops{
+z-index:10;
 top:90px;
 position: absolute !important;
 background-color: #fcfcfc;

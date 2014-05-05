@@ -513,7 +513,7 @@ var draw = function (data, el, sortable) {
         if (!!data[p][defaultLanguage])
             node = data[p][defaultLanguage];
         else
-            node = data[p][v];
+            node = data[p][variants[0]];
         var elnode = $("<li/>").addClass("node");
         var elinner = $("<div class='inner'/>");
         elnode.append(elinner);
@@ -577,7 +577,7 @@ var displayMarkup = function (path, type, variant,fromVariant) {
                         if (dbcontent[path][dataTranslation].Published == false) {
                             published = false;
                         }
-                        
+
                         var dtli = $("<li/>");
                         if (!published)
                             dtli.addClass("unpublished");
@@ -597,6 +597,31 @@ var displayMarkup = function (path, type, variant,fromVariant) {
                 }
                 cright.prepend(translations);
             }
+        } else {
+            getVariantsForPath(path, function (d) {
+                for (var i = 0; i < d.length; i++) {
+                    (function () {
+                        var dtli = $("<li/>");
+                        if (!d[i].Published)
+                            dtli.addClass("unpublished");
+                        if (d[i].Variant != variant) {
+                            var lnk = $("<a href='#'/>").html("-" + variantNames[d[i].Variant]);
+                            (function () {
+                                var v = d[i].Variant;
+                                lnk.click(function (e) {
+                                    e.preventDefault();
+                                        displayMarkup(path, type, v);
+                                });
+                            }());
+                            dtli.append(lnk)
+                        } else {
+                            dtli.append("-" + variantNames[d[i].Variant]);
+                        }
+                        translations.append(dtli);
+                    })();
+                }
+                cright.prepend(translations);
+            });
         }
         //get field groups and build tabs
         getFieldGroups(type, function (data) {
