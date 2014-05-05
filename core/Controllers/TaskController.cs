@@ -495,23 +495,24 @@ namespace puck.core.Controllers
             return Json(new { success = true, message = message, id = id }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GenerateModel(int id)
+        public ActionResult GenerateModel(int id,bool compile=true)
         {
+            string output = "";
             var message = string.Empty;
             var success = false;
             try
-            {
-                DoGenerate(id);
+            {                
+                DoGenerate(id,out output,compile);
                 ApiHelper.SetGeneratedMappings();
                 success = true;
             }
             catch (Exception ex) {
                 message = ex.Message;
             }
-            return Json(new{message=message,success=success},JsonRequestBehavior.AllowGet);
+            return Json(new{message=message,success=success,Output=output},JsonRequestBehavior.AllowGet);
         }
 
-        public void DoGenerate(int id) {
+        public void DoGenerate(int id,out string cs_source,bool compile=true) {
             var gm = this.repo.GetGeneratedModel().Where(x => x.ID == id).FirstOrDefault();
             var currentClassName = gm.CName;
 
@@ -545,24 +546,27 @@ namespace puck.core.Controllers
                 .Where(x => x.FullName.Equals(string.Concat("puck.Generated.Abstract.I_",gm.Name))).FirstOrDefault();
             */
             Type interfaceg;
-            if (gm.IFullName == null)
+            if (compile)
             {
-                new FileInfo(sourcePIPath).Directory.Create();
-                var isource = itemplate
-                    .Replace("//{interfacename}", string.Concat(iname))
-                    .Replace("//{baseinterface}", string.Concat("I_Generated"))
-                    .Replace("//{name}",gm.Name);
-                var iassembly = CodeGenerator.PuckCompiler.CompileCode(isource);
+                if (gm.IFullName == null)
+                {
+                    new FileInfo(sourcePIPath).Directory.Create();
+                    var isource = itemplate
+                        .Replace("//{interfacename}", string.Concat(iname))
+                        .Replace("//{baseinterface}", string.Concat("I_Generated"))
+                        .Replace("//{name}", gm.Name);
+                    var iassembly = CodeGenerator.PuckCompiler.CompileCode(isource);
 
-                System.IO.File.Copy(iassembly.Location, sourcePIPath, true);
-                interfaceg = iassembly.GetTypes().First();
-                gm.IFullPath = sourceVIPath;
-                gm.IFullName = interfaceg.AssemblyQualifiedName;
-            }
-            else
-            {
-                interfaceg = ApiHelper.GetType(gm.IFullName);
-                iname = interfaceg.Name;
+                    System.IO.File.Copy(iassembly.Location, sourcePIPath, true);
+                    interfaceg = iassembly.GetTypes().First();
+                    gm.IFullPath = sourceVIPath;
+                    gm.IFullName = interfaceg.AssemblyQualifiedName;
+                }
+                else
+                {
+                    interfaceg = ApiHelper.GetType(gm.IFullName);
+                    iname = interfaceg.Name;
+                }
             }
             var properties = new StringBuilder();
 
@@ -613,28 +617,35 @@ namespace puck.core.Controllers
                 .Replace("//{baseclass}", string.Concat(inherits))
                 .Replace("//{interface}", string.Concat(iname))
                 .Replace("//{properties}", properties.ToString());
-            var assembly = CodeGenerator.PuckCompiler.CompileCode(source);
-            System.IO.File.Copy(assembly.Location, sourcePPath, true);
 
-            var ctype = assembly.GetTypes().First();
+            cs_source = source;                
 
-            gm.CFullPath = sourceVPath;
-            gm.CName = ctype.AssemblyQualifiedName;
+            if (compile)
+            {
+                var assembly = CodeGenerator.PuckCompiler.CompileCode(source);
+                System.IO.File.Copy(assembly.Location, sourcePPath, true);
+                
+                var ctype = assembly.GetTypes().First();
 
-            repo.SaveChanges();
-            //get all models which inherit from current edited model, they need to be updated
-            var models = repo.GetGeneratedModel().Where(x=>x.Inherits.Equals(currentClassName)).ToList();
-            //order by least amount of dependencies
-            models = models
-                .OrderBy(x => 
-                    repo.GetGeneratedModel().Where(xx=>xx.Inherits.Equals(x.CName)).Count())
-                .ToList();
-            foreach (var m in models) {
-                m.Inherits = gm.CName;
+                gm.CFullPath = sourceVPath;
+                gm.CName = ctype.AssemblyQualifiedName;
+
                 repo.SaveChanges();
-                DoGenerate(m.ID);
+                //get all models which inherit from current edited model, they need to be updated
+                var models = repo.GetGeneratedModel().Where(x => x.Inherits.Equals(currentClassName)).ToList();
+                //order by least amount of dependencies
+                models = models
+                    .OrderBy(x =>
+                        repo.GetGeneratedModel().Where(xx => xx.Inherits.Equals(x.CName)).Count())
+                    .ToList();
+                foreach (var m in models)
+                {
+                    string output = "";
+                    m.Inherits = gm.CName;
+                    repo.SaveChanges();
+                    DoGenerate(m.ID, out output);
+                }
             }
-
         }
 
         public ActionResult PreviewEditor(string type) {

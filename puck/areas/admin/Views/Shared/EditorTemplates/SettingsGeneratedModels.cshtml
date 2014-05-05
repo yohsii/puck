@@ -22,7 +22,8 @@
         <ul class="dropdown-menu">
             <li><a href="#" data-action="generate"><i class="icon-off"></i> Generate</a></li>
             <li><a href="#" data-action="add_property"><i class="icon-plus-sign"></i> Add property</a></li>
-            <li><a href="#" data-action="delete_model"><i class="icon-trash"></i> Delete</a></li>            
+            <li><a href="#" data-action="view_source"><i class="icon-file"></i> View source</a></li>
+            <li><a href="#" data-action="delete_model"><i class="icon-trash"></i> Delete</a></li>
         </ul>
     </div>
     <div class="btn-group puck-dropdown open property" data-context="">
@@ -73,11 +74,24 @@
                 $(document).unbind("click.model_options_out");
             });
         });
+        container.on("click.view_source", "[data-action=view_source]", function () {
+            var el = $(this);
+            var id = el.parents(".puck-dropdown").attr("data-context");
+            container.find(".puck-dropdown").hide();
+            gen(id, false, function (d) {
+                console.log(d);
+                if (d.success) {
+                    overlay($("<pre/>").css({padding:"20px"}).html(d.Output),600);
+                } else {
+                    msg(false, d.message);
+                }
+            });
+        });
         container.on("click.generate_model", "[data-action=generate]", function () {
             var el = $(this);
             var id = el.parents(".puck-dropdown").attr("data-context");
             container.find(".puck-dropdown").hide();
-            $.post("/admin/Task/GenerateModel/" + id, function (d) {
+            gen(id,true,function (d) {
                 console.log(d);
                 if (d.success) {
                     msg(true, "model generated");                    
@@ -449,6 +463,9 @@
                 }
             });
         };
+        var gen = function(id,compile,f){
+            $.post("/admin/Task/GenerateModel/" + id+"?compile="+compile, f);
+        }
         init();
 
     });
