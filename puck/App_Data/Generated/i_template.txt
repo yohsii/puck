@@ -7,7 +7,7 @@ using puck.core.Attributes;
 
 namespace puck.Generated.Abstract
 {
-	[FriendlyClassName(Name="//{name}")]
+	//[FriendlyClassName(Name="//{name}")]
     public interface //{interfacename}://{baseinterface}
     {
         

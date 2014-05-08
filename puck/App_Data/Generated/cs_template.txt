@@ -10,10 +10,12 @@ using puck.core.Abstract;
 using puck.core.Base;
 using puck.Generated.Abstract;
 using System.ComponentModel;
+using puck.core.Attributes;
 
 namespace puck.Generated.ViewModels
 {
-    public class //{classname}://{baseclass},//{interface}
+    [FriendlyClassName(Name="//{name}")]
+	public class //{classname}://{baseclass},//{interface}
     {
         //{properties}
     }

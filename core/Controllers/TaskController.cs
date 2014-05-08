@@ -221,17 +221,31 @@ namespace puck.core.Controllers
                     throw new Exception(errors);
                 }
                 string modelname = "";
+                var isGenerated = false;
+                
                 if (!string.IsNullOrEmpty(model.TemplateModel)) {
                     var type = ApiHelper.GetType(model.TemplateModel);
-                    modelname = type.Name;
+                    modelname = type.FullName;
+                    isGenerated = typeof(I_Generated).IsAssignableFrom(type);
                 }
                 var destPath = PuckCache.TemplateDirectory + model.Path + model.Name + ".cshtml";
                 var absDestPath = Server.MapPath(destPath);
                 if (System.IO.File.Exists(absDestPath))
                     throw new Exception("file with that name already exists");
+
+                var contents = "";
+                if (!string.IsNullOrEmpty(modelname)) {
+                    if (isGenerated) {
+                        contents += string.Concat("@model dynamic\n@{/*",modelname,"*/}\n\n");
+                    } else {
+                        contents += string.Concat("@model ", modelname,"\n\n");
+                    }
+                }
+                
                 System.IO.File.WriteAllText(absDestPath, 
-                    string.IsNullOrEmpty(modelname)?"":string.Concat("@model ",modelname)
+                    contents
                     );
+                
                 success = true;
             }
             catch (Exception ex)
@@ -616,8 +630,8 @@ namespace puck.core.Controllers
                 .Replace("//{classname}", string.Concat(cname))
                 .Replace("//{baseclass}", string.Concat(inherits))
                 .Replace("//{interface}", string.Concat(iname))
-                .Replace("//{properties}", properties.ToString());
-
+                .Replace("//{properties}", properties.ToString())
+                .Replace("//{name}", gm.Name);
             cs_source = source;                
 
             if (compile)

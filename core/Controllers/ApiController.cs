@@ -437,7 +437,14 @@ namespace puck.core.Controllers
             return Json(result,JsonRequestBehavior.AllowGet);
         }
         public ActionResult InspectModel(string type,string opath="") {
+            var isGenerated = false;
             var tType = ApiHelper.GetType(type);
+            var originalType = tType;
+            if (typeof(I_Generated).IsAssignableFrom(tType))
+            {
+                isGenerated = true;
+                tType = ApiHelper.ConcreteType(tType);
+            }
             var props = tType.GetProperties();
             var parts = opath.Split(new char[]{'.'},StringSplitOptions.RemoveEmptyEntries);
             var str = opath;
@@ -464,11 +471,11 @@ namespace puck.core.Controllers
                     InsertString = "@Model."+(string.IsNullOrEmpty(opath)?"":opath+".")+x.Name,
                     IterateString = string.Format("@foreach(var el in Model.{0}){{\n\n}}",
                         (string.IsNullOrEmpty(opath)?"":opath+".")+x.Name),
-                    InspectString = (string.IsNullOrEmpty(opath)?"":opath+".")+x.Name
+                    InspectString = (string.IsNullOrEmpty(opath)?"":opath+".")+x.Name                    
                 });
             });
 
-            return Json(new { Data=result,Path=opath,Type=type,Name=ApiHelper.FriendlyClassName(tType),FullName=tType.FullName }, JsonRequestBehavior.AllowGet);
+            return Json(new { Data=result,Path=opath,Type=type,Name=ApiHelper.FriendlyClassName(tType),FullName=originalType.FullName,IsGenerated=isGenerated }, JsonRequestBehavior.AllowGet);
         }
         
         [Auth(Roles = PuckRoles.Edit)]

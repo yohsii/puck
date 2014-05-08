@@ -71,14 +71,36 @@
 
             if (model == null)
                 model = "";
-            else
-                model = model[1];
+            else 
+                model = model[1];                
+            
             return model;
         }
+        var getDynamicEditModel = function () {
+            var lines = editor.getValue().split("\n");
 
+            var model = null;
+            for (var i = 0; i < lines.length; i++) {
+                model = lines[i].match(@(@"/^@model\s(.+)/"));
+                if (model != null) {
+                    if(lines.length>i+1){
+                        model = lines[i+1].replace("@@{/*", "").replace("*/}","");
+                        break;
+                    }
+                }
+            }
+
+            if (model == null)
+                model = "";
+
+            return model;
+        }
         inspectButton.click(function () {
             //fire window to show models available and their properties, allowing you to insert them into editor
             var model = getEditModel();
+            if (model == "dynamic") {
+                model = getDynamicEditModel();
+            }
             getModelOptions(model, function (d) {
                 if (d.length == 1) {
                     var name = d[0].Name;
@@ -109,18 +131,33 @@
             e.preventDefault();
             var el = $(this);
             var insertString = el.parents("li").attr("data-insert");
-            var model = getEditModel();
+            var model = getEditModel();            
             editor.replaceSelection(insertString, "start");
             var fullName = el.parents(".model_properties").attr("data-full_name");
+            var isGenerated = el.parents(".model_properties").attr("data-generated");
             if (model == "") {
-                editor.setValue("@("@model ")" + fullName + "\n" + editor.getValue());
+                if (isGenerated=="true") {
+                    editor.setValue("@("@model ")dynamic\n@@{/*"+ fullName + "*/}\n\n" + editor.getValue());
+                } else {
+                    editor.setValue("@("@model ")" + fullName + "\n" + editor.getValue());
+                }
             }
         });
         $(document).on("click.view_edit_prop_iterate", ".model_properties li .iterate", function (e) {
             e.preventDefault();
             var el = $(this);
             var iterateString = el.parents("li").attr("data-iterate");
+            var model = getEditModel();
             editor.replaceSelection(iterateString, "start");
+            var fullName = el.parents(".model_properties").attr("data-full_name");
+            var isGenerated = el.parents(".model_properties").attr("data-generated");
+            if (model == "") {
+                if (isGenerated == "true") {
+                    editor.setValue("@("@model ")dynamic\n@@{/*" + fullName + "*/}\n\n" + editor.getValue());
+                } else {
+                    editor.setValue("@("@model ")" + fullName + "\n" + editor.getValue());
+                }
+            }
         });
         $(document).on("click.view_edit_prop_inspect", ".model_properties li .inspect", function (e) {
             e.preventDefault();
@@ -153,7 +190,7 @@
         }
         var showInspect = function (d,popup) {
             var el = intf(".model_properties");
-            el.attr("data-path",d.Path).attr("data-full_name",d.FullName);
+            el.attr("data-path",d.Path).attr("data-full_name",d.FullName).attr("data-generated",d.IsGenerated);
             el.find("h3 span").html(d.Name);
             var paths = d.Path.split(".");
             var path = "";

@@ -175,6 +175,9 @@ namespace puck.core.Helpers
         }
         public static string FriendlyClassName(Type t) {
             string name = t.Name;
+            if (typeof(I_Generated).IsAssignableFrom(t)) {
+                t = ApiHelper.ConcreteType(t);
+            }
             var att = t.GetCustomAttribute<FriendlyClassNameAttribute>();
             if (att != null)
                 name = att.Name;
