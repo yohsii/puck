@@ -376,7 +376,7 @@
             container.find(".puck-dropdown").hide();
             id = id || -1;
             $.get("/admin/task/editproperty/?id=" + id+"&mid="+mid, function (d) {
-                overlay(d, 420, 600);
+                overlay(d, 600, 600);
                 var form = $(".overlayinner form");
                 var showPreview = function (type) {
                     $(".preview_container").remove();

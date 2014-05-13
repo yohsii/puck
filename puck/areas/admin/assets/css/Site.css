@@ -217,9 +217,17 @@ ul.content.nomenu .node i.menu{display:none;}
 .settings_generated_models .mod_container{clear:both;margin:0 0 0 0;border-top:1px solid #f9f9f9;}
 
 .edit_generated_property .spinner .loading{
-    display:none;height:24px;width:24px;margin-left:90px;background:url(../img/ajax-loader.gif);
+    display:none;height:24px;width:24px;margin-left:220px;background:url(../img/ajax-loader.gif);
 }
-
+.edit_generated_property{
+    margin-left:60px!important;
+}
+.edit_generated_property fieldset input[type=text]{
+    width:445px;
+}
+.edit_generated_property fieldset select{
+    width:460px;
+}
 .view_edit .inspect_model{float:right;margin:0 0 0 10px;}
 .view_edit .save{float:right;}
 .view_edit textarea{clear:both;}
