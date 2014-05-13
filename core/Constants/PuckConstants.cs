@@ -17,7 +17,8 @@ namespace puck.core.Constants
         public static Dictionary<string,GeneratedPropertySelection> PropertyType = new Dictionary<string,GeneratedPropertySelection>(){
             {"SingleLineText",new GeneratedPropertySelection{Name="Single Line Text",Type=typeof(string),AttributeString=""}},
             {"Number",new GeneratedPropertySelection{Name="Number",Type=typeof(int),AttributeString=""}},
-            {"PuckPicker",new GeneratedPropertySelection{Name="Puck Picker",Type=typeof(PuckPicker),AttributeString=""}}
+            {"PuckPicker",new GeneratedPropertySelection{Name="Puck Picker",Type=typeof(PuckPicker),AttributeString=""}},
+            {"RichText",new GeneratedPropertySelection{Name="Rick Text Editor",Type=typeof(string),AttributeString="[UIHint(\"rte\")]"}}
         };
     }
     public static class PuckRoles

@@ -2,6 +2,7 @@
 
 <select name="@ViewData.ModelMetadata.PropertyName">
     @foreach(var entry in puck.core.Constants.GeneratorValues.PropertyType){
-        <option value="@entry.Key">@entry.Value.Name</option>
+        var selected = entry.Key.Equals(Model);
+        <option @(selected?"selected":"") value="@entry.Key">@entry.Value.Name</option>
     }
 </select>
