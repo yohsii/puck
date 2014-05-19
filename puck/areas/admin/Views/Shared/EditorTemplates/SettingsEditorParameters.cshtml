@@ -13,7 +13,7 @@
         <td><label>parameters:</label></td>
         <td><select class="stype">
         @foreach(var setting in settingTypes){
-            <option value="@setting.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(setting)</option>    
+            <option value="@setting.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(setting))</option>    
         }
         </select>
         </td>
@@ -24,8 +24,8 @@
         <td><select class="mtype">
         @foreach (var mod in models)
         {
-            <option value="@mod.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(mod)</option>
-            var props = mod.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            <option value="@mod.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(mod))</option>
+            var props = ApiHelper.ConcreteType(mod).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
             propsForType[mod.AssemblyQualifiedName] = props.ToList();
         }
         </select>

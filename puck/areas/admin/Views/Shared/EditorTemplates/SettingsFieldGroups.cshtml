@@ -24,7 +24,7 @@
     <li>
         <select>
         @foreach(var m in models){
-            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(m)</option>
+            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
         }
         </select>
     </li>
@@ -38,15 +38,16 @@
 
 @foreach (var m in models)
 {
-    var typesChain = ApiHelper.BaseTypes(m);
+    var typesChain = ApiHelper.BaseTypes(ApiHelper.ConcreteType(m));
     typesChain.Add(m);
     <div data-type="@m.AssemblyQualifiedName" class="type">
-        <h2>@m.FullName</h2>
+        <h2>@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</h2>
     @{
     Dictionary<string,List<GroupField>> groupProps = new Dictionary<string,List<GroupField>>();
     
     foreach (var b in typesChain) {
-        var props = b.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+        var cb = ApiHelper.ConcreteType(b);
+        var props = cb.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
         var usedProps = new List<string>();
         bool inherited = m != b;
         if (dic.ContainsKey(b.AssemblyQualifiedName))
@@ -121,7 +122,7 @@
             });
         }
         container.find(".group").sortable({
-            cursorAt:{top:0,left:0},
+            cursorAt: { top: 0, left: 0 },
             connectWith: ".group", items: ".field[data-inherited='False']"
         });
         container.find("div.type").hide();
@@ -152,10 +153,10 @@
         });
         setValue();
         container.find("div.group").sortable({
-            cursorAt: {top:0,left:0},
+            cursorAt: { top: 0, left: 0 },
             connectWith: ".group", items: ".field[data-inherited='False']", update: function (e, ui) {
                 setValue();
             }
         });
-    });    
+    });
 </script>

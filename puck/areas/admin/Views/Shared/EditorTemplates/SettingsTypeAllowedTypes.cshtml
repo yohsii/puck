@@ -6,7 +6,7 @@
 <div class="settings_type_allowed_types">
     <select>
         @foreach (var m in models) { 
-            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(m)</option>
+            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
         }
     </select>
     <div class="lists">
@@ -22,12 +22,12 @@
         <div class="type" data-type="@m.AssemblyQualifiedName">
             <div class="list excluded"><h2>excluded child types</h2>
                 @foreach (var t in excluded) { 
-                    <div data-type="@t.AssemblyQualifiedName" class="field">@ApiHelper.FriendlyClassName(t)</div>
+                    <div data-type="@t.AssemblyQualifiedName" class="field">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(t))</div>
                 }
             </div>
             <div class="list included"><h2>allowed child types</h2>
                 @foreach (var t in included) { 
-                    <div data-type="@t.AssemblyQualifiedName" class="field">@ApiHelper.FriendlyClassName(t)</div>
+                    <div data-type="@t.AssemblyQualifiedName" class="field">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(t))</div>
                 }
             </div>
         </div>

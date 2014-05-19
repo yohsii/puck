@@ -6,7 +6,7 @@
 <div class="settings_type_allowed_templates">
     <select>
         @foreach (var m in models) { 
-            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(m)</option>
+            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
         }
     </select>
     <div class="lists">
