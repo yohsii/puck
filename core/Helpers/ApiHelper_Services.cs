@@ -20,6 +20,8 @@ using puck.core.Entities;
 using puck.core.Exceptions;
 using puck.core.Events;
 using System.Web.Security;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
 namespace puck.core.Helpers
 {
     public partial class ApiHelper
@@ -548,6 +550,33 @@ namespace puck.core.Helpers
                 map.Add(x.Key.ToLower(), x.Value.ToLower());
             });
             PuckCache.PathToLocale = map;
+        }
+        public static void UpdateAnalyzerMappings()
+        {
+            var panalyzers = new List<Analyzer>();
+            var analyzerForModel = new Dictionary<Type, Analyzer>();
+            foreach (var t in ApiHelper.AllModels(true))
+            {
+                var instance = ApiHelper.CreateInstance(t);
+                var dmp = ObjectDumper.Write(instance, int.MaxValue);
+                var analyzers = new List<KeyValuePair<string, Analyzer>>();
+                PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string, string>();
+                foreach (var p in dmp)
+                {
+                    PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key, p.Type.AssemblyQualifiedName);
+                    if (p.Analyzer == null)
+                        continue;
+                    if (!panalyzers.Any(x => x.GetType() == p.Analyzer.GetType()))
+                    {
+                        panalyzers.Add(p.Analyzer);
+                    }
+                    analyzers.Add(new KeyValuePair<string, Analyzer>(p.Key, panalyzers.Where(x => x.GetType() == p.Analyzer.GetType()).FirstOrDefault()));
+                }
+                var pfAnalyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), analyzers);
+                analyzerForModel.Add(t, pfAnalyzer);
+            }
+            PuckCache.Analyzers = panalyzers;
+            PuckCache.AnalyzerForModel = analyzerForModel;
         }
         public static void SetGeneratedMappings()
         {

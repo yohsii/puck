@@ -31,23 +31,8 @@ namespace puck.core
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
             PuckCache.SmtpFrom = "puck@"+HttpContext.Current.Request.Url.Host;
-            foreach(var t in ApiHelper.AllModels(true)){
-                var instance = ApiHelper.CreateInstance(t);
-                var dmp = ObjectDumper.Write(instance,int.MaxValue);
-                var analyzers = new List<KeyValuePair<string, Analyzer>>();
-                PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string,string>();
-                foreach (var p in dmp) {
-                    PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key,p.Type.AssemblyQualifiedName);
-                    if (p.Analyzer == null)
-                        continue;
-                    if (!PuckCache.Analyzers.Any(x => x.GetType() == p.Analyzer.GetType())) {
-                        PuckCache.Analyzers.Add(p.Analyzer);
-                    }
-                    analyzers.Add(new KeyValuePair<string,Analyzer>(p.Key, PuckCache.Analyzers.Where(x => x.GetType() == p.Analyzer.GetType()).FirstOrDefault()));
-                }
-                var pfAnalyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30),analyzers);
-                PuckCache.AnalyzerForModel.Add(t,pfAnalyzer);
-            }
+            ApiHelper.UpdateAnalyzerMappings();
+
             if (PuckCache.UpdateTaskLastRun || PuckCache.UpdateRecurringTaskLastRun) {
                 var dispatcher = PuckCache.PuckDispatcher;
                 if (dispatcher != null) { 

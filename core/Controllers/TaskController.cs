@@ -517,7 +517,11 @@ namespace puck.core.Controllers
             try
             {                
                 DoGenerate(id,out output,compile);
-                ApiHelper.SetGeneratedMappings();
+                if (compile)
+                {
+                    ApiHelper.SetGeneratedMappings();
+                    ApiHelper.UpdateAnalyzerMappings();
+                }
                 success = true;
             }
             catch (Exception ex) {
