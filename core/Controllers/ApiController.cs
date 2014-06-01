@@ -479,14 +479,14 @@ namespace puck.core.Controllers
         }
         
         [Auth(Roles = PuckRoles.Edit)]
-        public ActionResult Edit(string type,string p_path="/",string variant="",string fromVariant="") {
-            if (variant == "null")
-                variant = PuckCache.SystemVariant;
+        public ActionResult Edit(string p_type,string p_path="/",string p_variant="",string p_fromVariant="") {
+            if (p_variant == "null")
+                p_variant = PuckCache.SystemVariant;
             object model=null;
-            if (!string.IsNullOrEmpty(type))
+            if (!string.IsNullOrEmpty(p_type))
             {
                 //empty model of type
-                var modelType = ApiHelper.GetType(type);
+                var modelType = ApiHelper.GetType(p_type);
                 var concreteType = ApiHelper.ConcreteType(modelType);
                 model = ApiHelper.CreateInstance(concreteType);
                 //if creating new, return early
@@ -494,7 +494,7 @@ namespace puck.core.Controllers
                 {
                     var basemodel = (BaseModel)model;
                     basemodel.Path = p_path;
-                    basemodel.Variant = variant;
+                    basemodel.Variant = p_variant;
                     basemodel.TypeChain = ApiHelper.TypeChain(concreteType);
                     basemodel.Type = modelType.AssemblyQualifiedName;
                     basemodel.CreatedBy = User.Identity.Name;
@@ -506,17 +506,17 @@ namespace puck.core.Controllers
            
             List<PuckRevision> results = null;
             //try get node by path with particular variant
-            if(string.IsNullOrEmpty(fromVariant))
-                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(variant.ToLower()) && x.Current).ToList();
+            if(string.IsNullOrEmpty(p_fromVariant))
+                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(p_variant.ToLower()) && x.Current).ToList();
             else
-                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(fromVariant.ToLower()) && x.Current).ToList();
+                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(p_fromVariant.ToLower()) && x.Current).ToList();
 
             if (results.Count > 0) {
                 var result = results.FirstOrDefault();
                 model = ApiHelper.RevisionToModel(result);
-                if(!string.IsNullOrEmpty(fromVariant)){
+                if(!string.IsNullOrEmpty(p_fromVariant)){
                     var mod = model as BaseModel;
-                    mod.Variant = variant;
+                    mod.Variant = p_variant;
                     mod.Created = DateTime.Now;
                     mod.Updated = DateTime.Now;
                     mod.Published = false;

@@ -31,7 +31,7 @@ namespace puck.core.Controllers
         }
 
         [HttpPost]
-        public ActionResult In(puck.core.Models.LogIn user) {
+        public ActionResult In(puck.core.Models.LogIn user,string returnUrl) {
             UrlHelper urlHelper = new UrlHelper(Request.RequestContext);
 
             if (!Membership.Providers["puck"].ValidateUser(user.Username, user.Password)) {
@@ -39,7 +39,10 @@ namespace puck.core.Controllers
                 return View(user);
             }
             FormsAuthentication.SetAuthCookie(user.Username,user.PersistentCookie);
-            return RedirectToAction("Index", "api", new { area="admin"});
+            if (!string.IsNullOrEmpty(returnUrl))
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("Index", "api", new { area = "admin" });
         }
 
         public ActionResult Out() {

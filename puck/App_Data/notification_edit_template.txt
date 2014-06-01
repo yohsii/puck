@@ -4,10 +4,10 @@
 </head>
 <body>
 <h1>puck notification</h1>
-	content <!--NodeName--> has been <!--__VerbPast__--> 
-	<a href="<!--EditUrl-->">View</a>
+	content <a href="<!--EditUrl-->"><!--NodeName--></a> has been edited	
 </body>
 </html>
+<!--
 <!--Id-->
 <!--NodeName-->
 <!--LastEditedBy-->
@@ -22,3 +22,4 @@
 <!--TemplatePath-->
 <!--TypeChain-->
 <!--Type-->
+-->

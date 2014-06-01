@@ -22,7 +22,7 @@ var getSearchTypes = function (root,f) {
     });
 }
 var getMarkup = function (path, type, variant, f, fromVariant) {
-    $.get("/admin/api/edit?variant=" + variant + "&type=" + type + "&p_path=" + path + "&fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
+    $.get("/admin/api/edit?p_variant=" + variant + "&p_type=" + type + "&p_path=" + path + "&p_fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
 }
 var getCreateDialog = function (f, t) {
     $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");

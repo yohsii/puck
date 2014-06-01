@@ -564,6 +564,11 @@ var draw = function (data, el, sortable) {
 var displayMarkup = function (path, type, variant,fromVariant) {
     getMarkup(path, type, variant, function (data) {
         cright.hide().html(data);
+
+        if (!type) {
+            type = cright.find("input[name=Type]").val();
+        }
+        
         var translations = $("<ul/>").addClass("translations");
         var node = cleft.find(".node[data-path='" + path + "']");
         if (node.length > 0) {
@@ -885,7 +890,21 @@ var highlightSelectedNode = function (path) {
 }
 
 getUserLanguage(function (d) { defaultLanguage = d; });
-getUserRoles(function (d) { userRoles = d; hideTopNav(); });
+getUserRoles(function (d) {
+    userRoles = d; hideTopNav();
+    $(document).ready(function () {
+        var index = location.href.indexOf("?");
+        var qs = location.href.substring(index);
+        if (index!=-1 && qs != "") {
+            console.log("qs %o",qs);
+            var rp=/\?action=([a-zA-Z0-1]+)&/;
+            var action = rp.exec(qs)[1];
+            var hash = "#" + action + "?" + qs.replace(rp, "");
+            console.log("hash %o",hash);
+            handleHash(hash);
+        }        
+    });
+});
 getVariants(function (data) {
     languages = data;
     if (languages.length == 0) {

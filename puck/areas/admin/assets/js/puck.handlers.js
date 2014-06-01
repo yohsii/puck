@@ -441,6 +441,6 @@ var handleHash = function (hash) {
         $(".menutop .tasks").click();
     }
 }
-$(document).ready(function () {
-    handleHash(window.location.hash);
+$(window).load(function () {
+    
 });

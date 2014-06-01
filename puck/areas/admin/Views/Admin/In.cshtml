@@ -14,7 +14,8 @@
         <h1 class="master">Puck</h1>
     </div>
     <div class="grid_3 push_5">
-        @using(Html.BeginForm()){
+        @using (Html.BeginForm(new { returnUrl=Request.QueryString["returnUrl"]}))
+        {
             @Html.EditorForModel()
             <button class="btn-link">submit</button>
         }

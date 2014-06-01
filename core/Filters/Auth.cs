@@ -61,7 +61,9 @@ namespace puck.core.Filters
                     };
             }
             else {
-                context.RequestContext.HttpContext.Response.Redirect(urlHelper.Action("In", "Admin"), true);
+                context.RequestContext.HttpContext.Response.Redirect(urlHelper.Action("In", "Admin")
+                    +"?returnurl="+ HttpUtility.UrlEncode(context.RequestContext.HttpContext.Request.Url.PathAndQuery)
+                , true);
             }
         }
     }
