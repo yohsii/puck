@@ -642,9 +642,9 @@ var displayMarkup = function (path, type, variant,fromVariant) {
             tabHtml += '<div class="tab-content">';
             $(groups).each(function (i) {
                 var val = this;
-                tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '">&nbsp;</div>';
+                tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '"></div>';
             });
-            tabHtml += '<div data-group="default" class="tab-pane" id="fieldtabs' + groups.length + '">&nbsp;</div>';
+            tabHtml += '<div data-group="default" class="tab-pane" id="fieldtabs' + groups.length + '"></div>';
             tabHtml += "</div>";
             cright.find("form").prepend(tabHtml);
             cright.find(".nav .fieldtabs").click(function (e) {
