@@ -225,7 +225,7 @@ namespace puck.core.Controllers
                 }
                 //fieldgroup
                 if (model.TypeGroupField!=null&&model.TypeGroupField.Count > 0) {
-                    foreach (var mod in ApiHelper.Models())
+                    foreach (var mod in ApiHelper.AllModels(true))
                     {
                         var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups+mod.AssemblyQualifiedName)).ToList();
                         fieldGroupMeta.ForEach(x =>

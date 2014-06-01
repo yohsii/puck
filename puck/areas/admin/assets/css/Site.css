@@ -113,7 +113,7 @@ select.languages{height:200px !important;width:550px !important;}
 .settings .fieldgroups li{float:left;margin:0 0 0 10px;}
 .settings .fieldgroups button{vertical-align:bottom;height:31px;}
 .settings .fieldgroups .field{cursor:pointer;font-weight:bold;}
-.settings .fieldgroups .field.inherited{color:#999999;cursor:default;}
+.settings .fieldgroups .field[data-inherited=true]{color:#999999;cursor:default;}
 .settings .group{background:#f9f9f9;float:left;margin:0 10px 0 0;padding:10px;}
 .settings .settings_type_allowed_types .list,.settings .settings_type_allowed_templates .list{float:left;padding:20px;margin:10px;background:#f9f9f9;}
 .settings .settings_type_allowed_types .field,.settings .settings_type_allowed_templates .field{cursor:pointer;}

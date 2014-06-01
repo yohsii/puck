@@ -35,103 +35,188 @@
         <button class="add">new group</button>
     </li>
 </ul>
-
+@{
+    var typeGroupProp = new List<Tuple<string, string, string>>();
+    var friendlyName = new Dictionary<string, string>();
+    var typeChain = new Dictionary<string, string>();
+    var fullNameToAssemblyName = new Dictionary<string, string>();
+}
 @foreach (var m in models)
 {
     var typesChain = ApiHelper.BaseTypes(ApiHelper.ConcreteType(m));
     typesChain.Add(m);
-    <div data-type="@m.AssemblyQualifiedName" class="type">
-        <h2>@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</h2>
-    @{
-    Dictionary<string,List<GroupField>> groupProps = new Dictionary<string,List<GroupField>>();
-    
-    foreach (var b in typesChain) {
-        var cb = ApiHelper.ConcreteType(b);
-        var props = cb.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-        var usedProps = new List<string>();
-        bool inherited = m != b;
-        if (dic.ContainsKey(b.AssemblyQualifiedName))
-        {
-            foreach (var g in dic[b.AssemblyQualifiedName])
-            {
-                if (!groupProps.ContainsKey(g.Key))
-                {
-                    groupProps[g.Key] = new List<GroupField>();
-                }
-                foreach (var p in g.Value)
-                {
-                    groupProps[g.Key].Add(new GroupField { Inherited = inherited, PropertyName = p });
-                    usedProps.Add(p);
-                }
-            }
-        }
-        var notGrouped = props.Where(x => !usedProps.Contains(x.Name)).Select(x => x.Name).ToList();
-        if (notGrouped.Count > 0)
-        {
-            if (!groupProps.ContainsKey("default"))
-            {
-                groupProps["default"] = new List<GroupField>();
-            }
-            foreach (var p in notGrouped)
-            {
-                groupProps["default"].Add(new GroupField { Inherited = inherited, PropertyName = p });
-            }
-        }        
+    var cb = ApiHelper.ConcreteType(m);
+    var props = m.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+    if (!friendlyName.ContainsKey(m.AssemblyQualifiedName)) {
+        friendlyName.Add(m.AssemblyQualifiedName,ApiHelper.FriendlyClassName(cb));
     }
-        
-    foreach (var group in groupProps)
+    if (!typeChain.ContainsKey(m.AssemblyQualifiedName)) { 
+        typeChain.Add(m.AssemblyQualifiedName,string.Join(",",typesChain.Select(x=>x.FullName)));
+    }
+    if (!fullNameToAssemblyName.ContainsKey(m.FullName)) {
+        fullNameToAssemblyName.Add(m.FullName,m.AssemblyQualifiedName);
+    }
+    foreach (var prop in props)
     {
-        <div data-group="@group.Key" class="group">
-            <h3>@group.Key</h3>
-            @foreach (var field in group.Value) { 
-                <div data-inherited="@field.Inherited" data-field="@field.PropertyName" class="field @(field.Inherited?"inherited":"")">
-                    @field.PropertyName
-                </div>
-            }
-        </div>
+        var groupName = "default";
+        if (dic.ContainsKey(m.AssemblyQualifiedName) && dic[m.AssemblyQualifiedName].Any(x => x.Value.Contains(prop.Name)))
+        {
+            //group name
+            groupName = dic[m.AssemblyQualifiedName].Where(x => x.Value.Contains(prop.Name)).FirstOrDefault().Key;
+        }
+        typeGroupProp.Add(new Tuple<string,string,string>(m.AssemblyQualifiedName, groupName, prop.Name));
     }
-    
-                
-    }
-    <div class="clearboth"></div>
-    </div>
 }
+
+    <div class="type">
+
+    </div>
+
+    <div class="interfaces">
+        <div data-group="" class="group">
+            <h3></h3>
+        </div>
+        <div data-inherited="" data-field="" class="field "></div>
+    </div>
 </div>
 <div class="clearboth"></div>
 
 <script type="text/javascript">
     onAfterDom(function () {
         var container = $(".fieldgroups");
+        var interfaces = function (c) {
+            return container.find(".interfaces ."+c).clone();
+        }
         var propertyName = function (i) {
             return "@ViewData.ModelMetadata.PropertyName";
         }
+        var chain = [];
+        @{
+            foreach(var x in typeChain.ToList()){
+                @Html.Raw(string.Format("chain['{0}']='{1}';", x.Key, x.Value))
+            }
+        }
+        var friendlyName = [];
+        @{
+            foreach(var x in friendlyName.ToList()){
+                @Html.Raw(string.Format("friendlyName['{0}']='{1}';", x.Key, x.Value))
+            }
+        }
+        var fullNameToAssemblyName = [];
+        @{
+            foreach(var x in fullNameToAssemblyName.ToList()){
+                @Html.Raw(string.Format("fullNameToAssemblyName['{0}']='{1}';", x.Key, x.Value))
+            }
+        }
+        var typeGroupProp = [];
+        @{
+            var visitedType = new List<string>();
+            var visitedTypeGroup = new List<string>();
+            foreach(var item in typeGroupProp){
+                if(!visitedType.Contains(item.Item1)){
+                    visitedType.Add(item.Item1);
+                    @Html.Raw(string.Format("typeGroupProp['{0}']=[];",item.Item1));
+                }
+                if(!visitedTypeGroup.Contains(item.Item1+item.Item2)){
+                    visitedTypeGroup.Add(item.Item1+item.Item2);
+                    @Html.Raw(string.Format("typeGroupProp['{0}']['{1}']=[];",item.Item1,item.Item2));
+                }
+                @Html.Raw(string.Format("typeGroupProp['{0}']['{1}'].push('{2}');",item.Item1,item.Item2,item.Item3));
+            }    
+        }
+        //console.log("typeGroupProps %o",typeGroupProp);
+        
+        var drawType = function (type) {
+            container.find(".type .group").remove();
+            var name = friendlyName[type];
+            var typeChain = chain[type].split(",");
+            var groupAndProps = [];
+            for (var i = 0; i < typeChain.length; i++) {
+                var fullName = typeChain[i];
+                var assemblyName = fullNameToAssemblyName[fullName];
+                //console.log("fullnameL %o assemblyNameL %o",fullName,assemblyName);
+                for (var group in typeGroupProp[assemblyName]) {
+                    if (isFunction(typeGroupProp[assemblyName][group]))
+                        continue;
+                    if (groupAndProps[group] == undefined) {
+                        groupAndProps[group] = [];
+                    }
+                    //console.log("group %o", group);
+                    for(var ii=0;ii<typeGroupProp[assemblyName][group].length;ii++){
+                        var item = typeGroupProp[assemblyName][group][ii];
+                        groupAndProps[group].push({name:item,inherited:type!=assemblyName});
+                    }
+                }
+            }
+
+            for (var group in groupAndProps) {
+                if (isFunction(groupAndProps[group]))
+                    continue;
+                var elGroup = interfaces("group").attr("data-group",group);
+                elGroup.find("h3").html(group);
+                //console.log("groupandprops[%o] %o",group,groupAndProps[group]);
+                var grp = groupAndProps[group];
+                for (var i = 0; i < grp.length; i++) {
+                    var obj = grp[i];
+                    var elField = interfaces("field");
+                    elField.attr({ "data-field": obj.name, "data-inherited": obj.inherited }).html(obj.name);
+                    elGroup.append(elField);
+                } 
+
+                container.find(".type").append(elGroup);
+            }
+
+            container.find(".type div.group").sortable({
+                cursorAt: { top: 0, left: 0 },
+                connectWith: ".group", items: ".field[data-inherited='false']", update: function (e, ui) {
+                    setValue();
+                }
+            });
+
+        }
+        //console.log("select last val: %o", container.find("select option:last").val());
+        drawType(container.find("select option:nth-child(1)").val());
+
         var setValue = function () {
+            var tname = container.find("select").val();
             container.find("input:hidden").remove();
-            container.find(".type[data-type]").each(function (i) {
-                var type = $(this);
-                type.find(".group[data-group!='default']").each(function (ii) {
-                    var group = $(this);
-                    group.find(".field[data-inherited='False']").each(function (iii) {
-                        var field = $(this);
-                        var val = type.attr("data-type") + ":" + group.attr("data-group") + ":" + field.attr("data-field");
-                        container.append(
-                            '<input name="' + propertyName() + '" type="hidden" value="' + val + '"/>'
-                        );
-                    });
+            typeGroupProp[tname] = [];
+            container.find(".type .group").each(function (ii) {
+                var group = $(this);
+                var gname = group.attr("data-group");
+
+                group.find(".field[data-inherited='false']").each(function (iii) {
+                    if (typeGroupProp[tname][gname] == undefined) {
+                        typeGroupProp[tname][gname] = [];
+                    }
+                    var field = $(this);
+                    var fname = field.attr("data-field");
+                    typeGroupProp[tname][gname].push(fname);
                 });
             });
+            for (var type in typeGroupProp) {
+                if (isFunction(typeGroupProp[type]))
+                    continue;
+                for (var group in typeGroupProp[type]) {
+                    if (isFunction(typeGroupProp[type][group]) || group == "default")
+                        continue;
+                    for (var i = 0; i < typeGroupProp[type][group].length; i++) {
+                        var prop = typeGroupProp[type][group][i];
+                        if (isFunction(prop))
+                            continue;
+                        var val = type + ":" + group + ":" + prop;
+                        //console.log(val);
+                        container.append(
+                            '<input name="' + propertyName() + '" type="hidden" value="' + val + '"/>'
+                        );                    
+                    }
+                }
+            }
         }
-        container.find(".group").sortable({
-            cursorAt: { top: 0, left: 0 },
-            connectWith: ".group", items: ".field[data-inherited='False']"
-        });
-        container.find("div.type").hide();
-        container.find("div.type:first").show();
-
+        
         container.find("select").change(function () {
             var val = $(this).val();
-            container.find("div.type").hide();
-            container.find("div.type[data-type='" + val + "']").show();
+            drawType(val);
         });
 
         container.find("button.add").click(function (e) {
@@ -139,11 +224,12 @@
             var c = container.find("div.type:visible");
             var gn = container.find("input.groupname").val();
             if (!gn.isEmpty() && c.find("[data-group='" + gn + "']").length == 0) {
-                c.find(".clearboth").before(
-                    $("<div/>").addClass("group").attr({ "data-group": gn })
-                    .append("<h3>" + gn + "</h3>").sortable({
+                var elGroup=interfaces("group").attr({ "data-group": gn });
+                elGroup.find("h3").html(gn);
+                c.append(                    
+                    elGroup.sortable({
                         cursorAt: { top: 0, left: 0 },
-                        connectWith: ".group", items: ".field[data-inherited='False']", update: function (e, ui) {
+                        connectWith: ".group", items: ".field[data-inherited='false']", update: function (e, ui) {
                             setValue();
                         }
                     })
@@ -152,11 +238,10 @@
             setValue();
         });
         setValue();
-        container.find("div.group").sortable({
-            cursorAt: { top: 0, left: 0 },
-            connectWith: ".group", items: ".field[data-inherited='False']", update: function (e, ui) {
-                setValue();
-            }
-        });
+        
     });
 </script>
+<style>
+    .fieldgroups .interfaces
+    {display:none;}
+</style>

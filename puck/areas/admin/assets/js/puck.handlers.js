@@ -9,7 +9,7 @@ $('a.settings').click(function (e) {
         //setup validation
         wireForm(cright.find('form'), function (data) {
             msg(true, "settings updated.");
-            window.scrollTo(0);
+            window.scrollTo(0,0);
             getVariants(function (data) {
                 languages = data;
             });
