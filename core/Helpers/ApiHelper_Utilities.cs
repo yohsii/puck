@@ -211,9 +211,13 @@ namespace puck.core.Helpers
             client.Send(mail);
         }
         public static string EmailTransform(string template, BaseModel model,PuckCache.NotifyActions action) {
+            string date = DateTime.Now.ToShortDateString();
+            string time = DateTime.Now.ToShortTimeString();
+            string user = "";
             string editUrl = "";
             try {
                 var hcontext = HttpContext.Current;
+                user = hcontext.User.Identity.Name;
                 editUrl = hcontext.Request.Url.Scheme +"://" + hcontext.Request.Url.Host + ":" + hcontext.Request.Url.Port
                     + "/admin?action=content&path="+model.Path
                     +"&variant="+model.Variant;
@@ -238,6 +242,9 @@ namespace puck.core.Helpers
                 .Replace("<!--Type-->", model.Type)
                 .Replace("<!--__Verb__",action.ToString())
                 .Replace("<!--EditUrl-->",editUrl)
+                .Replace("<!--Date-->",date)
+                .Replace("<!--Time-->",time)
+                .Replace("<!--User-->",user)
                 ;
             return template;
         }

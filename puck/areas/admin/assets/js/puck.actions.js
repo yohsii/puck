@@ -181,7 +181,7 @@ var revisionsFor = function (vcsv, id) {
         markup.find(".descendantscontainer").hide();
         for (var i = 0; i < variants.length; i++) {
             markup.find("select").append(
-                "<option value='" + variants[i] + "'>" + variants[i] + "</option>"
+                "<option value='" + variants[i] + "'>" + variantNames[variants[i]] + "</option>"
             );
         }
         overlay(markup, 400, 150);
@@ -896,11 +896,11 @@ getUserRoles(function (d) {
         var index = location.href.indexOf("?");
         var qs = location.href.substring(index);
         if (index!=-1 && qs != "") {
-            console.log("qs %o",qs);
+            //console.log("qs %o",qs);
             var rp=/\?action=([a-zA-Z0-1]+)&/;
             var action = rp.exec(qs)[1];
             var hash = "#" + action + "?" + qs.replace(rp, "");
-            console.log("hash %o",hash);
+            //console.log("hash %o",hash);
             handleHash(hash);
         }        
     });

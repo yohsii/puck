@@ -4,11 +4,10 @@
 </head>
 <body>
 <h1>puck notification</h1>
-	content <!--NodeName--> has been <!--__VerbPast__-->.
-	<br/>
-	<a></a> 
+	content <!--NodeName--> has been deleted
 </body>
 </html>
+<!--
 <!--Id-->
 <!--NodeName-->
 <!--LastEditedBy-->
@@ -23,3 +22,4 @@
 <!--TemplatePath-->
 <!--TypeChain-->
 <!--Type-->
+-->

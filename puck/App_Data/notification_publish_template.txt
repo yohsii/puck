@@ -4,6 +4,22 @@
 </head>
 <body>
 <h1>puck notification</h1>
-	content <!--NodeName--> has been <!--__Verb__--> 
+	content <a href="<!--EditUrl-->"><!--NodeName--></a> has been published	
 </body>
 </html>
+<!--
+<!--Id-->
+<!--NodeName-->
+<!--LastEditedBy-->
+<!--CreatedBy-->
+<!--Path-->
+<!--Created-->
+<!--Updated-->
+<!--Revision-->
+<!--Variant-->
+<!--Published-->
+<!--SortOrder-->
+<!--TemplatePath-->
+<!--TypeChain-->
+<!--Type-->
+-->
