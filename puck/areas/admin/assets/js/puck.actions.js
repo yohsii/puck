@@ -671,7 +671,13 @@ var displayMarkup = function (path, type, variant,fromVariant) {
                 if (fieldname.split(".").length > 1)
                     cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']>.editor-field>.fields").append(el);
                 else el.appendTo(cright.find("[data-group='default']"));
-            })
+            });
+            cright.find(".fieldwrapper.complex_child").each(function () {
+                var el = $(this);
+                if (el.find(".fieldwrapper").length == 0 || el.find(".fields").length == 0) {
+                    el.addClass("single_field");
+                }
+            });
             afterDom();
             cright.show();
             cright.find(".fieldtabs:first").click();

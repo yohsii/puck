@@ -184,7 +184,9 @@ button.content_publish{position:absolute;top:0px;right:0px;}
 .fieldwrapper > .editor-label > span.description{color:#aaaaaa;display:block;clear:both;}
 .fieldwrapper.complex{}
 .fieldwrapper.complex label{text-decoration:underline;}
-.fieldwrapper.complex_child{margin-left:15px;margin-top:0px;}
+.fieldwrapper.complex_child{margin-left:0px;margin-top:0px;}
+.content_edit_page .fieldwrapper.complex_child{padding:0px;}
+.fieldwrapper.complex.single_field{margin:0px !important;}
 .fieldwrapper.complex_child .editor-label label{text-decoration:none;}
 .fieldwrapper.complex.complex_child{margin-left:15px;margin-top:10px;}
 .node.unpublished>.inner{background:#ffeeee;}
