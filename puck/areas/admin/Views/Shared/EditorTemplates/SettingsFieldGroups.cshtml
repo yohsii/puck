@@ -46,7 +46,7 @@
     var typesChain = ApiHelper.BaseTypes(ApiHelper.ConcreteType(m));
     typesChain.Add(m);
     var cb = ApiHelper.ConcreteType(m);
-    var props = m.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
+    var props = cb.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
     if (!friendlyName.ContainsKey(m.AssemblyQualifiedName)) {
         friendlyName.Add(m.AssemblyQualifiedName,ApiHelper.FriendlyClassName(cb));
     }
