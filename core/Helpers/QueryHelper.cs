@@ -631,6 +631,14 @@ namespace puck.core.Helpers
             return this;
         }
 
+        public QueryHelper<TModel> Descendants(BaseModel m)
+        {
+            TrimAnd();
+            this.And()
+                .Field(x => x.Path, m.Path.ToLower() + "/".WildCardMulti());
+            return this;
+        }
+
         public QueryHelper<TModel> CurrentRoot(BaseModel m = null)
         {
             TrimAnd();

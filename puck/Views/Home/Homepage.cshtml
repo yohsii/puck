@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Homepage";
     var qh = new QueryHelper<Section>()
-        .Descendants(Model.Path)
+        .Descendants(Model)
         .CurrentLanguage()
         .ExplicitType();
                 
