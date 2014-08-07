@@ -30,7 +30,7 @@ namespace puck.core
             PuckCache.Analyzers = new List<Lucene.Net.Analysis.Analyzer>();
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
-            PuckCache.SmtpFrom = "puck@"+HttpContext.Current.Request.Url.Host;
+            PuckCache.SmtpFrom = "puck@"+PuckCache.SmtpHost;
             ApiHelper.UpdateAnalyzerMappings();
 
             if (PuckCache.UpdateTaskLastRun || PuckCache.UpdateRecurringTaskLastRun) {
