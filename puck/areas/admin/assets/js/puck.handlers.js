@@ -226,6 +226,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                 setPublish(id, variant, descendants, function (data) {
                     if (data.success === true) {
                         getDrawContent(dirOfPath(node.attr("data-path")), undefined, true);
+                        node.find(">.inner>.variant").addClass("published");
                         overlayClose();
                     } else {
                         msg(false, data.message);
@@ -250,6 +251,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                 setUnpublish(id, variant, descendants, function (data) {
                     if (data.success === true) {
                         getDrawContent(dirOfPath(node.attr("data-path")), undefined, true);
+                        node.find(">.inner>.variant").removeClass("published");
                         overlayClose();
                     } else {
                         msg(false, data.message);

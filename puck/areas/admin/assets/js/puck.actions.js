@@ -480,6 +480,13 @@ var getDrawContent = function (path, el, sortable,f) {
         el = cleft.find(".node[data-children_path='" + nodeParent + "']");
     }
     getContent(path, function (data) {
+        var plevel = path.split('/').length-1;
+        for (var k in publishedContent) {
+            var level = k.split('/').length-1;
+            if (plevel == level) {
+                publishedContent[k] = undefined;
+            }
+        }
         for (var k in data.published) {
             publishedContent[k] = data.published[k];
         }
