@@ -14,6 +14,7 @@
     <RootNamespace>puck</RootNamespace>
     <AssemblyName>puck.ui</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <DeployManagedRuntimeVersion>v4.0</DeployManagedRuntimeVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>false</UseIISExpress>
     <TargetFrameworkProfile />
@@ -31,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DeployIisAppPath>puck</DeployIisAppPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -120,14 +122,12 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
@@ -184,7 +184,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivator">
       <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>
     </Reference>
@@ -277,8 +276,13 @@
     <Content Include="areas\admin\assets\css\bootstrap-responsive.css" />
     <Content Include="areas\admin\assets\css\bootstrap-wysihtml5-0.0.2.css" />
     <Content Include="areas\admin\assets\css\bootstrap.css" />
+    <Content Include="areas\admin\assets\css\chosen-sprite%402x.png" />
+    <Content Include="areas\admin\assets\css\chosen-sprite.png" />
     <Content Include="areas\admin\assets\css\chosen.min.css" />
     <Content Include="areas\admin\assets\css\codemirror.css" />
+    <Content Include="areas\admin\assets\css\select2-spinner.gif" />
+    <Content Include="areas\admin\assets\css\select2.css" />
+    <Content Include="areas\admin\assets\css\select2.png" />
     <Content Include="areas\admin\assets\css\Site.css" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="areas\admin\assets\css\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -884,6 +888,8 @@
     <Content Include="areas\admin\assets\js\puck.get_set.js" />
     <Content Include="areas\admin\assets\js\puck.actions.js" />
     <Content Include="areas\admin\assets\js\puck.handlers.js" />
+    <Content Include="areas\admin\assets\js\select2.js" />
+    <Content Include="areas\admin\assets\js\select2.min.js" />
     <Content Include="areas\admin\assets\js\tinymceMIN\changelog.txt" />
     <Content Include="areas\admin\assets\js\tinymceMIN\js\tinymce\license.txt" />
     <Content Include="areas\admin\assets\js\tinymceMIN\js\tinymce\plugins\advlist\plugin.min.js" />
@@ -1045,6 +1051,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\_references.js" />
@@ -1192,9 +1199,6 @@
     <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsPropertyType.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\test.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="areas\admin\Views\Task\CreateTemplate.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -1212,9 +1216,27 @@
   <ItemGroup>
     <Content Include="areas\admin\Views\Shared\EditorTemplates\PuckGoogleLongLat.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\puckdeploy.pubxml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDebug|AnyCPU'">
+    <OutputPath>bin\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'deploy-dev|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DeployIisAppPath>puck</DeployIisAppPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
