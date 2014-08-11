@@ -235,7 +235,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                 });
             }
             var variants = unpublishedVariants(node.attr("data-path"));
-            if (variants.length > 1 || 1 == 1) {
+            if (variants.length > 1 ) {
                 var dialog = dialogForVariants(variants);
                 dialog.find(".descendantscontainer label").html("Publish descendants?");
                 overlay(dialog, 400, 250);
