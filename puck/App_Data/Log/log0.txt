@@ -2175,3 +2175,10 @@ stacktrace:    at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in c:\project\puck\core\Controllers\ApiController.cs:line 484
 
 
+date: 01/06/2014 19:59:08
+message: Failure sending mail.
+stacktrace:    at System.Net.Mail.SmtpClient.Send(MailMessage message)
+   at puck.core.Helpers.ApiHelper.Email(String to, String subject, String body, String host, String from, Boolean isHtml) in c:\project\puck\core\Helpers\ApiHelper_Utilities.cs:line 211
+   at puck.core.Bootstrap.<Ini>b__3(Object o, IndexingEventArgs args) in c:\project\puck\core\Bootstrap.cs:line 83
+
+

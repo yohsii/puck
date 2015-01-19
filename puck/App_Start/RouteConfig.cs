@@ -12,7 +12,11 @@ namespace puck
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            
+            routes.MapRoute(
+                name: "signup",
+                url: "signup",
+                defaults: new { controller = "signup", action = "Index", id = UrlParameter.Optional }
+            );
             //add any specific routes before the following catch-all
             routes.MapRoute(
                 name: "puck",
