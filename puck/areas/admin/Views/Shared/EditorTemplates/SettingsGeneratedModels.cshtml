@@ -81,7 +81,7 @@
             gen(id, false, function (d) {
                 console.log(d);
                 if (d.success) {
-                    overlay($("<pre/>").css({padding:"20px"}).html(d.Output),600);
+                    overlay($("<pre/>").css({padding:"20px"}).html(d.Output),600,undefined,undefined,"Source");
                 } else {
                     msg(false, d.message);
                 }
@@ -359,8 +359,8 @@
             container.find(".puck-dropdown").hide();
             id = id || -1;
             $.get("/admin/task/editattribute/?id=" + id+"&pid="+pid+"&optionType="+optionType, function (d) {
-                overlay(d, 420, 600);
-                var form = $(".overlayinner form");
+                overlay(d, 420, 600,undefined,"Edit Attribute");
+                var form = $(".overlay_screen form");
                 console.log("form: %o", form);
                 wireForm(form, function (d) {
                     overlayClose();
@@ -376,8 +376,8 @@
             container.find(".puck-dropdown").hide();
             id = id || -1;
             $.get("/admin/task/editproperty/?id=" + id+"&mid="+mid, function (d) {
-                overlay(d, 600, 600);
-                var form = $(".overlayinner form");
+                overlay(d, 600, 600,undefined,"Edit Property");
+                var form = $(".overlay_screen form");
                 var showPreview = function (type) {
                     $(".preview_container").remove();
                     $(".edit_generated_property .spinner .loading").show();
@@ -416,8 +416,8 @@
             container.find(".puck-dropdown").hide();
             id = id || -1;
             $.get("/admin/task/editmodel/" + id, function (d) {
-                overlay(d, 420, 300);
-                var form = $(".overlayinner form");
+                overlay(d, 420, 300,undefined,id==-1?"Create Model":"Edit Model");
+                var form = $(".overlay_screen form");
                 wireForm(form, function (d) {
                     overlayClose();
                     var mName = form.find("input[name='Name']").val();

@@ -15,7 +15,7 @@
 <div class="create_dialog settings">
     @using(Html.BeginForm("Notify","Api")){
         @Html.HiddenFor(x=>x.Path)
-    <div class="grid_3 push_1">
+    <div class="">
         <span>
         Set email notifications for <b>@Model.Path.Substring(Model.Path.LastIndexOf("/")+1)</b>
         </span>    

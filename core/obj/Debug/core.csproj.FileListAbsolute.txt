@@ -73,3 +73,4 @@ C:\project\puck\core\bin\Debug\System.Web.WebPages.Deployment.xml
 C:\project\puck\core\bin\Debug\System.Web.WebPages.Razor.xml
 C:\project\puck\core\obj\Debug\puck.core.dll
 C:\project\puck\core\obj\Debug\puck.core.pdb
+C:\project\puck\core\obj\Debug\core.csprojResolveAssemblyReference.cache

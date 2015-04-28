@@ -28,7 +28,7 @@
             <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value - @rtype.Substring(8,3)&nbsp;<span><i class="icon-remove-sign"></i></span></div>
         }        
     </div>
-    <div class="grid_10 push_1 tree_container">
+    <div class="tree_container">
         <ul class="content nomenu redirect">
             <li class="node" data-children_path="/"></li>
         </ul>  
@@ -55,7 +55,7 @@
             var target = $(this).parent().siblings("input");
             var markup = redirectsContainer.find(".tree_container").clone();
             var el = markup.find(".node:first");
-            overlay(markup);
+            overlay(markup,undefined,undefined,undefined,to?"Redirect To":"Redirect From");
             getDrawContent(startPath, el);
             markup.on("click", ".node span", function (e) {
                 var node = $(this).parents(".node:first");

@@ -291,6 +291,7 @@ namespace puck.core.Helpers
             return QueryParser.Escape(q);
         }
         private static string getName(string str) {
+            //((exp.Body as PropertyExpression)).Member.Name
             str = nameArrayRegex.Replace(str, "");
             var match = nameRegex.Match(str);
             string result = match.Groups[1].Value;

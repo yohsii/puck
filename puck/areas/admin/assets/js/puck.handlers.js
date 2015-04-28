@@ -158,8 +158,8 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
         case "template_move":
             var markup = $(".interfaces .template_tree_container.move").clone();
             var el = markup.find(".node:first");
-            overlay(markup);
-            $(".overlayinner .msg").html("select new parent node for content <b>" + node.attr("data-name") + "</b>");
+            overlay(markup,undefined,undefined,undefined,"Move Template");
+            $(".overlay_screen .msg").html("select new parent node for content <b>" + node.attr("data-name") + "</b>");
             getDrawTemplates(startPath, el);
             markup.on("click", ".node[data-type='folder']>div>span", function (e) {
                 var dest_node = $(this).parents(".node:first");
@@ -212,7 +212,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                 var variants = node.attr("data-variants").split(",");
                 if (variants.length > 1) {
                     var dialog = dialogForVariants(variants);
-                    overlay(dialog, 400, 150);
+                    overlay(dialog, 400, 150,undefined,"Delete");
                     dialog.find(".descendantscontainer").hide();
                     dialog.find("button").click(function () {
                         doDelete(node.attr("data-id"), dialog.find("select").val());
@@ -238,7 +238,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             if (variants.length > 1 ) {
                 var dialog = dialogForVariants(variants);
                 dialog.find(".descendantscontainer label").html("Publish descendants?");
-                overlay(dialog, 400, 250);
+                overlay(dialog, 400, 250,undefined,"Publish");
                 dialog.find("button").click(function () {
                     doPublish(node.attr("data-id"), dialog.find("select[name=variant]").val(), (dialog.find("select[name=descendants]").val() || []).join(','));
                 });
@@ -263,7 +263,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             if (variants.length > 1 || 1 == 1) {
                 var dialog = dialogForVariants(variants);
                 dialog.find(".descendantscontainer label").html("Unpublish descendants?");
-                overlay(dialog, 400, 250);
+                overlay(dialog, 400, 250,undefined,"Unpublish");
                 dialog.find("button").click(function () {
                     doUnpublish(node.attr("data-id"), dialog.find("select[name='variant']").val(), (dialog.find("select[name='descendants']").val() || []).join(','));
                 });
@@ -283,8 +283,8 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
         case "move":
             var markup = $(".interfaces .tree_container.move").clone();
             var el = markup.find(".node:first");
-            overlay(markup);
-            $(".overlayinner .msg").html("select new parent node for content <b>" + node.attr("data-nodename") + "</b>");
+            overlay(markup,undefined,undefined,undefined,"Move Content");
+            $(".overlay_screen .msg").html("select new parent node for content <b>" + node.attr("data-nodename") + "</b>");
             getDrawContent(startPath, el);
             markup.on("click", ".node span", function (e) {
                 var dest_node = $(this).parents(".node:first");
@@ -309,16 +309,16 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             break;
         case "translate":
             getCreateDialog(function (data) {
-                overlay(data, 400, 250);
-                var type = $(".overlayinner select[name=type]");
-                var variant = $(".overlayinner select[name=variant]");
+                overlay(data, 400, 250,undefined,"Translate");
+                var type = $(".overlay_screen select[name=type]");
+                var variant = $(".overlay_screen select[name=variant]");
                 var fromVariant = variant.clone().attr("name", "fromVariant");
-                $(".overlayinner .typecontainer label").html("Translate from version").siblings().hide().after(fromVariant);
+                $(".overlay_screen .typecontainer label").html("Translate from version").siblings().hide().after(fromVariant);
                 type.val(node.attr("data-type"));
                 var variants = node.attr("data-variants").split(",");
                 if (variants.length == 1) {
-                    $(".overlayinner .typecontainer").hide();
-                    $(".overlayinner").css({ height: "170px" });
+                    $(".overlay_screen .typecontainer").hide();
+                    //$(".overlay_screen").css({ height: "170px" });
                 }
                 fromVariant.find("option").each(function () {
                     var option = $(this);
@@ -342,7 +342,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                     if (contains)
                         option.remove();
                 });
-                $(".overlayinner button").click(function () {
+                $(".overlay_screen button").click(function () {
                     displayMarkup(node.attr("data-path"), node.attr("data-type"), variant.val(), fromVariant.val());
                     overlayClose();
                 });

@@ -26,13 +26,13 @@
         </ul>
     </div>
     <div class="interfaces">
-        <div class="choose_model grid_4 push_1">
+        <div class="choose_model ">
             <h3>model ambiguity; please select which model you would like to inspect:</h3>
             <ul>
                 
             </ul>
         </div>
-        <div class="model_properties grid_4 push_1">
+        <div class="model_properties ">
             <h3>properties for model: <span class="model_name"></span></h3>
             <div class="path"></div>
             <ul>
@@ -121,7 +121,7 @@
         $(document).unbind("click.view_edit_prop_inspect");
         $(document).unbind("click.view_edit_inspect");
         $(document).unbind("click.view_edit_path");
-        $(document).on("click.view_edit_path", ".overlayinner .model_properties div.path span", function () {
+        $(document).on("click.view_edit_path", ".rightarea .overlay_screen .model_properties div.path span", function () {
             var el = $(this);
             var path = el.attr("data-path");
             var type = el.parents(".model_properties").attr("data-type");
@@ -167,7 +167,7 @@
             inspectModel(type, inspectString, function (d) { showInspect(d); });
         });
 
-        $(document).on("click.view_edit_inspect", ".overlayinner .choose_model li", function (e) {
+        $(document).on("click.view_edit_inspect", ".rightarea .overlay_screen .choose_model li", function (e) {
             var type = $(this).attr("data-type");
             var name = $(this).attr("data-name");
             inspectModel(type,"", function (d) {
@@ -182,10 +182,10 @@
                     );
             });
             if (popup)
-                overlay(el, 500);
+                overlay(el, 500,undefined,undefined,"");
             else {
-                $(".overlayinner .model_properties").remove();
-                $(".overlayinner").append(el);
+                $(".rightarea .overlay_screen .model_properties").remove();
+                $(".rightarea .overlay_screen .inner").append(el);
             }
         }
         var showInspect = function (d,popup) {
@@ -226,9 +226,9 @@
             if (popup==true) {
                 overlay(el, 500);
             } else {
-                $(".overlayinner .choose_model").remove();
-                $(".overlayinner .model_properties").remove();
-                $(".overlayinner").append(el);                
+                $(".rightarea .overlay_screen .choose_model").remove();
+                $(".rightarea .overlay_screen .model_properties").remove();
+                $(".rightarea .overlay_screen .inner").append(el);
             }
         };
         var getModelOptions = function (t,f) {

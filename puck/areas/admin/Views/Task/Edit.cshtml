@@ -3,7 +3,7 @@
     Layout = null;    
 }
 <div class="task_edit settings">
-    <div class="grid_5 push_1">
+    <div class="">
 @using (Html.BeginForm("Edit", "Task", new { p_type = Model.GetType().AssemblyQualifiedName }, FormMethod.Post))
 {
     @Html.EditorForModel()

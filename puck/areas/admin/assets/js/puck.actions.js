@@ -18,25 +18,25 @@ var startPath;
 
 var newTemplateFolder = function (p) {
     getTemplateFolderCreateDialog(function (d) {
-        overlay(d, 500,300);
-        wireForm($(".overlayinner form"), function (data) {
+        overlay(d, 500,300,undefined,"New Template Folder");
+        wireForm($(".overlay_screen form"), function (data) {
             getDrawTemplates(p);
             overlayClose();
         }, function (data) {
-            $(".overlayinner .msg").show().html(data.message);
+            $(".overlay_screen .msg").show().html(data.message);
         });
     }, p);
 }
 var newTemplate = function (p) {
     getTemplateCreateDialog(function (d) {
-        overlay(d, 500, 300);
-        wireForm($(".overlayinner form"), function (data) {
+        overlay(d, 500, 300,undefined,"New Template");
+        wireForm($(".overlay_screen form"), function (data) {
             getDrawTemplates(p, undefined, function () {
                 cright.find(".node[data-id='"+data.name+"']").click();
             });
             overlayClose();
         }, function (data) {
-            $(".overlayinner .msg").show().html(data.message);
+            $(".overlay_screen .msg").show().html(data.message);
         });
     }, p);
 }
@@ -48,12 +48,18 @@ var showSearch = function (term,type,root) {
         }
     },type,root);
 }
+var searchDialogClose = function () {
+    if ($(".search_ops:visible").length > 0) {
+        $(".search_ops:visible").fadeOut(function () { $(this).remove(); });
+        return true;
+    }
+    return false;
+}
 var searchDialog = function (root,f) {
+    overlayClose();
     getSearchTypes(root, function (d) {
-        if ($(".search_ops:visible").length > 0) {
-            $(".search_ops:visible").fadeOut(function () { $(this).remove();});
+        if (searchDialogClose())
             return;
-        }
 
         if (!searchRoot.isEmpty() || !searchType.isEmpty()) {
             $(".search_options i").addClass("active");
@@ -62,7 +68,7 @@ var searchDialog = function (root,f) {
         }
 
         var el = $(".interfaces .search_ops").clone();
-        el.css({ left: cright.offset().left - 30 + "px", width: "0px",top:"90px",height:$(window).height()-90+"px" });
+        el.css({ left: cright.offset().left - 20 + "px", width: "0px",top:"90px",height:$(window).height()-90+"px" });
         cright.append(el);
         el.animate({ width: "280px" }, 200, function () { if (f) f();});
         $("input.search").animate({ width: 205, opacity: 1 }, 500);
@@ -127,18 +133,18 @@ var searchDialog = function (root,f) {
 }
 var showUserMarkup = function (username) {
     getUserMarkup(username, function (d) {
-        overlay(d, 580);
-        wireForm($(".overlayinner form"), function (data) {
+        overlay(d, 580,undefined,undefined,"User");
+        wireForm($(".overlay_screen form"), function (data) {
             showUsers();
-            if ($(".overlayinner input[name=UserName]").val() == userName) {
-                userRoles = $(".overlayinner select[name=Roles]").val();
+            if ($(".overlay_screen input[name=UserName]").val() == userName) {
+                userRoles = $(".overlay_screen select[name=Roles]").val();
                 hideTopNav();
                 getUserLanguage(function (d) { defaultLanguage = d; });
                 startPath = data.startPath;
             }
             overlayClose();
         }, function (data) {
-            $(".overlayinner .msg").show().html(data.message);            
+            $(".overlay_screen .msg").show().html(data.message);
         });
     });
 }
@@ -184,7 +190,7 @@ var revisionsFor = function (vcsv, id) {
                 "<option value='" + variants[i] + "'>" + variantNames[variants[i]] + "</option>"
             );
         }
-        overlay(markup, 400, 150);
+        overlay(markup, 400, 150,undefined,"Revision Language");
         markup.find("button").click(function (e) {
             e.preventDefault();
             var variant = markup.find("select").val();
@@ -233,8 +239,8 @@ var showRevisions = function (variant, id) {
 }
 var showCompare = function (id) {
     getCompareMarkup(id, function (data) {
-        overlay(data);
-        $(".overlayinner").find("button.revert").click(function (e) {
+        overlay(data,undefined,undefined,undefined,"Compare");
+        $(".overlay_screen").find("button.revert").click(function (e) {
             e.preventDefault();
             if (!confirm("sure?"))
                 return;
@@ -249,7 +255,7 @@ var showCompare = function (id) {
                 }
             });
         });
-        var displays = $(".overlayinner .grid_5>.fields");
+        var displays = $(".overlay_screen .grid_5>.fields");
         var first = displays.first();
         var second = displays.last();
         first.find(".fieldwrapper:not(.complex)").each(function (i) {
@@ -273,11 +279,11 @@ var showCacheInfo = function (path) {
     getCacheInfo(path, function (data) {
         if (data.success) {
             var markup = $(".main.grid .interfaces .cache_exclude_dialog").clone();
-            overlay(markup, 400, 150);
+            overlay(markup, 400, 150,undefined,"Cache");
             if (data.result) {
                 markup.find("input").attr("checked", "checked");
             }
-            $(".overlayinner").find("button").click(function (e) {
+            $(".overlay_screen").find("button").click(function (e) {
                 setCacheInfo(path, markup.find("input").is(":checked"), function (data) {
                     if (data.success) {
                         overlayClose();
@@ -294,8 +300,8 @@ var showCacheInfo = function (path) {
 }
 var editParameters = function (settingsType, modelType, propertyName, success) {
     getEditorParametersMarkup(function (data) {
-        overlay(data, 500);
-        var form = $(".overlayinner form");
+        overlay(data, 500,undefined,undefined,"Edit Parameters");
+        var form = $(".overlay_screen form");
         wireForm(form, function (data) {
             msg(true, "parameters updated");
             success();
@@ -332,8 +338,8 @@ var showTasks = function () {
                 return;
             }
             $.get(el.attr("href"), function (d) {
-                overlay(d, 500);
-                var form = $(".overlayinner form");
+                overlay(d, 500,undefined,undefined,"Edit Task");
+                var form = $(".overlay_screen form");
                 wireForm(form, function (data) {
                     msg(true, "task updated");
                     overlayClose();
@@ -347,15 +353,15 @@ var showTasks = function () {
 }
 var createTask = function () {
     getTaskCreateDialog(function (data) {
-        overlay(data, 400, 150);
-        $(".overlayinner button").click(function (e) {
+        overlay(data, 400, 150,undefined,"Create Task");
+        $(".overlay_screen button").click(function (e) {
             e.preventDefault();
-            var typeSelect = $(".overlayinner select[name=type]");
+            var typeSelect = $(".overlay_screen select[name=type]");
             var type = typeSelect.val();
             getTaskMarkup(function (data) {
                 overlayClose();
-                overlay(data, 500);
-                var form = $(".overlayinner form");
+                overlay(data, 500,undefined,undefined,"Edit Task");
+                var form = $(".overlay_screen form");
                 wireForm(form, function (data) {
                     msg(true, "task updated");
                     overlayClose();
@@ -409,10 +415,10 @@ var wireForm = function (form, success, fail) {
 }
 var newContent = function (path, type) {
     getCreateDialog(function (data) {
-        overlay(data, 400, 250, 100);
-        $(".overlayinner button").click(function () {
-            var type = $(".overlayinner select[name=type]").val();
-            var variant = $(".overlayinner select[name=variant]").val();
+        overlay(data, 400, 250, 100,"New Content");
+        $(".overlay_screen button").click(function () {
+            var type = $(".overlay_screen select[name=type]").val();
+            var variant = $(".overlay_screen select[name=variant]").val();
             overlayClose()
             displayMarkup(path, type, variant);
         });
@@ -738,12 +744,39 @@ var msg = function (success, str) {
     el.fadeIn();
 }
 var puckmaxwidth = 960;
-var overlayClose = function () {
+var _overlayClose = function () {
     $(".overlayinner,.overlay").remove();
     $("body").css({ overflow: "initial" });
     $(document).unbind("keyup");
 }
-var overlay = function (el, width, height, top) {
+
+var overlay = function (el, width, height, top, title) {
+    var f = undefined;
+    overlayClose();
+    searchDialogClose();
+    var outer = $(".interfaces .overlay_screen").clone().addClass("");
+    outer.find(">h1:first").html(title||"")
+    outer.css({ left: cright.offset().left -20 + "px", width: "0px", top: "90px", height: $(window).height() - 90 + "px" });
+    var inner = outer.find(".inner");
+    var clear = $("<div class='clearboth'/>");
+    width = width || cright.width()-10;
+    
+    inner.append(el).append(clear);
+    cright.append(outer);
+    outer.animate({ width: width + "px" }, 200, function () { if (f) f(); afterDom(); });
+    
+    $(document).keyup(function (e) {
+        if (e.keyCode == 27) { overlayClose(); }
+    });
+}
+
+var overlayClose = function () {
+    cright.find(".overlay_screen").remove();
+    $("body").css({ overflow: "initial" });
+    $(document).unbind("keyup");
+}
+
+var _overlay = function (el, width, height, top) {
     var ov = $("<div class='overlay'/>");
     var inner = $("<div class='overlayinner container_12'/>");
     var clear = $("<div class='clearboth'/>");
@@ -864,8 +897,8 @@ var publishedVariants = function (path) {
     
 var setLocalisation = function (p) {
     getLocalisationDialog(p, function (data) {
-        overlay(data,400,250);
-        var form = $('.overlayinner form');
+        overlay(data,400,250,undefined,"Localisation");
+        var form = $('.overlay_screen form');
         wireForm(form, function (data) {
             overlayClose();
         }, function (data) {
@@ -875,8 +908,8 @@ var setLocalisation = function (p) {
 }
 var setDomainMapping = function (p) {
     getDomainMappingDialog(p, function (data) {
-        overlay(data,500,250);
-        var form = $('.overlayinner form');
+        overlay(data,500,250,undefined,"Domain Mapping");
+        var form = $('.overlay_screen form');
         wireForm(form, function (data) {
             overlayClose();
         }, function (data) {
@@ -887,8 +920,8 @@ var setDomainMapping = function (p) {
 }
 var setNotify = function (p) {
     getNotifyDialog(p, function (data) {
-        overlay(data, 450, 480);
-        var form = $('.overlayinner form');
+        overlay(data, 450, 480,undefined,"Notifications");
+        var form = $('.overlay_screen form');
         wireForm(form, function (data) {
             overlayClose();
         }, function (data) {

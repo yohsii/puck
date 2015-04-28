@@ -219,6 +219,7 @@ namespace puck.core.Concrete
                     SetWriter(false);
                     //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
                     Writer.Flush(true, true, true);
+                    
                     var cancelled = new List<BaseModel>();
                     foreach (var m in models)
                     {

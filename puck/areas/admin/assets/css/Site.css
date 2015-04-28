@@ -21,7 +21,7 @@ button.search{}
 input.search{width:0px;height: 10px;margin-top:0px;opacity:0;}
 .search_options{padding:0px !important;padding-left:12px !important;opacity:0;}
 .search_ops button{float:right;}
-.search_ops{
+.search_ops,.overlay_screen{
 z-index:10;
 top:90px;
 position: absolute !important;
@@ -30,9 +30,24 @@ background-color: #fcfcfc;
 border-left: none;
 box-shadow:1px 1px 8px -2px;
 }
+.overlay_screen{overflow:scroll;}
+.overlay_screen .msg{}
+.overlay_screen>h1:first-child{
+    width:90%;
+    padding:15px;
+    margin:0px;
+    font-size:24px;
+}
+.overlay_screen > .inner {
+    padding:10px;
+    padding-top:0px;
+}
 .search_ops>.inner
 {
     margin-left:40px;
+}
+table.revisions td{
+    /*word-break:break-all;*/
 }
 .pathvalue span
 {
@@ -84,8 +99,9 @@ div.search_results tr:hover
     opacity: 0.5;
     z-index: 10000;
 }
-.overlayinner{background:#fff;z-index:100000;opacity:1;position:fixed;overflow:hidden;overflow-y:scroll;}
-.overlayinner .close{clear:both;}
+/*.overlay_screen{background:#fff;z-index:100000;opacity:1;position:fixed;overflow:hidden;overflow-y:scroll;}
+.overlay_screen .close{clear:both;}
+*/
 div.settings{padding-top:0px;}
 select.languages{height:200px !important;width:550px !important;}
 .nodisplay{display:none;}
@@ -102,7 +118,7 @@ select.languages{height:200px !important;width:550px !important;}
 .settings .redirects li,.settings .orphans li{float:left;margin-left:10px;}
 .settings .redirects button,.settings .orphans button{vertical-align:bottom;margin-top:25px;height:31px;}
 .settings .orphans select{width:300px !important;}
-.overlayinner ul.content.redirect .node span{cursor:pointer;}
+.overlay_screen ul.content.redirect .node span{cursor:pointer;}
 .settings div.submit{clear:both;width:100%;}
 .settings div.submit button{float:right;}
 .settings div.submit.top{padding-bottom:20px;}
@@ -158,9 +174,9 @@ table.revisions tr td{border-top:1px solid #f9f9f9;}
 
 .parameters_edit .parameters_update{float:right;}
 .user_edit .msg {float:left;clear:both;background:#ffeeee;margin-bottom:20px;padding:5px;display:none;}
-.overlayinner .tree_container ul.content>li>ul>li:nth-child(odd){background-color:#fbfbfb;}
-.overlayinner .tree_container .node > .inner:hover{background-color:#eeffee;}
-.overlayinner .compare .grid_5 > span {background:#cccccc;color:#fff;padding:2px;}
+.overlay_screen .tree_container ul.content>li>ul>li:nth-child(odd){background-color:#fbfbfb;}
+.overlay_screen .tree_container .node > .inner:hover{background-color:#eeffee;}
+.overlay_screen .compare .grid_5 > span {background:#cccccc;color:#fff;padding:2px;}
 div.compare button{clear:left;float:right;padding:10px 50px 20px 0;}
 .editor-field{word-break:break-all;}
 .puck_google_long_lat .fieldwrapper{float:left;clear:none !important;}
@@ -222,7 +238,7 @@ ul.content.nomenu .node i.menu{display:none;}
     display:none;height:24px;width:24px;margin-left:220px;background:url(../img/ajax-loader.gif);
 }
 .edit_generated_property{
-    margin-left:60px!important;
+    /*margin-left:60px!important;*/
 }
 .edit_generated_property fieldset input[type=text]{
     width:445px;
@@ -235,11 +251,11 @@ ul.content.nomenu .node i.menu{display:none;}
 .view_edit textarea{clear:both;}
 .view_edit .CodeMirror{clear:both;border-top:1px solid #f9f9f9;}
 .view_edit .interfaces{display:none;}
-.overlayinner .choose_model h3,.overlayinner .model_properties h3{font-size:18px !important;}
-.overlayinner .choose_model li:hover,.overlayinner .model_properties li:hover{background:lightblue;cursor:pointer;}
-.overlayinner .choose_model a.all_models, .overlayinner .model_properties a.all_models{float:right;}
-.overlayinner .model_properties div.path span{background:#ffffee;font-weight:bold;padding:5px 2px 5px 2px;margin:0 3px 0 3px;cursor:pointer;}
-.overlayinner .model_properties ul{margin-top:4px;}
+.overlay_screen .choose_model h3,.overlay_screen .model_properties h3{font-size:18px !important;}
+.overlay_screen .choose_model li:hover,.overlay_screen .model_properties li:hover{background:lightblue;cursor:pointer;}
+.overlay_screen .choose_model a.all_models, .overlay_screen .model_properties a.all_models{float:right;}
+.overlay_screen .model_properties div.path span{background:#ffffee;font-weight:bold;padding:5px 2px 5px 2px;margin:0 3px 0 3px;cursor:pointer;}
+.overlay_screen .model_properties ul{margin-top:4px;}
 
 .view_edit .node.selected
 {

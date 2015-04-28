@@ -21,16 +21,16 @@ namespace puck
     {
         protected void Application_EndRequest()
         {
-#if DEBUG
+//#if (DEBUG||ReleaseDebug)
             MiniProfiler.Stop(); //stop as early as you can, even earlier with MvcMiniProfiler.MiniProfiler.Stop(discardResults: true);
-#endif
+//#endif
         }
 
         protected void Application_BeginRequest()
         {
-#if DEBUG
+//#if (DEBUG||ReleaseDebug)
             if (Request.IsLocal) { MiniProfiler.Start(); } //or any number of other checks, up to you 
-#endif
+//#endif
         }
     
         protected void Application_Start()
