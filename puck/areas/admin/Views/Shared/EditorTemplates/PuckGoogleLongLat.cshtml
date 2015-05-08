@@ -47,8 +47,9 @@
                         map: map,
                         position: results[0].geometry.location
                     });
-                    container.find(".lat input").val(results[0].geometry.location.k);
-                    container.find(".long input").val(results[0].geometry.location.A);
+                    
+                    container.find(".lat input").val(results[0].geometry.location.lat());
+                    container.find(".long input").val(results[0].geometry.location.lng());
                 } else {
                     msg(false,'Geocode was not successful for the following reason: ' + status);
                 }
