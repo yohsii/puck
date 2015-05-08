@@ -18,7 +18,7 @@ var startPath;
 
 var newTemplateFolder = function (p) {
     getTemplateFolderCreateDialog(function (d) {
-        overlay(d, 500,300,undefined,"New Template Folder");
+        overlay(d, 500, 300, undefined, "New Template Folder");
         wireForm($(".overlay_screen form"), function (data) {
             getDrawTemplates(p);
             overlayClose();
@@ -29,10 +29,10 @@ var newTemplateFolder = function (p) {
 }
 var newTemplate = function (p) {
     getTemplateCreateDialog(function (d) {
-        overlay(d, 500, 300,undefined,"New Template");
+        overlay(d, 500, 300, undefined, "New Template");
         wireForm($(".overlay_screen form"), function (data) {
             getDrawTemplates(p, undefined, function () {
-                cright.find(".node[data-id='"+data.name+"']").click();
+                cright.find(".node[data-id='" + data.name + "']").click();
             });
             overlayClose();
         }, function (data) {
@@ -40,13 +40,13 @@ var newTemplate = function (p) {
         });
     }, p);
 }
-var showSearch = function (term,type,root) {
+var showSearch = function (term, type, root) {
     getSearch(term, function (d) {
         if (canChangeMainContent()) {
             cright.html(d);
             afterDom();
         }
-    },type,root);
+    }, type, root);
 }
 var searchDialogClose = function () {
     if ($(".search_ops:visible").length > 0) {
@@ -55,7 +55,7 @@ var searchDialogClose = function () {
     }
     return false;
 }
-var searchDialog = function (root,f) {
+var searchDialog = function (root, f) {
     overlayClose();
     getSearchTypes(root, function (d) {
         if (searchDialogClose())
@@ -68,15 +68,15 @@ var searchDialog = function (root,f) {
         }
 
         var el = $(".interfaces .search_ops").clone();
-        el.css({ left: cright.offset().left - 20 + "px", width: "0px",top:"90px",height:$(window).height()-90+"px" });
+        el.css({ left: cright.offset().left - 20 + "px", width: "0px", top: "90px", height: $(window).height() - 90 + "px" });
         cright.append(el);
-        el.animate({ width: "280px" }, 200, function () { if (f) f();});
+        el.animate({ width: "280px" }, 200, function () { if (f) f(); });
         $("input.search").animate({ width: 205, opacity: 1 }, 500);
         var types = el.find("select");
         types.html("<option value=''>None</option>");
         $(d).each(function () {
             types.append(
-                "<option value='"+this.Type+"'>"+this.Name+"</option>"
+                "<option value='" + this.Type + "'>" + this.Name + "</option>"
             );
         });
 
@@ -133,7 +133,7 @@ var searchDialog = function (root,f) {
 }
 var showUserMarkup = function (username) {
     getUserMarkup(username, function (d) {
-        overlay(d, 580,undefined,undefined,"User");
+        overlay(d, 580, undefined, undefined, "User");
         wireForm($(".overlay_screen form"), function (data) {
             showUsers();
             if ($(".overlay_screen input[name=UserName]").val() == userName) {
@@ -190,7 +190,7 @@ var revisionsFor = function (vcsv, id) {
                 "<option value='" + variants[i] + "'>" + variantNames[variants[i]] + "</option>"
             );
         }
-        overlay(markup, 400, 150,undefined,"Revision Language");
+        overlay(markup, 400, 150, undefined, "Revision Language");
         markup.find("button").click(function (e) {
             e.preventDefault();
             var variant = markup.find("select").val();
@@ -239,7 +239,7 @@ var showRevisions = function (variant, id) {
 }
 var showCompare = function (id) {
     getCompareMarkup(id, function (data) {
-        overlay(data,undefined,undefined,undefined,"Compare");
+        overlay(data, undefined, undefined, undefined, "Compare");
         $(".overlay_screen").find("button.revert").click(function (e) {
             e.preventDefault();
             if (!confirm("sure?"))
@@ -255,7 +255,7 @@ var showCompare = function (id) {
                 }
             });
         });
-        var displays = $(".overlay_screen .grid_5>.fields");
+        var displays = $(".overlay_screen .compare_revision>.fields");
         var first = displays.first();
         var second = displays.last();
         first.find(".fieldwrapper:not(.complex)").each(function (i) {
@@ -279,7 +279,7 @@ var showCacheInfo = function (path) {
     getCacheInfo(path, function (data) {
         if (data.success) {
             var markup = $(".main.grid .interfaces .cache_exclude_dialog").clone();
-            overlay(markup, 400, 150,undefined,"Cache");
+            overlay(markup, 400, 150, undefined, "Cache");
             if (data.result) {
                 markup.find("input").attr("checked", "checked");
             }
@@ -300,7 +300,7 @@ var showCacheInfo = function (path) {
 }
 var editParameters = function (settingsType, modelType, propertyName, success) {
     getEditorParametersMarkup(function (data) {
-        overlay(data, 500,undefined,undefined,"Edit Parameters");
+        overlay(data, 500, undefined, undefined, "Edit Parameters");
         var form = $(".overlay_screen form");
         wireForm(form, function (data) {
             msg(true, "parameters updated");
@@ -338,7 +338,7 @@ var showTasks = function () {
                 return;
             }
             $.get(el.attr("href"), function (d) {
-                overlay(d, 500,undefined,undefined,"Edit Task");
+                overlay(d, 500, undefined, undefined, "Edit Task");
                 var form = $(".overlay_screen form");
                 wireForm(form, function (data) {
                     msg(true, "task updated");
@@ -353,14 +353,14 @@ var showTasks = function () {
 }
 var createTask = function () {
     getTaskCreateDialog(function (data) {
-        overlay(data, 400, 150,undefined,"Create Task");
+        overlay(data, 400, 150, undefined, "Create Task");
         $(".overlay_screen button").click(function (e) {
             e.preventDefault();
             var typeSelect = $(".overlay_screen select[name=type]");
             var type = typeSelect.val();
             getTaskMarkup(function (data) {
                 overlayClose();
-                overlay(data, 500,undefined,undefined,"Edit Task");
+                overlay(data, 500, undefined, undefined, "Edit Task");
                 var form = $(".overlay_screen form");
                 wireForm(form, function (data) {
                     msg(true, "task updated");
@@ -374,9 +374,9 @@ var createTask = function () {
     });
 }
 jQuery.validator.setDefaults({
-    ignore:""
+    ignore: ""
 });
-var checkEnter=function(e) {
+var checkEnter = function (e) {
     e = e || event;
     var txtArea = /textarea/i.test((e.target || e.srcElement).tagName);
     return txtArea || (e.keyCode || e.which || e.charCode || 0) !== 13;
@@ -389,7 +389,7 @@ var wireForm = function (form, success, fail) {
             tinyMCE.triggerSave();
         }
         if (form.valid()) {
-            e.preventDefault();            
+            e.preventDefault();
             var values = form.serialize();
             var fd = new FormData(form.get(0));
             $.ajax({
@@ -415,7 +415,7 @@ var wireForm = function (form, success, fail) {
 }
 var newContent = function (path, type) {
     getCreateDialog(function (data) {
-        overlay(data, 400, 250, 100,"New Content");
+        overlay(data, 400, 250, 100, "New Content");
         $(".overlay_screen button").click(function () {
             var type = $(".overlay_screen select[name=type]").val();
             var variant = $(".overlay_screen select[name=variant]").val();
@@ -424,24 +424,24 @@ var newContent = function (path, type) {
         });
     }, type);
 }
-var getDrawTemplates = function (path,el,f) {
+var getDrawTemplates = function (path, el, f) {
     if (el == undefined) {
         var nodeParent = dirOfPath(path);
         el = $("ul.templates .node[data-path='" + nodeParent + "']");
     }
     getTemplates(path, function (data) {
-        drawTemplates(data,el);
-        if(f!=undefined)
+        drawTemplates(data, el);
+        if (f != undefined)
             f();
     });
 }
-var deleteTemplate = function (name,path) {
+var deleteTemplate = function (name, path) {
     if (!confirm("delete template - " + name + " ?"))
         return;
     setDeleteTemplate(path, function (d) {
         if (d.success)
             $("ul.templates .node[data-path='" + path + "']").remove();
-        else msg(false,d.message);
+        else msg(false, d.message);
     });
 }
 var deleteTemplateFolder = function (name, path) {
@@ -461,7 +461,7 @@ var drawTemplates = function (data, el, sortable) {
         var elnode = $("<li/>").addClass("node");
         var elinner = $("<div class='inner'/>");
         elnode.append(elinner);
-        elinner.append($("<i class=\"puck_icon\"></i>").addClass(node.Type=="folder"?"icon-folder-close":""))
+        elinner.append($("<i class=\"puck_icon\"></i>").addClass(node.Type == "folder" ? "icon-folder-close" : ""))
         elinner.append($("<i class=\"icon-chevron-right expand\"></i>"))
         elinner.append($("<i class=\"icon-cog menu\"></i>"))
                 .append("<span class='nodename'>" + node.Name + "&nbsp;" + "</span>");
@@ -470,25 +470,25 @@ var drawTemplates = function (data, el, sortable) {
             , "data-path": node.Path
             , "data-id": node.Path
             , "data-name": node.Name
-            ,"data-has_children":node.HasChildren
+            , "data-has_children": node.HasChildren
         });
         if (!node.HasChildren)
-            elnode.find(".expand").css({visibility:"hidden"});
+            elnode.find(".expand").css({ visibility: "hidden" });
         toAppend.append(elnode);
     }
     el.find("ul").remove();
-    el.append(toAppend);    
+    el.append(toAppend);
 }
 
-var getDrawContent = function (path, el, sortable,f) {
+var getDrawContent = function (path, el, sortable, f) {
     if (el == undefined) {
         var nodeParent = dirOfPath(path);
         el = cleft.find(".node[data-children_path='" + nodeParent + "']");
     }
     getContent(path, function (data) {
-        var plevel = path.split('/').length-1;
+        var plevel = path.split('/').length - 1;
         for (var k in publishedContent) {
-            var level = k.split('/').length-1;
+            var level = k.split('/').length - 1;
             if (plevel == level) {
                 publishedContent[k] = undefined;
             }
@@ -503,9 +503,9 @@ var getDrawContent = function (path, el, sortable,f) {
         el.find(".node").each(function () {
             var n = $(this);
             if (!haveChildren[n.attr("data-path")])
-                n.find(".expand").css({visibility:"hidden"});
+                n.find(".expand").css({ visibility: "hidden" });
         });
-        if(f!=undefined)
+        if (f != undefined)
             f();
     });
 }
@@ -518,7 +518,7 @@ var draw = function (data, el, sortable) {
         var hasUnpublished = false;
         for (var v in data[p]) {//variant as keys
             variants.push(v);
-            if (data[p][v].Published==false) {
+            if (data[p][v].Published == false) {
                 hasUnpublished = true;
             }
         }
@@ -555,13 +555,13 @@ var draw = function (data, el, sortable) {
             , "data-children_path": node.Path + "/"
             , "data-published": node.Published
         });
-        toAppend.append(elnode);        
+        toAppend.append(elnode);
     }
     el.find("ul").remove();
     el.append(toAppend);
     if (sortable) {
         toAppend.sortable({
-            cursorAt:{top:0,left:0},
+            cursorAt: { top: 0, left: 0 },
             update: function (event, ui) {
                 var parent = ui.item.parents("li[data-children_path]:first");
                 var sortPath = parent.attr("data-children_path");
@@ -574,14 +574,14 @@ var draw = function (data, el, sortable) {
         });
     }
 }
-var displayMarkup = function (path, type, variant,fromVariant) {
+var displayMarkup = function (path, type, variant, fromVariant) {
     getMarkup(path, type, variant, function (data) {
         cright.hide().html(data);
 
         if (!type) {
             type = cright.find("input[name=Type]").val();
         }
-        
+
         var translations = $("<ul/>").addClass("translations");
         var node = cleft.find(".node[data-path='" + path + "']");
         if (node.length > 0) {
@@ -628,7 +628,7 @@ var displayMarkup = function (path, type, variant,fromVariant) {
                                 var v = d[i].Variant;
                                 lnk.click(function (e) {
                                     e.preventDefault();
-                                        displayMarkup(path, type, v);
+                                    displayMarkup(path, type, v);
                                 });
                             }());
                             dtli.append(lnk)
@@ -700,9 +700,9 @@ var displayMarkup = function (path, type, variant,fromVariant) {
         //publish btn
         if (userRoles.contains("_publish")) {
             cright.find(".content_publish").click(function () {
-                cright.find("input:hidden[name='Published']").val("true");                
+                cright.find("input:hidden[name='Published']").val("true");
             });
-        } else { cright.find(".content_publish").hide();}
+        } else { cright.find(".content_publish").hide(); }
         //udpate btn
         cright.find(".content_update").click(function () {
             cright.find("input:hidden[name='Published']").val("false");
@@ -711,21 +711,21 @@ var displayMarkup = function (path, type, variant,fromVariant) {
         if (path.slice(-1) != '/') {
             cright.find(".content_preview").click(function (e) {
                 e.preventDefault();
-                window.open("/admin/api/preview?path=" + path +"&variant=" + variant, "_blank");
+                window.open("/admin/api/preview?path=" + path + "&variant=" + variant, "_blank");
             });
-        } else { cright.find(".content_preview").hide();}
+        } else { cright.find(".content_preview").hide(); }
 
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
             getDrawContent(dirOfPath(path), undefined, true, function () {
-                var pnode = cleft.find(".node[data-path='" + dirOfPath(path).substring(0,dirOfPath(path).length-1) + "']");
+                var pnode = cleft.find(".node[data-path='" + dirOfPath(path).substring(0, dirOfPath(path).length - 1) + "']");
                 pnode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
                 displayMarkup(data.path, type, variant);
-            });            
+            });
         }, function (data) {
             msg(false, data.message);
-        });        
-    },fromVariant);
+        });
+    }, fromVariant);
 }
 var setChangeTracker = function () {
     changed = false;
@@ -755,16 +755,16 @@ var overlay = function (el, width, height, top, title) {
     overlayClose();
     searchDialogClose();
     var outer = $(".interfaces .overlay_screen").clone().addClass("");
-    outer.find(">h1:first").html(title||"")
-    outer.css({ left: cright.offset().left -20 + "px", width: "0px", top: "90px", height: $(window).height() - 90 + "px" });
+    outer.find(">h1:first").html(title || "")
+    outer.css({ left: cright.offset().left - 20 + "px", width: "0px", top: "90px", height: $(window).height() - 90 + "px" });
     var inner = outer.find(".inner");
     var clear = $("<div class='clearboth'/>");
-    width = width || cright.width()-10;
-    
+    width = width || cright.width() - 10;
+
     inner.append(el).append(clear);
     cright.append(outer);
     outer.animate({ width: width + "px" }, 200, function () { if (f) f(); afterDom(); });
-    
+
     $(document).keyup(function (e) {
         if (e.keyCode == 27) { overlayClose(); }
     });
@@ -800,7 +800,7 @@ var _overlay = function (el, width, height, top) {
         inner.css({ top: ($(window).height() - height) / 2 + "px" });
     $("body").css({ overflow: "hidden" });
     afterDom();
-    $(document).keyup(function(e) {
+    $(document).keyup(function (e) {
         if (e.keyCode == 27) { overlayClose(); }
     });
 }
@@ -814,8 +814,8 @@ var afterDom = function () {
     }
 }
 var changed = false;
-var canChangeMainContent=function(){
-    if(cright.find(".fieldwrapper").length> 0 && changed)
+var canChangeMainContent = function () {
+    if (cright.find(".fieldwrapper").length > 0 && changed)
         if (confirm("sure you want to move away from this page?")) {
             changed = false;
             return true;
@@ -827,7 +827,7 @@ var canChangeMainContent=function(){
 }
 var hideTopNav = function () {
     $(".menutop a[data-permission]").each(function () {
-        var el =$(this);
+        var el = $(this);
         var perm = el.attr("data-permission");
         if (userRoles.contains(perm))
             el.show();
@@ -850,7 +850,7 @@ var isRootItem = function (s) {
     var matches = s.match(/\//g);
     if (matches == null)
         return true;
-        //throw "isRootItem - invalid input: " + s;
+    //throw "isRootItem - invalid input: " + s;
     return matches.length == 1;
 }
 var typeFromChain = function (s) {
@@ -873,7 +873,7 @@ var dialogForVariants = function (variants) {
         dialog.find(".variantcontainer select").append("<option value='" + this + "'>" + this + "</option>");
     });
     $.each(languages, function () {
-        dialog.find(".descendantscontainer select").append("<option value='" + this.Key + "'>" + this.Key + "</option>");        
+        dialog.find(".descendantscontainer select").append("<option value='" + this.Key + "'>" + this.Key + "</option>");
     });
     dialog.find(".descendantscontainer select").prepend("<option selected value=''>None</option>");
     return dialog;
@@ -894,21 +894,21 @@ var publishedVariants = function (path) {
     });
     return variants.length == 0 ? false : variants;
 }
-    
+
 var setLocalisation = function (p) {
     getLocalisationDialog(p, function (data) {
-        overlay(data,400,250,undefined,"Localisation");
+        overlay(data, 400, 250, undefined, "Localisation");
         var form = $('.overlay_screen form');
         wireForm(form, function (data) {
             overlayClose();
         }, function (data) {
-            msg(false,data.message);
+            msg(false, data.message);
         });
     });
 }
 var setDomainMapping = function (p) {
     getDomainMappingDialog(p, function (data) {
-        overlay(data,500,250,undefined,"Domain Mapping");
+        overlay(data, 500, 250, undefined, "Domain Mapping");
         var form = $('.overlay_screen form');
         wireForm(form, function (data) {
             overlayClose();
@@ -920,7 +920,7 @@ var setDomainMapping = function (p) {
 }
 var setNotify = function (p) {
     getNotifyDialog(p, function (data) {
-        overlay(data, 450, 480,undefined,"Notifications");
+        overlay(data, 450, 480, undefined, "Notifications");
         var form = $('.overlay_screen form');
         wireForm(form, function (data) {
             overlayClose();
@@ -932,7 +932,7 @@ var setNotify = function (p) {
 }
 var highlightSelectedNode = function (path) {
     cleft.find(".node").removeClass("selected");
-    cleft.find(".node[data-path='"+path+"']").addClass("selected");
+    cleft.find(".node[data-path='" + path + "']").addClass("selected");
 }
 
 getUserLanguage(function (d) { defaultLanguage = d; });
@@ -941,14 +941,14 @@ getUserRoles(function (d) {
     $(document).ready(function () {
         var index = location.href.indexOf("?");
         var qs = location.href.substring(index);
-        if (index!=-1 && qs != "") {
+        if (index != -1 && qs != "") {
             //console.log("qs %o",qs);
-            var rp=/\?action=([a-zA-Z0-1]+)&/;
+            var rp = /\?action=([a-zA-Z0-1]+)&/;
             var action = rp.exec(qs)[1];
             var hash = "#" + action + "?" + qs.replace(rp, "");
             //console.log("hash %o",hash);
             handleHash(hash);
-        }        
+        }
     });
 });
 getVariants(function (data) {
@@ -957,16 +957,16 @@ getVariants(function (data) {
         onAfterDom(function () {
             msg(0, "take a moment to setup puck. at the very least, choose your languages!");
         });
-        $(".menutop .settings").click();        
+        $(".menutop .settings").click();
     }
 });
 getStartPath(function (d) {
-    cleft.find("ul.content li:first").attr("data-children_path",d);
+    cleft.find("ul.content li:first").attr("data-children_path", d);
     $(".interfaces .tree_container ul.content .node").attr("data-children_path", startPath);
     startPath = d;
     cleft.find(".startpath").html(d);
     getDrawContent(d, undefined, true);
 });
 
-    
+
 //});   
