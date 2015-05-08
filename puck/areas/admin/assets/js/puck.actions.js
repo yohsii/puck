@@ -757,6 +757,9 @@ var overlay = function (el, width, height, top, title) {
     var outer = $(".interfaces .overlay_screen").clone().addClass("");
     outer.find(">h1:first").html(title || "")
     outer.css({ left: cright.offset().left - 20 + "px", width: "0px", top: "90px", height: $(window).height() - 90 + "px" });
+    if (outer.offset().top < $(document).scrollTop()) {
+        outer.css({top:$(document).scrollTop()});
+    }
     var inner = outer.find(".inner");
     var clear = $("<div class='clearboth'/>");
     width = width || cright.width() - 10;

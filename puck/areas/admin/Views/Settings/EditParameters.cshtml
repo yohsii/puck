@@ -3,7 +3,7 @@
     Layout = null;    
 }
 <div class="parameters_edit settings">
-    <div class="grid_5 push_1">
+    <div class="">
 @using (Html.BeginForm("EditParameters", "Settings", new { puck_settingsType = Request["settingsType"],puck_modelType=Request["modelType"],puck_propertyName=Request["propertyName"] }, FormMethod.Post))
 {
     @Html.EditorForModel()
