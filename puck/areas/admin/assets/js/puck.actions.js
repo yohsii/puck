@@ -730,7 +730,7 @@ var displayMarkup = function (path, type, variant, fromVariant) {
 var setChangeTracker = function () {
     changed = false;
     cright.find(":input").change(function (e) {
-        //changed = true;
+        changed = true;
     });
 }
 var msg = function (success, str) {
