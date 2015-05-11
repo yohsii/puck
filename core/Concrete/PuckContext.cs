@@ -6,7 +6,7 @@ using System.Data.Entity;
 
 namespace puck.core.Entities
 {
-    public class PuckContext : DbContext
+    public partial class PuckContext : DbContext
     {
         public DbSet<PuckMeta> PuckMeta { get; set; }
         public DbSet<PuckRevision> PuckRevision { get; set; }

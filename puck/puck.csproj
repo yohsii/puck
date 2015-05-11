@@ -1043,6 +1043,7 @@
     <Content Include="Media\db3f6497-d590-4068-9b2e-9b98f66c8a10\ja-jp\Person.Image_iam8bit-20110721015836173.jpg" />
     <Content Include="Media\db3f6497-d590-4068-9b2e-9b98f66c8a10\ja-jp\Person.Image_iam8bit-20110721015848158.jpg" />
     <Content Include="Media\f4e8e23d-7736-426a-bb33-4d8c2b4ac72d\en-gb\Image_32081-1.jpg" />
+    <Content Include="Readme.txt" />
     <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
@@ -1094,7 +1095,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="areas\admin\Config\" />
-    <Folder Include="Filters\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
