@@ -760,6 +760,9 @@ var overlay = function (el, width, height, top, title) {
     if (outer.offset().top < $(document).scrollTop()) {
         outer.css({top:$(document).scrollTop()});
     }
+    var close = $('<i class="overlay_close icon-remove-sign"></i>');
+    close.click(function () { overlayClose() });
+    outer.append(close);
     var inner = outer.find(".inner");
     var clear = $("<div class='clearboth'/>");
     width = width || cright.width() - 10;
