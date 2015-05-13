@@ -49,8 +49,9 @@
 	-generatorvalues class is where you can add different types to the dynamic class generator
 		-this class generator is in the developer section of cms interface
 		-it's used when you want to use the cms without coding your models or templates
-		-not really how i'd recommend using the cms
+		-not really how i'd recommend using the cms		
 	-pucksearcher, puckindexer, puckrepo can all be found here to get/save stuff in lucene and database, respectively
+	-modify these values from your own bootstrap class, called from global.asax, at the bottom of Application_Start
 
 -paths for email templates (for notifications) are in app_data
 
