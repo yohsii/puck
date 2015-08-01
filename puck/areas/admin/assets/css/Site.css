@@ -1,5 +1,8 @@
 ﻿.settings_display_image span{word-wrap:break-word;width:100%;display:block;}
 .compare_revision {float:left;width:45%;}
+.compare_revision .fields {
+    padding:10px;
+}
 .overlay_close {position:absolute;top:10px;right:15px;cursor:pointer;}
 h1.master{position:absolute;top:10px;right:10px;border-bottom:6px solid #6f6f6f;float:left;color:#6f6f6f;font-family:Courier;}
 .main.grid{height:100%;font-family:courier;font-size:12px;}
