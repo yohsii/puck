@@ -20,12 +20,12 @@
         }
         var excluded = models.Where(x=>!included.Any(i=>x.AssemblyQualifiedName.Equals(i.AssemblyQualifiedName))).ToList();
         <div class="type" data-type="@m.AssemblyQualifiedName">
-            <div class="list excluded"><h2>excluded child types</h2>
+            <div class="list excluded"><h2>types</h2>
                 @foreach (var t in excluded) { 
                     <div data-type="@t.AssemblyQualifiedName" class="field">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(t))</div>
                 }
             </div>
-            <div class="list included"><h2>allowed child types</h2>
+            <div class="list included"><h2>whitelist</h2>
                 @foreach (var t in included) { 
                     <div data-type="@t.AssemblyQualifiedName" class="field">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(t))</div>
                 }
@@ -44,12 +44,21 @@
         var select = container.find("select");
         container.find(".list").hide();
         container.find(".type[data-type='" + select.val() + "'] .list").show();
+        var emptyMessage = function () {
+            container.find(".included .msg").remove();
+            if (container.find(".included:visible .field").length == 0) {
+                container.find(".included:visible").append($("<div class='msg'></div>")
+                    .html("if this is empty, all child types will be allowed for this type"));
+            }
+        }
         select.change(function (e) {
             var val = $(this).val();
             container.find(".list").hide();
             container.find(".type[data-type='" + val + "'] .list").show();
+            emptyMessage();
         });
         var setValue = function () {
+            emptyMessage();
             container.find("input:hidden").remove();
             container.find(".included .field").each(function (i) {
                 var typeEl = $(this).parents(".type:first");
@@ -66,5 +75,6 @@
                 setValue();
             }
         });
+        emptyMessage();
     });
 </script>
