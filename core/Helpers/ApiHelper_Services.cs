@@ -490,7 +490,57 @@ namespace puck.core.Helpers
             var tasks = Tasks();
             tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
             tdispatcher.Tasks = tasks;
-        }        
+        }
+        //update class hierarchies/typechains which may have changed since last run
+        public static void UpdateTypeChains() {
+            var repo = Repo;
+            var excluded = new List<Type> {typeof(puck.core.Entities.PuckRevision) };
+            var currentTypes = ApiHelper.FindDerivedClasses(typeof(puck.core.Base.BaseModel),excluded:excluded, inclusive: false);
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeChain).ToList();
+            var typesToUpdate = new List<Type>();
+            foreach (var item in meta) {
+                //check saved type is in currentTypes
+                var type = currentTypes.FirstOrDefault(x => x.AssemblyQualifiedName.Equals(item.Key));
+                if(type != null)
+                {
+                    var typeChain = ApiHelper.TypeChain(type);
+                    var dbTypeChain = item.Value;
+                    //check that typechain is the same
+                    //if not, add to types to update
+                    if (!typeChain.Equals(dbTypeChain)) {
+                        typesToUpdate.Add(type);
+                    }
+                }
+            }
+            var toIndex = new List<BaseModel>();
+            foreach (var type in typesToUpdate) {
+                //get revisions whose typechains have changed
+                var revisions = repo.GetPuckRevision().Where(x => x.Type.Equals(type.AssemblyQualifiedName));
+                foreach (var revision in revisions) {
+                    //update typechain in revision and in model which may need to be published
+                    revision.TypeChain = ApiHelper.TypeChain(type);
+                    var model = ApiHelper.RevisionToBaseModel(revision);
+                    model.TypeChain= ApiHelper.TypeChain(type);
+                    if (model.Published && revision.Current)
+                        toIndex.Add(model);
+                }
+                repo.SaveChanges();
+            }
+            //publish content with updated typechains
+            indexer.Index(toIndex);
+            //delete typechains from previous bootstrap
+            meta.ForEach(x => repo.DeleteMeta(x));
+            repo.SaveChanges();
+            //save typechains from current bootstrap
+            currentTypes.ToList().ForEach(x=> {
+                var newMeta = new PuckMeta {
+                    Name = DBNames.TypeChain,
+                    Key = x.AssemblyQualifiedName,
+                    Value = ApiHelper.TypeChain(x) };
+                repo.AddMeta(newMeta);
+            });
+            repo.SaveChanges();
+        }
         public static void UpdateRedirectMappings() {
             var repo = Repo;
             var meta301 = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect301).ToList();

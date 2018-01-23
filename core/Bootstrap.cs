@@ -32,7 +32,8 @@ namespace puck.core
             PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
             PuckCache.SmtpFrom = "puck@"+PuckCache.SmtpHost;
             ApiHelper.UpdateAnalyzerMappings();
-
+            //update typechains which may have changed since last run
+            ApiHelper.UpdateTypeChains();
             if (PuckCache.UpdateTaskLastRun || PuckCache.UpdateRecurringTaskLastRun) {
                 var dispatcher = PuckCache.PuckDispatcher;
                 if (dispatcher != null) { 

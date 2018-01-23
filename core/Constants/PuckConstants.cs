@@ -55,6 +55,7 @@ namespace puck.core.Constants
     }
     public static class DBNames
     {
+        public static string TypeChain = "typechain";
         public static string TypeAllowedTemplates = "typeallowedtemplates";
         public static string EditorSettings = "editorsettings";
         public static string Redirect301 = "redirect301:";
