@@ -128,7 +128,6 @@ namespace puck.core
             
             //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
             
-
         }
     }
 }
