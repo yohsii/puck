@@ -521,6 +521,7 @@ namespace puck.core.Helpers
                     revision.TypeChain = ApiHelper.TypeChain(type);
                     var model = ApiHelper.RevisionToBaseModel(revision);
                     model.TypeChain= ApiHelper.TypeChain(type);
+                    revision.Value=JsonConvert.SerializeObject(model);
                     if (model.Published && revision.Current)
                         toIndex.Add(model);
                 }

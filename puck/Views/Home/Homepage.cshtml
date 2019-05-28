@@ -6,8 +6,9 @@
         .Descendants(Model)
         .CurrentLanguage()
         .ExplicitType();
-                
+
     var sections = qh.GetAll();
+    var sections2 = Model.Descendants<Section>();
     @qh.ToString()
     <br />
     @("section count: "+sections.Count)
@@ -15,7 +16,7 @@
     var searchQuery = "croydon";
     var search = new QueryHelper<Page>()
         .CurrentRoot(Model)
-        .AllFields(searchQuery)
+        .And().Field(x=>x.MainContent,searchQuery)
         .CurrentLanguage();
     var sresults = search.GetAll();
     @("search for '"+searchQuery+"' count: "+sresults.Count)

@@ -8,3 +8,5 @@ syntax: glob
 *.mdf
 *.ldf
 *\obj\*
+.vs
+.vs\*
