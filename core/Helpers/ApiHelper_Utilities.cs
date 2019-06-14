@@ -192,12 +192,27 @@ namespace puck.core.Helpers
             var result = Regex.Replace(name, @"\W", "");
             return result;
         }
+        public static string RemoveAccent(string txt)
+        {
+            byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
+            return System.Text.Encoding.ASCII.GetString(bytes);
+        }
+
+        public static string Slugify(string phrase)
+        {
+            string str = RemoveAccent(phrase).ToLower();
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Remove all non valid chars          
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ").Trim(); // convert multiple spaces into one space  
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
+            return str;
+        }        
         public static string SanitizeUrl(string url) {
             var result = url;
             return result;
         }
-        public static void Email(string to, string subject, string body, string host = PuckCache.SmtpHost, string from = null,bool isHtml=true)
+        public static void Email(string to, string subject, string body, string host = null, string from = null,bool isHtml=true)
         {
+            host = host ?? PuckCache.SmtpHost;
             from = from ?? PuckCache.SmtpFrom;
             MailMessage mail = new MailMessage(from, to);
             SmtpClient client = new SmtpClient();

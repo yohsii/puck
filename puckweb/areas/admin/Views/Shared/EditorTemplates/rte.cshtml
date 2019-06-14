@@ -1,0 +1,19 @@
+﻿@model string
+
+<div class="puck_mce mce_@ViewData.ModelMetadata.PropertyName">
+    @Html.TextAreaFor(x => x)
+</div>
+<script>
+    onAfterDom(function () {
+        var selector = ".mce_@ViewData.ModelMetadata.PropertyName textarea";
+        tinymce.init({
+            selector: selector,
+            plugins: [
+                "advlist autolink lists link image charmap print preview anchor",
+                "searchreplace visualblocks code fullscreen",
+                "insertdatetime media table contextmenu paste"
+            ],
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+        });
+    });
+</script>

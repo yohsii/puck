@@ -12,8 +12,8 @@ namespace puck.core.Abstract
         void Index(Dictionary<string,string> values);
         void Index(List<Dictionary<string, string>> values);
         void Index<T>(T model) where T:BaseModel;
-        void Index<T>(List<T> models) where T : BaseModel;
-        void Delete(string query);
+        void Index<T>(List<T> models,bool triggerEvents=true) where T : BaseModel;
+        void Delete(string query,bool reloadSearcher=true);
         void Delete<T>(List<T> toDelete) where T : BaseModel;
         void Delete<T>(T toDelete) where T : BaseModel;
         void Ini();

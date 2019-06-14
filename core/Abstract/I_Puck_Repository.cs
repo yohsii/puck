@@ -11,7 +11,9 @@ namespace puck.core.Abstract
         IQueryable<GeneratedModel> GetGeneratedModel();
         IQueryable<GeneratedProperty> GetGeneratedProperty();
         IQueryable<GeneratedAttribute> GetGeneratedAttribute();
-        
+
+        IQueryable<PuckUser> GetPuckUser();
+
         void AddGeneratedModel(GeneratedModel gm);
         void AddGeneratedProperty(GeneratedProperty gm);
         void AddGeneratedAttribute(GeneratedAttribute gm);

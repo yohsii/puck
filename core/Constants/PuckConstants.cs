@@ -11,6 +11,8 @@ using Lucene.Net.Documents;
 using puck.core.Attributes;
 using System.Configuration;
 using Ninject;
+using puck.core.Identity;
+
 namespace puck.core.Constants
 {
     public static class GeneratorValues { 
@@ -26,6 +28,7 @@ namespace puck.core.Constants
         public const string Create = "_create";
         public const string Edit = "_edit";
         public const string Delete = "_delete";
+        public const string Republish = "_republish";
         public const string Publish = "_publish";
         public const string Unpublish = "_unpublish";
         public const string Revert = "_revert";
@@ -101,14 +104,14 @@ namespace puck.core.Constants
             Edit,Publish,Delete,Move
         }
         public static string SmtpFrom = "";
-        public const string SmtpHost = "localhost";
+        public static string SmtpHost = "localhost";
         public static string EmailTemplatePublishPath = "~/app_data/notification_publish_template.txt";
         public static string EmailTemplateEditPath = "~/app_data/notification_edit_template.txt";
         public static string EmailTemplateDeletePath = "~/app_data/notification_delete_template.txt";
         public static string EmailTemplateMovePath = "~/app_data/notification_move_template.txt";
         public static string TemplateDirectory = "~/views/";
-        public static string Path404 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck404Path"]) ? "~/views/Puck404.cshtml" : ConfigurationManager.AppSettings["Puck404Path"];
-        public static string Path500 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck500Path"]) ? "~/views/Puck500.cshtml" : ConfigurationManager.AppSettings["Puck500Path"];
+        public static string Path404 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck404Path"]) ? "~/views/Errors/Puck404.cshtml" : ConfigurationManager.AppSettings["Puck404Path"];
+        public static string Path500 = string.IsNullOrEmpty(ConfigurationManager.AppSettings["Puck500Path"]) ? "~/views/Errors/Puck500.cshtml" : ConfigurationManager.AppSettings["Puck500Path"];
         public static bool Debug = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckDebug"]) && ConfigurationManager.AppSettings["PuckDebug"].ToLower() == bool.TrueString.ToLower();
         public static bool UpdateTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool UpdateRecurringTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"].ToLower() == bool.TrueString.ToLower();
@@ -117,6 +120,8 @@ namespace puck.core.Constants
         public static int DefaultOutputCacheMinutes = 0;
         public static int DisplayModesCacheMinutes = 10;
         public static string SystemVariant = "en-GB";
+        public static bool IsRepublishingEntireSite { get; set; }
+        public static string IndexingStatus { get; set; }
         public static List<Variant> Variants { get; set; }
         public static Dictionary<string,string> DomainRoots {get;set;}
         public static Dictionary<string, string> PathToLocale { get; set; }
@@ -132,6 +137,7 @@ namespace puck.core.Constants
         public static I_Content_Searcher PuckSearcher { get { return NinjectKernel.Get<I_Content_Searcher>(); } }
         public static I_Content_Indexer PuckIndexer { get { return NinjectKernel.Get<I_Content_Indexer>(); } }
         public static I_Puck_Repository PuckRepo { get { return NinjectKernel.Get<I_Puck_Repository>(); } }
+        public static PuckUserManager PuckUserManager { get { return NinjectKernel.Get<PuckUserManager>(); } }
         public static I_Log PuckLog { get { return NinjectKernel.Get<I_Log>(); } }
         public static List<Analyzer> Analyzers { get; set; }
         public static Dictionary<Type, Analyzer> AnalyzerForModel { get; set; }

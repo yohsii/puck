@@ -1,0 +1,9 @@
+﻿@model Object
+
+<div class="noedit settings_display_image">
+    @if(Model !=null){
+        <img alt="image" src="@Model" width="100" />
+        <span>@Model.ToString()</span>
+    }    
+</div>
+@Html.Hidden("",Model==null?null:Model.ToString())

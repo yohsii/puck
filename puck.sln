@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "puck", "puck\puck.csproj", "{BB7432D0-5C96-489B-BC5D-4777B1162113}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{D79D37F5-0989-4783-809E-E0B16D545BFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{AD10D367-3C54-459D-9FED-843FE8A02BCF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "puckweb", "puckweb\puckweb.csproj", "{71CF064C-E712-42B1-B7F4-6FA40E74EB9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,8 +36,17 @@ Global
 		{AD10D367-3C54-459D-9FED-843FE8A02BCF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD10D367-3C54-459D-9FED-843FE8A02BCF}.ReleaseDebug|Any CPU.ActiveCfg = Release|Any CPU
 		{AD10D367-3C54-459D-9FED-843FE8A02BCF}.ReleaseDebug|Any CPU.Build.0 = Release|Any CPU
+		{71CF064C-E712-42B1-B7F4-6FA40E74EB9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71CF064C-E712-42B1-B7F4-6FA40E74EB9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71CF064C-E712-42B1-B7F4-6FA40E74EB9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71CF064C-E712-42B1-B7F4-6FA40E74EB9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71CF064C-E712-42B1-B7F4-6FA40E74EB9F}.ReleaseDebug|Any CPU.ActiveCfg = Release|Any CPU
+		{71CF064C-E712-42B1-B7F4-6FA40E74EB9F}.ReleaseDebug|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F8C3FF37-99F1-44C9-BACA-528353252496}
 	EndGlobalSection
 EndGlobal

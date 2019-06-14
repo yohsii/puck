@@ -133,7 +133,7 @@ namespace puck.core.Controllers
             catch (Exception ex)
             {
                 PuckCache.PuckLog.Log(ex);
-                ViewBag.error = ex.Message;
+                ViewBag.Error = ex.Message;
                 return View(PuckCache.Path500);
             }
         }

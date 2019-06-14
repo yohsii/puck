@@ -1,0 +1,19 @@
+﻿@model puck.core.Abstract.I_GeneratedOption
+@{
+    Layout = null;    
+}
+<div class="">
+@using (Html.BeginForm("editattribute", "task", new {pid=ViewBag.pid,aid=ViewBag.aid,optionType=ViewBag.type }))
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>GeneratedAttribute</legend>
+        @Html.EditorForModel()
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>
+}
+
+</div>

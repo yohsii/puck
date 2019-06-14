@@ -17,5 +17,8 @@ namespace puck.core.Entities
         public bool Current { get; set; }
         [IndexSettings(Ignore = false)]
         public string Value { get; set; }
+        public bool HasNoPublishedRevision { get; set; }
+        public bool IsPublishedRevision { get; set; }
+        public string IdPath { get; set; }
     }
 }

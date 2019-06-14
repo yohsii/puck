@@ -1,0 +1,21 @@
+﻿@model DateTime?
+
+<div class="datepicker_@ViewData.ModelMetadata.PropertyName">
+@if(ViewData.ModelMetadata.HideSurroundingHtml){
+    <input type="hidden" name="@ViewData.ModelMetadata.PropertyName" value="@(Model.HasValue?Model.Value.ToString():"")" />
+}
+else if (ViewData.ModelMetadata.IsReadOnly)
+{
+    <input type="text" disabled name="@ViewData.ModelMetadata.PropertyName" value="@(Model.HasValue?Model.Value.ToString():"")" />
+}
+else
+{ 
+    <input type="text" name="@ViewData.ModelMetadata.PropertyName" value="@(Model.HasValue?Model.Value.ToString():"")" />
+    <script type="text/javascript">
+        onAfterDom(function () {
+            var propertyName = ".datepicker_@ViewData.ModelMetadata.PropertyName input";
+            $(propertyName).datetimepicker({dateFormat:'dd/mm/yy',timeFormat:'hh:mm:ss'});
+        });
+    </script>
+}
+</div>

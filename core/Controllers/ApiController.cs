@@ -20,6 +20,11 @@ using puck.core.Filters;
 using puck.core.Models;
 using StackExchange.Profiling;
 using System.Web.Security;
+using puck.core.Identity;
+using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
+using System.Web.Hosting;
+
 namespace puck.core.Controllers
 {
     [SetPuckCulture]
@@ -30,11 +35,17 @@ namespace puck.core.Controllers
         I_Content_Searcher searcher;
         I_Log log;
         I_Puck_Repository repo;
-        public ApiController(I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r) {
+        PuckRoleManager roleManager;
+        PuckUserManager userManager;
+        PuckSignInManager signInManager;
+        public ApiController(I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r, PuckRoleManager rm, PuckUserManager um, PuckSignInManager sm) {
             this.indexer = i;
             this.searcher = s;
             this.log = l;
             this.repo = r;
+            this.roleManager = rm;
+            this.userManager = um;
+            this.signInManager = sm;
         }
         [Auth(Roles=PuckRoles.Puck)]
         public ActionResult Index()
@@ -45,15 +56,17 @@ namespace puck.core.Controllers
         public JsonResult UserLanguage()
         {
             string variant = PuckCache.SystemVariant;
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
-            if (meta != null)
-                variant = meta.Value;
+            var user = userManager.FindByName(User.Identity.Name);
+            if(!string.IsNullOrEmpty(user.UserVariant))
+            //var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
+            //if (meta != null)
+                variant = user.UserVariant;
             return Json(variant, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
-        public JsonResult UserRoles()
+        public async Task<JsonResult> UserRoles()
         {
-            var roles = Roles.GetRolesForUser(User.Identity.Name);
+            var roles = await userManager.GetRolesAsync(User.Identity.GetUserId());
             return Json(roles, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles =PuckRoles.Puck)]
@@ -210,7 +223,7 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult GetPath(Guid id)
         {
-            var node = repo.GetPuckRevision().Where(x => x.Id == id).FirstOrDefault();
+            var node = repo.GetPuckRevision().Where(x => x.Id == id&&x.Current).FirstOrDefault();
             string path = node == null ? string.Empty : node.Path;
             return Json(path,JsonRequestBehavior.AllowGet);
         }
@@ -218,19 +231,27 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult StartPath()
         {
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == HttpContext.User.Identity.Name).FirstOrDefault();
+            var user = userManager.FindByName(User.Identity.Name);
+            if (user.StartNodeId != Guid.Empty) {
+                var node = repo.GetPuckRevision().Where(x => x.Id == user.StartNodeId && x.Current).FirstOrDefault();
+                if (node != null)
+                {
+                    return Json(node.Path + "/", JsonRequestBehavior.AllowGet);
+                }
+            }
+            /*var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == HttpContext.User.Identity.Name).FirstOrDefault();
             if (meta != null)
             {
                 var pu = JsonConvert.DeserializeObject(meta.Value, typeof(PuckPicker)) as PuckPicker;
                 if (pu != null)
                 {
-                    var node = repo.GetPuckRevision().Where(x => x.Id == pu.Id).FirstOrDefault();
+                    var node = repo.GetPuckRevision().Where(x => x.Id == pu.Id&&x.Current).FirstOrDefault();
                     if (node != null)
                     {
                         return Json(node.Path+"/",JsonRequestBehavior.AllowGet);
                     }
                 }
-            }
+            }*/
             return Json("/", JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
@@ -479,7 +500,7 @@ namespace puck.core.Controllers
         }
         
         [Auth(Roles = PuckRoles.Edit)]
-        public ActionResult Edit(string p_type,string p_path="/",string p_variant="",string p_fromVariant="") {
+        public ActionResult Edit(string p_type,string p_path="/",string p_variant="",string p_fromVariant="",bool create=false) {
             if (p_variant == "null")
                 p_variant = PuckCache.SystemVariant;
             object model=null;
@@ -528,6 +549,36 @@ namespace puck.core.Controllers
             return View(model);
         }
 
+        [Auth(Roles = PuckRoles.Puck)]
+        public ActionResult GetRepublishEntireSiteStatus()
+        {
+            string message = "";
+            if (PuckCache.IsRepublishingEntireSite)
+                message = PuckCache.IndexingStatus;
+            else
+                message = "complete";
+            return Json(new { Success = true, Message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        [Auth(Roles = PuckRoles.Republish)]
+        [HttpPost]
+        public ActionResult RepublishEntireSite() {
+            var success = true;
+            string message = "republish entire site started";
+            if (!PuckCache.IsRepublishingEntireSite)
+            {
+                HostingEnvironment.QueueBackgroundWorkItem(ct => ApiHelper.RePublishEntireSite2());
+                PuckCache.IsRepublishingEntireSite = true;
+                PuckCache.IndexingStatus = "republish entire site task queued";
+            }
+            else
+            {
+                success = false;
+                message = "already republishing entire site";
+            }
+            return Json(new {Success=success,Message=message }, JsonRequestBehavior.AllowGet);
+        }
+
         [Auth(Roles = PuckRoles.Edit)]
         [HttpPost]
         [ValidateInput(false)]
@@ -543,7 +594,7 @@ namespace puck.core.Controllers
                 {
                     UpdateModelDynamic(model, fc.ToValueProvider());
                     ObjectDumper.BindImages(model, int.MaxValue);
-                    ObjectDumper.Transform(model, int.MaxValue);
+                    //ObjectDumper.Transform(model, int.MaxValue);
                     var mod = model as BaseModel;
                     ApiHelper.SaveContent(mod);
                     path = mod.Path;

@@ -19,7 +19,7 @@ namespace puck.core
     public static class Bootstrap
     {
         public static void Ini() {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<PuckContext, puck.core.Migrations.Configuration>());
+            //Database.SetInitializer(new MigrateDatabaseToLatestVersion<PuckContext, puck.core.Migrations.Configuration>());
             ApiHelper.SetGeneratedMappings();
             ApiHelper.UpdateDomainMappings();
             ApiHelper.UpdatePathLocaleMappings();
@@ -128,6 +128,7 @@ namespace puck.core
             
             //DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;
             
+
         }
     }
 }

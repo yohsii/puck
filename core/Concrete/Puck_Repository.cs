@@ -10,6 +10,10 @@ namespace puck.core.Concrete
     public class Puck_Repository : I_Puck_Repository
     {
         public PuckContext repo = new PuckContext();
+        public IQueryable<PuckUser> GetPuckUser()
+        {
+            return repo.Users;
+        }
 
         public IQueryable<PuckMeta> GetPuckMeta() {
             return repo.PuckMeta;
