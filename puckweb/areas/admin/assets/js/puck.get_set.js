@@ -21,8 +21,10 @@ var getSearchTypes = function (root,f) {
         f(d);
     });
 }
-var getMarkup = function (path, type, variant, f, fromVariant) {
-    $.get("/admin/api/edit?p_variant=" + variant + "&p_type=" + type + "&p_path=" + path + "&p_fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
+var getMarkup = function (parentId, type, variant, f, fromVariant, contentId) {
+    $.get("/admin/api/edit?" + (parentId == null ? "" : "parentId=" + parentId + "&")
+        + (contentId == null ? "" : "contentId=" + contentId + "&")
+        + "&p_variant=" + variant + "&p_type=" + type + /*"&p_path=" + path +*/ "&p_fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
 }
 var getCreateDialog = function (f, t) {
     $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");
@@ -41,6 +43,9 @@ var getVariants = function (f) {
 }
 var getVariantsForPath = function (path,f) {
     $.get("/admin/api/variantsfornode/?path="+path, f);
+}
+var getVariantsForId = function (id, f) {
+    $.get("/admin/api/variantsfornodebyid/?id=" + id, f);
 }
 var setDeleteTemplate = function (p, f) {
     $.post("/admin/task/deletetemplate?path=" + p, f);
@@ -79,7 +84,7 @@ var setMoveTemplateFolder = function (from, to, f) {
     $.post(path, f);
 }
 var setMove = function (from, to, f) {
-    var path = "/admin/api/move?start=" + from + "&destination=" + to;
+    var path = "/admin/api/move?startId=" + from + "&destinationId=" + to;
     $.get(path, f);
 }
 var setDeleteRevision = function (id, f) {
@@ -157,6 +162,10 @@ var getEditorParametersMarkup = function (f, settingsType, modelType, propertyNa
 var getContent = function (path, f) {
     $.get("/admin/api/content?path=" + path, f);
 }
+var getContentByParentId = function (parentId, f) {
+    $.get("/admin/api/contentbyparentid?parentid=" + parentId, f);
+}
+
 var getTemplates = function (path, f) {
     $.get("/admin/task/templates?path=" + path, f);
 }
@@ -165,6 +174,9 @@ var getPath = function (id, f) {
 };
 var getStartPath = function (f) {
     $.get("/admin/api/startpath", f);
+};
+var getStartId = function (f) {
+    $.get("/admin/api/startid", f);
 };
 var getSearch = function (term, f, type, root) {
     $.get("/admin/api/search?q=" + term + "&type=" + type + "&root=" + root, f, "html");

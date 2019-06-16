@@ -253,6 +253,16 @@ namespace puck.core.Helpers
             });
             return d;
         }
+        public static Dictionary<Guid, Dictionary<string, T>> GroupById<T>(this List<T> items) where T : BaseModel
+        {
+            var d = new Dictionary<Guid, Dictionary<string, T>>();
+            items.GroupBy(x => x.Id).ToList().ForEach(x =>
+            {
+                d.Add(x.Key, new Dictionary<string, T>());
+                x.ToList().ForEach(y => d[x.Key][y.Variant] = y);
+            });
+            return d;
+        }
     }
     public class QueryHelper<TModel> where TModel : BaseModel
     {

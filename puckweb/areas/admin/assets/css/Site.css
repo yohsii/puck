@@ -217,7 +217,9 @@ ul.content.nomenu .node i.menu{display:none;}
 .puckpicker .node {cursor:pointer;}
 .puckpicker .selected_node span{background:#eeffee;}
 .puckpicker .selected_node i{background-color:#ffeeee;margin-left:5px;}
+/*
 .leftarea .node span.variant{display:none;}
+*/
 .leftarea .node.selected>.inner{border-top:1px solid #0088cc;border-bottom:1px solid #0088cc;}
 .leftarea .node > .inner{position:relative;}
 .leftarea .node > .inner:hover .icon-search{display:block;}

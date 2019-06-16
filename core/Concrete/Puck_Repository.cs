@@ -89,6 +89,12 @@ namespace puck.core.Concrete
                 .Where(x => x.Path.ToLower().Equals(path.ToLower()) && x.Current);
             return results;
         }
+        public IQueryable<PuckRevision> CurrentRevisionsByParentId(Guid parentId)
+        {
+            var results = repo.PuckRevision
+                .Where(x => x.ParentId==parentId&&x.Current);
+            return results;
+        }
         public IQueryable<PuckRevision> CurrentRevisionsByDirectory(string path)
         {
             var pathCount = path.Count(x => x == '/');
@@ -110,12 +116,39 @@ namespace puck.core.Concrete
             }
             return repo.PuckRevision.Where(x =>parentPaths.Contains(x.Path.ToLower()) && x.Current);
         }
+        public List<PuckRevision> CurrentRevisionAncestors(Guid id,bool includeSelf=false)
+        {
+            var currentRevision = repo.PuckRevision.FirstOrDefault(x=>x.Id==id&&x.Current);
+            if (currentRevision.ParentId==Guid.Empty)
+                return Enumerable.Empty<PuckRevision>().ToList();
+            var results = new List<PuckRevision>();
+            if(includeSelf)
+                results.Add(currentRevision);
+            while (currentRevision.ParentId!=Guid.Empty)
+            {
+                currentRevision = repo.PuckRevision.FirstOrDefault(x=>x.Id==currentRevision.ParentId&&x.Current);
+                results.Add(currentRevision);                
+            }
+            results.Reverse();
+            return results;
+        }
+        public IQueryable<PuckRevision> CurrentRevisionParent(Guid id)
+        {
+            var node = repo.PuckRevision.FirstOrDefault(x=>x.Id==id&&x.Current);
+            if (node==null)
+                return Enumerable.Empty<PuckRevision>().AsQueryable();
+            return repo.PuckRevision.Where(x => x.Id==node.ParentId && x.Current);
+        }
         public IQueryable<PuckRevision> CurrentRevisionParent(string path)
         {
             if (path.Count(x => x == '/') <= 1)
                 return Enumerable.Empty<PuckRevision>().AsQueryable();
             string searchPath = path.Substring(0, path.LastIndexOf('/'));
             return repo.PuckRevision.Where(x => x.Path.ToLower().Equals(searchPath.ToLower()) && x.Current);
+        }
+        public IQueryable<PuckRevision> CurrentRevisionChildren(Guid id)
+        {
+            return repo.PuckRevision.Where(x => x.ParentId == id && x.Current);            
         }
         public IQueryable<PuckRevision> CurrentRevisionChildren(string path)
         {
@@ -143,7 +176,12 @@ namespace puck.core.Concrete
                 .Where(x => x.Id == id && x.Current && x.Variant.ToLower().Equals(variant.ToLower()));
             return results.FirstOrDefault();
         }
-        
+        public PuckRevision PublishedRevision(Guid id, string variant)
+        {
+            var results = repo.PuckRevision
+                .Where(x => x.Id == id && x.IsPublishedRevision && x.Variant.ToLower().Equals(variant.ToLower()));
+            return results.FirstOrDefault();
+        }
         public void DeleteMeta(string name,string key,string value)
         {
             var metas = GetPuckMeta();

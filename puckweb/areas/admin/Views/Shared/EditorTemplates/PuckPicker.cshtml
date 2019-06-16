@@ -6,11 +6,13 @@
             AllowDuplicates=false,AllowUnpublished=true,MaxPick=2,SelectionType="both",StartPath=null
         };
     var startPath = "";
+    Guid startId = Guid.Empty;
     if(settings.StartPath!=null && settings.StartPath.Count>0){
         var id = settings.StartPath.First().Id;
         var revision = PuckCache.PuckRepo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
         if(revision!=null){
             startPath = revision.Path;
+            startId = revision.Id;
         }
     }
 }
@@ -57,7 +59,8 @@
         var selected_container = container.find(".selected_content");
         var selected_content = function () { return selected_container.find(".selected_node"); }
         var _startPath = "@startPath" == ""?startPath:"@startPath";
-        container.find("ul.content li:first").attr("data-children_path",_startPath);
+        var _startId = "@startId.ToString()";
+        container.find("ul.content li:first").attr("data-children_path", _startPath);
         var maxPick = "@settings.MaxPick";
         var selectionType = "@settings.SelectionType"; //both|variant|node
         var allowUnpublished = "@settings.AllowUnpublished";
@@ -74,7 +77,7 @@
         }
         setValue();
         el = container.find(".node:first");
-        getDrawContent(_startPath, el);
+        getDrawContent(_startId, el);
         selected_container.on("click", "i", function (e) {
             $(this).parent().remove();
             setValue();

@@ -15,7 +15,7 @@ var defaultLanguage = "en-gb";
 var userRoles = [];
 var languages;
 var startPath;
-
+var startId;
 var newTemplateFolder = function (p) {
     getTemplateFolderCreateDialog(function (d) {
         overlay(d, 500, 300, undefined, "New Template Folder");
@@ -413,14 +413,14 @@ var wireForm = function (form, success, fail) {
         }
     });
 }
-var newContent = function (path, type) {
+var newContent = function (guid, type) {
     getCreateDialog(function (data) {
         overlay(data, 400, 250, 100, "New Content");
         $(".overlay_screen button").click(function () {
             var type = $(".overlay_screen select[name=type]").val();
             var variant = $(".overlay_screen select[name=variant]").val();
             overlayClose()
-            displayMarkup(path, type, variant);
+            displayMarkup(guid,type, variant);
         });
     }, type);
 }
@@ -480,19 +480,18 @@ var drawTemplates = function (data, el, sortable) {
     el.append(toAppend);
 }
 
-var getDrawContent = function (path, el, sortable, f) {
+var getDrawContent = function (id, el, sortable, f) {
     if (el == undefined) {
-        var nodeParent = dirOfPath(path);
-        el = cleft.find(".node[data-children_path='" + nodeParent + "']");
+        el = cleft.find(".node[data-id='" + id + "']");
     }
-    getContent(path, function (data) {
-        var plevel = path.split('/').length - 1;
+    getContentByParentId(id, function (data) {
+        /*var plevel = path.split('/').length - 1;
         for (var k in publishedContent) {
             var level = k.split('/').length - 1;
             if (plevel == level) {
                 publishedContent[k] = undefined;
             }
-        }
+        }*/
         for (var k in data.published) {
             publishedContent[k] = data.published[k];
         }
@@ -502,7 +501,7 @@ var getDrawContent = function (path, el, sortable, f) {
         draw(data.current, el, sortable);
         el.find(".node").each(function () {
             var n = $(this);
-            if (!haveChildren[n.attr("data-path")])
+            if (!haveChildren[n.attr("data-id")])
                 n.find(".expand").css({ visibility: "hidden" });
         });
         if (f != undefined)
@@ -512,7 +511,7 @@ var getDrawContent = function (path, el, sortable, f) {
 var draw = function (data, el, sortable) {
     var str = "";
     var toAppend = $("<ul/>");
-    for (var p in data) {//paths as keys
+    for (var p in data) {//ids as keys
         dbcontent[p] = data[p];
         var variants = [];
         var hasUnpublished = false;
@@ -539,7 +538,7 @@ var draw = function (data, el, sortable) {
                 .append("<span class='nodename'>" + node.NodeName + "&nbsp;" + "</span>");
         for (var i = 0; i < variants.length; i++) {
             var vel = $("<span class=\"variant\"/>").attr("data-variant", variants[i]).html(variants[i] + "&nbsp;");
-            if (publishedContent[node.Path] != undefined && publishedContent[node.Path][variants[i]] != undefined) {
+            if (publishedContent[node.Id] != undefined && publishedContent[node.Id][variants[i]] != undefined) {
                 vel.addClass("published");
             }
             elinner.append(vel);
@@ -548,6 +547,7 @@ var draw = function (data, el, sortable) {
             "data-type_chain": typeFromChain(node.TypeChain)
             , "data-type": node.Type
             , "data-id": node.Id
+            , "data-parent_id": node.ParentId
             , "data-path": node.Path
             , "data-nodename": node.NodeName
             , "data-variants": variants.join(",")
@@ -574,8 +574,8 @@ var draw = function (data, el, sortable) {
         });
     }
 }
-var displayMarkup = function (path, type, variant, fromVariant) {
-    getMarkup(path, type, variant, function (data) {
+var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
+    getMarkup(parentId, type, variant, function (data) {
         cright.hide().html(data);
 
         if (!type) {
@@ -583,7 +583,7 @@ var displayMarkup = function (path, type, variant, fromVariant) {
         }
 
         var translations = $("<ul/>").addClass("translations");
-        var node = cleft.find(".node[data-path='" + path + "']");
+        var node = cleft.find(".node[data-id='" + contentId + "']");
         if (node.length > 0) {
             var dataTranslations = node.attr("data-variants").split(',');
             if (dataTranslations.length > 1) {
@@ -604,7 +604,7 @@ var displayMarkup = function (path, type, variant, fromVariant) {
                             lnk.click(function (e) {
                                 e.preventDefault();
                                 var vcode = dataTranslation;
-                                displayMarkup(path, type, vcode);
+                                displayMarkup(null, type, vcode,undefined,contentId);
                             });
                             dtli.append(lnk)
                         } else {
@@ -616,30 +616,31 @@ var displayMarkup = function (path, type, variant, fromVariant) {
                 cright.prepend(translations);
             }
         } else {
-            getVariantsForPath(path, function (d) {
-                for (var i = 0; i < d.length; i++) {
-                    (function () {
-                        var dtli = $("<li/>");
-                        if (!d[i].Published)
-                            dtli.addClass("unpublished");
-                        if (d[i].Variant != variant) {
-                            var lnk = $("<a href='#'/>").html("-" + variantNames[d[i].Variant]);
-                            (function () {
-                                var v = d[i].Variant;
-                                lnk.click(function (e) {
-                                    e.preventDefault();
-                                    displayMarkup(path, type, v);
-                                });
-                            }());
-                            dtli.append(lnk)
-                        } else {
-                            dtli.append("-" + variantNames[d[i].Variant]);
-                        }
-                        translations.append(dtli);
-                    })();
-                }
-                cright.prepend(translations);
-            });
+            if (contentId != null && contentId != undefined)
+                getVariantsForId(contentId, function (d) {
+                    for (var i = 0; i < d.length; i++) {
+                        (function () {
+                            var dtli = $("<li/>");
+                            if (!d[i].Published)
+                                dtli.addClass("unpublished");
+                            if (d[i].Variant != variant) {
+                                var lnk = $("<a href='#'/>").html("-" + variantNames[d[i].Variant]);
+                                (function () {
+                                    var v = d[i].Variant;
+                                    lnk.click(function (e) {
+                                        e.preventDefault();
+                                        displayMarkup(null, type, v,undefined,contentId);
+                                    });
+                                }());
+                                dtli.append(lnk)
+                            } else {
+                                dtli.append("-" + variantNames[d[i].Variant]);
+                            }
+                            translations.append(dtli);
+                        })();
+                    }
+                    cright.prepend(translations);
+                });
         }
         //get field groups and build tabs
         getFieldGroups(type, function (data) {
@@ -695,7 +696,7 @@ var displayMarkup = function (path, type, variant, fromVariant) {
             cright.show();
             cright.find(".fieldtabs:first").click();
             setChangeTracker();
-            highlightSelectedNode(path);
+            highlightSelectedNodeById(contentId);
         });
         //publish btn
         if (userRoles.contains("_publish")) {
@@ -708,24 +709,24 @@ var displayMarkup = function (path, type, variant, fromVariant) {
             cright.find("input:hidden[name='Published']").val("false");
         });
         //preview btn
-        if (path.slice(-1) != '/') {
+        if (contentId) {
             cright.find(".content_preview").click(function (e) {
                 e.preventDefault();
-                window.open("/admin/api/preview?path=" + path + "&variant=" + variant, "_blank");
+                window.open("/admin/api/previewguid?id=" + contentId + "&variant=" + variant, "_blank");
             });
         } else { cright.find(".content_preview").hide(); }
 
         wireForm(cright.find('form'), function (data) {
             msg(true, "content updated");
-            getDrawContent(dirOfPath(path), undefined, true, function () {
-                var pnode = cleft.find(".node[data-path='" + dirOfPath(path).substring(0, dirOfPath(path).length - 1) + "']");
-                pnode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
-                displayMarkup(data.path, type, variant);
+            getDrawContent(data.parentId, undefined, true, function () {
+                var pnode = cleft.find(".node[data-id='" + data.parentId + "']");
+                //pnode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
+                displayMarkup(null, type, variant,undefined,data.id);
             });
         }, function (data) {
             msg(false, data.message);
         });
-    }, fromVariant);
+    }, fromVariant,contentId);
 }
 var setChangeTracker = function () {
     changed = false;
@@ -856,11 +857,14 @@ var dirOfPath = function (s) {
     return s.substring(0, s.lastIndexOf("/") + 1);
 }
 var isRootItem = function (s) {
-    var matches = s.match(/\//g);
+    if (s == "00000000-0000-0000-0000-000000000000")
+        return true;
+    else return false;
+    /*var matches = s.match(/\//g);
     if (matches == null)
         return true;
     //throw "isRootItem - invalid input: " + s;
-    return matches.length == 1;
+    return matches.length == 1;*/
 }
 var typeFromChain = function (s) {
     return s.split(" ")[0];
@@ -887,17 +891,17 @@ var dialogForVariants = function (variants) {
     dialog.find(".descendantscontainer select").prepend("<option selected value=''>None</option>");
     return dialog;
 }
-var unpublishedVariants = function (path) {
+var unpublishedVariants = function (id) {
     var variants = [];
-    cleft.find(".node[data-path='" + path + "']>.inner>.variant").each(function () {
+    cleft.find(".node[data-id='" + id + "']>.inner>.variant").each(function () {
         if (!$(this).hasClass("published"))
             variants.push($(this).attr("data-variant"));
     });
     return variants.length == 0 ? false : variants;
 }
-var publishedVariants = function (path) {
+var publishedVariants = function (id) {
     var variants = [];
-    cleft.find(".node[data-path='" + path + "']>.inner>.variant").each(function () {
+    cleft.find(".node[data-id='" + id + "']>.inner>.variant").each(function () {
         if ($(this).hasClass("published"))
             variants.push($(this).attr("data-variant"));
     });
@@ -943,7 +947,10 @@ var highlightSelectedNode = function (path) {
     cleft.find(".node").removeClass("selected");
     cleft.find(".node[data-path='" + path + "']").addClass("selected");
 }
-
+var highlightSelectedNodeById = function (id) {
+    cleft.find(".node").removeClass("selected");
+    cleft.find(".node[data-id='" + id + "']").addClass("selected");
+}
 getUserLanguage(function (d) { defaultLanguage = d; });
 getUserRoles(function (d) {
     userRoles = d; hideTopNav();
@@ -991,12 +998,15 @@ getVariants(function (data) {
         $(".menutop .settings").click();
     }
 });
-getStartPath(function (d) {
-    cleft.find("ul.content li:first").attr("data-children_path", d);
-    $(".interfaces .tree_container ul.content .node").attr("data-children_path", startPath);
-    startPath = d;
-    cleft.find(".startpath").html(d);
-    getDrawContent(d, undefined, true);
+getStartId(function (id) {
+    startId = id;
+    cleft.find("ul.content li:first").attr("data-id", id);
+    getStartPath(function (d) {
+        startPath = d;
+        cleft.find(".startpath").html(d);
+        $(".interfaces .tree_container ul.content .node").attr("data-children_path", startPath);
+    });
+    getDrawContent(id, undefined, true);
 });
 
 

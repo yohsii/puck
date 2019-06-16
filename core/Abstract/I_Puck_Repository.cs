@@ -31,12 +31,18 @@ namespace puck.core.Abstract
         void AddRevision(PuckRevision meta);
         IQueryable<PuckRevision> CurrentRevisionsByPath(string path);
         IQueryable<PuckRevision> CurrentRevisionsByDirectory(string path);
+        IQueryable<PuckRevision> CurrentRevisionsByParentId(Guid parentId);
         IQueryable<PuckRevision> CurrentRevisionParent(string path);
+        IQueryable<PuckRevision> CurrentRevisionParent(Guid id);
         IQueryable<PuckRevision> CurrentRevisionAncestors(string path);
+        List<PuckRevision> CurrentRevisionAncestors(Guid id,bool includeSelf=false);
+
         IQueryable<PuckRevision> CurrentRevisionDescendants(string path);
         IQueryable<PuckRevision> CurrentRevisionChildren(string path);
+        IQueryable<PuckRevision> CurrentRevisionChildren(Guid id);
         IQueryable<PuckRevision> CurrentRevisionVariants(Guid id, string variant);
         PuckRevision CurrentRevision(Guid id, string variant);
+        PuckRevision PublishedRevision(Guid id,string variant);
         void SaveChanges();        
     }
 }

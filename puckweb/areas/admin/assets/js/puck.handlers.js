@@ -65,7 +65,7 @@ $(document).on("click", "ul.content:not(.templates) li.node i.expand", function 
             descendants.hide();
         }
     } else {
-        getDrawContent(node.attr("data-children_path"), node, true);
+        getDrawContent(node.attr("data-id"), node, true);
         node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
     }
 });
@@ -108,23 +108,23 @@ $(document).on("click", "ul.content li.node i.menu", function (e) {
     else
         dropdown.find("a[data-action='translate']").parents("li").hide();
     //filter publish/unpublish
-    if (publishedVariants(node.attr("data-path")) != false)
+    if (publishedVariants(node.attr("data-id")) != false)
         dropdown.find("a[data-action='unpublish']").parents("li").show();
     else
         dropdown.find("a[data-action='unpublish']").parents("li").hide();
 
-    if (unpublishedVariants(node.attr("data-path")) != false)
+    if (unpublishedVariants(node.attr("data-id")) != false)
         dropdown.find("a[data-action='publish']").parents("li").show();
     else
         dropdown.find("a[data-action='publish']").parents("li").hide();
     //filter domain
-    if (isRootItem(node.attr("data-path"))) {
+    if (isRootItem(node.attr("data-parent_id"))) {
         dropdown.find("a[data-action='domain']").parents("li").show();
     } else {
         dropdown.find("a[data-action='domain']").parents("li").hide();
     }
     //filter move - disallow root move
-    if (node.attr("data-path").split('/').length - 1 == 1)
+    if (isRootItem(node.attr("data-parent_id")))
         dropdown.find("a[data-action='move']").parents("li").hide();
     else
         dropdown.find("a[data-action='move']").parents("li").show();
@@ -228,8 +228,8 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             var doPublish = function (id, variant, descendants) {
                 setPublish(id, variant, descendants, function (data) {
                     if (data.success === true) {
-                        getDrawContent(dirOfPath(node.attr("data-path")), undefined, true);
-                        node.find(">.inner>.variant").addClass("published");
+                        getDrawContent(node.attr("data-parent_id"), undefined, true);
+                        node.find(">.inner>.variant[data-variant='"+variant+"']").addClass("published");
                         overlayClose();
                     } else {
                         msg(false, data.message);
@@ -237,8 +237,8 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                     }
                 });
             }
-            var variants = unpublishedVariants(node.attr("data-path"));
-            if (variants.length > 1 ) {
+            var variants = unpublishedVariants(node.attr("data-id"));
+            if (variants.length > 1||true ) {
                 var dialog = dialogForVariants(variants);
                 dialog.find(".descendantscontainer label").html("Publish descendants?");
                 overlay(dialog, 400, 250,undefined,"Publish");
@@ -253,8 +253,9 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             var doUnpublish = function (id, variant, descendants) {
                 setUnpublish(id, variant, descendants, function (data) {
                     if (data.success === true) {
-                        getDrawContent(dirOfPath(node.attr("data-path")), undefined, true);
-                        node.find(">.inner>.variant").removeClass("published");
+                        getDrawContent(node.attr("data-parent_id"), undefined, true);
+                        node.find(">.inner>.variant[data-variant='" + variant + "']").removeClass("published");
+                        publishedContent[id][variant] = undefined;
                         overlayClose();
                     } else {
                         msg(false, data.message);
@@ -262,9 +263,10 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                     }
                 });
             }
-            var variants = publishedVariants(node.attr("data-path"));
+            var variants = publishedVariants(node.attr("data-id"));
             if (variants.length > 1 || 1 == 1) {
                 var dialog = dialogForVariants(variants);
+                dialog.find(".descendantscontainer").hide();
                 dialog.find(".descendantscontainer label").html("Unpublish descendants?");
                 overlay(dialog, 400, 250,undefined,"Unpublish");
                 dialog.find("button").click(function () {
@@ -281,28 +283,30 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             showCacheInfo(node.attr("data-path"));
             break;
         case "create":
-            newContent(node.attr("data-children_path"), node.attr("data-type"));
+            newContent(node.attr("data-id"), node.attr("data-type"));
             break;
         case "move":
             var markup = $(".interfaces .tree_container.move").clone();
             var el = markup.find(".node:first");
             overlay(markup,undefined,undefined,undefined,"Move Content");
             $(".overlay_screen .msg").html("select new parent node for content <b>" + node.attr("data-nodename") + "</b>");
-            getDrawContent(startPath, el);
+            getDrawContent(startId, el);
             markup.on("click", ".node span", function (e) {
                 var dest_node = $(this).parents(".node:first");
                 var from = node.attr("data-path");
                 var to = dest_node.attr("data-path");
+                var fromId = node.attr("data-id");
+                var toId = dest_node.attr("data-id");
                 if (!confirm("move " + from + " to " + to + " ?")) {
                     return;
                 }
-                setMove(from, to, function (d) {
+                setMove(fromId, toId, function (d) {
                     if (d.success) {
-                        cleft.find(".node[data-path='" + from + "']").remove();
-                        var tonode = cleft.find(".node[data-path='" + to + "']");
+                        cleft.find(".node[data-id='" + fromId + "']").remove();
+                        var tonode = cleft.find(".node[data-id='" + toId + "']");
                         console.log({ el: tonode });
                         tonode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
-                        getDrawContent(to + "/");
+                        getDrawContent(toId);
                     } else {
                         msg(false, d.message);
                     }
@@ -346,7 +350,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                         option.remove();
                 });
                 $(".overlay_screen button").click(function () {
-                    displayMarkup(node.attr("data-path"), node.attr("data-type"), variant.val(), fromVariant.val());
+                    displayMarkup(null, node.attr("data-type"), variant.val(), fromVariant.val(),node.attr("data-id"));
                     overlayClose();
                 });
             }, node.attr("data-type"));
@@ -373,7 +377,7 @@ cleft.find("ul.content").on("click", "li.node span.nodename", function () {
         return false;
     var node = $(this).parents(".node:first");
     var firstVariant = node.attr("data-variants").split(",")[0];
-    displayMarkup(node.attr("data-path"), node.attr("data-type"), firstVariant);
+    displayMarkup(null, node.attr("data-type"), firstVariant, undefined, node.attr("data-id"));
 });
 $("button.search").click(function () {
     searchDialog("");

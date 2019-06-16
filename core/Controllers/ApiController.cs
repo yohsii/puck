@@ -172,8 +172,24 @@ namespace puck.core.Controllers
             }
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
         }
-
         [Auth(Roles = PuckRoles.Move)]
+        public JsonResult Move(Guid startId, Guid destinationId)
+        {
+            string message = "";
+            bool success = false;
+            try
+            {
+                ApiHelper.Move(startId, destinationId);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                message = ex.Message;
+            }
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
+        }
+        /*[Auth(Roles = PuckRoles.Move)]
         public JsonResult Move(string start,string destination)
         {
             string message = "";
@@ -190,7 +206,7 @@ namespace puck.core.Controllers
             }
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);            
         }
-
+        */
         [Auth(Roles = PuckRoles.Localisation)]
         public ActionResult LocalisationDialog(string p_path)
         {
@@ -227,7 +243,12 @@ namespace puck.core.Controllers
             string path = node == null ? string.Empty : node.Path;
             return Json(path,JsonRequestBehavior.AllowGet);
         }
-
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult StartId()
+        {
+            var user = userManager.FindByName(User.Identity.Name);
+            return Json(user.StartNodeId, JsonRequestBehavior.AllowGet);
+        }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult StartPath()
         {
@@ -326,6 +347,13 @@ namespace puck.core.Controllers
             var result = nodes.Select(x => new { Variant=x.Variant,Published=x.Published});
             return Json(result,JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult VariantsForNodeById(Guid id)
+        {
+            var nodes = repo.GetPuckRevision().Where(x=>x.Id==id && x.Current).ToList();
+            var result = nodes.Select(x => new { Variant = x.Variant, Published = x.Published });
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         [Auth(Roles=PuckRoles.Puck)]
         public JsonResult Content(string path = "/") {
             //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
@@ -353,7 +381,35 @@ namespace puck.core.Controllers
             var publishedContent = qh.Directory(p_path).GetAll().GroupByPath();
             return Json(new { current=results,published=publishedContent,children=haveChildren }, JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult ContentByParentId(Guid parentId =default(Guid))
+        {
+            //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
+            List<PuckRevision> resultsRev;
+#if DEBUG
+            using (MiniProfiler.Current.Step("content by path from DB"))
+            {
+                resultsRev = repo.CurrentRevisionsByParentId(parentId).ToList();
+            }
+#else
+            resultsRev = repo.CurrentRevisionsByDirectory(p_path).ToList();
+#endif
+            var results = resultsRev.Select(x => ApiHelper.RevisionToBaseModelCast(x)).ToList()
+                .GroupById()
+                .OrderBy(x => x.Value.First().Value.SortOrder)
+                .ToDictionary(x => x.Key.ToString(), x => x.Value);
 
+            List<string> haveChildren = new List<string>();
+            foreach (var k in results)
+            {
+                var id = Guid.Parse(k.Key);
+                if (repo.CurrentRevisionChildren(id).Count() > 0)
+                    haveChildren.Add(k.Key);
+            }
+            var qh = new QueryHelper<BaseModel>();
+            var publishedContent = qh.And().Field(x=>x.ParentId,parentId.ToString()).GetAll().GroupById().ToDictionary(x=>x.Key.ToString(),x=>x.Value);
+            return Json(new { current = results, published = publishedContent, children = haveChildren }, JsonRequestBehavior.AllowGet);
+        }
         [Auth(Roles = PuckRoles.Sort)]
         public JsonResult Sort(string p_path,List<string> items) {
             string message = "";
@@ -500,7 +556,7 @@ namespace puck.core.Controllers
         }
         
         [Auth(Roles = PuckRoles.Edit)]
-        public ActionResult Edit(string p_type,string p_path="/",string p_variant="",string p_fromVariant="",bool create=false) {
+        public ActionResult Edit(string p_type,Guid? parentId,Guid? contentId, string p_variant = "", string p_fromVariant = "", string p_path = "/") {
             if (p_variant == "null")
                 p_variant = PuckCache.SystemVariant;
             object model=null;
@@ -511,10 +567,12 @@ namespace puck.core.Controllers
                 var concreteType = ApiHelper.ConcreteType(modelType);
                 model = ApiHelper.CreateInstance(concreteType);
                 //if creating new, return early
-                if (p_path.EndsWith("/"))
+                if (contentId == null)
                 {
+                    var parentPath = ApiHelper.GetLiveOrCurrentPath(parentId.Value)??"";
                     var basemodel = (BaseModel)model;
-                    basemodel.Path = p_path;
+                    basemodel.ParentId = parentId.Value;
+                    basemodel.Path = "";
                     basemodel.Variant = p_variant;
                     basemodel.TypeChain = ApiHelper.TypeChain(concreteType);
                     basemodel.Type = modelType.AssemblyQualifiedName;
@@ -526,11 +584,11 @@ namespace puck.core.Controllers
             //else we'll need to get current data to edit for node or return node to translate
            
             List<PuckRevision> results = null;
-            //try get node by path with particular variant
+            //try get node by id with particular variant
             if(string.IsNullOrEmpty(p_fromVariant))
-                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(p_variant.ToLower()) && x.Current).ToList();
+                results = repo.GetPuckRevision().Where(x => x.Id==contentId.Value && x.Variant.ToLower().Equals(p_variant.ToLower()) && x.Current).ToList();
             else
-                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(p_fromVariant.ToLower()) && x.Current).ToList();
+                results = repo.GetPuckRevision().Where(x => x.Id == contentId.Value && x.Variant.ToLower().Equals(p_fromVariant.ToLower()) && x.Current).ToList();
 
             if (results.Count > 0) {
                 var result = results.FirstOrDefault();
@@ -588,6 +646,8 @@ namespace puck.core.Controllers
                 var targetType = ApiHelper.ConcreteType(ApiHelper.GetType(p_type));
                 var model = ApiHelper.CreateInstance(targetType);
                 string path = "";
+                Guid parentId = Guid.Empty;
+                Guid id = Guid.Empty;
                 bool success = false;
                 string message = "";
                 try
@@ -596,8 +656,10 @@ namespace puck.core.Controllers
                     ObjectDumper.BindImages(model, int.MaxValue);
                     //ObjectDumper.Transform(model, int.MaxValue);
                     var mod = model as BaseModel;
-                    ApiHelper.SaveContent(mod);
                     path = mod.Path;
+                    id = mod.Id;
+                    parentId = mod.ParentId;
+                    ApiHelper.SaveContent(mod);
                     success = true;
                 }
                 catch (Exception ex)
@@ -606,7 +668,7 @@ namespace puck.core.Controllers
                     message = ex.Message;
                     log.Log(ex);
                 }
-                return Json(new { success = success, message = message, path = path }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = success, message = message, path = path,id=id,parentId=parentId }, JsonRequestBehavior.AllowGet);
             }
         }
 

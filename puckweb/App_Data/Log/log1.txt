@@ -53206,3 +53206,80 @@ stacktrace:    at puck.core.Helpers.ApiHelper.UsersToNotify(String path, NotifyA
    at puck.core.Bootstrap.<>c.<Ini>b__0_0(Object o, IndexingEventArgs args) in C:\project\cms proj\puck\core\Bootstrap.cs:line 61
 
 
+date: 15/06/2019 18:03:15
+message: An item with the same key has already been added.
+stacktrace:    at System.ThrowHelper.ThrowArgumentException(ExceptionResource resource)
+   at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)
+   at puck.core.Helpers.ApiHelper.<>c__DisplayClass31_0.<UpdateDomainMappings>b__1(PuckMeta x) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 842
+   at System.Collections.Generic.List`1.ForEach(Action`1 action)
+   at puck.core.Helpers.ApiHelper.UpdateDomainMappings() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 841
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 556
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 645
+
+
+date: 15/06/2019 19:06:50
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.ApiController.Publish(Guid id, String variant, String descendants) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 421
+
+
+date: 15/06/2019 19:08:42
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Controllers.ApiController.Publish(Guid id, String variant, String descendants) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 421
+
+
+date: 15/06/2019 20:11:25
+message: this is not a root node yet doesn't have a parent
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 384
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 645
+
+
+date: 16/06/2019 13:47:59
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.UpdateDescendantPaths(String oldPath, String newPath) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 353
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 458
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 646
+
+
+date: 16/06/2019 13:49:24
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.UpdateDescendantPaths(String oldPath, String newPath) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 353
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 458
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 646
+
+
+date: 16/06/2019 13:53:51
+message: Invalid object name 'PuckRevision'.
+stacktrace:    at System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, Boolean inRetry, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   at System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean& usedCache, Boolean asyncWrite, Boolean inRetry)
+   at System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   at System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.NonQuery(DbCommand command, DbCommandInterceptionContext interceptionContext)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteStoreCommandInternal(String commandText, Object[] parameters)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectContext.<>c__DisplayClass59.<ExecuteStoreCommand>b__57()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at puck.core.Helpers.ApiHelper.UpdateDescendantPaths(String oldPath, String newPath) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 353
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 458
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 646
+
+
+date: 16/06/2019 14:00:57
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.DelegateAfterEvent(Dictionary`2 list, Object n, IndexingEventArgs e) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Events.cs:line 50
+   at puck.core.Helpers.ApiHelper.DelegateAfterIndexing(Object n, IndexingEventArgs e) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Events.cs:line 92
+   at puck.core.Helpers.ApiHelper.OnAfterIndex(Object s, IndexingEventArgs args) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Events.cs:line 195
+   at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 625
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 646
+
+
+date: 16/06/2019 18:49:03
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.Move(String start, String destination) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 936
+   at puck.core.Controllers.ApiController.Move(String start, String destination) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 183
+
+

@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace puck.core.Exceptions
 {
+    public class SaveCancelledException : Exception
+    {
+        public SaveCancelledException() { }
+        public SaveCancelledException(string msg) : base(msg) { }
+        public SaveCancelledException(string msg, Exception inner) : base(msg, inner) { }
+    }
     public class NodeNameExistsException : Exception
     {
         public NodeNameExistsException() { }
