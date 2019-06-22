@@ -1,14 +1,14 @@
 ﻿var getModels = function (path, f) {
     $.get("/admin/api/models?p_path=" + path, f);
 };
-var sortNodes = function (path, items, f) {
+var sortNodes = function (id, items, f) {
     var items_str = "";
     $(items).each(function (i) {
         items_str += "items=" + this + "&";
     });
     items_str = items_str.substring(0, items_str.length - 1);
     $.ajax({
-        url: "/admin/api/sort?p_path=" + path,
+        url: "/admin/api/sort?parentId=" + id,
         data: items_str,
         traditional: true,
         success: f,

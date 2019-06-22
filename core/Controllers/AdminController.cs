@@ -119,6 +119,7 @@ namespace puck.core.Controllers
             bool success = false;
             string message = "";
             string startPath = "/";
+            Guid startNodeId = Guid.Empty;
             var model = new PuckUserViewModel();
             try
             {
@@ -210,7 +211,7 @@ namespace puck.core.Controllers
                         var token = await userManager.GeneratePasswordResetTokenAsync(puser.Id);
                         var result = await userManager.ResetPasswordAsync(puser.Id, token, user.Password);
                     }
-
+                    startNodeId = puser.StartNodeId;
                     success = true;
                 }
 
@@ -221,7 +222,7 @@ namespace puck.core.Controllers
                 success = false;
                 message = ex.Message;
             }
-            return Json(new {success=success,message=message,startPath=startPath }, JsonRequestBehavior.AllowGet);
+            return Json(new {success=success,message=message,startPath=startPath,startNodeId=startNodeId }, JsonRequestBehavior.AllowGet);
         }
 
         [Auth(Roles =PuckRoles.Users)]

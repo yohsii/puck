@@ -71,31 +71,36 @@ namespace puck.core.Helpers
             return variant;
         }
         
-        public static void Sort(string path, List<string> paths) {
+        public static void Sort(Guid parentId, List<Guid> ids) {
             var repo = Repo;
             var qh = new QueryHelper<BaseModel>();
-            var indexItems = qh.Directory(path).GetAllNoCast();
-            var dbItems = repo.CurrentRevisionsByDirectory(path).ToList();
+            var indexItems = qh.And().Field(x=>x.ParentId,parentId.ToString()).GetAllNoCast();
+            var dbItems = repo.CurrentRevisionsByParentId(parentId).ToList();
             indexItems.ForEach(n =>
             {
-                for (var i = 0; i < paths.Count; i++)
+                for (var i = 0; i < ids.Count; i++)
                 {
-                    if (paths[i].ToLower().Equals(n.Path.ToLower()))
+                    if (ids[i].Equals(n.Id))
                     {
                         n.SortOrder = i;
                     }
                 }
             });
+            var c = 0;
+            var indexItemsNotListed = indexItems.Where(x => !ids.Contains(x.Id)).ToList();
+            indexItemsNotListed.ForEach(x=> { x.SortOrder = ids.Count + c; c++; });
             dbItems.ForEach(n =>
             {
-                for (var i = 0; i < paths.Count; i++)
+                for (var i = 0; i < ids.Count; i++)
                 {
-                    if (paths[i].ToLower().Equals(n.Path.ToLower()))
+                    if (ids[i].Equals(n.Id))
                     {
                         n.SortOrder = i;
                     }
                 }
             });
+            var dbItemsNotListed = dbItems.Where(x => !ids.Contains(x.Id)).ToList();
+            dbItemsNotListed.ForEach(x=>{ x.SortOrder = ids.Count + c;c++; });
             repo.SaveChanges();
             indexer.Index(indexItems);            
         }
@@ -409,7 +414,8 @@ namespace puck.core.Helpers
                 if (mod.ParentId!=Guid.Empty && parentVariants.Count() == 0)
                     throw new NoParentExistsException("this is not a root node yet doesn't have a parent");
                 //can't publish if parent not published
-                if (mod.ParentId!=Guid.Empty && !parentVariants.Any(x => x.Published /*&& x.Variant.ToLower().Equals(mod.Variant.ToLower())*/))
+                var publishedParentVariants = repo.PublishedRevisions(mod.ParentId).ToList();
+                if (mod.ParentId!=Guid.Empty && !publishedParentVariants.Any())//!parentVariants.Any(x => x.Published /*&& x.Variant.ToLower().Equals(mod.Variant.ToLower())*/))
                     mod.Published = false;
                 //get sibling nodes
                 if (mod.ParentId == Guid.Empty)

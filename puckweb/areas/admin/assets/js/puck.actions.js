@@ -110,7 +110,7 @@ var searchDialog = function (root, f) {
                 searchRoot = "";
             });
         });
-        getDrawContent(startPath, el.find(".node"));
+        getDrawContent(startId, el.find(".node"));
         el.find("button.btn").click(function () {
             searchType = el.find("select").val();
             searchRoot = el.find(".pathvalue span").html() || '';
@@ -141,6 +141,7 @@ var showUserMarkup = function (username) {
                 hideTopNav();
                 getUserLanguage(function (d) { defaultLanguage = d; });
                 startPath = data.startPath;
+                startId = data.startNodeId;
             }
             overlayClose();
         }, function (data) {
@@ -564,12 +565,12 @@ var draw = function (data, el, sortable) {
             cursorAt: { top: 0, left: 0 },
             update: function (event, ui) {
                 var parent = ui.item.parents("li[data-children_path]:first");
-                var sortPath = parent.attr("data-children_path");
+                var sortParentId = parent.attr("data-id");
                 var items = [];
                 parent.find("li.node").each(function () {
-                    items.push($(this).attr("data-path"));
+                    items.push($(this).attr("data-id"));
                 });
-                sortNodes(sortPath, items, function () { });
+                sortNodes(sortParentId, items, function () { });
             }
         });
     }

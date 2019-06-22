@@ -411,11 +411,11 @@ namespace puck.core.Controllers
             return Json(new { current = results, published = publishedContent, children = haveChildren }, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Sort)]
-        public JsonResult Sort(string p_path,List<string> items) {
+        public JsonResult Sort(Guid parentId,List<Guid> items) {
             string message = "";
             bool success = false;
             try{
-                ApiHelper.Sort(p_path,items);
+                ApiHelper.Sort(parentId,items);
                 success = true;
             }
             catch (Exception ex) {

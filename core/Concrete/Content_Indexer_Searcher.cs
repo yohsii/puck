@@ -215,6 +215,7 @@ namespace puck.core.Concrete
         }
         //mass index changes in transactional way, like changing paths for related nodes
         public void Index<T>(List<T> models,bool triggerEvents=true) where T:BaseModel {
+            if (models.Count == 0) return;
             lock (write_lock)
             {
                 var cancelled = new List<BaseModel>();

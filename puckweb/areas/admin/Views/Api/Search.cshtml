@@ -41,6 +41,7 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.NodeName)
+                <input type="hidden" class="id" value="@item.Id" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastEditedBy)
@@ -86,10 +87,10 @@
     onAfterDom(function () {
         $(".search_results tr:not(:first)").click(function () {
             var row = $(this);
-            var path = row.find("td.path input").val();
+            var id = row.find("input.id").val();
             var variant = row.find("td.variant input").val();
             var type = row.find("td.type input").val();
-            displayMarkup(path, type, variant);
+            displayMarkup(null, type, variant,undefined,id);
         });
     });
 </script>

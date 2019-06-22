@@ -202,8 +202,8 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                                 //else
                                 //node.remove();
                             }
-                            getDrawContent(dirOfPath(node.attr("data-path")), undefined, undefined, function () {
-                                highlightSelectedNode(node.attr("data-path"));
+                            getDrawContent(node.attr("data-parent_id"), undefined, undefined, function () {
+                                highlightSelectedNode(node.attr("data-id"));
                             });
                             overlayClose();
                         } else {
