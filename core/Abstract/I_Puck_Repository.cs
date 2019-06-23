@@ -11,17 +11,18 @@ namespace puck.core.Abstract
         IQueryable<GeneratedModel> GetGeneratedModel();
         IQueryable<GeneratedProperty> GetGeneratedProperty();
         IQueryable<GeneratedAttribute> GetGeneratedAttribute();
-
         IQueryable<PuckUser> GetPuckUser();
-
         void AddGeneratedModel(GeneratedModel gm);
         void AddGeneratedProperty(GeneratedProperty gm);
         void AddGeneratedAttribute(GeneratedAttribute gm);
-        
         void DeleteGeneratedModel(GeneratedModel gm);
         void DeleteGeneratedProperty(GeneratedProperty gm);
         void DeleteGeneratedAttribute(GeneratedAttribute gm);
-        
+
+        IQueryable<PuckInstruction> GetPuckInstruction();
+        void AddPuckInstruction(PuckInstruction pi);
+        void DeletePuckInstruction(PuckInstruction pi);
+
         IQueryable<PuckMeta> GetPuckMeta();
         void DeleteMeta(string name, string key, string value);
         void DeleteMeta(PuckMeta meta);

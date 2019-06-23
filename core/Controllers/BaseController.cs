@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.Caching;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.WebPages;
 using Lucene.Net.Index;
@@ -24,6 +25,11 @@ namespace puck.core.Controllers
         {
             try
             {
+                if (PuckCache.ShouldSync&&!PuckCache.IsSyncQueued)
+                {
+                    PuckCache.IsSyncQueued = true;
+                    HostingEnvironment.QueueBackgroundWorkItem(ct=> SyncHelper.Sync(ct));
+                }
                 string path = Request.Url.AbsolutePath.ToLower();
                 
                 var dmode = this.GetDisplayModeId();

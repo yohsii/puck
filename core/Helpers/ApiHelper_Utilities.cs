@@ -26,6 +26,10 @@ namespace puck.core.Helpers
 {
     public partial class ApiHelper
     {
+        public static string ServerName() {
+            var result = Environment.MachineName+HttpRuntime.AppDomainAppId;
+            return result;
+        }
         public static object RevisionToModel(PuckRevision revision)
         {
             try

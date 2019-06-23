@@ -17,5 +17,6 @@ namespace puck.core.Abstract
         bool CatchUp{get;set;}
         void Stop(bool immediate);
         event EventHandler<DispatchEventArgs> TaskEnd;
+        void HandleTaskEnd(object s,DispatchEventArgs e);
     }
 }

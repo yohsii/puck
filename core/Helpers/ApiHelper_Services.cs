@@ -26,6 +26,7 @@ using puck.core.Identity;
 using Microsoft.AspNet.Identity;
 using StackExchange.Profiling;
 using System.Data.SqlClient;
+using puck.core.Tasks;
 
 namespace puck.core.Helpers
 {
@@ -676,6 +677,15 @@ namespace puck.core.Helpers
 
                 var afterArgs = new IndexingEventArgs { Node = mod };
                 OnAfterIndex(null, afterArgs);
+                if (toIndex.Count > 0) {
+                    var instruction = new PuckInstruction() {InstructionKey=InstructionKeys.Publish,Count=toIndex.Count,ServerName=ServerName() };
+                    string instructionDetail = "";
+                    toIndex.ForEach(x=>instructionDetail+=$"{x.Id.ToString()}:{x.Variant},");
+                    instructionDetail = instructionDetail.TrimEnd(',');
+                    instruction.InstructionDetail = instructionDetail;
+                    repo.AddPuckInstruction(instruction);
+                    repo.SaveChanges();
+                }
             }
         }
         public static void RePublishEntireSite() {
@@ -790,10 +800,42 @@ namespace puck.core.Helpers
             if (meta != null && !string.IsNullOrEmpty(meta.Value))
                 PuckCache.SystemVariant = meta.Value;
         }
+        public static List<BaseTask> Tasks()
+        {
+            var repo = Repo;
+            var result = new List<BaseTask>();
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks).ToList();
+            var toRemove = new List<PuckMeta>();
+            meta.ForEach(x => {
+                var type = Type.GetType(x.Key);
+                if (type == null)
+                {
+                    toRemove.Add(x);
+                    return;
+                }
+                var instance = JsonConvert.DeserializeObject(x.Value, type) as BaseTask;
+                instance.ID = x.ID;
+                if (!tdispatcher.CanRun(instance)) {
+                    toRemove.Add(x);
+                    return;
+                }
+                result.Add(instance);
+            });
+            toRemove.ForEach(x => repo.DeleteMeta(x));
+            repo.SaveChanges();
+            return result;
+        }
+        public static List<BaseTask> SystemTasks() {
+            var result = new List<BaseTask>();
+            result.Add(new SyncCheckTask());
+            return result;
+        }
         public static void UpdateTaskMappings()
         {
             var tasks = Tasks();
-            tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
+            tasks.AddRange(SystemTasks());
+            //tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
+            tasks.ForEach(x=>x.TaskEnd+=tdispatcher.HandleTaskEnd);
             tdispatcher.Tasks = tasks;
         }
         //update class hierarchies/typechains which may have changed since last run
@@ -1204,18 +1246,6 @@ namespace puck.core.Helpers
                 var keys = x.Key.Split(new char[] { ':' },StringSplitOptions.RemoveEmptyEntries);
                 var type = Type.GetType(keys[0]);
                 var instance = JsonConvert.DeserializeObject(x.Value, type) as I_Puck_Editor_Settings;
-                result.Add(instance);
-            });
-            return result;
-        }
-        public static List<BaseTask> Tasks(){
-            var repo = Repo;
-            var result = new List<BaseTask>();
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks).ToList();
-            meta.ForEach(x => {
-                var type = Type.GetType(x.Key);
-                var instance = JsonConvert.DeserializeObject(x.Value,type) as BaseTask;
-                instance.ID = x.ID;
                 result.Add(instance);
             });
             return result;

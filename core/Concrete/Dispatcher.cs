@@ -11,6 +11,8 @@ using System.Web.Hosting;
 using puck.core.Base;
 using puck.core.Events;
 using puck.core.Constants;
+using Newtonsoft.Json;
+
 namespace puck.core.Concrete
 {
     public class Dispatcher:I_Task_Dispatcher
@@ -28,10 +30,6 @@ namespace puck.core.Concrete
         public List<BaseTask> Tasks { get ;set;}
         private CancellationTokenSource groupTokenSource;
         public event EventHandler<DispatchEventArgs> TaskEnd;
-        protected void OnTaskEnd(object s, DispatchEventArgs args) {
-            if (TaskEnd != null)
-                TaskEnd(s,args);
-        }
         public CancellationTokenSource GroupTokenSource { get{return groupTokenSource;} }
         public void Start() {
             if (Tasks == null)
@@ -47,10 +45,27 @@ namespace puck.core.Concrete
         }
         public void OnTaskEnd(BaseTask t){
             //remove one off events
-            if (!t.Recurring) {
-                Tasks.Remove(t);
+            
+            if (TaskEnd != null)
+                TaskEnd(this, new DispatchEventArgs() { Task = t });
+            
+        }
+        public void HandleTaskEnd(object s, DispatchEventArgs e){
+            if (!e.Task.Recurring)
+            {
+                Tasks.Remove(e.Task);
             }
-            OnTaskEnd(this, new DispatchEventArgs() {Task=t });
+            if ((PuckCache.UpdateTaskLastRun && !e.Task.Recurring) || (PuckCache.UpdateRecurringTaskLastRun && e.Task.Recurring))
+            {
+                var repo = PuckCache.PuckRepo;
+                var taskMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == e.Task.ID).FirstOrDefault();
+                if (taskMeta != null)
+                {
+                    taskMeta.Value = JsonConvert.SerializeObject(e.Task);
+                    repo.SaveChanges();
+                    repo = null;
+                }
+            }
         }
         public void Dispatch(object sender, EventArgs e) { 
             //dispatch registered tasks, if dispatching already, return. * shouldn't happen if sensible interval set
@@ -62,9 +77,13 @@ namespace puck.core.Concrete
                     return;
 
                 foreach (var t in Tasks) {
-                    if(ShouldRunNow(t))
-                        System.Threading.Tasks.Task.Factory.StartNew(() => { t.Run(groupTokenSource.Token); t.LastRun = DateTime.Now; }, groupTokenSource.Token)
+                    if (ShouldRunNow(t))
+                        HostingEnvironment.QueueBackgroundWorkItem(ct => {
+                            t.DoRun(ct);
+                        });
+                    /*System.Threading.Tasks.Task.Factory.StartNew(() => { t.Run(groupTokenSource.Token); t.LastRun = DateTime.Now; }, groupTokenSource.Token)
                             .ContinueWith(x=>OnTaskEnd(t));
+                    */
                 };
             }
             finally {
@@ -73,7 +92,7 @@ namespace puck.core.Concrete
             }
         }
         public bool ShouldRunNow(BaseTask t) {
-            return (t.Recurring && ((t.LastRun == null && DateTime.Now > t.RunOn) || (t.LastRun.HasValue && DateTime.Now > t.LastRun.Value.AddSeconds(t.IntervalMinutes))))
+            return (t.Recurring && ((t.LastRun == null && DateTime.Now > t.RunOn) || (t.LastRun.HasValue && DateTime.Now > t.LastRun.Value.AddSeconds(t.IntervalSeconds))))
                 || (!t.Recurring && DateTime.Now > t.RunOn);                        
         }
         public bool CanRun(BaseTask t) {

@@ -58,6 +58,7 @@ namespace puck.core.Constants
     }
     public static class DBNames
     {
+        public static string SyncId = "syncid";
         public static string TypeChain = "typechain";
         public static string TypeAllowedTemplates = "typeallowedtemplates";
         public static string EditorSettings = "editorsettings";
@@ -83,6 +84,13 @@ namespace puck.core.Constants
         public static string Languages = "languages";
         public static string DefaultLanguage = "defaultlanguage";
         public static string EnableLocalePrefix = "enablelocaleprefix";
+    }
+    public static class InstructionKeys {
+        public static string RepublishSite = "republishsite";
+        public static string Publish = "publish";
+        public static string Delete = "delete";
+        public static string UpdateSettings = "updatesettings";
+
     }
     public static class CacheKeys {
         public static string PrefixTemplateExist = "fexist:";
@@ -119,8 +127,11 @@ namespace puck.core.Constants
         public static int RedirectOuputCacheMinutes = 1;
         public static int DefaultOutputCacheMinutes = 0;
         public static int DisplayModesCacheMinutes = 10;
+        public static int MaxSyncInstructions = 100;
         public static string SystemVariant = "en-GB";
         public static bool IsRepublishingEntireSite { get; set; }
+        public static bool ShouldSync { get; set; }
+        public static bool IsSyncQueued { get; set; }
         public static string IndexingStatus { get; set; }
         public static List<Variant> Variants { get; set; }
         public static Dictionary<string,string> DomainRoots {get;set;}

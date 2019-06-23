@@ -34,24 +34,7 @@ namespace puck.core
             ApiHelper.UpdateAnalyzerMappings();
             //update typechains which may have changed since last run
             ApiHelper.UpdateTypeChains();
-            if (PuckCache.UpdateTaskLastRun || PuckCache.UpdateRecurringTaskLastRun) {
-                var dispatcher = PuckCache.PuckDispatcher;
-                if (dispatcher != null) { 
-                    dispatcher.TaskEnd+= (object s,DispatchEventArgs e)=>{
-                        if ((PuckCache.UpdateTaskLastRun && !e.Task.Recurring) || (PuckCache.UpdateRecurringTaskLastRun && e.Task.Recurring))
-                        {
-                            var repo = PuckCache.PuckRepo;
-                            var taskMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == e.Task.ID).FirstOrDefault();
-                            if (taskMeta != null)
-                            {
-                                taskMeta.Value = JsonConvert.SerializeObject(e.Task);
-                                repo.SaveChanges();
-                                repo = null;
-                            }
-                        }
-                    };
-                }
-            }
+            SyncHelper.InitializeSync();
             //bind notification handlers
             //publish
             PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_publish_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
