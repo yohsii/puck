@@ -25,7 +25,7 @@ namespace puck.core.Concrete
         System.Timers.Timer tmr;
         private static object lck= new object();
         int lock_wait = 100;
-        int interval = 1000;
+        int interval = 2000;
         public bool CatchUp {get;set;}
         public List<BaseTask> Tasks { get ;set;}
         private CancellationTokenSource groupTokenSource;
@@ -72,6 +72,7 @@ namespace puck.core.Concrete
             bool taken=false;
             try
             {
+                ((System.Timers.Timer)sender).Stop();
                 Monitor.TryEnter(lck, lock_wait, ref taken);
                 if (!taken)
                     return;
@@ -89,6 +90,7 @@ namespace puck.core.Concrete
             finally {
                 if (taken)
                     Monitor.Exit(lck);
+                ((System.Timers.Timer)sender).Start();
             }
         }
         public bool ShouldRunNow(BaseTask t) {

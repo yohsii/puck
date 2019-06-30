@@ -577,7 +577,7 @@ var draw = function (data, el, sortable) {
 }
 var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
     getMarkup(parentId, type, variant, function (data) {
-        cright.hide().html(data);
+        cright./*hide().*/html(data);
 
         if (!type) {
             type = cright.find("input[name=Type]").val();

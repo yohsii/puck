@@ -2,7 +2,7 @@
 <div class="editor_parameters editor_parameters_@ViewData.ModelMetadata.PropertyName">
 @{
     var settingTypes = ApiHelper.EditorSettingTypes();
-    var models = ApiHelper.AllModels();
+    var models = ApiHelper.AllModels(true);
     var propsForType = new Dictionary<string, List<System.Reflection.PropertyInfo>>();
     
     if(settingTypes.Count==0){
@@ -127,7 +127,7 @@
             if (a.hasClass("edit")) {
                 editParameters(settingsType, modelType, propName,function(){});
             } else {
-                deleteParameters(key, row.remove());
+                deleteParameters(key, function () { row.remove(); });
             }
         });
         showProptertiesForModel();

@@ -5,7 +5,7 @@
 }
 else if (ViewData.ModelMetadata.IsReadOnly)
 {
-    <input type="text" disabled name="@ViewData.ModelMetadata.PropertyName" value="@(Model.HasValue?Model.Value.ToString():"")" />
+    <input type="text" readonly name="@ViewData.ModelMetadata.PropertyName" value="@(Model.HasValue?Model.Value.ToString():"")" />
 }
 else
 { 

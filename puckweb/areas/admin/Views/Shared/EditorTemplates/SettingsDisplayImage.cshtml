@@ -3,7 +3,7 @@
 <div class="noedit settings_display_image">
     @if(Model !=null){
         <img alt="image" src="@Model" width="100" />
-        <span>@Model.ToString()</span>
+        <a href="@Model.ToString()" target="_blank" style="display:block;">@Model.ToString()</a>
     }    
 </div>
 @Html.Hidden("",Model==null?null:Model.ToString())

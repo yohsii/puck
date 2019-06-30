@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using puck.areas.admin.Models;
 using puck.core.Attributes;
 using puck.core.Base;
-
+using puck.Models;
 namespace puck.ViewModels
 {
     [FriendlyClassName(Name="Image")]

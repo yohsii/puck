@@ -5,9 +5,9 @@ using System.Linq;
 using System.Web;
 using puck.Transformers;
 
-namespace puck.areas.admin.Models
+namespace puck.Models
 {
-    [PuckImageTransformer()]
+    [PuckAzureBlobImageTransformer()]
     public class PuckImage
     {
         [UIHint("SettingsDisplayImage")]

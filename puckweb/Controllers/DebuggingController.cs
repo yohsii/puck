@@ -80,6 +80,9 @@ namespace puck.Controllers
         public ActionResult Test2()
         {
             //var affected = ApiHelper.UpdateDescendantPaths("/home/","/home1/");
+
+            ApiHelper.Email("yohsii@hotmail.co.uk", "test sendgrid", "<h1>testing sendgrid</h1>");
+
             var max = 7000;
 
             for(var i = 0; i < max; i++)

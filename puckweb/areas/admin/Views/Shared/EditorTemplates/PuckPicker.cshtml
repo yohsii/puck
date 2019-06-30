@@ -1,8 +1,8 @@
 ﻿@model List<puck.core.Models.PuckPicker>
 
 @{
-    var settings = this.PuckEditorSettings<puck.core.Models.PuckPickerEditorSettings>()
-        ??new puck.core.Models.PuckPickerEditorSettings(){
+    var settings = this.PuckEditorSettings<puck.core.Models.EditorSettings.PuckPickerEditorSettings>()
+        ??new puck.core.Models.EditorSettings.PuckPickerEditorSettings(){
             AllowDuplicates=false,AllowUnpublished=true,MaxPick=2,SelectionType="both",StartPath=null
         };
     var startPath = "";

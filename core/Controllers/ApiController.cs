@@ -47,6 +47,12 @@ namespace puck.core.Controllers
             this.userManager = um;
             this.signInManager = sm;
         }
+        public ActionResult DevPage(string id= "0a2ebbd3-b118-4add-a219-4dbc54cd742a") {
+            var guid = Guid.Parse(id);
+            var revision = repo.GetPuckRevision().FirstOrDefault(x=>x.Current &&x.Id==guid);
+            var model = ApiHelper.RevisionToBaseModel(revision);
+            return View(model);
+        }
         [Auth(Roles=PuckRoles.Puck)]
         public ActionResult Index()
         {

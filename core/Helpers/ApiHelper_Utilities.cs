@@ -216,14 +216,14 @@ namespace puck.core.Helpers
         }
         public static void Email(string to, string subject, string body, string host = null, string from = null,bool isHtml=true)
         {
-            host = host ?? PuckCache.SmtpHost;
+            //host = host ?? PuckCache.SmtpHost;
             from = from ?? PuckCache.SmtpFrom;
             MailMessage mail = new MailMessage(from, to);
             SmtpClient client = new SmtpClient();
-            client.Port = 25;
+            //client.Port = 25;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = false;
-            client.Host = host;
+            //client.UseDefaultCredentials = false;
+            //client.Host = host;
             mail.IsBodyHtml = isHtml;
             mail.Subject = subject;
             mail.Body = body;

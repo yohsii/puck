@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using puck.core.Abstract;
-using puck.areas.admin.Models;
 using puck.core.Base;
 using System.IO;
+using puck.Models;
+
 namespace puck.Transformers
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]

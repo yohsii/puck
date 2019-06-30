@@ -949,6 +949,11 @@ namespace puck.core.Helpers
             });
             PuckCache.PathToLocale = map;
         }
+        public static void UpdateAQNMappings() {
+            foreach (var t in ApiHelper.AllModels(true)) {
+                PuckCache.ModelFullNameToAQN[t.FullName] = t.AssemblyQualifiedName;
+            }
+        }
         public static void UpdateAnalyzerMappings()
         {
             var panalyzers = new List<Analyzer>();

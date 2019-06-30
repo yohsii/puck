@@ -30,7 +30,10 @@ namespace puck.core
             PuckCache.Analyzers = new List<Lucene.Net.Analysis.Analyzer>();
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
+            PuckCache.ModelFullNameToAQN = new Dictionary<string, string>();
             PuckCache.SmtpFrom = "puck@"+PuckCache.SmtpHost;
+            //sets mapping between type fullname and assembly qualified name for all models
+            ApiHelper.UpdateAQNMappings();
             ApiHelper.UpdateAnalyzerMappings();
             //update typechains which may have changed since last run
             ApiHelper.UpdateTypeChains();

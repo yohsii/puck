@@ -20,7 +20,8 @@ namespace puck.core.Helpers
         public static I_Content_Indexer Indexer { get { return PuckCache.PuckIndexer; } }
         public static void InitializeSync() {
             var repo = Repo;
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.SyncId && x.Key == ApiHelper.ServerName()).LastOrDefault();
+            var serverName = ApiHelper.ServerName();
+            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.SyncId && x.Key == serverName).FirstOrDefault();
             if (meta == null) {
                 if (!PuckCache.IsRepublishingEntireSite)
                 {
@@ -45,11 +46,12 @@ namespace puck.core.Helpers
                 if (!taken)
                     return;
                 var repo = Repo;
-                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.SyncId && x.Key == ApiHelper.ServerName()).LastOrDefault();
+                var serverName = ApiHelper.ServerName();
+                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.SyncId && x.Key == serverName).FirstOrDefault();
                 if (meta == null)
                     return;
                 var syncId = int.Parse(meta.Value);
-                var instructions = repo.GetPuckInstruction().Where(x => x.Id > syncId && x.ServerName != ApiHelper.ServerName()).ToList();
+                var instructions = repo.GetPuckInstruction().Where(x => x.Id > syncId && x.ServerName != serverName).ToList();
                 if (instructions.Count == 0)
                     return;
                 //dosync
