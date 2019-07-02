@@ -966,7 +966,8 @@ namespace puck.core.Helpers
                 PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string, string>();
                 foreach (var p in dmp)
                 {
-                    PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key, p.Type.AssemblyQualifiedName);
+                    if(!PuckCache.TypeFields[t.AssemblyQualifiedName].ContainsKey(p.Key))
+                        PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key, p.Type.AssemblyQualifiedName);
                     if (p.Analyzer == null)
                         continue;
                     if (!panalyzers.Any(x => x.GetType() == p.Analyzer.GetType()))

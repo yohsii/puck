@@ -29,6 +29,8 @@ namespace puck.core.Helpers
         public bool KeepValueCasing { get; set; }
         public bool Spatial { get; set; }
         public void Transform() {
+            if (Attributes == null)
+                Attributes = new object[] { };
             //lower case keys
             Key = Key.ToLower();
                     
@@ -510,7 +512,68 @@ namespace puck.core.Helpers
                     }
                 }
             }
-        }        
+        }
 
+        public void SetPropertyValues(object obj)
+        {
+            PropertyInfo[] properties = obj.GetType().GetProperties();
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (IsPropertyACollection(property))
+                {
+                    Type propType = property.PropertyType;
+
+                    var subObject = Activator.CreateInstance(propType);
+
+                    if (propType.IsGenericType /*&&
+                        propType.GetGenericTypeDefinition()
+                        == typeof(IList<>)*/)
+                    {
+                        Type itemType = propType.GetGenericArguments()[0];
+                        object listItem;
+                        if (itemType == typeof(string))
+                            listItem = string.Empty;
+                        else
+                            listItem = Activator.CreateInstance(itemType);
+                        subObject.GetType().GetMethod("Add").Invoke(subObject, new[] { listItem });
+                        SetPropertyValues(listItem);
+                        property.SetValue(obj, subObject, null);
+                    }
+
+
+                }
+                else
+                if (property.PropertyType.IsClass && property.PropertyType != typeof(string))
+                {
+                    Type propType = property.PropertyType;
+
+                    var subObject = Activator.CreateInstance(propType);
+                    SetPropertyValues(subObject);
+                    property.SetValue(obj, subObject, null);
+                }
+                /*else if (property.PropertyType == typeof(string))
+                {
+                    property.SetValue(obj, property.Name, null);
+                }
+                else if (property.PropertyType == typeof(DateTime))
+                {
+                    property.SetValue(obj, DateTime.Today, null);
+                }
+                else if (property.PropertyType == typeof(int))
+                {
+                    property.SetValue(obj, 0, null);
+                }
+                else if (property.PropertyType == typeof(decimal))
+                {
+                    property.SetValue(obj, 0, null);
+                }*/
+            }
+        }
+
+        public bool IsPropertyACollection(PropertyInfo property)
+        {
+            return property.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null && property.PropertyType != typeof(string);
+        }
     }
 }
