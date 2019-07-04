@@ -9,7 +9,7 @@
 
 }
     <div class="puckImage puckimage_@ViewData.ModelMetadata.PropertyName">
-        
+        <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a data-toggle="tab" href="#_puckImage_info_tab_@ViewData.ModelMetadata.PropertyName">Image info</a></li>
             <li><a data-toggle="tab" href="#_puckImage_crops_tab_@ViewData.ModelMetadata.PropertyName">Crops</a></li>
@@ -63,6 +63,7 @@
                         </div>
                     }
                 </div>
+                <div class=""></div>
                 <div class="message"></div>
                 <div class="viewport" style="height:auto;width:500px;">
 
@@ -71,14 +72,46 @@
         </div>
 
         <div class="selected_content">
+            <div style="display:none;">
+                @Html.EditorFor(x => x.Crops)
+            </div>
 
+            @foreach (var Crops in Model.Crops ?? new List<puck.Models.CropInfo> { })
+            {
+                <div style="display:none;" class="cropInfo" data-alias="@Crops.Alias" data-width="@Crops.Width" data-height="@Crops.Height"
+                     data-left="@Crops.Left" data-top="@Crops.Top" data-right="@Crops.Right" data-bottom="@Crops.Bottom"></div>
+            }
         </div>
     </div>
 <script type="text/javascript">
     onAfterDom(function () {
         var propname = "@ViewData.ModelMetadata.PropertyName";
         var container = $(".puckimage_" + propname);
-        container.parents(".editor-field:first").css({clear:"both"});
+        var selected_container = container.find(".selected_content:first");
+        var getPropName = function () {
+            return container.find("div:hidden.propName:first").attr("data-propName");
+        }        
+        container.parents(".editor-field:first").css({ clear: "both" });
+        var setValue = function () {
+            selected_container.find("input:hidden").remove();
+            container.find(".cropSizes:first .cropSize").each(function (i) {
+                var el = $(this);
+                selected_container.append(
+                    "<input type='hidden' name='" + getPropName() + ".Crops[" + i + "].Alias' value='" + el.attr("data-alias") + "'/>"
+                    + "<input type='hidden' name='" + getPropName() + ".Crops[" + i + "].Width' value='" + el.attr("data-width") + "'/>"
+                    + "<input type='hidden' name='" + getPropName() + ".Crops[" + i + "].Height' value='" + el.attr("data-height") + "'/>"
+                    + (el.attr("data-left") == undefined ? "" :
+                        "<input type='hidden' name='" + getPropName() + ".Crops[" + i + "].Left' value='" + el.attr("data-left") + "'/>")
+                    + (el.attr("data-top") == undefined ? "" :
+                        "<input type='hidden' name='" + getPropName() + ".Crops[" + i + "].Top' value='" + el.attr("data-top") + "'/>")
+                    + (el.attr("data-right") == undefined ? "" :
+                        "<input type='hidden' name='" + getPropName() + ".Crops[" + i + "].Right' value='" + el.attr("data-right") + "'/>")
+                    + (el.attr("data-bottom") == undefined ? "" :
+                        "<input type='hidden' name='" + getPropName() + ".Crops[" + i + "].Bottom' value='" + el.attr("data-bottom") + "'/>")
+                );
+            });
+            
+        }
         var viewportWidth = 500;
         var originalWidth = @Model.Width;
         var originalHeight = @Model.Height;
@@ -86,7 +119,7 @@
         var viewport = container.find(".viewport");
         var selected_container = container.find(".selected_content");
         var message_container = container.find(".message");
-        var setupImage = function (cropAlias, cropWidth, cropHeight,coords) {
+        var setupImage = function (cropAlias, cropWidth, cropHeight,leftFrac,topFrac,rightFrac,bottomFrac) {
             //viewport.find("img").remove();
             var img = $("<img/>").attr({ src: imageUrl });
             if (viewport.find("img").length == 0)
@@ -116,17 +149,25 @@
             img.css({ width: imgWidth });
             if (!resize) {
                 var cropper = $("<div/>").attr({ class: "cropper" }).css({ width: cropperWidth, height: cropperHeight, zIndex: 2 });
-                cropper.draggable({
+                var left = 0;
+                var top = 0;
+                if (leftFrac != undefined && topFrac != undefined) {
+                    left = imgWidth * leftFrac;
+                    top = imgHeight * topFrac;
+                } else {
+                    left = (imgWidth - cropperWidth) / 2;
+                    top = (imgHeight - cropperHeight) / 2;
+                }
+                cropper.css({left:left,top:top}).draggable({
                     containment: 'parent'
                     , stop: function (event, ui) {
-                        var leftPercent = ui.position.left / imgWidth;
-                        var topPercent = ui.position.top / imgHeight;
-                        var rightPercent = (imgWidth - (ui.position.left + cropperWidth)) / imgWidth;
-                        var bottomPercent = (imgHeight - (ui.position.top + cropperHeight)) / imgHeight;
-                        console.log(leftPercent,topPercent,rightPercent,bottomPercent);
+                        setPositions(cropAlias, ui.position.left, ui.position.top, imgWidth, imgHeight, cropperWidth, cropperHeight);   
+                        setValue();
                     }
                 });
                 viewport.append(cropper);
+                setPositions(cropAlias, left, top, imgWidth, imgHeight, cropperWidth, cropperHeight);
+                setValue();
             }
             if (imgWidth < viewportWidth)
                 viewport.css({ width: imgWidth });
@@ -134,30 +175,58 @@
             
             
         }
-        container.find(".cropSize").click(function () {
+        var setPositions = function (cropAlias,posLeft,posTop,imgWidth,imgHeight,cropperWidth,cropperHeight) {
+            var leftF = posLeft / imgWidth;
+            var topF = posTop / imgHeight;
+            var rightF = (imgWidth - (posLeft + cropperWidth)) / imgWidth;
+            var bottomF = (imgHeight - (posTop + cropperHeight)) / imgHeight;
+            var cropSize = container.find(".cropSizes:first .cropSize[data-alias='" + cropAlias + "']");
+            if (cropSize.length == 0) return;
+            cropSize.attr("data-left", leftF);
+            cropSize.attr("data-top", topF);
+            cropSize.attr("data-right", rightF);
+            cropSize.attr("data-bottom", bottomF);
+            console.log(leftF, topF, rightF, bottomF);
+        }
+        container.find(".cropSizes:first .cropSize").click(function () {
             var el = $(this);
             container.find(".cropSize").removeClass("active");
             el.addClass("active");
             var alias = el.attr("data-alias");
             var width = el.attr("data-width");
             var height = el.attr("data-height");
-            var coords = el.attr("data-coords");
-            setupImage(alias,width,height,coords);
+            var left = el.attr("data-left");
+            var top = el.attr("data-top");
+            var right = el.attr("data-right");
+            var bottom = el.attr("data-bottom");
+            setupImage(alias,width,height,left,top,right,bottom);
         });
 
-        container.find(".cropSize:first").click();
+        var load = function () {
+            container.find(".selected_content:first .cropInfo").each(function () {
+                var el = $(this);
+                var alias = el.attr("data-alias");
+                var width = el.attr("data-width");
+                var height = el.attr("data-height");
+                var left = el.attr("data-left");
+                var top = el.attr("data-top");
+                var right = el.attr("data-right");
+                var bottom = el.attr("data-bottom");
+                var elCropSize = container.find(".cropSizes:first .cropSize[data-alias='" + alias + "']");
+                if (elCropSize.length == 0) return;
+                var cropSizeWidth = elCropSize.attr("data-width");
+                var cropSizeHeight = elCropSize.attr("data-height");
+                if (width != cropSizeWidth || height != cropSizeHeight) return;
+                elCropSize.attr("data-left", left);
+                elCropSize.attr("data-top", top);
+                elCropSize.attr("data-right", right);
+                elCropSize.attr("data-bottom", bottom);
 
-        var setValue = function () {
-            container.find("input:hidden").remove();
-            selected_content().each(function (i) {
-                var node = $(this);
-                container.append(
-                    "<input type='hidden' name='" + propname + "[" + i + "].Id' value='" + node.attr("data-id") + "'/>"
-                    + "<input type='hidden' name='" + propname + "[" + i + "].Variant' value='" + node.attr("data-variant") + "'/>"
-                );
             });
         }
-        //setValue();
+        load();
+        container.find(".cropSize:first").click();
+        setValue();
         
     });    
 </script>

@@ -80,6 +80,8 @@ namespace puck.Controllers
         public ActionResult Test2()
         {
             //var affected = ApiHelper.UpdateDescendantPaths("/home/","/home1/");
+            var qh = new QueryHelper<Page>();
+            var query = qh.ToString();
 
             ApiHelper.Email("yohsii@hotmail.co.uk", "test sendgrid", "<h1>testing sendgrid</h1>");
 

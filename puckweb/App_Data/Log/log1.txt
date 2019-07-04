@@ -54417,3 +54417,21 @@ stacktrace:    at System.Data.Entity.Core.EntityClient.EntityConnection.Open()
    at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
 
 
+date: 03/07/2019 21:33:13
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.UsersToNotify(String path, NotifyActions action) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 1140
+   at puck.core.Bootstrap.<>c.<Ini>b__0_0(Object o, IndexingEventArgs args) in C:\project\cms proj\puck\core\Bootstrap.cs:line 47
+
+
+date: 03/07/2019 21:33:15
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.UsersToNotify(String path, NotifyActions action) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 1140
+   at puck.core.Bootstrap.<>c.<Ini>b__0_0(Object o, IndexingEventArgs args) in C:\project\cms proj\puck\core\Bootstrap.cs:line 47
+
+
+date: 03/07/2019 21:33:28
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.UsersToNotify(String path, NotifyActions action) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 1140
+   at puck.core.Bootstrap.<>c.<Ini>b__0_0(Object o, IndexingEventArgs args) in C:\project\cms proj\puck\core\Bootstrap.cs:line 47
+
+

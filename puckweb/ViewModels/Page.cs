@@ -15,7 +15,7 @@ namespace puck.ViewModels
     public class Page:BaseModel
     {
         public List<string> Names { get { return new List<string> { "name1", "name2" }; } }
-
+        
         [UIHint("PuckImage")]
         public PuckImage Image { get; set; }
 

@@ -22,6 +22,7 @@ namespace puck.Models
         public int? Width { get; set; }
         [UIHint("SettingsReadOnly")]
         public int? Height { get; set; }
+        public List<CropInfo> Crops { get; set; }
         public HttpPostedFileBase File { get; set; }
     }
 }

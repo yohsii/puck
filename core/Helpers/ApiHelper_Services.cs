@@ -1137,7 +1137,7 @@ namespace puck.core.Helpers
         public static List<PuckUser> UsersToNotify(string path, PuckCache.NotifyActions action)
         {
             var repo = Repo;
-            var user = HttpContext.Current.User.Identity.Name;
+            //var user = HttpContext.Current.User.Identity.Name;
             var strAction = action.ToString();
             var metas = repo.GetPuckMeta()
                 .Where(x => x.Name.Contains(":" + strAction + ":"))
