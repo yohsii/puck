@@ -144,7 +144,7 @@ namespace puck.core.Helpers
                 });
                 repo.SaveChanges();
             }
-            ApiHelper.UpdateDomainMappings();                
+            StateHelper.UpdateDomainMappings();                
         }
         public static void SetLocalisation(string path,string variant) {
             if (string.IsNullOrEmpty(path))
@@ -172,7 +172,7 @@ namespace puck.core.Helpers
                 repo.AddMeta(newMeta);
                 repo.SaveChanges();
             }
-            ApiHelper.UpdatePathLocaleMappings();                
+            StateHelper.UpdatePathLocaleMappings();                
         }
         public static void Publish(Guid id,string variant,List<string> descendants,bool publish) {
             var repo = Repo;
@@ -294,8 +294,8 @@ namespace puck.core.Helpers
                 cmeta.ForEach(x => { repo.DeleteMeta(x); });
                 nmeta.ForEach(x => { repo.DeleteMeta(x); });
             }
-            ApiHelper.UpdateDomainMappings();
-            ApiHelper.UpdatePathLocaleMappings();
+            StateHelper.UpdateDomainMappings();
+            StateHelper.UpdatePathLocaleMappings();
             repo.SaveChanges();                         
         }
         public static string GetLiveOrCurrentPath(Guid id) {
@@ -601,8 +601,8 @@ namespace puck.core.Helpers
                     }
                 }
                 repo.SaveChanges();
-                UpdateDomainMappings();
-                UpdatePathLocaleMappings();
+                StateHelper.UpdateDomainMappings();
+                StateHelper.UpdatePathLocaleMappings();
 
                 //index related operations
                 var qh = new QueryHelper<BaseModel>();
@@ -669,8 +669,8 @@ namespace puck.core.Helpers
                         repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
                             .ForEach(x => x.Key = mod.Path);
                         repo.SaveChanges();
-                        UpdateDomainMappings();
-                        UpdatePathLocaleMappings();
+                        StateHelper.UpdateDomainMappings();
+                        StateHelper.UpdatePathLocaleMappings();
                     }
                     indexer.Index(toIndex);
                 }
@@ -794,12 +794,6 @@ namespace puck.core.Helpers
                 }
             }
         }
-        public static void UpdateDefaultLanguage() {
-            var repo = Repo;
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.DefaultLanguage).FirstOrDefault();
-            if (meta != null && !string.IsNullOrEmpty(meta.Value))
-                PuckCache.SystemVariant = meta.Value;
-        }
         public static List<BaseTask> Tasks()
         {
             var repo = Repo;
@@ -830,183 +824,7 @@ namespace puck.core.Helpers
             result.Add(new SyncCheckTask());
             return result;
         }
-        public static void UpdateTaskMappings()
-        {
-            var tasks = Tasks();
-            tasks.AddRange(SystemTasks());
-            //tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
-            tasks.ForEach(x=>x.TaskEnd+=tdispatcher.HandleTaskEnd);
-            tdispatcher.Tasks = tasks;
-        }
-        //update class hierarchies/typechains which may have changed since last run
-        public static void UpdateTypeChains() {
-            var repo = Repo;
-            var excluded = new List<Type> {typeof(puck.core.Entities.PuckRevision) };
-            var currentTypes = ApiHelper.FindDerivedClasses(typeof(puck.core.Base.BaseModel),excluded:excluded, inclusive: false);
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeChain).ToList();
-            var typesToUpdate = new List<Type>();
-            foreach (var item in meta) {
-                //check saved type is in currentTypes
-                var type = currentTypes.FirstOrDefault(x => x.AssemblyQualifiedName.Equals(item.Key));
-                if(type != null)
-                {
-                    var typeChain = ApiHelper.TypeChain(type);
-                    var dbTypeChain = item.Value;
-                    //check that typechain is the same
-                    //if not, add to types to update
-                    if (!typeChain.Equals(dbTypeChain)) {
-                        typesToUpdate.Add(type);
-                    }
-                }
-            }
-            var toIndex = new List<BaseModel>();
-            foreach (var type in typesToUpdate) {
-                //get revisions whose typechains have changed
-                var revisions = repo.GetPuckRevision().Where(x => x.Type.Equals(type.AssemblyQualifiedName));
-                foreach (var revision in revisions) {
-                    //update typechain in revision and in model which may need to be published
-                    revision.TypeChain = ApiHelper.TypeChain(type);
-                    var model = ApiHelper.RevisionToBaseModel(revision);
-                    model.TypeChain= ApiHelper.TypeChain(type);
-                    revision.Value=JsonConvert.SerializeObject(model);
-                    if (model.Published && revision.Current)
-                        toIndex.Add(model);
-                }
-                repo.SaveChanges();
-            }
-            //publish content with updated typechains
-            indexer.Index(toIndex);
-            //delete typechains from previous bootstrap
-            meta.ForEach(x => repo.DeleteMeta(x));
-            repo.SaveChanges();
-            //save typechains from current bootstrap
-            currentTypes.ToList().ForEach(x=> {
-                var newMeta = new PuckMeta {
-                    Name = DBNames.TypeChain,
-                    Key = x.AssemblyQualifiedName,
-                    Value = ApiHelper.TypeChain(x) };
-                repo.AddMeta(newMeta);
-            });
-            repo.SaveChanges();
-        }
-        public static void UpdateRedirectMappings() {
-            var repo = Repo;
-            var meta301 = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect301).ToList();
-            var meta302 = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect302).ToList();
-            var map301 = new Dictionary<string, string>();
-            meta301.ForEach(x =>
-            {
-                map301.Add(x.Key.ToLower(), x.Value.ToLower());
-            });
-            var map302 = new Dictionary<string, string>();
-            meta302.ForEach(x =>
-            {
-                map302.Add(x.Key.ToLower(), x.Value.ToLower());
-            });
-            PuckCache.Redirect301= map301;
-            PuckCache.Redirect302 = map302;
-        }
-        public static void UpdateCacheMappings() {
-            var repo = Repo;
-            var metaTypeCache = repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy).ToList();
-            var metaCacheExclude = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude).ToList();
-            
-            var mapTypeCache = new Dictionary<string, int>();
-            metaTypeCache.ForEach(x =>
-            {
-                int cacheMinutes;
-                if (int.TryParse(x.Value, out cacheMinutes))
-                {
-                    mapTypeCache.Add(x.Key, cacheMinutes);
-                }
-            });
-
-            var mapCacheExclude = new HashSet<string>();
-            metaCacheExclude.Where(x=>x.Value.ToLower()==bool.TrueString.ToLower()).ToList().ForEach(x =>
-            {
-                mapCacheExclude.Add(x.Key.ToLower());
-            });
-            PuckCache.TypeOutputCache = mapTypeCache;
-            PuckCache.OutputCacheExclusion = mapCacheExclude;
-        }
-        public static void UpdateDomainMappings() {
-            var repo = Repo;
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
-            var map = new Dictionary<string, string>();
-            meta.ForEach(x => {
-                map.Add(x.Value.ToLower(), x.Key.ToLower());
-            });
-            PuckCache.DomainRoots = map;
-        }
-        public static void UpdatePathLocaleMappings()
-        {
-            var repo = Repo;
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale).OrderByDescending(x=>x.Key.Length).ToList();
-            var map = new Dictionary<string, string>();
-            meta.ForEach(x =>
-            {
-                map.Add(x.Key.ToLower(), x.Value.ToLower());
-            });
-            PuckCache.PathToLocale = map;
-        }
-        public static void UpdateAQNMappings() {
-            foreach (var t in ApiHelper.AllModels(true)) {
-                PuckCache.ModelFullNameToAQN[t.FullName] = t.AssemblyQualifiedName;
-            }
-        }
-        public static void UpdateAnalyzerMappings()
-        {
-            var panalyzers = new List<Analyzer>();
-            var analyzerForModel = new Dictionary<Type, Analyzer>();
-            foreach (var t in ApiHelper.AllModels(true))
-            {
-                var instance = ApiHelper.CreateInstance(t);
-                var dmp = ObjectDumper.Write(instance, int.MaxValue);
-                var analyzers = new List<KeyValuePair<string, Analyzer>>();
-                PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string, string>();
-                foreach (var p in dmp)
-                {
-                    if(!PuckCache.TypeFields[t.AssemblyQualifiedName].ContainsKey(p.Key))
-                        PuckCache.TypeFields[t.AssemblyQualifiedName].Add(p.Key, p.Type.AssemblyQualifiedName);
-                    if (p.Analyzer == null)
-                        continue;
-                    if (!panalyzers.Any(x => x.GetType() == p.Analyzer.GetType()))
-                    {
-                        panalyzers.Add(p.Analyzer);
-                    }
-                    analyzers.Add(new KeyValuePair<string, Analyzer>(p.Key, panalyzers.Where(x => x.GetType() == p.Analyzer.GetType()).FirstOrDefault()));
-                }
-                var pfAnalyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), analyzers);
-                analyzerForModel.Add(t, pfAnalyzer);
-            }
-            PuckCache.Analyzers = panalyzers;
-            PuckCache.AnalyzerForModel = analyzerForModel;
-        }
-        public static void SetGeneratedMappings()
-        {
-            var repo = Repo;
-            var dictionary = new Dictionary<string, Type>();
-            var gmods = repo.GetGeneratedModel().ToList();
-            foreach (var mod in gmods)
-            {
-                try
-                {
-                    if (string.IsNullOrEmpty(mod.IFullPath) || string.IsNullOrEmpty(mod.CFullPath))
-                        continue;
-                    var idll = Assembly.LoadFrom(HttpContext.Current.Server.MapPath(mod.IFullPath));
-                    var cdll = Assembly.LoadFrom(HttpContext.Current.Server.MapPath(mod.CFullPath));
-
-                    AppDomain.CurrentDomain.Load(idll.GetName());
-                    AppDomain.CurrentDomain.Load(cdll.GetName());
-
-                    dictionary.Add(idll.GetTypes().First().AssemblyQualifiedName, cdll.GetTypes().First());
-                }
-                catch (Exception ex) {
-                    logger.Log(ex);
-                }
-            }
-            PuckCache.IGeneratedToModel = dictionary;            
-        }
+        
         public static String PathLocalisation(string path) {
             var repo = Repo;
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && path.StartsWith(x.Key)).OrderByDescending(x=>x.Key.Length).FirstOrDefault();

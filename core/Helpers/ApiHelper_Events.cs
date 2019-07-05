@@ -132,7 +132,7 @@ namespace puck.core.Helpers
         public static event EventHandler<IndexingEventArgs> AfterDelete;
         public static event EventHandler<BeforeMoveEventArgs> BeforeMove;
         public static event EventHandler<MoveEventArgs> AfterMove;
-
+        public static event EventHandler<AfterEditorSettingsSaveEventArgs> AfterSettingsSave;
         public static void RegisterBeforeIndexHandler<T>(string Name, Action<object, BeforeIndexingEventArgs> Handler, bool Propagate = false) where T : BaseModel
         {
             BeforeIndexActionList.Add(Name, new Tuple<Type, Action<object, BeforeIndexingEventArgs>, bool>(typeof(T), Handler, Propagate));
@@ -217,6 +217,11 @@ namespace puck.core.Helpers
         {
             if (AfterMove != null)
                 AfterMove(s, args);
+        }
+        public static void OnAfterSettingsSave(object s, AfterEditorSettingsSaveEventArgs args)
+        {
+            if (AfterSettingsSave != null)
+                AfterSettingsSave(s, args);
         }
     }
 }

@@ -24,5 +24,14 @@ namespace puck.Models
         public int? Height { get; set; }
         public List<CropInfo> Crops { get; set; }
         public HttpPostedFileBase File { get; set; }
+
+        public string GetCropUrl(string cropAlias) {
+            var url = Path;
+
+
+
+
+            return url;
+        }
     }
 }

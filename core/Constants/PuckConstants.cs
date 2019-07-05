@@ -90,6 +90,7 @@ namespace puck.core.Constants
         public static string Publish = "publish";
         public static string Delete = "delete";
         public static string UpdateSettings = "updatesettings";
+        public static string UpdateCrops = "updatecrops";
 
     }
     public static class CacheKeys {
@@ -144,6 +145,7 @@ namespace puck.core.Constants
         public static Dictionary<string, Dictionary<string,string>> TypeFields { get; set; }
         //map model type fullname to asssembly qualified name
         public static Dictionary<string, string> ModelFullNameToAQN { get; set; }
+        public static Dictionary<string,CropModel> CropSizes { get; set; }
         public static HashSet<string> OutputCacheExclusion { get; set; }
         public static IKernel NinjectKernel { get; set; }
         public static I_Task_Dispatcher PuckDispatcher { get { return NinjectKernel.Get<I_Task_Dispatcher>(); } }

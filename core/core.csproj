@@ -249,6 +249,7 @@
     <Compile Include="Helpers\ObjectDumper.cs" />
     <Compile Include="Helpers\QueryHelper.cs" />
     <Compile Include="Extensions\ViewExtensions.cs" />
+    <Compile Include="Helpers\StateHelper.cs" />
     <Compile Include="Helpers\SyncHelper.cs" />
     <Compile Include="Identity\IdentityConfig.cs" />
     <Compile Include="Models\CropModel.cs" />

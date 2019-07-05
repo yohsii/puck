@@ -54435,3 +54435,74 @@ stacktrace:    at puck.core.Helpers.ApiHelper.UsersToNotify(String path, NotifyA
    at puck.core.Bootstrap.<>c.<Ini>b__0_0(Object o, IndexingEventArgs args) in C:\project\cms proj\puck\core\Bootstrap.cs:line 47
 
 
+date: 04/07/2019 22:59:13
+message: An exception has been raised that is likely due to a transient failure. If you are connecting to a SQL Azure database consider using SqlAzureExecutionStrategy.
+stacktrace:    at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 05/07/2019 08:57:38
+message: The underlying provider failed on Open.
+stacktrace:    at System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   at System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 05/07/2019 08:57:39
+message: The underlying provider failed on Open.
+stacktrace:    at System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   at System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 05/07/2019 08:57:41
+message: The underlying provider failed on Open.
+stacktrace:    at System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   at System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 05/07/2019 08:57:43
+message: The underlying provider failed on Open.
+stacktrace:    at System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   at System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+

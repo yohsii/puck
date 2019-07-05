@@ -99,6 +99,7 @@ namespace puck.core.Controllers
                     repo.AddMeta(settingsMeta);
                 }
                 repo.SaveChanges();
+                ApiHelper.OnAfterSettingsSave(this,new puck.core.Events.AfterEditorSettingsSaveEventArgs {Setting=(I_Puck_Editor_Settings)model});
                 success = true;
             }
             catch (Exception ex)
@@ -311,9 +312,9 @@ namespace puck.core.Controllers
                     }
                 }
                 repo.SaveChanges();
-                ApiHelper.UpdateDefaultLanguage();
-                ApiHelper.UpdateCacheMappings();
-                ApiHelper.UpdateRedirectMappings();
+                StateHelper.UpdateDefaultLanguage();
+                StateHelper.UpdateCacheMappings();
+                StateHelper.UpdateRedirectMappings();
                 
                 success = true;                
             }

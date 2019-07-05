@@ -14,32 +14,47 @@ using Lucene.Net.Analysis.Standard;
 using System.Data.Entity;
 using puck.core.Entities;
 using System.Web;
+using puck.core.Models.EditorSettings;
+
 namespace puck.core
 {
     public static class Bootstrap
     {
         public static void Ini() {
             //Database.SetInitializer(new MigrateDatabaseToLatestVersion<PuckContext, puck.core.Migrations.Configuration>());
-            ApiHelper.SetGeneratedMappings();
-            ApiHelper.UpdateDomainMappings();
-            ApiHelper.UpdatePathLocaleMappings();
-            ApiHelper.UpdateTaskMappings();
-            ApiHelper.UpdateDefaultLanguage();
-            ApiHelper.UpdateCacheMappings();
-            ApiHelper.UpdateRedirectMappings();
+            StateHelper.SetGeneratedMappings();
+            StateHelper.UpdateDomainMappings();
+            StateHelper.UpdatePathLocaleMappings();
+            StateHelper.UpdateTaskMappings();
+            StateHelper.UpdateDefaultLanguage();
+            StateHelper.UpdateCacheMappings();
+            StateHelper.UpdateRedirectMappings();
             PuckCache.Analyzers = new List<Lucene.Net.Analysis.Analyzer>();
             PuckCache.AnalyzerForModel = new Dictionary<Type,Lucene.Net.Analysis.Analyzer>();
             PuckCache.TypeFields = new Dictionary<string, Dictionary<string,string>>();
             PuckCache.ModelFullNameToAQN = new Dictionary<string, string>();
             PuckCache.SmtpFrom = "puck@"+PuckCache.SmtpHost;
             //sets mapping between type fullname and assembly qualified name for all models
-            ApiHelper.UpdateAQNMappings();
-            ApiHelper.UpdateAnalyzerMappings();
+            StateHelper.UpdateAQNMappings();
+            StateHelper.UpdateAnalyzerMappings();
             //update typechains which may have changed since last run
-            ApiHelper.UpdateTypeChains();
+            StateHelper.UpdateTypeChains();
+            StateHelper.UpdateCrops();
             SyncHelper.InitializeSync();
             //bind notification handlers
             //publish
+            ApiHelper.AfterSettingsSave += (object o,puck.core.Events.AfterEditorSettingsSaveEventArgs args)=> {
+                if (args.Setting is PuckImageEditorSettings) {
+                    StateHelper.UpdateCrops();
+                    var repo = PuckCache.PuckRepo;
+                    var instruction = new PuckInstruction();
+                    instruction.InstructionKey = InstructionKeys.UpdateCrops;
+                    instruction.Count = 1;
+                    instruction.ServerName = ApiHelper.ServerName();
+                    repo.AddPuckInstruction(instruction);
+                    repo.SaveChanges();
+                }
+            };
             PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_publish_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
             {
                 try
@@ -116,5 +131,6 @@ namespace puck.core
             
 
         }
+        
     }
 }

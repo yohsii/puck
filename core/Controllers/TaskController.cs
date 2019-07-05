@@ -519,8 +519,8 @@ namespace puck.core.Controllers
                 DoGenerate(id,out output,compile);
                 if (compile)
                 {
-                    ApiHelper.SetGeneratedMappings();
-                    ApiHelper.UpdateAnalyzerMappings();
+                    StateHelper.SetGeneratedMappings();
+                    StateHelper.UpdateAnalyzerMappings();
                 }
                 success = true;
             }
@@ -753,7 +753,7 @@ namespace puck.core.Controllers
                     repo.AddMeta(taskMeta);
                 }
                 repo.SaveChanges();
-                ApiHelper.UpdateTaskMappings();
+                StateHelper.UpdateTaskMappings();
                 success = true;
             }
             catch (Exception ex)
@@ -776,7 +776,7 @@ namespace puck.core.Controllers
             {
                 repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == id).ToList().ForEach(x=>repo.DeleteMeta(x));
                 repo.SaveChanges();
-                ApiHelper.UpdateTaskMappings();
+                StateHelper.UpdateTaskMappings();
                 success = true;
             }
             catch (Exception ex)

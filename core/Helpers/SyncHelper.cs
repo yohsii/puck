@@ -95,6 +95,10 @@ namespace puck.core.Helpers
                             }
                             Indexer.Index(toIndex);
                         }
+                        else if (instruction.InstructionKey == InstructionKeys.UpdateCrops)
+                        {
+                            StateHelper.UpdateCrops();
+                        }
 
                     }
                 }
