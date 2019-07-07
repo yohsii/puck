@@ -4,15 +4,15 @@
     var settings = this.PuckEditorSettings<puck.core.Models.EditorSettings.PuckImageEditorSettings>()
         ?? new puck.core.Models.EditorSettings.PuckImageEditorSettings()
         {
-            Crops=new List<puck.core.Models.CropModel>()
+            Crops=new List<puck.core.Models.CropInfo>()
         };
-
+    
 }
     <div class="puckImage puckimage_@ViewData.ModelMetadata.PropertyName">
         <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
         <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a data-toggle="tab" href="#_puckImage_info_tab_@ViewData.ModelMetadata.PropertyName">Image info</a></li>
-            <li><a data-toggle="tab" href="#_puckImage_crops_tab_@ViewData.ModelMetadata.PropertyName">Crops</a></li>
+            <li class="active"><a @*data-toggle="tab"*@ href="#">Image info</a></li>
+            <li><a @*data-toggle="tab"*@ href="#">Crops</a></li>
         </ul>
 
         <div class="tab-content">
@@ -53,7 +53,7 @@
             </div>
             <div class="tab-pane" id="_puckImage_crops_tab_@ViewData.ModelMetadata.PropertyName">
                 <div class="cropSizes">
-                    @foreach (var c in settings.Crops ?? new List<puck.core.Models.CropModel>()) {
+                    @foreach (var c in settings.Crops ?? new List<puck.core.Models.CropInfo>()) {
                         <div class="cropSize" data-alias="@c.Alias" data-width="@c.Width" data-height="@c.Height">
                             <div>
                                 <span>@c.Alias</span>
@@ -64,7 +64,11 @@
                     }
                 </div>
                 <div class=""></div>
-                <div class="message"></div>
+                <div class="message">
+                    @if (settings.Crops == null || settings.Crops.Count == 0) {
+                        <div>Look like you haven't set up any crops. Visit the settings section and add an Editor Parameter, with parameters type "Puck Image Editor Settings" and model type "BaseModel".</div>
+                    }
+                </div>
                 <div class="viewport" style="height:auto;width:500px;">
 
                 </div>
@@ -76,7 +80,7 @@
                 @Html.EditorFor(x => x.Crops)
             </div>
 
-            @foreach (var Crops in Model.Crops ?? new List<puck.Models.CropInfo> { })
+            @foreach (var Crops in Model.Crops ?? new List<puck.Models.CropModel> { })
             {
                 <div style="display:none;" class="cropInfo" data-alias="@Crops.Alias" data-width="@Crops.Width" data-height="@Crops.Height"
                      data-left="@Crops.Left" data-top="@Crops.Top" data-right="@Crops.Right" data-bottom="@Crops.Bottom"></div>
@@ -113,8 +117,8 @@
             
         }
         var viewportWidth = 500;
-        var originalWidth = @Model.Width;
-        var originalHeight = @Model.Height;
+        var originalWidth = @(Model.Width??0);
+        var originalHeight = @(Model.Height??0);
         var imageUrl = '@Model.Path';
         var viewport = container.find(".viewport");
         var selected_container = container.find(".selected_content");
@@ -136,7 +140,8 @@
             if (cropWidth > originalWidth || cropHeight > originalHeight) {
                 imgWidth = cropWidth > viewportWidth ? viewportWidth : cropWidth;
                 resize = true;
-                message_container.html("image is smaller than target crop size, the image will be resized to fit.");
+                if (!(originalWidth == 0 && originalHeight==0))
+                    message_container.html("image is smaller than target crop size, the image will be resized to fit.");
             } else {
                 imgWidth = originalWidth > viewportWidth ? viewportWidth : originalWidth;
             }

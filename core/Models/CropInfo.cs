@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace puck.core.Models
 {
-    public class CropModel
+    public class CropInfo
     {
         public string Alias { get; set; }
-        public string Width { get; set; } 
-        public string Height { get; set; }
+        public int Width { get; set; } 
+        public int Height { get; set; }
     }
 }

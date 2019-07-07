@@ -12,7 +12,7 @@ namespace puck.core.Models.EditorSettings
     public class PuckImageEditorSettings:I_Puck_Editor_Settings
     {   
         [UIHint("PuckCrops")]
-        public List<CropModel> Crops { get; set; }    
+        public List<CropInfo> Crops { get; set; }    
     }
     
 }

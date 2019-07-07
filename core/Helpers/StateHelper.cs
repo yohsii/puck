@@ -46,8 +46,8 @@ namespace puck.core.Helpers
             {
                 var data = JsonConvert.DeserializeObject(meta.Value, settingsType) as PuckImageEditorSettings;
                 if (data != null) {
-                    PuckCache.CropSizes = new Dictionary<string, Models.CropModel>();
-                    foreach (var crop in data.Crops ?? new List<Models.CropModel>()) {
+                    PuckCache.CropSizes = new Dictionary<string, Models.CropInfo>();
+                    foreach (var crop in data.Crops ?? new List<Models.CropInfo>()) {
                         if(!string.IsNullOrEmpty(crop.Alias))
                             PuckCache.CropSizes[crop.Alias] = crop;
                     }

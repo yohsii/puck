@@ -5,7 +5,7 @@ using System.Web;
 
 namespace puck.Models
 {
-    public class CropInfo
+    public class CropModel
     {
         public string Alias { get; set; }
         public int Width { get; set; }

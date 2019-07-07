@@ -1,4 +1,4 @@
-﻿@model List<puck.core.Models.CropModel>
+﻿@model List<puck.core.Models.CropInfo>
 
 @{
     
@@ -62,7 +62,7 @@
         });
 
         selected_container.on("click",".editContainer button",function (e) {
-            debugger;
+            //debugger;
             e.preventDefault();
             el = $(this);
             var cont = el.parents(".cropModel:first");

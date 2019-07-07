@@ -1,4 +1,19 @@
 ﻿//bindings
+//tabs
+$(document).on("click", ".editor-field .nav-tabs li a", function (e) {
+    e.preventDefault();
+});
+$(document).off("click.tabs").on("click.tabs", ".editor-field .nav-tabs li", function () {
+    var el = $(this);
+    var tabsContainer = el.parent().parent();
+    tabsContainer.find(".nav-tabs li").removeClass("active");
+    el.addClass("active");
+    var index = el.index() + 1;
+    tabsContainer.find(".tab-content>div").removeClass("active");
+    tabsContainer.find(".tab-content>div:nth-child(" + index + ")").addClass("active");
+    console.log("index",el.index());
+});
+
 $('a.settings').click(function (e) {
     e.preventDefault();
     if (!canChangeMainContent())
