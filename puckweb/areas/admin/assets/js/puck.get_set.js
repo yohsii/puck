@@ -26,6 +26,9 @@ var getMarkup = function (parentId, type, variant, f, fromVariant, contentId) {
         + (contentId == null ? "" : "contentId=" + contentId + "&")
         + "&p_variant=" + variant + "&p_type=" + type + /*"&p_path=" + path +*/ "&p_fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
 }
+var getPrepopulatedMarkup = function (type,f) {
+    $.get("/admin/api/prepopulatedEdit?p_type="+type, f, "html");
+}
 var getCreateDialog = function (f, t) {
     $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");
 }

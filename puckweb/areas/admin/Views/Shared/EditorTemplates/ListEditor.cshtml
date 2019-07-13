@@ -1,0 +1,174 @@
+﻿@using System.Dynamic;
+@model dynamic
+
+@{
+    var count = 0;
+    
+}
+<div class="listeditor listeditor_@ViewData.TemplateInfo.HtmlFieldPrefix listeditor_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
+    <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
+    <div class="addContainer">
+        <button type="button" class="btn"><i class="icon-plus"/></button>
+    </div>
+    <div class="selected_content">
+        @if (Model != null)
+        {
+            @Html.EditorForModel("Object")
+            foreach(var m in Model)
+            {
+            <div class="itemContainer">
+                <div class="titleContainer"><i class="expand icon-chevron-down" /> <span>item @(count+1)</span> <i class="icon-minus" /></div>
+                <div class="editorContainer">
+                    @Html.EditorFor(x=>m,null,$"[{count}]",null)
+                </div>                
+            </div>
+                count++;
+            }
+        }
+    </div>
+</div>
+<script type="text/javascript">
+    onAfterDom(function () {
+        var modelType = "@Html.Raw(ViewBag.Level0Type.AssemblyQualifiedName)";
+        var nameQuery = "@Html.Raw(ViewData.ModelMetadata.ShortDisplayName)";
+        var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
+        var shouldBindListEditor = '@ViewBag.ShouldBindListEditor' == 'True';
+        //debugger;
+        var jqueryEscape = function (str) {
+            return str.replace("[","\\\\[").replace("]","\\\\]");
+        }
+        var escapePropname = function (str) {
+            return str.replace(/\[/g, "_").replace(/\]/g,"_").replace(/\./g,"_");
+        }
+        var container = null;
+        if (shouldBindListEditor)
+            container = cright.find(".listeditor_" + escapePropname(propname));
+        else
+            container = cinterfaces.find("div[data-type='" + modelType + "'] .listeditor_" + escapePropname(propname))
+        var selected_container = container.find(".selected_content");
+        var getPropName = function () {
+            return container.find("div:hidden.propName:first").attr("data-propName");
+        }
+
+        var whenTemplateReady = function (f) {
+            var el = cinterfaces.find("div[data-type='" + modelType + "']");
+            if (el.length == 0)
+                setTimeout(function () { whenTemplateReady(f); }, 500);
+            else f(el);
+        }
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+        }
+        var toZeroIndex = function (str) {
+            str = str.replace(/\[\d+\]/g, "[0]");
+            return str;
+        }
+        if (shouldBindListEditor||true) {
+            whenTemplateReady(function (template) {
+                console.log("templateReady:" + getPropName());
+                container.find(".addContainer:first button").click(function () {
+                    debugger;
+                    var el = $(this);
+                    var _selected_container = el.parents(".listeditor:first").find(".selected_content:first");
+                    var elToCopy = template.find(".listeditor_" + escapePropname(toZeroIndex(getPropName())) + " .itemContainer:first");
+                    console.log("el to copy", elToCopy);
+                    var index = _selected_container.find(">.itemContainer").length;
+                    var copy = elToCopy.clone(true, true);
+                    copy.find(".listeditor .selected_content").each(function () {
+                        $(this).empty();
+                    });
+                    var _propName = _selected_container.parents(".listeditor:first").find("div:hidden.propName:first").attr("data-propName");
+                    copy.find("div:hidden.propName").each(function () {
+                        debugger;
+                        var div = $(this);
+                        var name = div.attr("data-propName") || "";
+                        var oldPropName = getPropName();
+                        var regex = new RegExp("^" + escapeRegExp(oldPropName + "[0]"));
+                        name = name.replace(regex, _propName + "[" + index + "]");
+                        div.attr("data-propName", name).attr("data-touched","true");
+                    });
+                    copy.find(":input").each(function () {
+                        debugger;
+                        var input = $(this);
+                        var name = input.attr("name") || "";
+                        var newName = _propName + "["+index+"]";
+                        var oldPropName = name.substring(0, name.lastIndexOf(".")); //name.replace(/\[0\]$/,"");
+                        var regex = new RegExp("^" + escapeRegExp(oldPropName /*+ "[0]"*/));
+                        name = name.replace(regex, _propName + "[" + index + "]");
+                        if (name[name.length - 1] == "]")
+                            input.attr("name", newName);
+                        else
+                            input.attr("name",name);
+                    });
+                    _selected_container.append(copy);
+                    _selected_container.off("click.tc");
+                    bindTitleContainerClick(_selected_container);
+                    setTitle(copy);
+                });
+
+            });
+            var bindTitleContainerClick = function (elSelected_container) {
+                elSelected_container.on("click.tc", ".titleContainer", function (e) {
+                    //e.stopPropagation();
+                    debugger;
+                    if (!$(e.currentTarget).hasClass("titleContainer"))
+                        return;
+                    var el = $(this);
+                    var parent = el.parent();
+                    if (parent.find(".editorContainer:first").is(":visible")) {
+                        parent.find(".editorContainer:first").hide();
+                        el.find("i:first").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+                    }
+                    else {
+                        el.find("i:first").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+                        parent.find(".editorContainer:first").show();
+                    }
+                    
+                });
+                elSelected_container.off("click.minus").on("click.minus", ".titleContainer i.icon-minus", function (e) {
+                    if (!$(e.currentTarget).hasClass("icon-minus"))
+                        return;
+                    var el = $(this);
+                    var container = el.parents(".itemContainer:first");
+                    container.remove();                    
+                });
+            }
+            bindTitleContainerClick(selected_container);
+            var setTitle = function (itemContainer) {
+                var index = itemContainer.index();
+                var title = "item " + (index+1);
+                var elTitle = itemContainer.find(nameQuery);
+                if (elTitle.length > 0) {
+                    if (elTitle.first().is(":input"))
+                        title = elTitle.val();
+                    else
+                        title = elTitle.text();
+                }
+                if (title.replace(/\s/g,"") == "")
+                    title = "item " + (index+1);
+                itemContainer.find(".titleContainer:first span").html(title);
+            }
+
+            selected_container.find(".titleContainer").each(function () {
+                var el = $(this);
+                var parent = el.parent();
+                parent.find(".editorContainer").hide();
+                el.find("i").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+
+                setTitle(parent);
+            });
+
+            selected_container.on("change", ":input", function () {
+                var el = $(this);
+                var itemContainer = el.parents(".itemContainer:first");
+                setTitle(itemContainer);
+            });
+
+        }
+    });    
+</script>
+<style>
+    .listeditor .titleContainer {
+        cursor:pointer;
+    }
+</style>

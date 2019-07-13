@@ -57033,3 +57033,10 @@ stacktrace:    at System.Data.Entity.Core.EntityClient.EntityConnection.Open()
    at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
 
 
+date: 12/07/2019 21:23:30
+message: The model of type 'puck.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 297
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 673
+
+

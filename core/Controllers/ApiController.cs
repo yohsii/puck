@@ -560,9 +560,23 @@ namespace puck.core.Controllers
 
             return Json(new { Data=result,Path=opath,Type=type,Name=ApiHelper.FriendlyClassName(tType),FullName=originalType.FullName,IsGenerated=isGenerated }, JsonRequestBehavior.AllowGet);
         }
-        
+
+        [Auth(Roles = PuckRoles.Edit)]
+        public ActionResult PrepopulatedEdit(string p_type)
+        {
+            ViewBag.ShouldBindListEditor = false;
+            object model = null;
+            //empty model of type
+            var modelType = ApiHelper.GetType(p_type);
+            var concreteType = ApiHelper.ConcreteType(modelType);
+            model = ApiHelper.CreateInstance(concreteType);
+            ObjectDumper.SetPropertyValues(model,onlyPopulateListEditorLists:true);
+            return View("Edit",model);
+        }
+
         [Auth(Roles = PuckRoles.Edit)]
         public ActionResult Edit(string p_type,Guid? parentId,Guid? contentId, string p_variant = "", string p_fromVariant = "", string p_path = "/") {
+            ViewBag.ShouldBindListEditor = true;
             if (p_variant == "null")
                 p_variant = PuckCache.SystemVariant;
             object model=null;

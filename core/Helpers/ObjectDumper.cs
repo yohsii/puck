@@ -12,6 +12,8 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Snowball;
 using System.Web;
 using puck.core.Base;
+using System.ComponentModel.DataAnnotations;
+
 namespace puck.core.Helpers
 {
     public class FlattenedObject {
@@ -514,7 +516,7 @@ namespace puck.core.Helpers
             }
         }
 
-        public void SetPropertyValues(object obj)
+        public static void SetPropertyValues(object obj,bool onlyPopulateListEditorLists=false)
         {
             PropertyInfo[] properties = obj.GetType().GetProperties();
 
@@ -522,6 +524,11 @@ namespace puck.core.Helpers
             {
                 if (IsPropertyACollection(property))
                 {
+                    var uiHintAttribute = property.GetCustomAttribute<UIHintAttribute>();
+                    var hasListEditor = false;
+                    if (uiHintAttribute != null) {
+                        hasListEditor = uiHintAttribute.UIHint.ToLower() == "listeditor";
+                    }
                     Type propType = property.PropertyType;
 
                     var subObject = Activator.CreateInstance(propType);
@@ -530,14 +537,17 @@ namespace puck.core.Helpers
                         propType.GetGenericTypeDefinition()
                         == typeof(IList<>)*/)
                     {
-                        Type itemType = propType.GetGenericArguments()[0];
-                        object listItem;
-                        if (itemType == typeof(string))
-                            listItem = string.Empty;
-                        else
-                            listItem = Activator.CreateInstance(itemType);
-                        subObject.GetType().GetMethod("Add").Invoke(subObject, new[] { listItem });
-                        SetPropertyValues(listItem);
+                        if (onlyPopulateListEditorLists && hasListEditor || !onlyPopulateListEditorLists)
+                        {
+                            Type itemType = propType.GetGenericArguments()[0];
+                            object listItem;
+                            if (itemType == typeof(string))
+                                listItem = " ";
+                            else
+                                listItem = Activator.CreateInstance(itemType);
+                            subObject.GetType().GetMethod("Add").Invoke(subObject, new[] { listItem });
+                            SetPropertyValues(listItem);
+                        }
                         property.SetValue(obj, subObject, null);
                     }
 
@@ -547,10 +557,13 @@ namespace puck.core.Helpers
                 if (property.PropertyType.IsClass && property.PropertyType != typeof(string))
                 {
                     Type propType = property.PropertyType;
-
-                    var subObject = Activator.CreateInstance(propType);
-                    SetPropertyValues(subObject);
-                    property.SetValue(obj, subObject, null);
+                    try
+                    {
+                        var subObject = Activator.CreateInstance(propType);
+                        SetPropertyValues(subObject);
+                        property.SetValue(obj, subObject, null);
+                    }
+                    catch (Exception ex) { }
                 }
                 /*else if (property.PropertyType == typeof(string))
                 {
@@ -571,7 +584,7 @@ namespace puck.core.Helpers
             }
         }
 
-        public bool IsPropertyACollection(PropertyInfo property)
+        public static bool IsPropertyACollection(PropertyInfo property)
         {
             return property.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null && property.PropertyType != typeof(string);
         }

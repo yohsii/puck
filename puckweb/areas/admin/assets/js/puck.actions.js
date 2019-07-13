@@ -4,6 +4,7 @@ var obj = {};
 var ctop = $(".menutop");
 var cleft = $(".leftarea");
 var cright = $(".rightarea .content");
+var cinterfaces = $("body>.main>.interfaces");
 var cmsg = $(".rightarea .message");
 var searchType = '';
 var searchRoot = '';
@@ -727,7 +728,12 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
         }, function (data) {
             msg(false, data.message);
         });
-    }, fromVariant,contentId);
+    }, fromVariant, contentId);
+    getPrepopulatedMarkup(type, function (data) {
+        cinterfaces.find("div[data-type='" + type + "']").remove();
+        cinterfaces.append($("<div/>").attr("data-type", type));
+        cinterfaces.find("div[data-type='"+type+"']").html(data);
+    });
 }
 var setChangeTracker = function () {
     changed = false;

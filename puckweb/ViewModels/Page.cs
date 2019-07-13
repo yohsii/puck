@@ -12,10 +12,36 @@ using puck.Models;
 
 namespace puck.ViewModels
 {
+    public class TestModel3 {
+        public string Town { get; set; }
+    }
+    public class TestModel2{
+        public string Name { get; set; }
+        [Display(ShortName = "input")]
+        [UIHint("ListEditor")]
+        public List<TestModel3> Cities { get; set; }
+    }
+    public class TestModel {
+        public int Age { get; set; }
+        public string Name { get; set; }
+        [Display(ShortName = "[name$='Name']")]
+        [UIHint("ListEditor")]
+        public List<TestModel2> Test2 { get; set; }
+
+        [Display(ShortName = "input")]
+        [UIHint("ListEditor")]
+        public List<string> AddressLines { get; set; }
+    }
     public class Page:BaseModel
     {
-        public List<string> Names { get { return new List<string> { "name1", "name2" }; } }
-        
+        [Display(ShortName ="input")]
+        [UIHint("ListEditor")]
+        public List<string> Names { get; set; }
+
+        [Display(ShortName = "[name$='Name']")]
+        [UIHint("ListEditor")]
+        public List<TestModel> Test { get; set; }
+
         [UIHint("PuckImage")]
         public PuckImage Image { get; set; }
 
