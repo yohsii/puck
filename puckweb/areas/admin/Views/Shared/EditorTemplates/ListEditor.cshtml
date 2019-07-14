@@ -7,25 +7,26 @@
 }
 <div class="listeditor listeditor_@ViewData.TemplateInfo.HtmlFieldPrefix listeditor_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
     <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
+    <div style="display:none;" class="nameQuery" data-query="@Html.Raw(ViewData.ModelMetadata.ShortDisplayName)"></div>
     <div class="addContainer">
         <button type="button" class="btn"><i class="icon-plus"/></button>
     </div>
-    <div class="selected_content">
+    <ul class="selected_content">
         @if (Model != null)
         {
             @Html.EditorForModel("Object")
             foreach(var m in Model)
             {
-            <div class="itemContainer">
-                <div class="titleContainer"><i class="expand icon-chevron-down" /> <span>item @(count+1)</span> <i class="icon-minus" /></div>
+            <li class="itemContainer">
+                <div class="titleContainer"><i class="sortHandle icon-move" /><i class="expand icon-chevron-down" /> <span>item @(count+1)</span> <i class="icon-minus" /></div>
                 <div class="editorContainer">
                     @Html.EditorFor(x=>m,null,$"[{count}]",null)
                 </div>                
-            </div>
+            </li>
                 count++;
             }
         }
-    </div>
+    </ul>
 </div>
 <script type="text/javascript">
     onAfterDom(function () {
@@ -82,10 +83,12 @@
                         debugger;
                         var div = $(this);
                         var name = div.attr("data-propName") || "";
-                        var oldPropName = getPropName();
-                        var regex = new RegExp("^" + escapeRegExp(oldPropName + "[0]"));
-                        name = name.replace(regex, _propName + "[" + index + "]");
-                        div.attr("data-propName", name).attr("data-touched","true");
+                        //var oldPropName = getPropName();
+                        //var regex = new RegExp("^" + escapeRegExp(oldPropName + "[0]"));
+                        //name = name.replace(regex, _propName + "[" + index + "]");
+                        var regex = new RegExp("^" + escapeRegExp(toZeroIndex(_propName)) + "\\[\\d+\\]");
+                        var newName = name.replace(regex, _propName + "[" + index + "]");
+                        div.attr("data-propName", newName).attr("data-touched", "true");
                     });
                     copy.find(":input").each(function () {
                         debugger;
@@ -100,27 +103,34 @@
                         else
                             input.attr("name",name);
                     });
+                    copy.find(".editorContainer").show();
+                    copy.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+                    copy.find(".selected_content").each(function () {
+                        var container = $(this);
+                        bindSortable(container);
+                    });
                     _selected_container.append(copy);
-                    _selected_container.off("click.tc");
                     bindTitleContainerClick(_selected_container);
                     setTitle(copy);
                 });
 
             });
             var bindTitleContainerClick = function (elSelected_container) {
-                elSelected_container.on("click.tc", ".titleContainer", function (e) {
-                    //e.stopPropagation();
+                elSelected_container.off("click.tc").on("click.tc", ".titleContainer .expand", function (e) {
+                    e.stopPropagation();
                     debugger;
-                    if (!$(e.currentTarget).hasClass("titleContainer"))
-                        return;
+                    //if (!$(e.currentTarget).hasClass("titleContainer"))
+                    //    return;
                     var el = $(this);
-                    var parent = el.parent();
+                    if (!$(this).hasClass("expand"))
+                        return;
+                    var parent = el.parents(".itemContainer:first");
                     if (parent.find(".editorContainer:first").is(":visible")) {
                         parent.find(".editorContainer:first").hide();
-                        el.find("i:first").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+                        el/*.find("i.expand")*/.removeClass("icon-chevron-down").addClass("icon-chevron-right");
                     }
                     else {
-                        el.find("i:first").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+                        el/*.find("i.expand")*/.removeClass("icon-chevron-right").addClass("icon-chevron-down");
                         parent.find(".editorContainer:first").show();
                     }
                     
@@ -132,12 +142,53 @@
                     var container = el.parents(".itemContainer:first");
                     container.remove();                    
                 });
+                /*
+                if (elSelected_container.data('sortable') || elSelected_container.hasClass("ui-sortable"))
+                    elSelected_container.sortable("destroy")
+                elSelected_container.sortable({ handle: ".sortHandle", items: ">.itemContainer", stop: function (event, ui) { sortStop(event, ui); } });
+                */
             }
             bindTitleContainerClick(selected_container);
+            var sortStop = function (event,ui) {
+                debugger;
+                var el = ui.item;
+                var _selected_container = el.parents(".selected_content:first");
+                var _propName = _selected_container.parents(".listeditor:first").find("div:hidden.propName:first").attr("data-propName");
+                _selected_container.find(">.itemContainer").each(function () {
+                    var itemContainer = $(this);
+                    var index = itemContainer.index();
+                    itemContainer.find("div:hidden.propName").each(function () {
+                        debugger;
+                        var div = $(this);
+                        var name = div.attr("data-propName") || "";
+                        var regex = new RegExp("^" + escapeRegExp(_propName) + "\\[\\d+\\]");
+                        var newName = name.replace(regex, _propName + "[" + index + "]");
+                        div.attr("data-propName", newName).attr("data-touched","true");
+                    });
+                    itemContainer.find(":input").each(function () {
+                        debugger;
+                        var input = $(this);
+                        var name = input.attr("name") || "";
+                        var regexStr = "^" + escapeRegExp(_propName) + "\\[\\d+\\]";
+                        var regex = new RegExp("^" + escapeRegExp(_propName) + "\\[\\d+\\]");
+                        var newName = name.replace(regex, _propName + "[" + index + "]");
+                        input.attr("name", newName);
+                        
+                    });
+                    
+                });
+            }
+            var bindSortable = function (_selected_container) {
+                _selected_container.disableSelection().sortable({axis:"y", /*handle: ">.itemContainer>.titleContainer .sortHandle",*/ items: ">.itemContainer", stop: function (event, ui) { sortStop(event, ui); } });
+            }
+            if (shouldBindListEditor)
+                bindSortable(selected_container);
+            //selected_container.disableSelection().sortable({ axis: "y", handle: ".sortHandle", items: ">.itemContainer", stop: function (event, ui) { sortStop(event, ui); } });
             var setTitle = function (itemContainer) {
                 var index = itemContainer.index();
                 var title = "item " + (index+1);
-                var elTitle = itemContainer.find(nameQuery);
+                var _nameQuery = itemContainer.parents(".listeditor:first").find("div:hidden.nameQuery").attr("data-query");
+                var elTitle = itemContainer.find(_nameQuery);
                 if (elTitle.length > 0) {
                     if (elTitle.first().is(":input"))
                         title = elTitle.val();
@@ -149,16 +200,18 @@
                 itemContainer.find(".titleContainer:first span").html(title);
             }
 
+            //collapse selected content by default
             selected_container.find(".titleContainer").each(function () {
                 var el = $(this);
                 var parent = el.parent();
                 parent.find(".editorContainer").hide();
-                el.find("i").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+                el.find("i.expand").removeClass("icon-chevron-down").addClass("icon-chevron-right");
 
                 setTitle(parent);
             });
 
-            selected_container.on("change", ":input", function () {
+            //set list item title on input change
+            selected_container.on("change.listeditor", ":input", function () {
                 var el = $(this);
                 var itemContainer = el.parents(".itemContainer:first");
                 setTitle(itemContainer);
@@ -171,4 +224,5 @@
     .listeditor .titleContainer {
         cursor:pointer;
     }
+
 </style>
