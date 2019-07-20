@@ -29,13 +29,14 @@
                 </div>
             </div>
             <div class="submitContainer" style="display:block;width:80%;">
-                <button class="add">add</button>
-                <button style="display:none;" class="update">update</button>
-                <button style="display:none;" class="cancel">cancel</button>
+                <button class="add btn">add</button>
+                <button style="display:none;" class="update btn">update</button>
+                <button style="display:none;" class="cancel btn">cancel</button>
             </div>
             
         </div>
     </div>
+    <br/>
     <div class="selected_content">
         @if (Model != null)
         {
@@ -166,6 +167,9 @@
 
 @helper cropModelHtml(string alias,string width,string height) { 
 <div class="cropModel">
+    <div class="editContainer" style="display:inline-block;">
+        <button class="btn">edit</button>
+    </div>
     <div style="display:inline-block;">
         <span class="alias" data-alias="@alias">@alias</span> -
         <span class="width" data-width="@width">@width</span> -
@@ -173,10 +177,7 @@
     </div>
     <div class="removeContainer" style="display:inline-block;">
         <i class='icon-remove-sign'></i>
-    </div>
-    <div class="editContainer" style="display:inline-block;">
-        <button>edit</button>
-    </div>
+    </div>    
 </div>    
 }
 
