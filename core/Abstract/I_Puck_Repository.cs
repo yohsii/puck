@@ -38,10 +38,13 @@ namespace puck.core.Abstract
         IQueryable<PuckRevision> CurrentRevisionAncestors(string path);
         List<PuckRevision> CurrentRevisionAncestors(Guid id,bool includeSelf=false);
 
-        IQueryable<PuckRevision> CurrentRevisionDescendants(string path);
+        IQueryable<PuckRevision> CurrentRevisionDescendants(string idPath);
+        IQueryable<PuckRevision> PublishedDescendants(string idPath);
+        IQueryable<PuckRevision> CurrentOrPublishedDescendants(string idPath);
         IQueryable<PuckRevision> CurrentRevisionChildren(string path);
         IQueryable<PuckRevision> CurrentRevisionChildren(Guid id);
         IQueryable<PuckRevision> CurrentRevisionVariants(Guid id, string variant);
+        IQueryable<PuckRevision> PublishedRevisionVariants(Guid id, string variant);
         IQueryable<PuckRevision> PublishedRevisions(Guid id);
         PuckRevision CurrentRevision(Guid id, string variant);
         PuckRevision PublishedRevision(Guid id,string variant);

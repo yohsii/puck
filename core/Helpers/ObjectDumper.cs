@@ -515,8 +515,8 @@ namespace puck.core.Helpers
                 }
             }
         }
-
-        public static void SetPropertyValues(object obj,bool onlyPopulateListEditorLists=false)
+        public static int SetPropertyValuesMaxDepth = 50;
+        public static void SetPropertyValues(object obj,bool onlyPopulateListEditorLists=false,int depth=1)
         {
             PropertyInfo[] properties = obj.GetType().GetProperties();
 
@@ -546,7 +546,8 @@ namespace puck.core.Helpers
                             else
                                 listItem = Activator.CreateInstance(itemType);
                             subObject.GetType().GetMethod("Add").Invoke(subObject, new[] { listItem });
-                            SetPropertyValues(listItem);
+                            if(depth<SetPropertyValuesMaxDepth)
+                                SetPropertyValues(listItem);
                         }
                         property.SetValue(obj, subObject, null);
                     }
@@ -560,7 +561,8 @@ namespace puck.core.Helpers
                     try
                     {
                         var subObject = Activator.CreateInstance(propType);
-                        SetPropertyValues(subObject);
+                        if(depth<SetPropertyValuesMaxDepth)
+                            SetPropertyValues(subObject);
                         property.SetValue(obj, subObject, null);
                     }
                     catch (Exception ex) { }

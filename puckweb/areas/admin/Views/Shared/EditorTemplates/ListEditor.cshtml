@@ -14,7 +14,6 @@
     <ul class="selected_content">
         @if (Model != null)
         {
-            @Html.EditorForModel("Object")
             foreach(var m in Model)
             {
             <li class="itemContainer">
@@ -112,6 +111,11 @@
                     _selected_container.append(copy);
                     bindTitleContainerClick(_selected_container);
                     setTitle(copy);
+
+                    var form = _selected_container.parents("form:first");
+                    form.removeData("validator");
+                    form.removeData("unobtrusiveValidation");
+                    $.validator.unobtrusive.parse(form);
                 });
 
             });
@@ -139,8 +143,10 @@
                     if (!$(e.currentTarget).hasClass("icon-minus"))
                         return;
                     var el = $(this);
+                    var _selected_container = el.parents(".selected_content:first");
                     var container = el.parents(".itemContainer:first");
-                    container.remove();                    
+                    container.remove();
+                    setIndexesForInputs(_selected_container);
                 });
                 /*
                 if (elSelected_container.data('sortable') || elSelected_container.hasClass("ui-sortable"))
@@ -153,6 +159,9 @@
                 debugger;
                 var el = ui.item;
                 var _selected_container = el.parents(".selected_content:first");
+                setIndexesForInputs(_selected_container);
+            }
+            var setIndexesForInputs = function (_selected_container) {
                 var _propName = _selected_container.parents(".listeditor:first").find("div:hidden.propName:first").attr("data-propName");
                 _selected_container.find(">.itemContainer").each(function () {
                     var itemContainer = $(this);

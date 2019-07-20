@@ -386,7 +386,9 @@ var checkEnter = function (e) {
 var wireForm = function (form, success, fail) {
     $.validator.unobtrusive.parse(form);
     form.keypress(checkEnter);
-    form.submit(function (e) {
+    //debugger;
+    form.on("submit",function (e) {
+        //debugger;
         if (tinyMCE != undefined) {
             tinyMCE.triggerSave();
         }

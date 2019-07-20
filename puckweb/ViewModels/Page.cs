@@ -16,6 +16,7 @@ namespace puck.ViewModels
         public string Town { get; set; }
     }
     public class TestModel2{
+        [Required]
         public string Name { get; set; }
         [Display(ShortName = "input")]
         [UIHint("ListEditor")]

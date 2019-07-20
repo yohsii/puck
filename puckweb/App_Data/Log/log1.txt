@@ -57040,3 +57040,35 @@ stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel
    at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 673
 
 
+date: 14/07/2019 20:36:52
+message: The model of type 'puck.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 297
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 675
+
+
+date: 14/07/2019 20:38:29
+message: The model of type 'puck.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 297
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 675
+
+
+date: 14/07/2019 20:41:31
+message: The model of type 'puck.ViewModels.Homepage' could not be updated.
+stacktrace:    at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, String prefix, String[] includeProperties, String[] excludeProperties, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 297
+   at puck.core.Controllers.BaseController.UpdateModelDynamic[TModel](TModel model, IValueProvider valueProvider) in C:\project\cms proj\puck\core\Controllers\BaseController.cs:line 271
+   at puck.core.Controllers.ApiController.Edit(FormCollection fc, String p_type, String p_path) in C:\project\cms proj\puck\core\Controllers\ApiController.cs:line 675
+
+
+date: 16/07/2019 09:01:50
+message: An exception has been raised that is likely due to a transient failure. If you are connecting to a SQL Azure database consider using SqlAzureExecutionStrategy.
+stacktrace:    at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+

@@ -88,6 +88,7 @@ namespace puck.core.Constants
     public static class InstructionKeys {
         public static string RepublishSite = "republishsite";
         public static string Publish = "publish";
+        public static string RePublish = "republish";
         public static string Delete = "delete";
         public static string UpdateSettings = "updatesettings";
         public static string UpdateCrops = "updatecrops";

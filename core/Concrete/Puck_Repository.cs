@@ -171,6 +171,7 @@ namespace puck.core.Concrete
                 path = path + "/";
             return CurrentRevisionsByDirectory(path);
         }
+        /*
         public IQueryable<PuckRevision> CurrentRevisionDescendants(string path)
         {
             if (!path.EndsWith("/"))
@@ -179,10 +180,38 @@ namespace puck.core.Concrete
                 .Where(x => x.Path.ToLower().StartsWith(path.ToLower()) && x.Current);
             return results;
         }
+        */
+        public IQueryable<PuckRevision> CurrentRevisionDescendants(string idPath)
+        {
+            idPath = idPath += ",";
+            var results = repo.PuckRevision
+                .Where(x => x.IdPath.ToLower().StartsWith(idPath.ToLower()) && x.Current);
+            return results;
+        }
+        public IQueryable<PuckRevision> PublishedDescendants(string idPath)
+        {
+            idPath = idPath += ",";
+            var results = repo.PuckRevision
+                .Where(x => x.IdPath.ToLower().StartsWith(idPath.ToLower()) && x.IsPublishedRevision);
+            return results;
+        }
+        public IQueryable<PuckRevision> CurrentOrPublishedDescendants(string idPath)
+        {
+            idPath = idPath += ",";
+            var results = repo.PuckRevision
+                .Where(x => x.IdPath.ToLower().StartsWith(idPath.ToLower()) && ((x.Current&&x.HasNoPublishedRevision) || x.IsPublishedRevision));
+            return results;
+        }
         public IQueryable<PuckRevision> CurrentRevisionVariants(Guid id,string variant)
         {
             var results = repo.PuckRevision
                 .Where(x => x.Id==id && x.Current && !x.Variant.ToLower().Equals(variant.ToLower()));
+            return results;
+        }
+        public IQueryable<PuckRevision> PublishedRevisionVariants(Guid id, string variant)
+        {
+            var results = repo.PuckRevision
+                .Where(x => x.Id == id && x.IsPublishedRevision && !x.Variant.ToLower().Equals(variant.ToLower()));
             return results;
         }
         public IQueryable<PuckRevision> PublishedRevisions(Guid id)

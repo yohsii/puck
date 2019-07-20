@@ -174,6 +174,135 @@ namespace puck.core.Helpers
             }
             StateHelper.UpdatePathLocaleMappings();                
         }
+        public static int UpdateDescendantHasNoPublishedRevision(string path, string value,List<string> descendantVariants)
+        {
+            int rowsAffected = 0;
+            using (var con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["PuckContext"].ConnectionString))
+            {
+                var sql = "update PuckRevisions set [HasNoPublishedRevision] = @value where [IdPath] LIKE @likeStr";
+                if (descendantVariants.Any())
+                {
+                    sql += " and (";
+                    for (var i = 0; i < descendantVariants.Count; i++)
+                    {
+                        var variants = descendantVariants[i];
+                        if (i > 0)
+                            sql += " or ";
+                        sql += "[Variant] = @variant" + i;
+                    }
+                    sql += ")";
+                }
+                var com = new SqlCommand(sql, con);
+                com.Parameters.AddWithValue("@likeStr", path + "%");
+                com.Parameters.AddWithValue("@value", value);
+                for (var i = 0; i < descendantVariants.Count; i++) {
+                    com.Parameters.AddWithValue("@variant"+i, descendantVariants[i]);
+                }
+                con.Open();
+                rowsAffected = com.ExecuteNonQuery();
+            }
+            return rowsAffected;
+        }
+        public static int UpdateDescendantIsPublishedRevision(string path, string value,bool addWhereIsCurrentClause,List<string> descendantVariants)
+        {
+            int rowsAffected = 0;
+            using (var con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["PuckContext"].ConnectionString))
+            {
+                var sql = "update PuckRevisions set [Published] = @value , [IsPublishedRevision] = @value where [IdPath] LIKE @likeStr";
+                if (addWhereIsCurrentClause)
+                    sql += " and [Current] = 1";
+                if (descendantVariants.Any())
+                {
+                    sql += " and (";
+                    for (var i = 0; i < descendantVariants.Count; i++)
+                    {
+                        var variants = descendantVariants[i];
+                        if (i > 0)
+                            sql += " or ";
+                        sql += "[Variant] = @variant" + i;
+                    }
+                    sql += ")";
+                }
+
+                var com = new SqlCommand(sql, con);
+                com.Parameters.AddWithValue("@likeStr", path + "%");
+                com.Parameters.AddWithValue("@value", value);
+                for (var i = 0; i < descendantVariants.Count; i++)
+                {
+                    com.Parameters.AddWithValue("@variant" + i, descendantVariants[i]);
+                }
+                con.Open();
+                rowsAffected = com.ExecuteNonQuery();
+            }
+            return rowsAffected;
+        }
+        public static void Publish(Guid id, string variant,List<string> descendantVariants) {
+            lock (_savelck)
+            {
+                var repo = Repo;
+                var currentRevision = repo.CurrentRevision(id, variant);
+                if (currentRevision.ParentId != Guid.Empty) {
+                    var publishedParentRevisions = repo.PublishedRevisions(currentRevision.ParentId);
+                    if (publishedParentRevisions.Count() == 0) {
+                        throw new Exception("You cannot publish this node because its parent is not published.");
+                    }
+                }
+                var mod = ApiHelper.RevisionToBaseModel(currentRevision);
+                mod.Published = true;
+                SaveContent(mod, makeRevision: false);
+                var affected = 0;
+                if (descendantVariants.Any())
+                {
+                    //set descendants to have HasNoPublishedRevision set to false
+                    affected = UpdateDescendantHasNoPublishedRevision(currentRevision.IdPath + ",", "0", descendantVariants);
+                    //set descendants to have IsPublishedRevision set to false
+                    affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "0", false, descendantVariants);
+                    //set current descendants to have IsPublishedRevision set to true, since we're publishing Current descendants
+                    affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "1", true, descendantVariants);
+                    var descendantVariantsLowerCase = descendantVariants.Select(x => x.ToLower()).ToList();
+                    var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
+                    var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
+                    indexer.Index(descendantModels);
+                }
+            }
+        }
+        public static void UnPublish(Guid id, string variant, List<string> descendantVariants)
+        {
+            lock (_savelck)
+            {
+                var repo = Repo;
+                var toIndex = new List<BaseModel>();
+                var currentRevision = repo.CurrentRevision(id, variant);
+                var publishedRevision = repo.PublishedRevision(id, variant);
+                var mod = ApiHelper.RevisionToBaseModel(currentRevision);
+                mod.Published = false;
+                SaveContent(mod, makeRevision: false);
+                toIndex.Add(mod);
+                var publishedVariants = repo.PublishedRevisionVariants(id, variant).ToList();
+                var affected = 0;
+                if (publishedVariants.Count() == 0)
+                {
+                    if (!currentRevision.IsPublishedRevision && publishedRevision != null && !currentRevision.Path.ToLower().Equals(publishedRevision.Path.ToLower()))
+                    {
+                        //since we're unpublishing the published revision (which descendant paths are based on), we should set descendant paths to be based off of the current revision
+                        affected = UpdateDescendantPaths(publishedRevision.Path + "/", currentRevision.Path + "/");
+                        UpdatePathRelatedMeta(publishedRevision.Path, currentRevision.Path);
+                    }
+                }
+                if (descendantVariants.Any())
+                {
+                    //set descendants to have HasNoPublishedRevision set to true
+                    affected=UpdateDescendantHasNoPublishedRevision(currentRevision.IdPath + ",", "1", descendantVariants);
+                    //set descendants to have IsPublishedRevision set to false
+                    affected=UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "0", false, descendantVariants);
+                    var descendantVariantsLowerCase = descendantVariants.Select(x => x.ToLower()).ToList();
+                    var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
+                    var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
+                    toIndex.AddRange(descendantModels);
+                }
+                indexer.Index(toIndex);
+            }
+        }
         public static void Publish(Guid id,string variant,List<string> descendants,bool publish) {
             var repo = Repo;
             //get items to delete
@@ -301,10 +430,10 @@ namespace puck.core.Helpers
         public static string GetLiveOrCurrentPath(Guid id) {
             var repo = Repo;
             var node=repo.GetPuckRevision()
-                .Where(x => x.Id == id && ((x.HasNoPublishedRevision && x.Current) || x.IsPublishedRevision)).FirstOrDefault();
+                .Where(x => x.Id == id && ((x.HasNoPublishedRevision && x.Current) || x.IsPublishedRevision)).OrderByDescending(x=>x.Updated).FirstOrDefault();
             return node?.Path;
         }
-        public static T Create<T>(Guid parentId,string variant,string name,string template=null,bool published=false) where T : BaseModel {
+        public static T Create<T>(Guid parentId,string variant,string name,string template=null,bool published=false,string userName=null) where T : BaseModel {
             var repo = Repo;
             var instance = (T)ApiHelper.CreateInstance(typeof(T));
             if (parentId != Guid.Empty)
@@ -332,7 +461,16 @@ namespace puck.core.Helpers
             instance.Variant = variant;
             instance.TypeChain = ApiHelper.TypeChain(typeof(T));
             instance.Type = typeof(T).AssemblyQualifiedName;
-            instance.CreatedBy = HttpContext.Current.User.Identity.Name;
+            if (string.IsNullOrEmpty(userName))
+            {
+                instance.CreatedBy = HttpContext.Current.User.Identity.Name;
+            }
+            else {
+                var user = userManager.FindByName(userName);
+                if (user == null) throw new Exception("there is no user for provided username");
+                instance.CreatedBy = userName;
+            }
+            
             instance.LastEditedBy = instance.CreatedBy;
             instance.Published = published;
             return instance;
@@ -391,9 +529,41 @@ namespace puck.core.Helpers
             }
             return rowsAffected;
         }
-        public static void SaveContent<T>(T mod,bool makeRevision=true) where T : BaseModel {
+        public static void UpdatePathRelatedMeta(string oldPath,string newPath) {
+            var repo = Repo;
+
+            var regex = new Regex(Regex.Escape(oldPath), RegexOptions.Compiled);
+
+            var lmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().Equals(oldPath.ToLower())).ToList();
+            lmeta.ForEach(x => x.Key = newPath);
+            var lmetaD = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale && x.Key.ToLower().StartsWith(oldPath.ToLower() + "/")).ToList();
+            lmetaD.ForEach(x => x.Key = regex.Replace(x.Key, newPath, 1));
+
+            var dmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(oldPath.ToLower())).ToList();
+            dmeta.ForEach(x => x.Key = newPath);
+
+            var cmeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().Equals(oldPath.ToLower())).ToList();
+            cmeta.ForEach(x => x.Key = newPath);
+            var cmetaD = repo.GetPuckMeta().Where(x => x.Name == DBNames.CacheExclude && x.Key.ToLower().StartsWith(oldPath.ToLower() + "/")).ToList();
+            cmetaD.ForEach(x => x.Key = regex.Replace(x.Key, newPath, 1));
+
+            var nmeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.Notify) && x.Key.ToLower().Equals(oldPath.ToLower())).ToList();
+            nmeta.ForEach(x => x.Key = newPath);
+            var nmetaD = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.Notify) && x.Key.ToLower().StartsWith(oldPath.ToLower() + "/")).ToList();
+            nmetaD.ForEach(x => x.Key = regex.Replace(x.Key, newPath, 1));
+
+            repo.SaveChanges();
+
+        }
+        public static void SaveContent<T>(T mod,bool makeRevision=true,string userName = null) where T : BaseModel {
             lock (_savelck)
             {
+                PuckUser user = null;
+                if (!string.IsNullOrEmpty(userName)) {
+                    user = userManager.FindByName(userName);
+                    if (user == null)
+                        throw new Exception("there is no user for provided username");
+                }
                 ObjectDumper.Transform(mod, int.MaxValue);
                 var beforeArgs = new BeforeIndexingEventArgs { Node = mod };
                 OnBeforeIndex(null, beforeArgs);
@@ -443,6 +613,8 @@ namespace puck.core.Helpers
                 //check this is an update or create
                 var original = repo.CurrentRevision(mod.Id, mod.Variant);
                 var publishedRevision = repo.PublishedRevision(mod.Id, mod.Variant);
+                //could be published revision, or even a published variant
+                var publishedRevisionOrVariant = repo.PublishedRevisions(mod.Id).OrderByDescending(x => x.Updated).FirstOrDefault();
                 var toIndex = new List<BaseModel>();
                 //toIndex.Add(mod);
                 bool nameChanged = false;
@@ -452,6 +624,7 @@ namespace puck.core.Helpers
                 bool nameDifferentThanPublished = false;
                 string publishedRevisionPath = string.Empty;
                 string originalPath = string.Empty;
+                bool publishedRevisionRepublished = false;
                 if (original != null)
                 {//this must be an edit
                  //if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower()))
@@ -466,50 +639,106 @@ namespace puck.core.Helpers
                         originalPath = original.Path;
                     }
                 }
-                if (publishedRevision != null)
+                if (publishedRevisionOrVariant != null)
                 {
                  //if (!original.NodeName.ToLower().Equals(mod.NodeName.ToLower()))
-                    if (!publishedRevision.Path.ToLower().Equals(mod.Path.ToLower()))
+                    if (!publishedRevisionOrVariant.Path.ToLower().Equals(mod.Path.ToLower()))
                     {
                         nameChanged = true;
                         nameDifferentThanPublished = true;
-                        publishedRevisionPath = publishedRevision.Path;
+                        publishedRevisionPath = publishedRevisionOrVariant.Path;
                         originalPath = original.Path;
                     }
                 }
                 var idPath= GetIdPath(mod);
-                var variantsDb = repo.CurrentRevisionVariants(mod.Id, mod.Variant).ToList();
+                var currentVariantsDb = repo.CurrentRevisionVariants(mod.Id, mod.Variant).ToList();
+                var publishedVariantsDb = repo.PublishedRevisionVariants(mod.Id,mod.Variant).ToList();
+                var hasNoPublishedVariants = publishedVariantsDb.Count == 0;
                 //if (variantsDb.Any(x => !x.NodeName.ToLower().Equals(mod.NodeName.ToLower())))
-                if (variantsDb.Any(x => x.ParentId!=mod.ParentId))
+                if (currentVariantsDb.Any(x => x.ParentId!=mod.ParentId))
                 {//update parentId of variants
-                    variantsDb.ForEach(x => { x.ParentId = mod.ParentId;x.IdPath = idPath; });
+                    currentVariantsDb.ForEach(x => { x.ParentId = mod.ParentId;x.IdPath = idPath; });
                 }
-                if (variantsDb.Any(x => !x.Path.ToLower().Equals(mod.Path.ToLower())))
-                {//update path of variants
-                    nameChanged = true;
-                    if (string.IsNullOrEmpty(originalPath))
-                        originalPath = variantsDb.First().Path;
-                    variantsDb.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; });
+                if (publishedVariantsDb.Any(x => x.ParentId != mod.ParentId))
+                {//update parentId of variants
+                    publishedVariantsDb.ForEach(x => { x.ParentId = mod.ParentId; x.IdPath = idPath; });
                 }
+                if (!mod.Published)
+                {
+                    if (currentVariantsDb.Where(x => !x.Published).Any(x => !x.Path.ToLower().Equals(mod.Path.ToLower())))
+                    {//update path of variants
+                        nameChanged = true;
+                        if (string.IsNullOrEmpty(originalPath))
+                            originalPath = currentVariantsDb.First().Path;
+                        currentVariantsDb.Where(x => !x.Published).ToList().ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; });
+                    }
+                }
+                else {
+                    if (publishedVariantsDb.Any(x => !x.Path.ToLower().Equals(mod.Path.ToLower())))
+                    {//update path of published variants
+                        nameChanged = true;
+                        if (string.IsNullOrEmpty(originalPath))
+                            originalPath = publishedVariantsDb.First().Path;
+                        publishedVariantsDb.ToList().ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path; });
+                    }
+                }
+                
                 var pAffected = 0;
+                var affected = 0;
                 if (parentChanged) {
                     pAffected = UpdateDescendantIdPaths(original.IdPath,idPath);
-                }
-                var affected = 0;
-                if (original != null && original.HasNoPublishedRevision && !mod.Published && nameDifferentThanCurrent) {
-                    //update descendant paths
-                    affected = UpdateDescendantPaths(original.Path+"/",mod.Path+"/");
-                }
-                if (mod.Published && (nameDifferentThanCurrent || nameDifferentThanPublished)){
-                    if (!string.IsNullOrEmpty(publishedRevisionPath)) {
+                    if (!string.IsNullOrEmpty(publishedRevisionPath))
+                    {
                         //update descendant paths(publishedRevisionPath)
                         affected = UpdateDescendantPaths(publishedRevisionPath + "/", mod.Path + "/");
+                        UpdatePathRelatedMeta(publishedRevisionPath,mod.Path);
                     }
-                    else {
+                    else
+                    {
                         //update descendant paths(currentRevisionPath)
                         affected = UpdateDescendantPaths(currentRevisionPath + "/", mod.Path + "/");
+                        UpdatePathRelatedMeta(currentRevisionPath, mod.Path);
+                    }
+                    var descendants = repo.CurrentOrPublishedDescendants(idPath).ToList().Select(x=>ApiHelper.RevisionToBaseModel(x)).ToList();
+                    var variantsToIndex = new List<BaseModel>();
+                    variantsToIndex.AddRange(currentVariantsDb.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList());
+                    variantsToIndex.AddRange(publishedVariantsDb.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList());
+                    toIndex.AddRange(descendants);
+                    toIndex.AddRange(variantsToIndex);
+                    //if current model is not set to publish, update the currently published revision to reflect parent id being changed
+                    if (publishedRevision != null && !mod.Published) {
+                        publishedRevision.IdPath = idPath;
+                        publishedRevision.Path = mod.Path;
+                        toIndex.Add(publishedRevision);
+                    }
+                    else
+                        toIndex.Add(mod);
+                }
+                else
+                {
+                    if (original != null && original.HasNoPublishedRevision && hasNoPublishedVariants && !mod.Published && nameDifferentThanCurrent)
+                    {
+                        //update descendant paths
+                        affected = UpdateDescendantPaths(original.Path + "/", mod.Path + "/");
+                        UpdatePathRelatedMeta(original.Path, mod.Path);
+                    }
+                    if (mod.Published && (nameDifferentThanCurrent || nameDifferentThanPublished))
+                    {
+                        if (!string.IsNullOrEmpty(publishedRevisionPath))
+                        {
+                            //update descendant paths(publishedRevisionPath)
+                            affected = UpdateDescendantPaths(publishedRevisionPath + "/", mod.Path + "/");
+                            UpdatePathRelatedMeta(publishedRevisionPath, mod.Path);
+                        }
+                        else
+                        {
+                            //update descendant paths(currentRevisionPath)
+                            affected = UpdateDescendantPaths(currentRevisionPath + "/", mod.Path + "/");
+                            UpdatePathRelatedMeta(currentRevisionPath, mod.Path);
+                        }
                     }
                 }
+                
                 /*if (nameChanged)
                 {
                     var regex = new Regex(Regex.Escape(originalPath), RegexOptions.Compiled);
@@ -545,7 +774,10 @@ namespace puck.core.Helpers
                     }
                 }
                 revision.IdPath = idPath;
-                revision.LastEditedBy = HttpContext.Current.User.Identity.Name;
+                if(user==null)
+                    revision.LastEditedBy = HttpContext.Current.User.Identity.Name;
+                else
+                    revision.LastEditedBy = user.UserName;
                 revision.CreatedBy = mod.CreatedBy;
                 revision.Created = mod.Created;
                 revision.Id = mod.Id;
@@ -579,7 +811,7 @@ namespace puck.core.Helpers
                 }
 
                 //if first time node saved and is root node - set locale for path
-                if (variantsDb.Count == 0 && (original == null) && mod.ParentId==Guid.Empty)
+                if (currentVariantsDb.Count == 0 && (original == null) && mod.ParentId==Guid.Empty)
                 {
                     var lMeta = new PuckMeta()
                     {
@@ -610,7 +842,11 @@ namespace puck.core.Helpers
                 var currentMod = qh.And().Field(x => x.Variant, mod.Variant)
                     .ID(mod.Id)
                     .Get();
-                if (mod.Published || currentMod == null)//add to lucene index if published or no such node exists in index
+                //if parent changed, we index regardless of if the model being saved is set to publish or not. moves are always published immediately
+                if (parentChanged) {
+                    indexer.Index(toIndex);
+                }
+                else if (mod.Published || currentMod == null)//add to lucene index if published or no such node exists in index
                                                         /*note that you can only have one node with particular id/variant in index at any one time
                                                          * the reason that you want to add node to index when it's not published but there is no such node currently in index
                                                          * is to make sure there is always at least one version of the node in the index for back office search operations
@@ -646,7 +882,7 @@ namespace puck.core.Helpers
                             indexOriginalPath = variants.First().Path;
                     }
                     //if there was a change in the path
-                    if (changed)
+                    if (changed &&mod.Published)
                     {
                         //sync up all the variants so they have the same nodename and path
                         variants.ForEach(x => { x.NodeName = mod.NodeName; x.Path = mod.Path;
@@ -685,7 +921,7 @@ namespace puck.core.Helpers
                     instruction.InstructionDetail = instructionDetail;
                     repo.AddPuckInstruction(instruction);
                     repo.SaveChanges();
-                }
+                }                
             }
         }
         public static void RePublishEntireSite() {

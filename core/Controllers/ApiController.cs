@@ -442,7 +442,7 @@ namespace puck.core.Controllers
                 try
                 {
                     var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    ApiHelper.Publish(id, variant, arrDescendants, true);
+                    ApiHelper.Publish(id, variant, arrDescendants);
                     success = true;
                 }
                 catch (Exception ex)
@@ -465,7 +465,7 @@ namespace puck.core.Controllers
                 try
                 {
                     var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    ApiHelper.Publish(id, variant, arrDescendants, false);
+                    ApiHelper.UnPublish(id, variant, arrDescendants);
                     success = true;
                 }
                 catch (Exception ex)
