@@ -7,6 +7,7 @@ namespace puck.core.Migrations
     using puck.core.Identity;
     using System;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
@@ -25,7 +26,8 @@ namespace puck.core.Migrations
 
             var roles = new List<string> {PuckRoles.Cache,PuckRoles.Create,PuckRoles.Delete,PuckRoles.Domain,PuckRoles.Edit,PuckRoles.Localisation
             ,PuckRoles.Move,PuckRoles.Notify,PuckRoles.Publish,PuckRoles.Puck,PuckRoles.Revert,PuckRoles.Settings,PuckRoles.Sort,PuckRoles.Tasks
-            ,PuckRoles.Unpublish,PuckRoles.Users,PuckRoles.Republish};
+            ,PuckRoles.Unpublish,PuckRoles.Users,PuckRoles.Republish,PuckRoles.Copy,PuckRoles.ChangeType};
+
             foreach (var roleName in roles) {
                 if (!roleManager.RoleExists(roleName)) {
                     var role = new IdentityRole();
@@ -33,18 +35,20 @@ namespace puck.core.Migrations
                     roleManager.Create(role);
                 }
             }
-            var adminEmail = "darkezmo@hotmail.com";
+            var adminEmail = ConfigurationManager.AppSettings["InitialUserEmail"];
+            var adminPassword = ConfigurationManager.AppSettings["InitialUserPassword"];
             var admin = userManager.FindByEmail(adminEmail);
             if (admin== null) {
                 admin = new PuckUser {Email=adminEmail,UserName=adminEmail };
-                //var result = userManager.Create(admin,"Password1!");
+                var result = userManager.Create(admin,adminPassword);
+                
             }
-            //userManager.AddPassword(admin.Id, "Password1!");
-            /*foreach (var roleName in roles) {
+            //userManager.AddPassword(admin.Id, adminPassword);
+            foreach (var roleName in roles) {
                 if(!userManager.IsInRole(admin.Id,roleName))
                     userManager.AddToRole(admin.Id, roleName);
-            }*/
-            
+            }
+
 
             //  This method will be called after migrating to the latest version.
 

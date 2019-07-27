@@ -33,14 +33,15 @@
                 <li><a href="#" data-action="unpublish" data-permission="_unpublish"><i class="icon-ban-circle"></i> Unpublish</a></li>
                 <li><a href="#" data-action="localisation" data-permission="_localisation"><i class="icon-plane"></i> Localisation</a></li>
                 <li><a href="#" data-action="move" data-permission="_move"><i class="icon-move"></i> Move</a></li>
+                <li><a href="#" data-action="copy" data-permission="_copy"><i class="icon-file"></i> Copy</a></li>
                 <li><a href="#" data-action="domain" data-permission="_domain"><i class="icon-globe"></i> Domain</a></li>
                 <li><a href="#" data-action="revert" data-permission="_revert"><i class="icon-backward"></i> Revert</a></li>
                 <li><a href="#" data-action="cache" data-permission="_cache"><i class="icon-hdd"></i> Cache</a></li>
                 <li><a href="#" data-action="notify" data-permission="_notify"><i class="icon-envelope"></i> Notification</a></li>
                 <!--
-            <li class="divider"></li>
-            <li><a href="#"><i class="i"></i> Make admin</a></li>
-            -->
+    <li class="divider"></li>
+    <li><a href="#"><i class="i"></i> Make admin</a></li>
+    -->
             </ul>
         </div>
 
@@ -65,7 +66,8 @@
                     <label>Specific type</label>
                     <select>
                         <option value="">All</option>
-                        @foreach(var m in ApiHelper.AllModels()){
+                        @foreach (var m in ApiHelper.AllModels())
+                        {
                             <option value="@m.AssemblyQualifiedName">@m.Name</option>
                         }
                     </select>
@@ -74,14 +76,14 @@
                     <label>Search root</label>
                     <ul class="content nomenu redirect">
                         <li class="node" data-children_path="/"></li>
-                    </ul>  
+                    </ul>
                     <div class="pathvalue"></div>
                     <div class="clearboth">&nbsp;</div>
                 </div>
                 <div class="clearboth">
                     <button class="btn btn-link">Search</button>
                 </div>
-            </div>            
+            </div>
         </div>
         <div class="overlay_screen">
             <h1></h1>
@@ -93,31 +95,39 @@
             <div class="">
                 <div class="fieldwrapper">
                     <label>Exclude from output cache?</label>
-                    <input type="checkbox" name="exclude"/>
+                    <input type="checkbox" name="exclude" />
                 </div>
                 <div>
                     <button class='btn-link'>Update</button>
                 </div>
-            </div>            
+            </div>
         </div>
         <div class="revision_for_dialog">
             <div class="">
                 <div class="variantcontainer">
                     <label>Variant</label>
-                    <select name="variant">
-                        
-                    </select>
+                    <select name="variant"></select>
                 </div>
                 <div class="descendantscontainer">
                     <label></label>
-                    <select multiple name="descendants">                        
-
-                    </select>
+                    <select multiple name="descendants"></select>
                 </div>
                 <div>
                     <button class='btn-link'>Submit</button>
                 </div>
             </div>
+        </div>
+        <div class="tree_container copy">
+            <div>
+                <label>Copy descendants? (this may take some time depending on how many items are being copied)</label>
+                <input type="checkbox" class="include-descendants" />
+            </div>
+            <br/>
+            <div class="msg"></div>
+            <div class="error"></div>
+            <ul class="content nomenu redirect">
+                <li class="node" data-children_path="/"></li>
+            </ul>
         </div>
         <div class="tree_container move">
             <div class="msg"></div>

@@ -103,5 +103,11 @@ namespace puck.Controllers
             var aqn2 = Type.GetType(aqn)?.AssemblyQualifiedName ?? "nope2";
             return Content($"{aqn1}<br/>{aqn2}");
         }
+        public ActionResult Index() {
+            string aqn = "puck.core.Base.BaseModel, puck.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
+            var aqn1 = puck.core.debugging.GetType(aqn)?.AssemblyQualifiedName ?? "nope1";
+            var aqn2 = Type.GetType(aqn)?.AssemblyQualifiedName ?? "nope2";
+            return Content($"{aqn1}<br/>{aqn2}");
+        }
     }
 }

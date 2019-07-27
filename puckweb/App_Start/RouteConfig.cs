@@ -14,21 +14,17 @@ namespace puckweb
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapRoute(
                 name: "debugging",
-                url: "debugging/{action}/{id}",
-                defaults: new { controller = "debugging", action = "Index", id = UrlParameter.Optional }
+                url: "{controller}/{action}/{id}"
+                , defaults: new {controller="Home",action="Index",id=UrlParameter.Optional }
+                , constraints: new {controller="Debugging|Signup" }
             );
 
-            /*routes.MapRoute(
-                name: "signup",
-                url: "signup/{action}/{id}",
-                defaults: new { controller = "signup", action = "Index", id = UrlParameter.Optional }
-            );*/
-            //add any specific routes before the following catch-all
+            //add any specific routes before the following catch-all. to route to a specific controller, add the controller name to the constraints, separated with pipe |
             routes.MapRoute(
                 name: "puck",
                 url: "{*path}",
                 defaults: new { controller = "Home", action = "Index", path = UrlParameter.Optional }
-                , namespaces: new string[] { "puck.Controllers" }
+                
             );
         }
     }

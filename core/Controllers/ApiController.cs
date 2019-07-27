@@ -178,6 +178,25 @@ namespace puck.core.Controllers
             }
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
         }
+
+        [Auth(Roles = PuckRoles.Copy)]
+        public ActionResult Copy(Guid id, Guid parentId, bool includeDescendants)
+        {
+            string message = "";
+            bool success = false;
+            try
+            {
+                ApiHelper.Copy(id, parentId,includeDescendants);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                message = ex.Message;
+            }
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
+        }
+
         [Auth(Roles = PuckRoles.Move)]
         public JsonResult Move(Guid startId, Guid destinationId)
         {
@@ -565,6 +584,7 @@ namespace puck.core.Controllers
         public ActionResult PrepopulatedEdit(string p_type)
         {
             ViewBag.ShouldBindListEditor = false;
+            ViewBag.IsPrepopulated = true;
             object model = null;
             //empty model of type
             var modelType = ApiHelper.GetType(p_type);
@@ -577,6 +597,7 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Edit)]
         public ActionResult Edit(string p_type,Guid? parentId,Guid? contentId, string p_variant = "", string p_fromVariant = "", string p_path = "/") {
             ViewBag.ShouldBindListEditor = true;
+            ViewBag.IsPrepopulated = false;
             if (p_variant == "null")
                 p_variant = PuckCache.SystemVariant;
             object model=null;

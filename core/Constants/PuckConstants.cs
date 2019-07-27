@@ -42,6 +42,8 @@ namespace puck.core.Constants
         public const string Tasks = "_tasks";
         public const string Users = "_users";
         public const string Puck = "_puck";
+        public const string Copy = "_copy";
+        public const string ChangeType = "_changetype";
     }
     public static class FieldKeys
     {

@@ -8,7 +8,7 @@
         };
     
 }
-    <div class="puckImage puckimage_@ViewData.ModelMetadata.PropertyName">
+    <div class="puckImage puckimage_@ViewData.ModelMetadata.PropertyName puckimage_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
         <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a @*data-toggle="tab"*@ href="#">Image info</a></li>
@@ -25,25 +25,25 @@
                 <div class="editor-field">
                     @Html.EditorFor(x => x.Description)
                 </div>
-                @if (!string.IsNullOrEmpty(Model.Extension))
+                @if (!string.IsNullOrEmpty(Model?.Extension))
                 {
                 <div class="field">
                     <span>Extension:</span>@Html.EditorFor(x => x.Extension)
                 </div>
                 }
-                @if (!string.IsNullOrEmpty(Model.Width?.ToString()))
+                @if (!string.IsNullOrEmpty(Model?.Width?.ToString()))
                 {
                 <div class="field">
                     <span>Width:</span>@Html.EditorFor(x => x.Width)
                 </div>
                 }
-                @if (!string.IsNullOrEmpty(Model.Height?.ToString()))
+                @if (!string.IsNullOrEmpty(Model?.Height?.ToString()))
                 {
                 <div class="field">
                     <span>Height:</span>@Html.EditorFor(x => x.Height)
                 </div>
                 }
-                @if (!string.IsNullOrEmpty(Model.Size))
+                @if (!string.IsNullOrEmpty(Model?.Size))
                 {   
                 <div class="field">
                     <span>Size:</span>@Html.EditorFor(x => x.Size)
@@ -80,7 +80,7 @@
                 @Html.EditorFor(x => x.Crops)
             </div>
 
-            @foreach (var Crops in Model.Crops ?? new List<puck.Models.CropModel> { })
+            @foreach (var Crops in Model?.Crops ?? new List<puck.Models.CropModel> { })
             {
                 <div style="display:none;" class="cropInfo" data-alias="@Crops.Alias" data-width="@Crops.Width" data-height="@Crops.Height"
                      data-left="@Crops.Left" data-top="@Crops.Top" data-right="@Crops.Right" data-bottom="@Crops.Bottom"></div>
@@ -89,8 +89,20 @@
     </div>
 <script type="text/javascript">
     onAfterDom(function () {
-        var propname = "@ViewData.ModelMetadata.PropertyName";
-        var container = $(".puckimage_" + propname);
+        var modelType = "@Html.Raw(ViewBag.Level0Type.AssemblyQualifiedName)";
+        var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
+        var isPrePopulated = '@ViewBag.IsPrePopulated' == 'True';
+        
+        var escapePropname = function (str) {
+            return str.replace(/\[/g, "_").replace(/\]/g,"_").replace(/\./g,"_");
+        }
+        var container = null;
+        if (!isPrePopulated)
+            container = cright.find(".puckimage_" + escapePropname(propname));
+        else
+            container = cinterfaces.find("div[data-type='" + modelType + "'] .puckimage_" + escapePropname(propname))
+        
+        //var container = cright.find(".puckimage_" + propname);
         var selected_container = container.find(".selected_content:first");
         var getPropName = function () {
             return container.find("div:hidden.propName:first").attr("data-propName");
@@ -117,9 +129,9 @@
             
         }
         var viewportWidth = 500;
-        var originalWidth = @(Model.Width??0);
-        var originalHeight = @(Model.Height??0);
-        var imageUrl = '@Model.Path';
+        var originalWidth = @(Model?.Width??0);
+        var originalHeight = @(Model?.Height??0);
+        var imageUrl = '@(Model?.Path??"")';
         var viewport = container.find(".viewport");
         var selected_container = container.find(".selected_content");
         var message_container = container.find(".message");

@@ -32,6 +32,8 @@ namespace puck.Controllers
             
             return base.Puck();
         }
-
+        public ActionResult Hello() {
+            return Content("Hello World!");
+        }
     }
 }

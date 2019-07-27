@@ -51,6 +51,7 @@ namespace puck.core.Helpers
             {
                 var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetType(revision.Type)));
                 var mod = model as BaseModel;
+                mod.Id = revision.Id;
                 mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
                 

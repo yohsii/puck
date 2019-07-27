@@ -1072,6 +1072,51 @@ namespace puck.core.Helpers
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key == path).ToList();
             return meta.Count == 0 ? string.Empty : string.Join(",",meta.Select(x=>x.Value));
         }
+        public static void Copy(Guid id,Guid parentId,bool includeDescendants) {
+            var repo = Repo;
+
+            var itemsToCopy = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).ToList();
+            if (itemsToCopy.Count == 0) return;
+            var descendants = new List<PuckRevision>();
+            if(includeDescendants)
+                descendants = repo.CurrentRevisionDescendants(itemsToCopy.First().IdPath).ToList();
+
+            var allItemsToCopy = new List<PuckRevision>();
+            allItemsToCopy.AddRange(itemsToCopy);
+            allItemsToCopy.AddRange(descendants);
+
+            var ids = allItemsToCopy.Select(x => x.Id).Distinct();
+
+            var idMap = new Dictionary<Guid, Guid>();
+
+            foreach (var guid in ids) {
+                idMap[guid] = Guid.NewGuid();
+            }
+
+            foreach (var item in allItemsToCopy) {
+                if (idMap.ContainsKey(item.Id))
+                    item.Id = idMap[item.Id];
+                if (idMap.ContainsKey(item.ParentId))
+                    item.ParentId = idMap[item.ParentId];
+            }
+
+            itemsToCopy.ForEach(x => x.ParentId = parentId);
+
+            void SaveCopies(Guid pId,List<PuckRevision> items){
+                var children = items.Where(x => x.ParentId == pId).ToList();
+                var childrenGroupedById = children.GroupBy(x=>x.Id);
+                foreach (var group in childrenGroupedById) {
+                    foreach (var revision in group) {
+                        var model = ApiHelper.RevisionToBaseModel(revision);
+                        SaveContent(model);
+                    }
+                    SaveCopies(group.Key,items);
+                }
+            }
+
+            SaveCopies(parentId,allItemsToCopy);
+
+        }
         public static void Move(Guid nodeId, Guid destinationId)
         {
             var repo = Repo;

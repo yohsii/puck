@@ -143,6 +143,11 @@ $(document).on("click", "ul.content li.node i.menu", function (e) {
         dropdown.find("a[data-action='move']").parents("li").hide();
     else
         dropdown.find("a[data-action='move']").parents("li").show();
+    //filter copy - disallow root copy
+    if (isRootItem(node.attr("data-parent_id")))
+        dropdown.find("a[data-action='copy']").parents("li").hide();
+    else
+        dropdown.find("a[data-action='copy']").parents("li").show();
     //filter menu items according to permissions -- ie can user access option
     dropdown.find("a[data-action]").each(function () {
         var permission = $(this).attr("data-permission");
@@ -320,6 +325,38 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                         cleft.find(".node[data-id='" + fromId + "']").remove();
                         var tonode = cleft.find(".node[data-id='" + toId + "']");
                         console.log({ el: tonode });
+                        tonode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
+                        getDrawContent(toId);
+                    } else {
+                        msg(false, d.message);
+                    }
+                    overlayClose();
+                });
+            });
+            break;
+        case "copy":
+            var markup = $(".interfaces .tree_container.copy").clone();
+            var el = markup.find(".node:first");
+            overlay(markup, undefined, undefined, undefined, "Copy Content");
+            $(".overlay_screen .msg").html("select new parent node for copied content <b>" + node.attr("data-nodename") + "</b>");
+            getDrawContent(startId, el);
+            markup.on("click", ".node span", function (e) {
+                var dest_node = $(this).parents(".node:first");
+                var from = node.attr("data-path");
+                var to = dest_node.attr("data-path");
+                var fromId = node.attr("data-id");
+                var toId = dest_node.attr("data-id");
+                var nodeTitle = node.find("span:first").text();
+                var includeDescendants = markup.find("input").is(":checked");
+                console.log("includeDescendants",includeDescendants);
+                if (!confirm("copy " + nodeTitle + " to " + to + " ?")) {
+                    return;
+                }
+                setCopy(fromId, toId, includeDescendants, function (d) {
+                    if (d.success) {
+                        var tonode = cleft.find(".node[data-id='" + toId + "']");
+                        console.log({ el: tonode });
+                        if (tonode.length == 0) return;
                         tonode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
                         getDrawContent(toId);
                     } else {

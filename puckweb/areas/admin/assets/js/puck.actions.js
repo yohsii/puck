@@ -596,7 +596,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                         var dataTranslation = dataTranslations[i];
                         var published = true;
 
-                        if (dbcontent[path][dataTranslation].Published == false) {
+                        if (dbcontent[contentId][dataTranslation].Published == false) {
                             published = false;
                         }
 

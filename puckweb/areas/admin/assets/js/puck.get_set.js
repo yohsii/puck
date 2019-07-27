@@ -90,6 +90,10 @@ var setMove = function (from, to, f) {
     var path = "/admin/api/move?startId=" + from + "&destinationId=" + to;
     $.get(path, f);
 }
+var setCopy = function (id, parentId, includeDescendants, f) {
+    var path = "/admin/api/copy?id=" + id + "&parentId=" + parentId + "&includeDescendants=" + includeDescendants;
+    $.get(path, f);
+}
 var setDeleteRevision = function (id, f) {
     var path = "/admin/api/deleterevision?id=" + id;
     $.get(path, f);
