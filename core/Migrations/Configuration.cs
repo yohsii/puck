@@ -37,18 +37,22 @@ namespace puck.core.Migrations
             }
             var adminEmail = ConfigurationManager.AppSettings["InitialUserEmail"];
             var adminPassword = ConfigurationManager.AppSettings["InitialUserPassword"];
-            var admin = userManager.FindByEmail(adminEmail);
-            if (admin== null) {
-                admin = new PuckUser {Email=adminEmail,UserName=adminEmail };
-                var result = userManager.Create(admin,adminPassword);
-                
-            }
-            //userManager.AddPassword(admin.Id, adminPassword);
-            foreach (var roleName in roles) {
-                if(!userManager.IsInRole(admin.Id,roleName))
-                    userManager.AddToRole(admin.Id, roleName);
-            }
+            if (!string.IsNullOrEmpty(adminEmail))
+            {
+                var admin = userManager.FindByEmail(adminEmail);
+                if (admin == null)
+                {
+                    admin = new PuckUser { Email = adminEmail, UserName = adminEmail };
+                    var result = userManager.Create(admin, adminPassword);
 
+                }
+                //userManager.AddPassword(admin.Id, adminPassword);
+                foreach (var roleName in roles)
+                {
+                    if (!userManager.IsInRole(admin.Id, roleName))
+                        userManager.AddToRole(admin.Id, roleName);
+                }
+            }
 
             //  This method will be called after migrating to the latest version.
 
