@@ -366,6 +366,26 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                 });
             });
             break;
+        case "changetype":
+            getChangeTypeDialog(node.attr("data-id"),function (markup) {
+                var variants = node.attr("data-variants").split(",");
+                overlay(markup, 400, 250, undefined, "Change Type");
+                $(".overlay_screen button").click(function () {
+                    var newType = $(".overlay_screen select").val();
+                    getChangeTypeMappingDialog(node.attr("data-id"), newType, function (mappingMarkup) {
+                        overlay(mappingMarkup, 500, 250, undefined, "Change Type");
+                        wireForm($(".overlay_screen form"), function (d) {
+                            displayMarkup(null, node.attr("data-type"), variants[0], undefined, node.attr("data-id"));
+                            overlayClose();
+                        }, function (d) {
+                            msg(false, d.message);
+                            overlayClose();
+                        });
+                    });
+                });
+                
+            });
+            break;
         case "translate":
             getCreateDialog(function (data) {
                 overlay(data, 400, 250,undefined,"Translate");

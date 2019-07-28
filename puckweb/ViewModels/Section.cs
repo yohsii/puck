@@ -9,6 +9,6 @@ namespace puck.ViewModels
 {
     public class Section:Page
     {
-
+        public string SectionName { get; set; }
     }
 }

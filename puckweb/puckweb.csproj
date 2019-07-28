@@ -1143,6 +1143,8 @@
     <Content Include="areas\admin\Views\Api\DevPage.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\PuckImage.cshtml" />
     <Content Include="areas\admin\Views\Shared\EditorTemplates\ListEditor.cshtml" />
+    <Content Include="areas\admin\Views\Api\ChangeTypeDialog.cshtml" />
+    <Content Include="areas\admin\Views\Api\ChangeTypeMappingDialog.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

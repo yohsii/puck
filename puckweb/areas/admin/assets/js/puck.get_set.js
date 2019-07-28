@@ -32,6 +32,12 @@ var getPrepopulatedMarkup = function (type,f) {
 var getCreateDialog = function (f, t) {
     $.get("/admin/api/createdialog" + (t === undefined ? "" : "?type=" + t), f, "html");
 }
+var getChangeTypeDialog = function (id,f) {
+    $.get("/admin/api/changetypedialog?id="+id,f,"html");
+}
+var getChangeTypeMappingDialog = function (id,newType, f) {
+    $.get("/admin/api/changetypemappingdialog?id=" + id+"&newType="+newType, f, "html");
+}
 var getTemplateCreateDialog = function (f, p) {
     $.get("/admin/task/createtemplate" + (p === undefined ? "" : "?path=" + p), f, "html");
 }

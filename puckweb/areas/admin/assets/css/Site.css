@@ -265,9 +265,13 @@ ul.content.nomenu .node i.menu{display:none;}
 .overlay_screen .model_properties div.path span{background:#ffffee;font-weight:bold;padding:5px 2px 5px 2px;margin:0 3px 0 3px;cursor:pointer;}
 .overlay_screen .model_properties ul{margin-top:4px;}
 
-.view_edit .node.selected
-{
-    background:#eeffee;
+.changeTypeMapping_dialog .mapping_container .prop_container{display:inline-block;width:45%;}
+.overlay_screen select.input-validation-error {
+background:#ffeeee;
+}
+
+.view_edit .node.selected {
+    background: #eeffee;
 }
 
 .puck_icon{

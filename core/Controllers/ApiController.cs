@@ -47,13 +47,13 @@ namespace puck.core.Controllers
             this.userManager = um;
             this.signInManager = sm;
         }
-        public ActionResult DevPage(string id= "0a2ebbd3-b118-4add-a219-4dbc54cd742a") {
+        public ActionResult DevPage(string id = "0a2ebbd3-b118-4add-a219-4dbc54cd742a") {
             var guid = Guid.Parse(id);
-            var revision = repo.GetPuckRevision().FirstOrDefault(x=>x.Current &&x.Id==guid);
+            var revision = repo.GetPuckRevision().FirstOrDefault(x => x.Current && x.Id == guid);
             var model = ApiHelper.RevisionToBaseModel(revision);
             return View(model);
         }
-        [Auth(Roles=PuckRoles.Puck)]
+        [Auth(Roles = PuckRoles.Puck)]
         public ActionResult Index()
         {
             return View();
@@ -63,9 +63,9 @@ namespace puck.core.Controllers
         {
             string variant = PuckCache.SystemVariant;
             var user = userManager.FindByName(User.Identity.Name);
-            if(!string.IsNullOrEmpty(user.UserVariant))
-            //var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
-            //if (meta != null)
+            if (!string.IsNullOrEmpty(user.UserVariant))
+                //var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
+                //if (meta != null)
                 variant = user.UserVariant;
             return Json(variant, JsonRequestBehavior.AllowGet);
         }
@@ -75,11 +75,11 @@ namespace puck.core.Controllers
             var roles = await userManager.GetRolesAsync(User.Identity.GetUserId());
             return Json(roles, JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles =PuckRoles.Puck)]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult FieldGroups(string type)
         {
             var model = ApiHelper.FieldGroups(type);
-            return Json(model,JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
         public ActionResult CreateDialog(string type)
@@ -90,7 +90,7 @@ namespace puck.core.Controllers
         public JsonResult Variants()
         {
             var model = ApiHelper.Variants();
-            return Json(model,JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult AllVariants()
@@ -126,28 +126,28 @@ namespace puck.core.Controllers
             var mod = ApiHelper.RevisionToBaseModel(model);
             return View(templatePath, mod);
         }
-        [Auth(Roles= PuckRoles.Notify)]
-        public JsonResult Notify(string p_path){
+        [Auth(Roles = PuckRoles.Notify)]
+        public JsonResult Notify(string p_path) {
             var model = ApiHelper.NotifyModel(p_path);
-            return Json(model,JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles=PuckRoles.Notify)]
-        public ActionResult NotifyDialog(string p_path){
+        [Auth(Roles = PuckRoles.Notify)]
+        public ActionResult NotifyDialog(string p_path) {
             var model = ApiHelper.NotifyModel(p_path);
             return View(model);
         }
-        [Auth(Roles=PuckRoles.Notify)]
+        [Auth(Roles = PuckRoles.Notify)]
         [HttpPost]
-        public JsonResult Notify(Notify model){
-            string message="";
-            bool success=false;
-            try{
+        public JsonResult Notify(Notify model) {
+            string message = "";
+            bool success = false;
+            try {
                 ApiHelper.SetNotify(model);
-                success=true;
-            }catch(Exception ex){
+                success = true;
+            } catch (Exception ex) {
                 message = ex.Message;
             }
-            return Json(new{success=success,message=message});
+            return Json(new { success = success, message = message });
         }
         [Auth(Roles = PuckRoles.Domain)]
         public ActionResult DomainMappingDialog(string p_path)
@@ -159,16 +159,16 @@ namespace puck.core.Controllers
         public JsonResult DomainMapping(string p_path)
         {
             var model = ApiHelper.DomainMapping(p_path);
-            return Json(model,JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Domain)]
         [HttpPost]
-        public JsonResult DomainMapping(string p_path,string domains) {
+        public JsonResult DomainMapping(string p_path, string domains) {
             string message = "";
             bool success = false;
             try
             {
-                ApiHelper.SetDomain(p_path,domains);
+                ApiHelper.SetDomain(p_path, domains);
                 success = true;
             }
             catch (Exception ex)
@@ -186,7 +186,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                ApiHelper.Copy(id, parentId,includeDescendants);
+                ApiHelper.Copy(id, parentId, includeDescendants);
                 success = true;
             }
             catch (Exception ex)
@@ -241,26 +241,140 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Localisation)]
         public JsonResult Localisation(string p_path) {
             var model = ApiHelper.PathLocalisation(p_path);
-            return Json(model,JsonRequestBehavior.AllowGet);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Localisation)]
         [HttpPost]
-        public JsonResult Localisation(string p_path,string variant)
+        public JsonResult Localisation(string p_path, string variant)
         {
             string message = "";
             bool success = false;
             try
             {
-                ApiHelper.SetLocalisation(p_path,variant);
+                ApiHelper.SetLocalisation(p_path, variant);
                 success = true;
             }
             catch (Exception ex) {
                 log.Log(ex);
                 message = ex.Message;
             }
-            return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
+        }
+        [Auth(Roles = PuckRoles.ChangeType)]
+        public ActionResult ChangeTypeDialog(Guid id) {
+            var revision = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
+            PuckRevision parent = repo.GetPuckRevision().Where(x => x.Id == revision.ParentId && x.Current).FirstOrDefault();
+            var children = repo.CurrentRevisionsByParentId(revision.Id).ToList();
+
+            //only return allowed types
+            List<Type> allowedTypes = null;
+            if (parent == null)
+                allowedTypes = ApiHelper.Models();
+            else
+                allowedTypes = ApiHelper.AllowedTypes(parent.Type);
+
+            if (allowedTypes.Count == 0)
+                allowedTypes = ApiHelper.Models();
+
+            //further filtering based on allowed types and the types of the children nodes
+            var typesToRemove = new List<Type>();
+            foreach (var type in allowedTypes) {
+                var typeAllowedTypes = ApiHelper.AllowedTypes(type.AssemblyQualifiedName);
+                if (typeAllowedTypes.Count == 0)
+                    continue;
+                foreach (var childRevision in children) {
+                    if (!typeAllowedTypes.Any(x => x.AssemblyQualifiedName == childRevision.Type)) {
+                        typesToRemove.Add(type);
+                    }
+                }
+            }
+            typesToRemove.ForEach(x => allowedTypes.Remove(x));
+
+            return View(allowedTypes);
+        }
+        [Auth(Roles = PuckRoles.ChangeType)]
+        public ActionResult ChangeTypeMappingDialog(Guid id, string newType)
+        {
+            var revision = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
+            var tCurrentType = ApiHelper.GetType(revision.Type);
+            var tNewType = ApiHelper.GetType(newType);
+
+            var baseModelProperties = typeof(BaseModel).GetProperties().ToList();
+            var currentTypeProperties = tCurrentType.GetProperties().Where(x => !baseModelProperties.Any(xx => xx.Name == x.Name)).ToList();
+            var newTypeProperties = tNewType.GetProperties().Where(x => !baseModelProperties.Any(xx => xx.Name == x.Name)).ToList();
+            var model = new ChangeType() { ContentId = id, ContentType = tCurrentType, Revision = revision,
+                ContentProperties = currentTypeProperties, NewType = tNewType, NewTypeProperties = newTypeProperties };
+
+            model.Templates = ApiHelper.AllowedViews(tNewType.AssemblyQualifiedName);
+            if (model.Templates.Count == 0)
+                model.Templates = ApiHelper.Views();
+            var selectListItems = new List<SelectListItem>();
+            selectListItems.Add(new SelectListItem() { Text = "-- select template --", Value = "", Selected = true });
+            foreach (var template in model.Templates.OrderBy(x => x.Name)) {
+                selectListItems.Add(new SelectListItem() { Text = template.Name, Value = ApiHelper.ToVirtualPath(template.FullName) });
+            }
+            model.TemplatesSelectListItems = selectListItems;
+
+
+            return View(model);
         }
 
+        [Auth(Roles = PuckRoles.ChangeType)]
+        [HttpPost]
+        public ActionResult ChangeTypeMapping(Guid id,string newType,FormCollection fc) {
+            string message = "";
+            bool success = false;
+            try
+            {
+                var revisions = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).ToList();
+                foreach (var revision in revisions)
+                {
+                    var model = ApiHelper.RevisionToBaseModel(revision);
+                    var tNewType = ApiHelper.GetType(newType);
+                    var newModel = Activator.CreateInstance(tNewType);
+                    var newModelAsBaseModel = newModel as BaseModel;
+                    newModelAsBaseModel.Id = model.Id;
+                    newModelAsBaseModel.Created = model.Created;
+                    newModelAsBaseModel.CreatedBy = model.CreatedBy;
+                    newModelAsBaseModel.LastEditedBy = User.Identity.Name;
+                    newModelAsBaseModel.NodeName = model.NodeName;
+                    newModelAsBaseModel.ParentId = model.ParentId;
+                    newModelAsBaseModel.Path = model.Path;
+                    newModelAsBaseModel.Published = model.Published;
+                    newModelAsBaseModel.Revision = model.Revision;
+                    newModelAsBaseModel.SortOrder = model.SortOrder;
+                    newModelAsBaseModel.Type = newType;
+                    newModelAsBaseModel.TypeChain = ApiHelper.TypeChain(tNewType);
+                    newModelAsBaseModel.Updated = DateTime.Now;
+                    newModelAsBaseModel.Variant = model.Variant;
+                    newModelAsBaseModel.TemplatePath = fc["_SelectedTemplate"];
+                    foreach (var currentPropertyName in fc.AllKeys)
+                    {
+                        var newPropertyName = fc[currentPropertyName];
+                        if (string.IsNullOrEmpty(newPropertyName) || !model.GetType().GetProperties().Any(x => x.Name == currentPropertyName))
+                            continue;
+
+                        var currentValue = model.GetType().GetProperty(currentPropertyName).GetValue(model);
+
+                        PropertyInfo prop = newModel.GetType().GetProperty(newPropertyName, BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop && prop.CanWrite)
+                        {
+                            prop.SetValue(newModel, currentValue, null);
+                        }
+
+                    }
+                    ApiHelper.SaveContent(newModelAsBaseModel);
+                }
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                success = false;
+                message = ex.Message;
+            }
+            return Json(new { success = success, message = message });
+        }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult GetPath(Guid id)
         {
