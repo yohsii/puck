@@ -81,7 +81,10 @@ namespace puck.core.Helpers
             }
             PuckCache.IGeneratedToModel = dictionary;
         }
-
+        public static void SetFirstRequestUrl() {
+            if (PuckCache.FirstRequestUrl==null)
+                PuckCache.FirstRequestUrl = HttpContext.Current.Request.Url;
+        }
         public static void UpdateTaskMappings()
         {
             var tasks = ApiHelper.Tasks();
@@ -221,7 +224,7 @@ namespace puck.core.Helpers
         {
             foreach (var t in ApiHelper.AllModels(true))
             {
-                PuckCache.ModelFullNameToAQN[t.FullName] = t.AssemblyQualifiedName;
+                PuckCache.ModelFullNameToAQN[t.Name] = t.AssemblyQualifiedName;
             }
         }
         public static void UpdateAnalyzerMappings()

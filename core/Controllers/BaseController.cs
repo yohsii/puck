@@ -25,6 +25,7 @@ namespace puck.core.Controllers
         {
             try
             {
+                StateHelper.SetFirstRequestUrl();
                 if (PuckCache.ShouldSync&&!PuckCache.IsSyncQueued)
                 {
                     PuckCache.IsSyncQueued = true;

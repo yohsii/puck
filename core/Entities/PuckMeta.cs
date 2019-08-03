@@ -15,5 +15,6 @@ namespace puck.core.Entities
         [MaxLength(2048)]
         public string Key { get; set; }
         public string Value { get; set; }
+        public DateTime? Dt { get; set; }
     }
 }

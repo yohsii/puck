@@ -13,6 +13,7 @@ namespace puck.core.Tasks
     class SyncCheckTask:BaseTask
     {
         public SyncCheckTask() {
+            this.ID = -2;
             this.Recurring = true;
             this.IntervalSeconds = 6;
             this.RunOn = DateTime.Now;

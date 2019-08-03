@@ -252,6 +252,10 @@
     <Compile Include="Helpers\StateHelper.cs" />
     <Compile Include="Helpers\SyncHelper.cs" />
     <Compile Include="Identity\IdentityConfig.cs" />
+    <Compile Include="Migrations\201908031110407_puckMetaDateTime.cs" />
+    <Compile Include="Migrations\201908031110407_puckMetaDateTime.Designer.cs">
+      <DependentUpon>201908031110407_puckMetaDateTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\ChangeType.cs" />
     <Compile Include="Models\CropInfo.cs" />
     <Compile Include="Models\EditorSettings\PuckImageEditorSettings.cs" />
@@ -261,6 +265,7 @@
     <Compile Include="Models\RegexOption.cs" />
     <Compile Include="Models\TasksModel.cs" />
     <Compile Include="Models\TemplateModels.cs" />
+    <Compile Include="Models\TimedPublish.cs" />
     <Compile Include="PuckLucene\PuckQueryParser.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\GeoPosition.cs" />
@@ -274,6 +279,8 @@
     <Compile Include="Models\PuckUserViewModel.cs" />
     <Compile Include="Models\Variant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\KeepAliveTask.cs" />
+    <Compile Include="Tasks\TimedPublishTask.cs" />
     <Compile Include="Tasks\SyncCheckTask.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -288,6 +295,9 @@
     <EmbeddedResource Include="Globalisation\PuckLabels.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PuckLabels.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908031110407_puckMetaDateTime.resx">
+      <DependentUpon>201908031110407_puckMetaDateTime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

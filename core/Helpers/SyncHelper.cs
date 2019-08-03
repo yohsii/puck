@@ -78,6 +78,25 @@ namespace puck.core.Helpers
                                 ApiHelper.RePublishEntireSite2();
                             }
                         }
+                        else if (instruction.InstructionKey == InstructionKeys.RePublish)
+                        {
+                            var toIndex = new List<BaseModel>();
+                            //instruction detail holds comma separated list of ids and variants in format id:variant,id:variant
+                            var idList = instruction.InstructionDetail.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var idAndVariant in idList)
+                            {
+                                var idAndVariantArr = idAndVariant.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                                var id = Guid.Parse(idAndVariantArr[0]);
+                                var variant = idAndVariantArr[1];
+                                var publishedRevision = repo.PublishedRevision(id, variant);
+                                if (publishedRevision != null)
+                                {
+                                    var model = ApiHelper.RevisionToBaseModel(publishedRevision);
+                                    toIndex.Add(model);
+                                }
+                            }
+                            Indexer.Index(toIndex);
+                        }
                         else if (instruction.InstructionKey == InstructionKeys.Publish)
                         {
                             var toIndex = new List<BaseModel>();

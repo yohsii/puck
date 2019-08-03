@@ -201,6 +201,40 @@ var revisionsFor = function (vcsv, id) {
         });
     }
 }
+var showTimedPublishDialog = function (id, variant) {
+    getTimedPublishDialog(id, variant, function (html) {
+        overlay(html, 400, undefined, undefined, "Scheduled Publish");
+        var form = $(".overlay_screen form");
+        wireForm(form, function (data) {
+            msg(true, data.message);
+            overlayClose();
+        }, function (data) {
+            msg(false, data.message);
+            overlayClose();
+        });
+    });
+}
+var timedPublish = function (vcsv, id) {
+    var variants = vcsv.split(",");
+    if (variants.length == 1) {
+        showTimedPublishDialog(id,variants[0]);
+    } else {
+        var markup = $(".interfaces .revision_for_dialog").clone();
+        markup.find(".descendantscontainer").hide();
+        for (var i = 0; i < variants.length; i++) {
+            markup.find("select").append(
+                "<option value='" + variants[i] + "'>" + variantNames[variants[i]] + "</option>"
+            );
+        }
+        overlay(markup, 400, 150, undefined, "Select Variant");
+        markup.find("button").click(function (e) {
+            e.preventDefault();
+            var variant = markup.find("select").val();
+            showTimedPublishDialog(id,variant);
+            overlayClose();
+        });
+    }
+}
 var showRevisions = function (variant, id) {
     getRevisions(id, variant, function (data) {
         if (!canChangeMainContent())

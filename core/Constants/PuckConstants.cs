@@ -44,6 +44,8 @@ namespace puck.core.Constants
         public const string Puck = "_puck";
         public const string Copy = "_copy";
         public const string ChangeType = "_changetype";
+        public const string TimedPublish = "_timedpublish";
+        public const string Audit = "_audit";
     }
     public static class FieldKeys
     {
@@ -78,6 +80,8 @@ namespace puck.core.Constants
         public static string UserVariant = "uservariant";
         public static string GeneratedModel = "generatedmodel";
         public static string Notify = "notify";
+        public static string TimedPublish = "timedpublish";
+        public static string TimedUnpublish = "timedunpublish";
     }
     public static class DBKeys
     {
@@ -133,6 +137,7 @@ namespace puck.core.Constants
         public static int DisplayModesCacheMinutes = 10;
         public static int MaxSyncInstructions = 100;
         public static string SystemVariant = "en-GB";
+        public static Uri FirstRequestUrl = null;
         public static bool IsRepublishingEntireSite { get; set; }
         public static bool ShouldSync { get; set; }
         public static bool IsSyncQueued { get; set; }

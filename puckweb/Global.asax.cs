@@ -92,8 +92,8 @@ namespace puckweb
 
             DisplayModeProvider.Instance.Modes.Insert(0, new DefaultDisplayMode("iPhone")
             {
-                ContextCondition = (context => context.GetOverriddenUserAgent().IndexOf
-                    ("iPhone", StringComparison.OrdinalIgnoreCase) >= 0)
+                ContextCondition = (context => context.GetOverriddenUserAgent()==null?false
+                : context.GetOverriddenUserAgent().IndexOf("iPhone", StringComparison.OrdinalIgnoreCase) >= 0)
             });
 
             //initiate puck

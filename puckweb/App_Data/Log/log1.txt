@@ -57698,3 +57698,1647 @@ stacktrace:    at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDef
    at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
 
 
+date: 28/07/2019 19:12:47
+message: An exception has been raised that is likely due to a transient failure. If you are connecting to a SQL Azure database consider using SqlAzureExecutionStrategy.
+stacktrace:    at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 29/07/2019 08:51:14
+message: The underlying provider failed on Open.
+stacktrace:    at System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   at System.Data.Entity.Core.Objects.ObjectContext.EnsureConnection(Boolean shouldMonitorTransactions)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Linq.Enumerable.FirstOrDefault[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.SyncCheckTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\SyncCheckTask.cs:line 25
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:19
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:21
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:23
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:25
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:27
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:29
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:31
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:33
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:35
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:39
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:41
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:45
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:47
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:49
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:51
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:53
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:55
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:06:59
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:01
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:03
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:19
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:21
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:23
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:25
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:27
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:29
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:31
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:33
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:35
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:39
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:41
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:45
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:47
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:49
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:51
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:53
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:55
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:07:59
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:01
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:03
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:08:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:10:51
+message: The operation has timed out
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:15:25
+message: The operation has timed out
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:28:25
+message: The operation has timed out
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:28:34
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:28:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:28:39
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:28:42
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:28:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:29:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:31:16
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:34:36
+message: The operation has timed out
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:36:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:36:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:36:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:36:59
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:01
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:03
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:19
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:21
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:23
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:25
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:27
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:37:29
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:42
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:44
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:46
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:48
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:51
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:53
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:55
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:48:59
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:01
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:03
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:19
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:21
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:23
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:25
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:27
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:29
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:31
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:33
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:35
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:39
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:41
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:45
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:47
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:49
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:51
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:53
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:55
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:49:59
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:01
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:03
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:19
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:21
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:23
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:25
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:27
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:29
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:31
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:33
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:35
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:39
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:41
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:45
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:47
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:49
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:51
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:53
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:55
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:50:59
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:01
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:03
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:19
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:21
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:23
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:25
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:27
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:29
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:31
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:33
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:35
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:39
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:41
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:45
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:47
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:49
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:51
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:53
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:55
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:57
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:51:59
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:01
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:03
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:05
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:07
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:09
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:11
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:13
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:15
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:17
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:19
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:21
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:23
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:25
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:27
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:29
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:31
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:33
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:35
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:37
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:39
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:41
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:43
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:45
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:47
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 03/08/2019 23:52:49
+message: The remote server returned an error: (500) Internal Server Error.
+stacktrace:    at System.Net.HttpWebRequest.GetResponse()
+   at puck.core.Tasks.KeepAliveTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\KeepAliveTask.cs:line 29
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 00:11:55
+message: An error occurred while executing the command definition. See the inner exception for details.
+stacktrace:    at System.Data.Entity.Core.EntityClient.Internal.EntityCommandDefinition.ExecuteStoreCommands(EntityCommand entityCommand, CommandBehavior behavior)
+   at System.Data.Entity.Core.Objects.Internal.ObjectQueryExecutionPlan.Execute[TResultType](ObjectContext context, ObjectParameterCollection parameterValues)
+   at System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<>c__DisplayClass7.<GetResults>b__5()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 24
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 00:14:21
+message: 04/08/2019 00:14:21
+stacktrace: 
+
+
+date: 04/08/2019 00:15:21
+message: 04/08/2019 00:15:21
+stacktrace: 
+
+
+date: 04/08/2019 00:16:21
+message: 04/08/2019 00:16:21
+stacktrace: 
+
+
+date: 04/08/2019 00:17:21
+message: 04/08/2019 00:17:21
+stacktrace: 
+
+
+date: 04/08/2019 00:18:21
+message: 04/08/2019 00:18:21
+stacktrace: 
+
+
+date: 04/08/2019 00:19:22
+message: 04/08/2019 00:19:22
+stacktrace: 
+
+
+date: 04/08/2019 00:20:22
+message: 04/08/2019 00:20:22
+stacktrace: 
+
+
+date: 04/08/2019 00:21:22
+message: 04/08/2019 00:21:22
+stacktrace: 
+
+
+date: 04/08/2019 00:22:22
+message: 04/08/2019 00:22:22
+stacktrace: 
+
+
+date: 04/08/2019 00:23:22
+message: 04/08/2019 00:23:22
+stacktrace: 
+
+
+date: 04/08/2019 00:24:22
+message: 04/08/2019 00:24:22
+stacktrace: 
+
+

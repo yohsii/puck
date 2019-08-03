@@ -18,10 +18,12 @@ namespace puck.core.Concrete
     public class Dispatcher:I_Task_Dispatcher
     {
         public Dispatcher() {
+            this.QueuedTasks = new HashSet<int>();
             HostingEnvironment.RegisterObject(this);
             CatchUp=PuckCache.TaskCatchUp;
             Start();
         }
+        private HashSet<int> QueuedTasks { get; set; }
         System.Timers.Timer tmr;
         private static object lck= new object();
         int lock_wait = 100;
@@ -51,6 +53,7 @@ namespace puck.core.Concrete
             
         }
         public void HandleTaskEnd(object s, DispatchEventArgs e){
+            QueuedTasks.Remove(e.Task.ID);
             if (!e.Task.Recurring)
             {
                 Tasks.Remove(e.Task);
@@ -78,10 +81,14 @@ namespace puck.core.Concrete
                     return;
 
                 foreach (var t in Tasks) {
-                    if (ShouldRunNow(t))
-                        HostingEnvironment.QueueBackgroundWorkItem(ct => {
+                    if (ShouldRunNow(t)&&!QueuedTasks.Contains(t.ID))
+                    {
+                        QueuedTasks.Add(t.ID);
+                        HostingEnvironment.QueueBackgroundWorkItem(ct =>
+                        {
                             t.DoRun(ct);
                         });
+                    }
                     /*System.Threading.Tasks.Task.Factory.StartNew(() => { t.Run(groupTokenSource.Token); t.LastRun = DateTime.Now; }, groupTokenSource.Token)
                             .ContinueWith(x=>OnTaskEnd(t));
                     */

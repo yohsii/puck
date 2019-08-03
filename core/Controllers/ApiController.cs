@@ -46,6 +46,7 @@ namespace puck.core.Controllers
             this.roleManager = rm;
             this.userManager = um;
             this.signInManager = sm;
+            StateHelper.SetFirstRequestUrl();
         }
         public ActionResult DevPage(string id = "0a2ebbd3-b118-4add-a219-4dbc54cd742a") {
             var guid = Guid.Parse(id);
@@ -318,7 +319,84 @@ namespace puck.core.Controllers
 
             return View(model);
         }
-
+        [Auth(Roles = PuckRoles.TimedPublish)]
+        public ActionResult TimedPublish(TimedPublish model) {
+            var success = false;
+            var message = "";
+            if (ModelState.IsValid)
+            {
+                var key = $"{model.Id.ToString()}:{model.Variant}";
+                if (model.PublishAt.HasValue) {
+                    var value = "";
+                    if (model.PublishDescendantVariants != null) {
+                        value =string.Join(",",model.PublishDescendantVariants);
+                    }
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x=>x.Name==DBNames.TimedPublish&&x.Key==key);
+                    if (meta == null)
+                    {
+                        meta = new PuckMeta();
+                        repo.AddMeta(meta);
+                    }
+                    meta.Name = DBNames.TimedPublish;
+                    meta.Key = key;
+                    meta.Dt = model.PublishAt.Value;
+                    meta.Value = value;
+                }
+                if (model.UnpublishAt.HasValue)
+                {
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedUnpublish && x.Key == key);
+                    if (meta == null)
+                    {
+                        meta = new PuckMeta();
+                        repo.AddMeta(meta);
+                    }
+                    meta.Name = DBNames.TimedUnpublish;
+                    meta.Key = key;
+                    meta.Dt = model.UnpublishAt.Value;
+                }
+                repo.SaveChanges();
+                success = true;
+                message = "Schedule set";
+            }
+            else {
+                message =string.Join(". ", ModelState.Values.SelectMany(x=>x.Errors.Select(xx=>xx.ErrorMessage)));
+            }
+            return Json(new {success=success,message=message });
+        }
+        [Auth(Roles = PuckRoles.TimedPublish)]
+        public ActionResult TimedPublishDialog(Guid id,string variant) {
+            var model = new TimedPublish();
+            model.Id = id;
+            model.Variant = variant;
+            model.Variants = ApiHelper.Variants();
+            var key = $"{id}:{variant}";
+            var publishMeta = repo.GetPuckMeta().Where(x=>x.Name == DBNames.TimedPublish&&x.Key==key).FirstOrDefault();
+            if (publishMeta != null) {
+                if (publishMeta.Dt.HasValue)
+                {
+                    model.PublishAt = publishMeta.Dt.Value;
+                    model.PublishDescendantVariants = publishMeta.Value?.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+                else {
+                    repo.DeleteMeta(publishMeta);
+                }
+            }
+            var unPublishMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TimedUnpublish && x.Key == key).FirstOrDefault();
+            if (unPublishMeta != null)
+            {
+                if (unPublishMeta.Dt.HasValue)
+                {
+                    model.UnpublishAt = unPublishMeta.Dt.Value;
+                    model.UnpublishDescendantVariants = unPublishMeta.Value?.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+                else
+                {
+                    repo.DeleteMeta(unPublishMeta);
+                }
+            }
+            repo.SaveChanges();
+            return View(model);
+        }
         [Auth(Roles = PuckRoles.ChangeType)]
         [HttpPost]
         public ActionResult ChangeTypeMapping(Guid id,string newType,FormCollection fc) {

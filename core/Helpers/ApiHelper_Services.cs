@@ -1057,7 +1057,9 @@ namespace puck.core.Helpers
         }
         public static List<BaseTask> SystemTasks() {
             var result = new List<BaseTask>();
-            result.Add(new SyncCheckTask());
+            //result.Add(new SyncCheckTask());
+            result.Add(new TimedPublishTask());
+            result.Add(new KeepAliveTask());
             return result;
         }
         
