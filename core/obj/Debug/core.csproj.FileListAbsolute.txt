@@ -174,3 +174,4 @@ C:\project\cms proj\puck\core\obj\Debug\puck.core.dll
 C:\project\cms proj\puck\core\obj\Debug\puck.core.pdb
 C:\project\cms proj\puck\core\obj\Debug\core.csprojAssemblyReference.cache
 C:\project\cms proj\puck\core\obj\Debug\puck.core.Migrations.puckMetaDateTime.resources
+C:\project\cms proj\puck\core\obj\Debug\puck.core.Migrations.audit.resources

@@ -18,7 +18,7 @@ else
             var guid = '@Html.Raw(guid.ToString())';
             //var propertyName = ".datepicker_@ViewData.ModelMetadata.PropertyName input";
             var query = "input[data-guid='"+guid+"']";
-            $(query).datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'hh:mm:ss' });
+            $(query).datetimepicker({ dateFormat: 'dd/mm/yy', timeFormat: 'HH:mm:ss' });
         });
     </script>
 }

@@ -15,7 +15,8 @@
             <select multiple name="@nameof(Model.PublishDescendantVariants)">
                 @foreach (var variant in Model.Variants)
                 {
-                    <option value="@variant.Key">@variant.FriendlyName</option>
+                    var selected = Model.PublishDescendantVariants != null && Model.PublishDescendantVariants.Any(x => x.ToLower().Equals(variant.Key.ToLower()));
+                    <option @(selected ? "selected":"") value="@variant.Key">@variant.FriendlyName</option>
                 }
             </select>
         </div>

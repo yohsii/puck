@@ -102,7 +102,16 @@ namespace puck.core.Constants
     }
     public static class CacheKeys {
         public static string PrefixTemplateExist = "fexist:";
-    }    
+    }
+    public static class AuditActions {
+        public const string Publish = "publish";
+        public const string Save = "save";
+        public const string Create = "create";
+        public const string Move = "move";
+        public const string Copy = "copy";
+        public const string Delete = "delete";
+        public const string Unpublish = "unpublish";
+    }
     public static class FieldSettings
     {
         public static Dictionary<Type, Type> DefaultPropertyTransformers = new Dictionary<Type, Type>

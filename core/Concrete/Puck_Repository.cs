@@ -10,7 +10,20 @@ namespace puck.core.Concrete
     public class Puck_Repository : I_Puck_Repository
     {
         public PuckContext repo = new PuckContext();
+        public IQueryable<PuckAudit> GetPuckAudit()
+        {
+            return repo.PuckAudit;
+        }
 
+        public void AddPuckAudit(PuckAudit pa)
+        {
+            repo.PuckAudit.Add(pa);
+        }
+
+        public void DeletePuckAudit(PuckAudit pa)
+        {
+            repo.PuckAudit.Remove(pa);
+        }
         public IQueryable<PuckInstruction> GetPuckInstruction()
         {
             return repo.PuckInstruction;
@@ -230,6 +243,11 @@ namespace puck.core.Concrete
         {
             var results = repo.PuckRevision
                 .Where(x => x.Id == id && x.IsPublishedRevision && x.Variant.ToLower().Equals(variant.ToLower()));
+            return results.FirstOrDefault();
+        }
+        public PuckRevision PublishedOrCurrentRevision(Guid id,string variant) {
+            var results = repo.PuckRevision
+                .Where(x => x.Id == id && x.Variant.ToLower().Equals(variant.ToLower()) && (x.IsPublishedRevision || (x.HasNoPublishedRevision && x.Current)));
             return results.FirstOrDefault();
         }
         public void DeleteMeta(string name,string key,string value)

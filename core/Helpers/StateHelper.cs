@@ -234,6 +234,14 @@ namespace puck.core.Helpers
             foreach (var t in ApiHelper.AllModels(true))
             {
                 var instance = ApiHelper.CreateInstance(t);
+                try
+                {
+                    ObjectDumper.SetPropertyValues(instance);
+                }
+                catch (Exception ex) {
+                    PuckCache.PuckLog.Log(ex);
+                };
+                
                 var dmp = ObjectDumper.Write(instance, int.MaxValue);
                 var analyzers = new List<KeyValuePair<string, Analyzer>>();
                 PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string, string>();

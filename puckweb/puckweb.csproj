@@ -1146,6 +1146,7 @@
     <Content Include="areas\admin\Views\Api\ChangeTypeDialog.cshtml" />
     <Content Include="areas\admin\Views\Api\ChangeTypeMappingDialog.cshtml" />
     <Content Include="areas\admin\Views\Api\TimedPublishDialog.cshtml" />
+    <Content Include="areas\admin\Views\Api\Audit.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

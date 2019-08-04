@@ -22,6 +22,9 @@ namespace puck.core.Abstract
         IQueryable<PuckInstruction> GetPuckInstruction();
         void AddPuckInstruction(PuckInstruction pi);
         void DeletePuckInstruction(PuckInstruction pi);
+        IQueryable<PuckAudit> GetPuckAudit();
+        void AddPuckAudit(PuckAudit pa);
+        void DeletePuckAudit(PuckAudit pa);
 
         IQueryable<PuckMeta> GetPuckMeta();
         void DeleteMeta(string name, string key, string value);
@@ -48,6 +51,7 @@ namespace puck.core.Abstract
         IQueryable<PuckRevision> PublishedRevisions(Guid id);
         PuckRevision CurrentRevision(Guid id, string variant);
         PuckRevision PublishedRevision(Guid id,string variant);
+        PuckRevision PublishedOrCurrentRevision(Guid id,string variant);
         void SaveChanges();        
     }
 }

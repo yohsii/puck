@@ -269,7 +269,22 @@ ul.content.nomenu .node i.menu{display:none;}
 .overlay_screen select.input-validation-error {
 background:#ffeeee;
 }
-
+.audit_container tr:nth-child(odd) {
+    background:#fbfbfb;
+}
+.audit_container th, .audit_container td {
+    padding: 5px;
+}
+.audit_container li.page {
+    padding:2px;
+    margin:5px;
+    float:left;
+    cursor:pointer;
+}
+.audit_container li.page.current {
+    text-decoration:underline;
+    cursor:default;
+}
 .view_edit .node.selected {
     background: #eeffee;
 }

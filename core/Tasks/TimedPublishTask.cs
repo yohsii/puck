@@ -30,7 +30,7 @@ namespace puck.core.Tasks
                 var id =Guid.Parse(meta.Key.Split(':')[0]);
                 var variant = meta.Key.Split(':')[1];
                 var descendantVariants = (meta.Value ?? "").Split(new char[] { ','},StringSplitOptions.RemoveEmptyEntries).ToList();
-                ApiHelper.Publish(id, variant,descendantVariants);
+                ApiHelper.Publish(id, variant,descendantVariants,userName:meta.Username);
             }
 
             foreach (var meta in unpublishMeta)
@@ -38,7 +38,7 @@ namespace puck.core.Tasks
                 var id = Guid.Parse(meta.Key.Split(':')[0]);
                 var variant = meta.Key.Split(':')[1];
                 var descendantVariants = new List<string>() {variant };
-                ApiHelper.UnPublish(id, variant, descendantVariants);
+                ApiHelper.UnPublish(id, variant, descendantVariants,userName:meta.Username);
             }
 
             publishMeta.ForEach(x => repo.DeleteMeta(x));

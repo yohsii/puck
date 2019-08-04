@@ -59342,3 +59342,1208 @@ message: 04/08/2019 00:24:22
 stacktrace: 
 
 
+date: 04/08/2019 14:23:10
+message: An exception has been raised that is likely due to a transient failure. If you are connecting to a SQL Azure database consider using SqlAzureExecutionStrategy.
+stacktrace:    at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Entity.Core.Objects.ObjectQuery`1.<System.Collections.Generic.IEnumerable<T>.GetEnumerator>b__0()
+   at System.Data.Entity.Internal.LazyEnumerator`1.MoveNext()
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 26
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:41:02
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:05
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:07
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:09
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:11
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:13
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:15
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:17
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:19
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:21
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:23
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:25
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:27
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:29
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:31
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:33
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:35
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:37
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:39
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:41
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:43
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:46
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:47
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:49
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:51
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:53
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:55
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:57
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:53:59
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:01
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:03
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:05
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:07
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:09
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:11
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:13
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:15
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:17
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:19
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:21
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:23
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:25
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:27
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 19:54:29
+message: Value cannot be null.
+Parameter name: httpContext
+stacktrace:    at System.Web.HttpContextWrapper..ctor(HttpContext httpContext)
+   at puckweb.MvcApplication.<>c.<RegisterServices>b__1_2(IContext context) in C:\project\cms proj\puck\puckweb\Global.asax.cs:line 68
+   at Ninject.Activation.Provider`1.Create(IContext context)
+   at Ninject.Activation.Context.ResolveInternal(Object scope)
+   at Ninject.Activation.Context.Resolve()
+   at Ninject.KernelBase.Resolve(IRequest request, Boolean handleMissingBindings)
+   at Ninject.ResolutionExtensions.Get[T](IResolutionRoot root, IParameter[] parameters)
+   at puck.core.Helpers.ApiHelper.get_userManager() in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 40
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:00:19
+message: A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 50 - Local Database Runtime error occurred. Cannot create an automatic instance. See the Windows Application event log for error details.
+)
+stacktrace:    at System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling, SqlAuthenticationProviderManager sqlAuthProviderManager)
+   at System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   at System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   at System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   at System.Data.Entity.SqlServer.SqlProviderServices.<>c__DisplayClass33.<UsingConnection>b__32()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.SqlServer.SqlProviderServices.UsingMasterConnection(DbConnection sqlConnection, Action`1 act)
+   at System.Data.Entity.SqlServer.SqlProviderServices.CreateDatabaseFromScript(Nullable`1 commandTimeout, DbConnection sqlConnection, String createDatabaseScript)
+   at System.Data.Entity.SqlServer.SqlProviderServices.DbCreateDatabase(DbConnection connection, Nullable`1 commandTimeout, StoreItemCollection storeItemCollection)
+   at System.Data.Entity.Migrations.Utilities.DatabaseCreator.Create(DbConnection connection)
+   at System.Data.Entity.Migrations.DbMigrator.EnsureDatabaseExists(Action mustSucceedToKeepDatabase)
+   at System.Data.Entity.Migrations.DbMigrator.Update(String targetMigration)
+   at System.Data.Entity.Internal.DatabaseCreator.CreateDatabase(InternalContext internalContext, Func`3 createMigrator, ObjectContext objectContext)
+   at System.Data.Entity.Database.Create(DatabaseExistenceState existenceState)
+   at System.Data.Entity.CreateDatabaseIfNotExists`1.InitializeDatabase(TContext context)
+   at System.Data.Entity.Internal.InternalContext.PerformInitializationAction(Action action)
+   at System.Data.Entity.Internal.InternalContext.PerformDatabaseInitialization()
+   at System.Data.Entity.Internal.RetryAction`1.PerformAction(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeDatabaseAction(Action`1 action)
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate)
+   at Microsoft.AspNet.Identity.EntityFramework.UserStore`6.<GetUserAggregateAsync>d__67.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNet.Identity.AsyncHelper.RunSync[TResult](Func`1 func)
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:00:19
+message: A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 50 - Local Database Runtime error occurred. Cannot create an automatic instance. See the Windows Application event log for error details.
+)
+stacktrace:    at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   at System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   at System.Data.Entity.SqlServer.SqlProviderServices.<>c__DisplayClass33.<UsingConnection>b__32()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.SqlServer.SqlProviderServices.UsingMasterConnection(DbConnection sqlConnection, Action`1 act)
+   at System.Data.Entity.SqlServer.SqlProviderServices.CreateDatabaseFromScript(Nullable`1 commandTimeout, DbConnection sqlConnection, String createDatabaseScript)
+   at System.Data.Entity.SqlServer.SqlProviderServices.DbCreateDatabase(DbConnection connection, Nullable`1 commandTimeout, StoreItemCollection storeItemCollection)
+   at System.Data.Entity.Migrations.Utilities.DatabaseCreator.Create(DbConnection connection)
+   at System.Data.Entity.Migrations.DbMigrator.EnsureDatabaseExists(Action mustSucceedToKeepDatabase)
+   at System.Data.Entity.Migrations.DbMigrator.Update(String targetMigration)
+   at System.Data.Entity.Internal.DatabaseCreator.CreateDatabase(InternalContext internalContext, Func`3 createMigrator, ObjectContext objectContext)
+   at System.Data.Entity.Database.Create(DatabaseExistenceState existenceState)
+   at System.Data.Entity.CreateDatabaseIfNotExists`1.InitializeDatabase(TContext context)
+   at System.Data.Entity.Internal.InternalContext.PerformInitializationAction(Action action)
+   at System.Data.Entity.Internal.InternalContext.PerformDatabaseInitialization()
+   at System.Data.Entity.Internal.RetryAction`1.PerformAction(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeDatabaseAction(Action`1 action)
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate)
+   at Microsoft.AspNet.Identity.EntityFramework.UserStore`6.<GetUserAggregateAsync>d__67.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNet.Identity.AsyncHelper.RunSync[TResult](Func`1 func)
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:00:21
+message: A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 50 - Local Database Runtime error occurred. Cannot create an automatic instance. See the Windows Application event log for error details.
+)
+stacktrace:    at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   at System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   at System.Data.Entity.SqlServer.SqlProviderServices.<>c__DisplayClass33.<UsingConnection>b__32()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.SqlServer.SqlProviderServices.UsingMasterConnection(DbConnection sqlConnection, Action`1 act)
+   at System.Data.Entity.SqlServer.SqlProviderServices.CreateDatabaseFromScript(Nullable`1 commandTimeout, DbConnection sqlConnection, String createDatabaseScript)
+   at System.Data.Entity.SqlServer.SqlProviderServices.DbCreateDatabase(DbConnection connection, Nullable`1 commandTimeout, StoreItemCollection storeItemCollection)
+   at System.Data.Entity.Migrations.Utilities.DatabaseCreator.Create(DbConnection connection)
+   at System.Data.Entity.Migrations.DbMigrator.EnsureDatabaseExists(Action mustSucceedToKeepDatabase)
+   at System.Data.Entity.Migrations.DbMigrator.Update(String targetMigration)
+   at System.Data.Entity.Internal.DatabaseCreator.CreateDatabase(InternalContext internalContext, Func`3 createMigrator, ObjectContext objectContext)
+   at System.Data.Entity.Database.Create(DatabaseExistenceState existenceState)
+   at System.Data.Entity.CreateDatabaseIfNotExists`1.InitializeDatabase(TContext context)
+   at System.Data.Entity.Internal.InternalContext.PerformInitializationAction(Action action)
+   at System.Data.Entity.Internal.InternalContext.PerformDatabaseInitialization()
+   at System.Data.Entity.Internal.RetryAction`1.PerformAction(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeDatabaseAction(Action`1 action)
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate)
+   at Microsoft.AspNet.Identity.EntityFramework.UserStore`6.<GetUserAggregateAsync>d__67.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNet.Identity.AsyncHelper.RunSync[TResult](Func`1 func)
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:00:38
+message: A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 50 - Local Database Runtime error occurred. Cannot create an automatic instance. See the Windows Application event log for error details.
+)
+stacktrace:    at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   at System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   at System.Data.Entity.SqlServer.SqlProviderServices.<>c__DisplayClass33.<UsingConnection>b__32()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.SqlServer.SqlProviderServices.UsingMasterConnection(DbConnection sqlConnection, Action`1 act)
+   at System.Data.Entity.SqlServer.SqlProviderServices.CreateDatabaseFromScript(Nullable`1 commandTimeout, DbConnection sqlConnection, String createDatabaseScript)
+   at System.Data.Entity.SqlServer.SqlProviderServices.DbCreateDatabase(DbConnection connection, Nullable`1 commandTimeout, StoreItemCollection storeItemCollection)
+   at System.Data.Entity.Migrations.Utilities.DatabaseCreator.Create(DbConnection connection)
+   at System.Data.Entity.Migrations.DbMigrator.EnsureDatabaseExists(Action mustSucceedToKeepDatabase)
+   at System.Data.Entity.Migrations.DbMigrator.Update(String targetMigration)
+   at System.Data.Entity.Internal.DatabaseCreator.CreateDatabase(InternalContext internalContext, Func`3 createMigrator, ObjectContext objectContext)
+   at System.Data.Entity.Database.Create(DatabaseExistenceState existenceState)
+   at System.Data.Entity.CreateDatabaseIfNotExists`1.InitializeDatabase(TContext context)
+   at System.Data.Entity.Internal.InternalContext.PerformInitializationAction(Action action)
+   at System.Data.Entity.Internal.InternalContext.PerformDatabaseInitialization()
+   at System.Data.Entity.Internal.RetryAction`1.PerformAction(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeDatabaseAction(Action`1 action)
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate)
+   at Microsoft.AspNet.Identity.EntityFramework.UserStore`6.<GetUserAggregateAsync>d__67.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNet.Identity.AsyncHelper.RunSync[TResult](Func`1 func)
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:00:54
+message: A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: SQL Network Interfaces, error: 50 - Local Database Runtime error occurred. Cannot create an automatic instance. See the Windows Application event log for error details.
+)
+stacktrace:    at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   at System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   at System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   at System.Data.SqlClient.SqlConnection.Open()
+   at System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   at System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   at System.Data.Entity.SqlServer.SqlProviderServices.<>c__DisplayClass33.<UsingConnection>b__32()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   at System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   at System.Data.Entity.SqlServer.SqlProviderServices.UsingMasterConnection(DbConnection sqlConnection, Action`1 act)
+   at System.Data.Entity.SqlServer.SqlProviderServices.CreateDatabaseFromScript(Nullable`1 commandTimeout, DbConnection sqlConnection, String createDatabaseScript)
+   at System.Data.Entity.SqlServer.SqlProviderServices.DbCreateDatabase(DbConnection connection, Nullable`1 commandTimeout, StoreItemCollection storeItemCollection)
+   at System.Data.Entity.Migrations.Utilities.DatabaseCreator.Create(DbConnection connection)
+   at System.Data.Entity.Migrations.DbMigrator.EnsureDatabaseExists(Action mustSucceedToKeepDatabase)
+   at System.Data.Entity.Migrations.DbMigrator.Update(String targetMigration)
+   at System.Data.Entity.Internal.DatabaseCreator.CreateDatabase(InternalContext internalContext, Func`3 createMigrator, ObjectContext objectContext)
+   at System.Data.Entity.Database.Create(DatabaseExistenceState existenceState)
+   at System.Data.Entity.CreateDatabaseIfNotExists`1.InitializeDatabase(TContext context)
+   at System.Data.Entity.Internal.InternalContext.PerformInitializationAction(Action action)
+   at System.Data.Entity.Internal.InternalContext.PerformDatabaseInitialization()
+   at System.Data.Entity.Internal.RetryAction`1.PerformAction(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeDatabaseAction(Action`1 action)
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate, CancellationToken cancellationToken)
+   at System.Data.Entity.QueryableExtensions.FirstOrDefaultAsync[TSource](IQueryable`1 source, Expression`1 predicate)
+   at Microsoft.AspNet.Identity.EntityFramework.UserStore`6.<GetUserAggregateAsync>d__67.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at Microsoft.AspNet.Identity.AsyncHelper.RunSync[TResult](Func`1 func)
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 245
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:01:28
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:02:55
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:03:56
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:03:58
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:00
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:02
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:04
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:06
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:08
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:10
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:12
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:14
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:16
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:18
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:20
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:22
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:24
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:26
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:28
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:30
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:32
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:34
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:36
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:38
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:40
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:42
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:44
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:46
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:48
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:50
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:52
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:54
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+
+date: 04/08/2019 20:04:56
+message: Object reference not set to an instance of an object.
+stacktrace:    at puck.core.Helpers.ApiHelper.SaveContent[T](T mod, Boolean makeRevision, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 812
+   at puck.core.Helpers.ApiHelper.Publish(Guid id, String variant, List`1 descendantVariants, String userName) in C:\project\cms proj\puck\core\Helpers\ApiHelper_Services.cs:line 261
+   at puck.core.Tasks.TimedPublishTask.Run(CancellationToken t) in C:\project\cms proj\puck\core\Tasks\TimedPublishTask.cs:line 33
+   at puck.core.Base.BaseTask.DoRun(CancellationToken t) in C:\project\cms proj\puck\core\Base\BaseTask.cs:line 36
+
+

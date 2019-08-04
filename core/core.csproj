@@ -228,6 +228,7 @@
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="debugging.cs" />
     <Compile Include="Entities\GeneratedEntities.cs" />
+    <Compile Include="Entities\PuckAudit.cs" />
     <Compile Include="Entities\PuckInstruction.cs" />
     <Compile Include="Entities\PuckMeta.cs" />
     <Compile Include="Entities\PuckRevision.cs" />
@@ -255,6 +256,10 @@
     <Compile Include="Migrations\201908031110407_puckMetaDateTime.cs" />
     <Compile Include="Migrations\201908031110407_puckMetaDateTime.Designer.cs">
       <DependentUpon>201908031110407_puckMetaDateTime.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908041817134_audit.cs" />
+    <Compile Include="Migrations\201908041817134_audit.Designer.cs">
+      <DependentUpon>201908041817134_audit.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\ChangeType.cs" />
     <Compile Include="Models\CropInfo.cs" />
@@ -298,6 +303,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908031110407_puckMetaDateTime.resx">
       <DependentUpon>201908031110407_puckMetaDateTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908041817134_audit.resx">
+      <DependentUpon>201908041817134_audit.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

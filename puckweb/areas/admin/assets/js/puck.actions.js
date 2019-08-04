@@ -214,6 +214,16 @@ var showTimedPublishDialog = function (id, variant) {
         });
     });
 }
+var showAudit = function (id,variant, username,page, pageSize, container) {
+    getAuditMarkup(id, variant, username, page, pageSize, function (html) {
+        container.html(html);
+        cright.find("li.page:not(.current)").click(function () {
+            var el = $(this);
+            var attPage = el.attr("data-page");
+            showAudit(id, variant, username, attPage, pageSize, container);
+        });
+    });    
+}
 var timedPublish = function (vcsv, id) {
     var variants = vcsv.split(",");
     if (variants.length == 1) {

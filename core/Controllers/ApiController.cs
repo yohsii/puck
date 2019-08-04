@@ -329,9 +329,9 @@ namespace puck.core.Controllers
                 if (model.PublishAt.HasValue) {
                     var value = "";
                     if (model.PublishDescendantVariants != null) {
-                        value =string.Join(",",model.PublishDescendantVariants);
+                        value = string.Join(",", model.PublishDescendantVariants);
                     }
-                    var meta = repo.GetPuckMeta().FirstOrDefault(x=>x.Name==DBNames.TimedPublish&&x.Key==key);
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedPublish && x.Key == key);
                     if (meta == null)
                     {
                         meta = new PuckMeta();
@@ -340,7 +340,16 @@ namespace puck.core.Controllers
                     meta.Name = DBNames.TimedPublish;
                     meta.Key = key;
                     meta.Dt = model.PublishAt.Value;
+                    meta.Username = User.Identity.Name;
                     meta.Value = value;
+                }
+                else
+                {
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedPublish && x.Key == key);
+                    if (meta != null)
+                    {
+                        repo.DeleteMeta(meta);
+                    }
                 }
                 if (model.UnpublishAt.HasValue)
                 {
@@ -353,24 +362,34 @@ namespace puck.core.Controllers
                     meta.Name = DBNames.TimedUnpublish;
                     meta.Key = key;
                     meta.Dt = model.UnpublishAt.Value;
+                    meta.Username = User.Identity.Name;
                 }
+                else
+                {
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedUnpublish && x.Key == key);
+                    if (meta != null)
+                    {
+                        repo.DeleteMeta(meta);
+                    }
+                }
+
                 repo.SaveChanges();
                 success = true;
                 message = "Schedule set";
             }
             else {
-                message =string.Join(". ", ModelState.Values.SelectMany(x=>x.Errors.Select(xx=>xx.ErrorMessage)));
+                message = string.Join(". ", ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage)));
             }
-            return Json(new {success=success,message=message });
+            return Json(new { success = success, message = message });
         }
         [Auth(Roles = PuckRoles.TimedPublish)]
-        public ActionResult TimedPublishDialog(Guid id,string variant) {
+        public ActionResult TimedPublishDialog(Guid id, string variant) {
             var model = new TimedPublish();
             model.Id = id;
             model.Variant = variant;
             model.Variants = ApiHelper.Variants();
             var key = $"{id}:{variant}";
-            var publishMeta = repo.GetPuckMeta().Where(x=>x.Name == DBNames.TimedPublish&&x.Key==key).FirstOrDefault();
+            var publishMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TimedPublish && x.Key == key).FirstOrDefault();
             if (publishMeta != null) {
                 if (publishMeta.Dt.HasValue)
                 {
@@ -396,6 +415,23 @@ namespace puck.core.Controllers
             }
             repo.SaveChanges();
             return View(model);
+        }
+        [Auth(Roles = PuckRoles.Audit)]
+        public ActionResult AuditMarkup(Guid id,int page=1,int pageSize=10,string variant=null,string userName=null) {
+            var revision = repo.GetPuckRevision().Where(x => x.Id == id).FirstOrDefault();
+            if (revision != null)
+                ViewData["nodeName"] = revision.NodeName;
+            var audit = repo.GetPuckAudit().Where(x => x.ContentId == id);
+            if (!string.IsNullOrEmpty(variant))
+                audit = audit.Where(x=>x.Variant.ToLower().Equals(variant.ToLower()));
+            if (!string.IsNullOrEmpty(userName))
+                audit = audit.Where(x=>x.Username.ToLower().Equals(userName.ToLower()));
+            var count = audit.Count();
+            var model = audit.OrderByDescending(x => x.Timestamp).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            ViewData["count"] = count;
+            ViewData["currentPage"] = page;
+            ViewData["pageSize"] = pageSize;
+            return View("Audit",model);
         }
         [Auth(Roles = PuckRoles.ChangeType)]
         [HttpPost]

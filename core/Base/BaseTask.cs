@@ -35,14 +35,18 @@ namespace puck.core.Base
                     return;
                 Run(t);
                 this.LastRun = DateTime.Now;
-                if (TaskEnd != null)
-                    TaskEnd(this, new DispatchEventArgs { Task = this });
             }
             catch (Exception ex) {
                 PuckCache.PuckLog.Log(ex);
             }
             finally
             {
+                try {
+                    if (TaskEnd != null)
+                        TaskEnd(this, new DispatchEventArgs { Task = this });
+                } catch (Exception ex) {
+                    PuckCache.PuckLog.Log(ex);
+                }
                 if (taken)
                     Monitor.Exit(lck);
             }            

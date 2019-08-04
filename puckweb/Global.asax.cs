@@ -65,8 +65,10 @@ namespace puckweb
 
             kernel.Bind<PuckUserManager>().ToMethod(context =>
             {
-                var cbase = new HttpContextWrapper(HttpContext.Current);
-                return cbase.GetOwinContext().Get<PuckUserManager>();
+                var userManager = new PuckUserManager(new UserStore<PuckUser>(new PuckContext()));
+                //var cbase = new HttpContextWrapper(HttpContext.Current);
+                //return cbase.GetOwinContext().Get<PuckUserManager>();
+                return userManager;
             });
 
             kernel.Bind<PuckSignInManager>().ToMethod(context =>

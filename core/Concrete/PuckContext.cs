@@ -25,6 +25,6 @@ namespace puck.core.Entities
         public DbSet<GeneratedProperty> GeneratedProperty { get; set; }
         public DbSet<GeneratedAttribute> GeneratedAttribute { get; set; }
         public DbSet<PuckInstruction> PuckInstruction { get; set; }
-        
+        public DbSet<PuckAudit> PuckAudit { get; set; }
     }
 }

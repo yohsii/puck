@@ -236,9 +236,18 @@ namespace puck.core.Helpers
             }
             return rowsAffected;
         }
-        public static void Publish(Guid id, string variant,List<string> descendantVariants) {
+        public static void Publish(Guid id, string variant,List<string> descendantVariants,string userName=null) {
             lock (_savelck)
             {
+                PuckUser user = null;
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    user = userManager.FindByName(userName);
+                    if (user == null)
+                        throw new UserNotFoundException("there is no user for provided username");
+                }else
+                    userName = HttpContext.Current.User.Identity.Name;
+
                 var repo = Repo;
                 var currentRevision = repo.CurrentRevision(id, variant);
                 if (currentRevision.ParentId != Guid.Empty) {
@@ -249,8 +258,9 @@ namespace puck.core.Helpers
                 }
                 var mod = ApiHelper.RevisionToBaseModel(currentRevision);
                 mod.Published = true;
-                SaveContent(mod, makeRevision: false);
+                SaveContent(mod, makeRevision: false,userName:userName);
                 var affected = 0;
+                string notes = "";
                 if (descendantVariants.Any())
                 {
                     //set descendants to have HasNoPublishedRevision set to false
@@ -262,21 +272,35 @@ namespace puck.core.Helpers
                     var descendantVariantsLowerCase = descendantVariants.Select(x => x.ToLower()).ToList();
                     var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
                     var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
+                    AddPublishInstruction(descendantModels);
                     indexer.Index(descendantModels);
+                    if (descendantModels.Any())
+                        notes = $"{descendantModels.Count} descendant items also published";
                 }
+                AddAuditEntry(mod.Id, mod.Variant, AuditActions.Publish, notes, userName);
             }
         }
-        public static void UnPublish(Guid id, string variant, List<string> descendantVariants)
+        public static void UnPublish(Guid id, string variant, List<string> descendantVariants,string userName=null)
         {
             lock (_savelck)
             {
+                PuckUser user = null;
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    user = userManager.FindByName(userName);
+                    if (user == null)
+                        throw new UserNotFoundException("there is no user for provided username");
+                }
+                else
+                    userName = HttpContext.Current.User.Identity.Name;
+
                 var repo = Repo;
                 var toIndex = new List<BaseModel>();
                 var currentRevision = repo.CurrentRevision(id, variant);
                 var publishedRevision = repo.PublishedRevision(id, variant);
                 var mod = ApiHelper.RevisionToBaseModel(currentRevision);
                 mod.Published = false;
-                SaveContent(mod, makeRevision: false);
+                SaveContent(mod, makeRevision: false,userName:userName);
                 toIndex.Add(mod);
                 var publishedVariants = repo.PublishedRevisionVariants(id, variant).ToList();
                 var affected = 0;
@@ -289,6 +313,7 @@ namespace puck.core.Helpers
                         UpdatePathRelatedMeta(publishedRevision.Path, currentRevision.Path);
                     }
                 }
+                var notes = "";
                 if (descendantVariants.Any())
                 {
                     //set descendants to have HasNoPublishedRevision set to true
@@ -299,8 +324,25 @@ namespace puck.core.Helpers
                     var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
                     var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
                     toIndex.AddRange(descendantModels);
+                    if (descendantModels.Any())
+                        notes = $"{descendantModels.Count} descendant items also unpublished";
                 }
+                AddPublishInstruction(toIndex);
                 indexer.Index(toIndex);
+                AddAuditEntry(mod.Id,mod.Variant,AuditActions.Unpublish,notes,userName);
+            }
+        }
+        public static void AddPublishInstruction(List<BaseModel> toIndex) {
+            var repo = Repo;
+            if (toIndex.Count > 0)
+            {
+                var instruction = new PuckInstruction() { InstructionKey = InstructionKeys.Publish, Count = toIndex.Count, ServerName = ServerName() };
+                string instructionDetail = "";
+                toIndex.ForEach(x => instructionDetail += $"{x.Id.ToString()}:{x.Variant},");
+                instructionDetail = instructionDetail.TrimEnd(',');
+                instruction.InstructionDetail = instructionDetail;
+                repo.AddPuckInstruction(instruction);
+                repo.SaveChanges();
             }
         }
         public static void Publish(Guid id,string variant,List<string> descendants,bool publish) {
@@ -338,7 +380,17 @@ namespace puck.core.Helpers
             repo.SaveChanges();
             indexer.Index(repoItems);                            
         }
-        public static void Delete(Guid id, string variant = null) {
+        public static void Delete(Guid id, string variant = null,string userName=null) {
+            PuckUser user = null;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                user = userManager.FindByName(userName);
+                if (user == null)
+                    throw new UserNotFoundException("there is no user for provided username");
+            }
+            else
+                userName = HttpContext.Current.User.Identity.Name;
+            string notes = "";
             //remove from index
             var repo = Repo;
             var qh = new QueryHelper<BaseModel>();
@@ -368,10 +420,12 @@ namespace puck.core.Helpers
             if (repoItems.Count > 0)
             {
                 repoVariants = repo.CurrentRevisionVariants(repoItems.First().Id, repoItems.First().Variant).ToList();
-                if (variants.Count == 0 || string.IsNullOrEmpty(variant))
+                if (repoVariants.Count == 0 || string.IsNullOrEmpty(variant))
                 {
                     var descendants = repo.CurrentRevisionDescendants(repoItems.First().Path).ToList();
                     repoItems.AddRange(descendants);
+                    if (descendants.Any())
+                        notes = $"{descendants.Count} descendant items also deleted";
                 }
             }
             repoItems.ForEach(x => {
@@ -425,6 +479,7 @@ namespace puck.core.Helpers
             }
             StateHelper.UpdateDomainMappings();
             StateHelper.UpdatePathLocaleMappings();
+            AddAuditEntry(id, variant ?? "", AuditActions.Delete, notes, userName);
             repo.SaveChanges();                         
         }
         public static string GetLiveOrCurrentPath(Guid id) {
@@ -562,7 +617,7 @@ namespace puck.core.Helpers
                 if (!string.IsNullOrEmpty(userName)) {
                     user = userManager.FindByName(userName);
                     if (user == null)
-                        throw new Exception("there is no user for provided username");
+                        throw new UserNotFoundException("there is no user for provided username");
                 }
                 ObjectDumper.Transform(mod, int.MaxValue);
                 var beforeArgs = new BeforeIndexingEventArgs { Node = mod };
@@ -738,7 +793,7 @@ namespace puck.core.Helpers
                         }
                     }
                 }
-                
+
                 /*if (nameChanged)
                 {
                     var regex = new Regex(Regex.Escape(originalPath), RegexOptions.Compiled);
@@ -752,6 +807,12 @@ namespace puck.core.Helpers
                             .ForEach(x => x.Key = mod.Path);
                 }
                 */
+                string username = string.Empty;
+                if (user == null)
+                    username = HttpContext.Current.User.Identity.Name;
+                else
+                    username = user.UserName;
+
                 //add revision
                 PuckRevision revision;
                 if (makeRevision)
@@ -774,10 +835,7 @@ namespace puck.core.Helpers
                     }
                 }
                 revision.IdPath = idPath;
-                if(user==null)
-                    revision.LastEditedBy = HttpContext.Current.User.Identity.Name;
-                else
-                    revision.LastEditedBy = user.UserName;
+                revision.LastEditedBy = username;
                 revision.CreatedBy = mod.CreatedBy;
                 revision.Created = mod.Created;
                 revision.Id = mod.Id;
@@ -913,16 +971,23 @@ namespace puck.core.Helpers
 
                 var afterArgs = new IndexingEventArgs { Node = mod };
                 OnAfterIndex(null, afterArgs);
-                if (toIndex.Count > 0) {
-                    var instruction = new PuckInstruction() {InstructionKey=InstructionKeys.Publish,Count=toIndex.Count,ServerName=ServerName() };
-                    string instructionDetail = "";
-                    toIndex.ForEach(x=>instructionDetail+=$"{x.Id.ToString()}:{x.Variant},");
-                    instructionDetail = instructionDetail.TrimEnd(',');
-                    instruction.InstructionDetail = instructionDetail;
-                    repo.AddPuckInstruction(instruction);
-                    repo.SaveChanges();
-                }                
+                AddPublishInstruction(toIndex);
+
+                string auditAction = mod.Published ? AuditActions.Publish : AuditActions.Save;
+                if (original == null) auditAction = AuditActions.Create;
+                AddAuditEntry(mod.Id,mod.Variant,auditAction,"",username);
             }
+        }
+        public static void AddAuditEntry(Guid id,string variant,string action,string notes,string username) {
+            var repo = Repo;
+            var audit = new PuckAudit();
+            audit.ContentId = id;
+            audit.Variant = variant;
+            audit.Action = action;
+            audit.Notes = notes;
+            audit.Username = username;
+            repo.AddPuckAudit(audit);
+            repo.SaveChanges();
         }
         public static void RePublishEntireSite() {
             var repo = Repo;
@@ -1074,14 +1139,29 @@ namespace puck.core.Helpers
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key == path).ToList();
             return meta.Count == 0 ? string.Empty : string.Join(",",meta.Select(x=>x.Value));
         }
-        public static void Copy(Guid id,Guid parentId,bool includeDescendants) {
-            var repo = Repo;
+        public static void Copy(Guid id,Guid parentId,bool includeDescendants,string userName=null) {
+            PuckUser user = null;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                user = userManager.FindByName(userName);
+                if (user == null)
+                    throw new UserNotFoundException("there is no user for provided username");
+            }
+            else
+                userName = HttpContext.Current.User.Identity.Name;
 
+            string notes = "";
+
+            var repo = Repo;
             var itemsToCopy = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).ToList();
             if (itemsToCopy.Count == 0) return;
             var descendants = new List<PuckRevision>();
-            if(includeDescendants)
+            if (includeDescendants)
+            {
                 descendants = repo.CurrentRevisionDescendants(itemsToCopy.First().IdPath).ToList();
+                if (descendants.Any())
+                    notes = $"{descendants.Count} descendant items also copied";
+            }
 
             var allItemsToCopy = new List<PuckRevision>();
             allItemsToCopy.AddRange(itemsToCopy);
@@ -1117,10 +1197,20 @@ namespace puck.core.Helpers
             }
 
             SaveCopies(parentId,allItemsToCopy);
-
+            AddAuditEntry(id, "", AuditActions.Copy, notes, userName);
         }
-        public static void Move(Guid nodeId, Guid destinationId)
+        public static void Move(Guid nodeId, Guid destinationId,string userName=null)
         {
+            PuckUser user = null;
+            if (!string.IsNullOrEmpty(userName))
+            {
+                user = userManager.FindByName(userName);
+                if (user == null)
+                    throw new UserNotFoundException("there is no user for provided username");
+            }
+            else
+                userName = HttpContext.Current.User.Identity.Name;
+
             var repo = Repo;
             var startRevisions = repo.GetPuckRevision().Where(x => x.Id == nodeId && x.Current).ToList();
             var destinationRevisions = repo.GetPuckRevision().Where(x=>x.Id==destinationId && x.Current).ToList();
@@ -1148,6 +1238,8 @@ namespace puck.core.Helpers
             else {
                 throw new Exception("Move cancelled by custom event handler.");
             }
+            if (startNodes.Any())
+                AddAuditEntry(startNodes.First().Id, startNodes.First().Variant, AuditActions.Move, "", userName);
         }
         public static void Move(string start, string destination) {
             var repo = Repo;

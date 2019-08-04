@@ -389,6 +389,9 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
         case "timedpublish":
             timedPublish(node.attr("data-variants"),node.attr("data-id"));
             break;
+        case "audit":
+            showAudit(node.attr("data-id"),"","",1,20,cright);
+            break;
         case "translate":
             getCreateDialog(function (data) {
                 overlay(data, 400, 250,undefined,"Translate");
