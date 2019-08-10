@@ -24,6 +24,8 @@ using puck.core.Identity;
 using Microsoft.AspNet.Identity;
 using System.Threading.Tasks;
 using System.Web.Hosting;
+using puck.core.State;
+using puck.core.Services;
 
 namespace puck.core.Controllers
 {
@@ -38,7 +40,9 @@ namespace puck.core.Controllers
         PuckRoleManager roleManager;
         PuckUserManager userManager;
         PuckSignInManager signInManager;
-        public ApiController(I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r, PuckRoleManager rm, PuckUserManager um, PuckSignInManager sm) {
+        ContentService contentService;
+        ApiHelper apiHelper;
+        public ApiController(ApiHelper ah,ContentService cs,I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r, PuckRoleManager rm, PuckUserManager um, PuckSignInManager sm) {
             this.indexer = i;
             this.searcher = s;
             this.log = l;
@@ -46,6 +50,8 @@ namespace puck.core.Controllers
             this.roleManager = rm;
             this.userManager = um;
             this.signInManager = sm;
+            this.contentService = cs;
+            this.apiHelper = ah;
             StateHelper.SetFirstRequestUrl();
         }
         public ActionResult DevPage(string id = "0a2ebbd3-b118-4add-a219-4dbc54cd742a") {
@@ -79,7 +85,7 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult FieldGroups(string type)
         {
-            var model = ApiHelper.FieldGroups(type);
+            var model = apiHelper.FieldGroups(type);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
@@ -90,13 +96,13 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult Variants()
         {
-            var model = ApiHelper.Variants();
+            var model = apiHelper.Variants();
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult AllVariants()
         {
-            var model = ApiHelper.AllVariants();
+            var model = apiHelper.AllVariants();
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
@@ -124,17 +130,17 @@ namespace puck.core.Controllers
                     templatePath = dpath;
                 }
             }
-            var mod = ApiHelper.RevisionToBaseModel(model);
+            var mod = model.ToBaseModel();
             return View(templatePath, mod);
         }
         [Auth(Roles = PuckRoles.Notify)]
         public JsonResult Notify(string p_path) {
-            var model = ApiHelper.NotifyModel(p_path);
+            var model = apiHelper.NotifyModel(p_path);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Notify)]
         public ActionResult NotifyDialog(string p_path) {
-            var model = ApiHelper.NotifyModel(p_path);
+            var model = apiHelper.NotifyModel(p_path);
             return View(model);
         }
         [Auth(Roles = PuckRoles.Notify)]
@@ -143,7 +149,7 @@ namespace puck.core.Controllers
             string message = "";
             bool success = false;
             try {
-                ApiHelper.SetNotify(model);
+                apiHelper.SetNotify(model);
                 success = true;
             } catch (Exception ex) {
                 message = ex.Message;
@@ -153,13 +159,13 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Domain)]
         public ActionResult DomainMappingDialog(string p_path)
         {
-            var model = ApiHelper.DomainMapping(p_path);
+            var model = apiHelper.DomainMapping(p_path);
             return View((object)model);
         }
         [Auth(Roles = PuckRoles.Domain)]
         public JsonResult DomainMapping(string p_path)
         {
-            var model = ApiHelper.DomainMapping(p_path);
+            var model = apiHelper.DomainMapping(p_path);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Domain)]
@@ -169,7 +175,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                ApiHelper.SetDomain(p_path, domains);
+                apiHelper.SetDomain(p_path, domains);
                 success = true;
             }
             catch (Exception ex)
@@ -187,7 +193,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                ApiHelper.Copy(id, parentId, includeDescendants);
+                contentService.Copy(id, parentId, includeDescendants);
                 success = true;
             }
             catch (Exception ex)
@@ -205,7 +211,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                ApiHelper.Move(startId, destinationId);
+                contentService.Move(startId, destinationId);
                 success = true;
             }
             catch (Exception ex)
@@ -236,12 +242,12 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Localisation)]
         public ActionResult LocalisationDialog(string p_path)
         {
-            var model = ApiHelper.PathLocalisation(p_path);
+            var model = apiHelper.PathLocalisation(p_path);
             return View((object)model);
         }
         [Auth(Roles = PuckRoles.Localisation)]
         public JsonResult Localisation(string p_path) {
-            var model = ApiHelper.PathLocalisation(p_path);
+            var model = apiHelper.PathLocalisation(p_path);
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Localisation)]
@@ -252,7 +258,7 @@ namespace puck.core.Controllers
             bool success = false;
             try
             {
-                ApiHelper.SetLocalisation(p_path, variant);
+                apiHelper.SetLocalisation(p_path, variant);
                 success = true;
             }
             catch (Exception ex) {
@@ -270,17 +276,17 @@ namespace puck.core.Controllers
             //only return allowed types
             List<Type> allowedTypes = null;
             if (parent == null)
-                allowedTypes = ApiHelper.Models();
+                allowedTypes = apiHelper.Models();
             else
-                allowedTypes = ApiHelper.AllowedTypes(parent.Type);
+                allowedTypes = apiHelper.AllowedTypes(parent.Type);
 
             if (allowedTypes.Count == 0)
-                allowedTypes = ApiHelper.Models();
+                allowedTypes = apiHelper.Models();
 
             //further filtering based on allowed types and the types of the children nodes
             var typesToRemove = new List<Type>();
             foreach (var type in allowedTypes) {
-                var typeAllowedTypes = ApiHelper.AllowedTypes(type.AssemblyQualifiedName);
+                var typeAllowedTypes = apiHelper.AllowedTypes(type.AssemblyQualifiedName);
                 if (typeAllowedTypes.Count == 0)
                     continue;
                 foreach (var childRevision in children) {
@@ -306,9 +312,9 @@ namespace puck.core.Controllers
             var model = new ChangeType() { ContentId = id, ContentType = tCurrentType, Revision = revision,
                 ContentProperties = currentTypeProperties, NewType = tNewType, NewTypeProperties = newTypeProperties };
 
-            model.Templates = ApiHelper.AllowedViews(tNewType.AssemblyQualifiedName);
+            model.Templates = apiHelper.AllowedViews(tNewType.AssemblyQualifiedName);
             if (model.Templates.Count == 0)
-                model.Templates = ApiHelper.Views();
+                model.Templates = apiHelper.Views();
             var selectListItems = new List<SelectListItem>();
             selectListItems.Add(new SelectListItem() { Text = "-- select template --", Value = "", Selected = true });
             foreach (var template in model.Templates.OrderBy(x => x.Name)) {
@@ -387,7 +393,7 @@ namespace puck.core.Controllers
             var model = new TimedPublish();
             model.Id = id;
             model.Variant = variant;
-            model.Variants = ApiHelper.Variants();
+            model.Variants = apiHelper.Variants();
             var key = $"{id}:{variant}";
             var publishMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TimedPublish && x.Key == key).FirstOrDefault();
             if (publishMeta != null) {
@@ -477,7 +483,7 @@ namespace puck.core.Controllers
                         }
 
                     }
-                    ApiHelper.SaveContent(newModelAsBaseModel);
+                    contentService.SaveContent(newModelAsBaseModel);
                 }
                 success = true;
             }
@@ -668,7 +674,7 @@ namespace puck.core.Controllers
             string message = "";
             bool success = false;
             try{
-                ApiHelper.Sort(parentId,items);
+                contentService.Sort(parentId,items);
                 success = true;
             }
             catch (Exception ex) {
@@ -689,7 +695,7 @@ namespace puck.core.Controllers
                 try
                 {
                     var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    ApiHelper.Publish(id, variant, arrDescendants);
+                    contentService.Publish(id, variant, arrDescendants);
                     success = true;
                 }
                 catch (Exception ex)
@@ -712,7 +718,7 @@ namespace puck.core.Controllers
                 try
                 {
                     var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    ApiHelper.UnPublish(id, variant, arrDescendants);
+                    contentService.UnPublish(id, variant, arrDescendants);
                     success = true;
                 }
                 catch (Exception ex)
@@ -733,7 +739,7 @@ namespace puck.core.Controllers
                 var success = false;
                 try
                 {
-                    ApiHelper.Delete(id, variant);
+                    contentService.Delete(id, variant);
                     success = true;
                 }
                 catch (Exception ex)
@@ -749,16 +755,16 @@ namespace puck.core.Controllers
         public JsonResult Models(string type)
         {
             if (string.IsNullOrEmpty(type))
-                return Json(ApiHelper.AllModels().Select(x =>
+                return Json(apiHelper.AllModels().Select(x =>
                     new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
                     ), JsonRequestBehavior.AllowGet);
             else
-                return Json(ApiHelper.AllowedTypes(type).Select(x =>
+                return Json(apiHelper.AllowedTypes(type).Select(x =>
                     new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
                     ), JsonRequestBehavior.AllowGet);
         }
         public ActionResult ModelOptions(string type) {
-            var models = ApiHelper.AllModels();
+            var models = apiHelper.AllModels();
             
             var modelMatches = models.Where(x => x.FullName.EndsWith(type)).ToList();
             var result = (modelMatches == null ? models : new List<Type> (modelMatches))
@@ -809,8 +815,12 @@ namespace puck.core.Controllers
         }
 
         [Auth(Roles = PuckRoles.Edit)]
-        public ActionResult PrepopulatedEdit(string p_type)
+        public ActionResult PrepopulatedEdit(string p_type,Guid id)
         {
+            if (string.IsNullOrEmpty(p_type)) {
+                var revision = repo.GetPuckRevision().FirstOrDefault(x=>x.Id==id);
+                p_type = revision.Type;
+            }
             ViewBag.ShouldBindListEditor = false;
             ViewBag.IsPrepopulated = true;
             object model = null;
@@ -838,7 +848,7 @@ namespace puck.core.Controllers
                 //if creating new, return early
                 if (contentId == null)
                 {
-                    var parentPath = ApiHelper.GetLiveOrCurrentPath(parentId.Value)??"";
+                    var parentPath = contentService.GetLiveOrCurrentPath(parentId.Value)??"";
                     var basemodel = (BaseModel)model;
                     basemodel.ParentId = parentId.Value;
                     basemodel.Path = "";
@@ -894,7 +904,7 @@ namespace puck.core.Controllers
             string message = "republish entire site started";
             if (!PuckCache.IsRepublishingEntireSite)
             {
-                HostingEnvironment.QueueBackgroundWorkItem(ct => ApiHelper.RePublishEntireSite2());
+                HostingEnvironment.QueueBackgroundWorkItem(ct => contentService.RePublishEntireSite2());
                 PuckCache.IsRepublishingEntireSite = true;
                 PuckCache.IndexingStatus = "republish entire site task queued";
             }
@@ -928,7 +938,7 @@ namespace puck.core.Controllers
                     path = mod.Path;
                     id = mod.Id;
                     parentId = mod.ParentId;
-                    ApiHelper.SaveContent(mod);
+                    contentService.SaveContent(mod);
                     success = true;
                 }
                 catch (Exception ex)
@@ -1028,6 +1038,8 @@ namespace puck.core.Controllers
                     //don't want to revert change node/path because it has consequences for children/descendants
                     rnode.NodeName = current.FirstOrDefault().NodeName;
                     rnode.Path = current.FirstOrDefault().Path;
+                    rnode.IdPath = current.FirstOrDefault().IdPath;
+                    rnode.SortOrder = current.FirstOrDefault().SortOrder;
                 }
                 if (current.Any(x => x.Published))
                 {

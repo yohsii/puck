@@ -15,6 +15,9 @@ using System.Data.Entity;
 using puck.core.Entities;
 using System.Web;
 using puck.core.Models.EditorSettings;
+using puck.core.State;
+using puck.core.Services;
+using puck.core.Base;
 
 namespace puck.core
 {
@@ -40,10 +43,26 @@ namespace puck.core
             //update typechains which may have changed since last run
             StateHelper.UpdateTypeChains();
             StateHelper.UpdateCrops();
-            SyncHelper.InitializeSync();
+
+            //figure out whether or not to republish entire site / ie coldboot
+            var shouldColdBoot=SyncHelper.InitializeSync();
+            var qh = new QueryHelper<BaseModel>(prependTypeTerm: false);
+            qh.And().Field(x => x.TypeChain, typeof(BaseModel).FullName.Wrap());
+            var query = qh.ToString();
+            var documentCount = PuckCache.PuckSearcher.Count<BaseModel>(query);
+            if (shouldColdBoot || documentCount==0) {
+                if (!PuckCache.IsRepublishingEntireSite)
+                {
+                    PuckCache.IsRepublishingEntireSite = true;
+                    PuckCache.IndexingStatus = "republish entire site task queued";
+                    //HostingEnvironment.QueueBackgroundWorkItem(ct => contentService.RePublishEntireSite2());
+                    PuckCache.ContentService.RePublishEntireSite2();
+                }
+            }
+
             //bind notification handlers
             //publish
-            ApiHelper.AfterSettingsSave += (object o,puck.core.Events.AfterEditorSettingsSaveEventArgs args)=> {
+            ApiHelper.AfterEditorSettingsSave += (object o,puck.core.Events.AfterEditorSettingsSaveEventArgs args)=> {
                 if (args.Setting is PuckImageEditorSettings) {
                     StateHelper.UpdateCrops();
                     var repo = PuckCache.PuckRepo;
@@ -59,7 +78,8 @@ namespace puck.core
             {
                 try
                 {
-                    var usersToNotify = ApiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Publish);
+                    var apiHelper = PuckCache.ApiHelper;
+                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Publish);
                     if (usersToNotify.Count == 0) return;
                     var subject = string.Concat("content published - ", args.Node.NodeName, " - ", args.Node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplatePublishPath));
@@ -72,11 +92,12 @@ namespace puck.core
                 }
             }, true);
             //edit
-            ApiHelper.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_edit_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
+            ContentService.RegisterAfterSaveHandler<puck.core.Base.BaseModel>("puck_edit_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
             {
                 try
                 {
-                    var usersToNotify = ApiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Edit);
+                    var apiHelper = PuckCache.ApiHelper;
+                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Edit);
                     if (usersToNotify.Count == 0) return; 
                     var subject = string.Concat("content edited - ", args.Node.NodeName, " - ", args.Node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplateEditPath));
@@ -90,11 +111,12 @@ namespace puck.core
                 }
             }, true);
             //delete
-            ApiHelper.RegisterAfterDeleteHandler<puck.core.Base.BaseModel>("puck_delete_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
+            ContentService.RegisterAfterDeleteHandler<puck.core.Base.BaseModel>("puck_delete_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
             {
                 try
                 {
-                    var usersToNotify = ApiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Delete);
+                    var apiHelper = PuckCache.ApiHelper;
+                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Delete);
                     if (usersToNotify.Count == 0) return; 
                     var subject = string.Concat("content deleted - ", args.Node.NodeName, " - ", args.Node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplateDeletePath));
@@ -108,12 +130,13 @@ namespace puck.core
                 }
             }, true);
             //move
-            ApiHelper.RegisterAfterMoveHandler<puck.core.Base.BaseModel>("puck_move_notification", (object o, puck.core.Events.MoveEventArgs args) =>
+            ContentService.RegisterAfterMoveHandler<puck.core.Base.BaseModel>("puck_move_notification", (object o, puck.core.Events.MoveEventArgs args) =>
             {
                 try
                 {
+                    var apiHelper = PuckCache.ApiHelper;
                     var node = args.Nodes.FirstOrDefault();
-                    var usersToNotify = ApiHelper.UsersToNotify(node.Path, PuckCache.NotifyActions.Move);
+                    var usersToNotify = apiHelper.UsersToNotify(node.Path, PuckCache.NotifyActions.Move);
                     if (usersToNotify.Count == 0) return; 
                     var subject = string.Concat("content move - ", node.NodeName, " - ", node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplateMovePath));

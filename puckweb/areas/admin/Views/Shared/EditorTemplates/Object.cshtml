@@ -7,7 +7,10 @@
     } else {
         var complexChild = ViewBag.Level0Type != null && prop.ContainerType != ViewBag.Level0Type;
         var propName = string.IsNullOrEmpty(ViewData.TemplateInfo.GetFullHtmlFieldName("")) ? prop.PropertyName : ViewData.TemplateInfo.GetFullHtmlFieldName("") + "." + prop.PropertyName;
-        <div data-fieldname="@propName" class="fieldwrapper @(prop.IsComplexType?"complex":"") @(complexChild?"complex_child":"")">
+        var displayAttribute = (prop.GetPropertyAttribute<System.ComponentModel.DataAnnotations.DisplayAttribute>());
+        string groupName = null;
+        if (displayAttribute != null) { groupName = displayAttribute.GroupName; }
+        <div @Html.Raw(!complexChild&&!string.IsNullOrEmpty(groupName)?$"data-groupname=\"{groupName}\"":"") data-fieldname="@propName" class="fieldwrapper @(prop.IsComplexType?"complex":"") @(complexChild?"complex_child":"root")">
             <div class="editor-label" style="">
                 @Html.Label(string.IsNullOrEmpty(prop.DisplayName)?prop.PropertyName:prop.DisplayName)
                 @Html.ValidationMessage(prop.PropertyName)

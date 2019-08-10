@@ -1,7 +1,8 @@
 ﻿@model List<string>
 @{
-    var models = ApiHelper.AllModels(false);
-    var templates = ApiHelper.Views(new string[] { "~/views/shared/", "~/views/_ViewStart.cshtml" }).Select(x => ApiHelper.ToVirtualPath(x.FullName)).ToList();
+    var apiHelper = PuckCache.ApiHelper;
+    var models = apiHelper.AllModels(false);
+    var templates = apiHelper.Views(new string[] { "~/views/shared/", "~/views/_ViewStart.cshtml" }).Select(x => ApiHelper.ToVirtualPath(x.FullName)).ToList();
 }
 <div class="settings_type_allowed_templates">
     <select>

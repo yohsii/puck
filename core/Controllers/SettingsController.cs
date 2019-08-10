@@ -12,6 +12,7 @@ using puck.core.Helpers;
 using puck.core.Filters;
 using Newtonsoft.Json;
 using puck.core.CodeGenerator;
+using puck.core.Services;
 
 namespace puck.core.Controllers
 {
@@ -24,7 +25,11 @@ namespace puck.core.Controllers
         I_Content_Searcher searcher;
         I_Log log;
         I_Puck_Repository repo;
-        public SettingsController(I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r) {
+        ContentService contentService;
+        ApiHelper apiHelper;
+        public SettingsController(ApiHelper ah,ContentService cs,I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r) {
+            this.apiHelper = ah;
+            this.contentService = cs;
             this.indexer = i;
             this.searcher = s;
             this.log = l;
@@ -109,6 +114,356 @@ namespace puck.core.Controllers
                 log.Log(ex);
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);            
+        }
+
+        public ActionResult Languages() {
+            var model = new Settings();
+            var meta = repo.GetPuckMeta();
+
+            var languages = meta.Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList().Select(x => x.Value).ToList();
+            model.Languages = languages;
+
+            return View(model);
+        }
+
+        [ValidateInput(enableValidation: false)]
+        [HttpPost]
+        public JsonResult Languages(Settings model)
+        {
+            string msg = "";
+            bool success = false;
+            try
+            {
+                //languages
+                if (model.Languages != null && model.Languages.Count > 0)
+                {
+                    var metaLanguages = repo.GetPuckMeta().Where(x => x.Name == DBNames.Settings && x.Key == DBKeys.Languages).ToList();
+                    if (metaLanguages.Count > 0)
+                    {
+                        metaLanguages.ForEach(x =>
+                        {
+                            repo.DeleteMeta(x);
+                        });
+                    }
+                    model.Languages.ForEach(x => {
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.Settings;
+                        newMeta.Key = DBKeys.Languages;
+                        newMeta.Value = x;
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                success = false;
+            }
+            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Redirects()
+        {
+            var model = new Settings();
+            var meta = repo.GetPuckMeta();
+
+            var redirects = meta.Where(x => x.Name == DBNames.Redirect301 || x.Name == DBNames.Redirect302).ToList()
+                .Select(x => new KeyValuePair<string, string>(x.Name + x.Key, x.Value)).ToDictionary(x => x.Key, x => x.Value);
+            
+            model.Redirect = redirects;
+            return View(model);
+        }
+
+        [ValidateInput(enableValidation: false)]
+        [HttpPost]
+        public JsonResult Redirects(Settings model)
+        {
+            string msg = "";
+            bool success = false;
+            try
+            {
+                //redirects
+                if (model.Redirect != null && model.Redirect.Count > 0)
+                {
+                    var redirectMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect301 || x.Name == DBNames.Redirect302).ToList();
+                    redirectMeta.ForEach(x => {
+                        repo.DeleteMeta(x);
+                    });
+                    //count of 1 and key/value of null indicates delete only so inserts are skipped
+                    if (!(model.Redirect.Count == 1 && string.IsNullOrEmpty(model.Redirect.First().Key)))
+                    {
+                        model.Redirect.ToList().ForEach(x =>
+                        {
+                            var newMeta = new PuckMeta();
+                            newMeta.Name = x.Key.StartsWith(DBNames.Redirect301) ? DBNames.Redirect301 : DBNames.Redirect302;
+                            newMeta.Key = x.Key.Substring(newMeta.Name.Length);
+                            newMeta.Value = x.Value;
+                            repo.AddMeta(newMeta);
+                        });
+                    }
+                }
+                
+                repo.SaveChanges();
+                StateHelper.UpdateRedirectMappings();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                success = false;
+            }
+            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult FieldGroups()
+        {
+            var model = new Settings();
+            var meta = repo.GetPuckMeta();
+
+            var fieldGroups = meta.Where(x => x.Name.StartsWith(DBNames.FieldGroups)).ToList();
+            model.TypeGroupField = new List<string>();
+
+            fieldGroups.ForEach(x => {
+                string typeName = x.Name.Replace(DBNames.FieldGroups, "");
+                string groupName = x.Key;
+                string FieldName = x.Value;
+                model.TypeGroupField.Add(string.Concat(typeName, ":", groupName, ":", FieldName));
+            });
+            return View(model);
+        }
+        [ValidateInput(enableValidation: false)]
+        [HttpPost]
+        public JsonResult FieldGroups(Settings model)
+        {
+            string msg = "";
+            bool success = false;
+            try
+            {
+                //fieldgroup
+                if (model.TypeGroupField != null && model.TypeGroupField.Count > 0)
+                {
+                    foreach (var mod in apiHelper.AllModels(true))
+                    {
+                        var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups + mod.AssemblyQualifiedName)).ToList();
+                        fieldGroupMeta.ForEach(x =>
+                        {
+                            repo.DeleteMeta(x);
+                        });
+                    }
+                    model.TypeGroupField.ForEach(x => {
+                        var values = x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.FieldGroups + values[0];
+                        newMeta.Key = values[1];
+                        newMeta.Value = values[2];
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                success = false;
+            }
+            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AllowedTemplates()
+        {
+            var model = new Settings();
+            var meta = repo.GetPuckMeta();
+
+            var typeAllowedTemplates = meta.Where(x => x.Name == DBNames.TypeAllowedTemplates).Select(x => x.Key + ":" + x.Value).ToList();
+            model.TypeAllowedTemplates = typeAllowedTemplates;
+            return View(model);
+        }
+        // POST: /admin/Settings/Edit/5
+        [ValidateInput(enableValidation: false)]
+        [HttpPost]
+        public JsonResult AllowedTemplates(Settings model)
+        {
+            string msg = "";
+            bool success = false;
+            try
+            {
+                //typeallowedtemplates
+                if (model.TypeAllowedTemplates != null && model.TypeAllowedTemplates.Count > 0)
+                {
+                    var typeAllowedTemplatesMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTemplates).ToList();
+                    typeAllowedTemplatesMeta.ForEach(x =>
+                    {
+                        repo.DeleteMeta(x);
+                    });
+                    model.TypeAllowedTemplates.ForEach(x =>
+                    {
+                        var values = x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.TypeAllowedTemplates;
+                        newMeta.Key = values[0];
+                        newMeta.Value = values[1];
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                success = false;
+            }
+            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult AllowedModels()
+        {
+            var model = new Settings();
+            var meta = repo.GetPuckMeta();
+
+            var typeAllowedTypes = meta.Where(x => x.Name == DBNames.TypeAllowedTypes).Select(x => x.Key + ":" + x.Value).ToList();
+            model.TypeAllowedTypes = typeAllowedTypes;
+            return View(model);
+        }
+        [ValidateInput(enableValidation: false)]
+        [HttpPost]
+        public JsonResult AllowedModels(Settings model)
+        {
+            string msg = "";
+            bool success = false;
+            try
+            {
+                //typeallowedtypes
+                if (model.TypeAllowedTypes != null && model.TypeAllowedTypes.Count > 0)
+                {
+                    var typeAllowedTypesMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTypes).ToList();
+                    typeAllowedTypesMeta.ForEach(x => {
+                        repo.DeleteMeta(x);
+                    });
+                    model.TypeAllowedTypes.ForEach(x => {
+                        var values = x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                        var newMeta = new PuckMeta();
+                        newMeta.Name = DBNames.TypeAllowedTypes;
+                        newMeta.Key = values[0];
+                        newMeta.Value = values[1];
+                        repo.AddMeta(newMeta);
+                    });
+                }
+                
+                repo.SaveChanges();
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                success = false;
+            }
+            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult EditorParameters()
+        {
+            var model = new Settings();
+            var meta = repo.GetPuckMeta();
+
+            var editorParameters = meta.Where(x => x.Name == DBNames.EditorSettings).Select(x => x.Key).ToList();
+            model.EditorParameters = editorParameters;
+            return View(model);
+        }
+
+        public ActionResult CachePolicy()
+        {
+            var model = new Settings();
+            var meta = repo.GetPuckMeta();
+
+            var cachePolicy = meta.Where(x => x.Name == DBNames.CachePolicy).Select(x => x.Key + ":" + x.Value).ToList();
+            model.CachePolicy = cachePolicy;
+            return View(model);
+        }
+
+        [ValidateInput(enableValidation: false)]
+        [HttpPost]
+        public JsonResult CachePolicy(Settings model)
+        {
+            string msg = "";
+            bool success = false;
+            try
+            {
+                //cachepolicy
+                if (model.CachePolicy == null)
+                    model.CachePolicy = new List<string>();
+                var cacheTypes = new List<string>();
+                if (model.CachePolicy.Count > 0)
+                {
+                    foreach (var entry in model.CachePolicy)
+                    {
+                        var type = entry.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                        cacheTypes.Add(type);
+                        var minutes = entry.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        int min;
+                        if (!int.TryParse(minutes, out min))
+                            throw new Exception("cache policy minutes not int for type:" + type);
+                        var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy && x.Key.ToLower().Equals(type.ToLower())).FirstOrDefault();
+                        if (meta != null)
+                        {
+                            meta.Value = minutes;
+                        }
+                        else
+                        {
+                            meta = new PuckMeta() { Name = DBNames.CachePolicy, Key = type, Value = minutes };
+                            repo.AddMeta(meta);
+                        }
+                    }
+                }
+                //delete unset
+                repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy && !cacheTypes.Contains(x.Key)).ToList().ForEach(x => repo.DeleteMeta(x));
+
+                repo.SaveChanges();
+                
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                success = false;
+            }
+            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult OrphanedModels()
+        {
+            var model = new Settings();
+            
+            return View(model);
+        }
+
+        [ValidateInput(enableValidation: false)]
+        [HttpPost]
+        public JsonResult OrphanedModels(Settings model)
+        {
+            string msg = "";
+            bool success = false;
+            try
+            {
+                //orphan types
+                if (model.Orphans != null && model.Orphans.Count > 0)
+                {
+                    foreach (var entry in model.Orphans)
+                    {
+                        var t1 = entry.Key;
+                        var t2 = entry.Value;
+                        contentService.RenameOrphaned(t1, t2);
+                    }
+                }
+                repo.SaveChanges();
+                
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                success = false;
+            }
+            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Edit()
@@ -226,7 +581,7 @@ namespace puck.core.Controllers
                 }
                 //fieldgroup
                 if (model.TypeGroupField!=null&&model.TypeGroupField.Count > 0) {
-                    foreach (var mod in ApiHelper.AllModels(true))
+                    foreach (var mod in apiHelper.AllModels(true))
                     {
                         var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups+mod.AssemblyQualifiedName)).ToList();
                         fieldGroupMeta.ForEach(x =>
@@ -308,7 +663,7 @@ namespace puck.core.Controllers
                     foreach (var entry in model.Orphans) {
                         var t1 = entry.Key;
                         var t2 = entry.Value;
-                        ApiHelper.RenameOrphaned(t1, t2);
+                        contentService.RenameOrphaned(t1, t2);
                     }
                 }
                 repo.SaveChanges();

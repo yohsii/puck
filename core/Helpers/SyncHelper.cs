@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Hosting;
+using puck.core.State;
+using puck.core.Services;
 
 namespace puck.core.Helpers
 {
@@ -18,17 +20,19 @@ namespace puck.core.Helpers
         private static int lock_wait = 1;
         public static I_Puck_Repository Repo {get{return PuckCache.PuckRepo;}}
         public static I_Content_Indexer Indexer { get { return PuckCache.PuckIndexer; } }
-        public static void InitializeSync() {
+        public static ContentService ContentService { get { return PuckCache.ContentService; } } 
+        public static bool InitializeSync() {
             var repo = Repo;
+            var contentService = ContentService;
             var serverName = ApiHelper.ServerName();
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.SyncId && x.Key == serverName).FirstOrDefault();
             if (meta == null) {
-                if (!PuckCache.IsRepublishingEntireSite)
-                {
-                    HostingEnvironment.QueueBackgroundWorkItem(ct => ApiHelper.RePublishEntireSite2());
-                    PuckCache.IsRepublishingEntireSite = true;
-                    PuckCache.IndexingStatus = "republish entire site task queued";
-                }
+                //if (!PuckCache.IsRepublishingEntireSite)
+                //{
+                //    HostingEnvironment.QueueBackgroundWorkItem(ct => contentService.RePublishEntireSite2());
+                //    PuckCache.IsRepublishingEntireSite = true;
+                //    PuckCache.IndexingStatus = "republish entire site task queued";
+                //}
                 var newMeta = new PuckMeta();
                 newMeta.Name = DBNames.SyncId;
                 newMeta.Key = ApiHelper.ServerName();
@@ -36,11 +40,13 @@ namespace puck.core.Helpers
                 newMeta.Value = (maxId ?? 0).ToString();
                 repo.AddMeta(newMeta);
                 repo.SaveChanges();
+                return true;
             }
-
+            return false;
         }
         public static void Sync(CancellationToken ct) {
             bool taken = false;
+            var contentService = ContentService;
             try {
                 Monitor.TryEnter(lck, lock_wait, ref taken);
                 if (!taken)
@@ -63,7 +69,7 @@ namespace puck.core.Helpers
                     if (!PuckCache.IsRepublishingEntireSite)
                     {
                         PuckCache.IsRepublishingEntireSite = true;
-                        ApiHelper.RePublishEntireSite2();
+                        contentService.RePublishEntireSite2();
                     }
                 }
                 else
@@ -75,7 +81,7 @@ namespace puck.core.Helpers
                             if (!PuckCache.IsRepublishingEntireSite)
                             {
                                 PuckCache.IsRepublishingEntireSite = true;
-                                ApiHelper.RePublishEntireSite2();
+                                contentService.RePublishEntireSite2();
                             }
                         }
                         else if (instruction.InstructionKey == InstructionKeys.Publish)

@@ -1,8 +1,10 @@
 ﻿@model string
-
+@{
+    var apiHelper = PuckCache.ApiHelper;
+ }
 <select name="@ViewData.ModelMetadata.PropertyName">
     <option value="">None</option>
-@foreach(var modelType in ApiHelper.GeneratedModelTypes()){
+@foreach(var modelType in apiHelper.GeneratedModelTypes()){
     <option value="@modelType.AssemblyQualifiedName">@modelType.Name</option>
 }
 

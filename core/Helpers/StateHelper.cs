@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Lucene.Net.Analysis.Standard;
+using puck.core.State;
 namespace puck.core.Helpers
 {
     public static class StateHelper
@@ -34,6 +35,7 @@ namespace puck.core.Helpers
         public static I_Content_Indexer indexer{get{
                 return PuckCache.PuckIndexer;
         }}
+        public static ApiHelper apiHelper { get { return PuckCache.ApiHelper; } }
         public static I_Log logger { get { return PuckCache.PuckLog; } }
 
         public static void UpdateCrops() {
@@ -87,8 +89,8 @@ namespace puck.core.Helpers
         }
         public static void UpdateTaskMappings()
         {
-            var tasks = ApiHelper.Tasks();
-            tasks.AddRange(ApiHelper.SystemTasks());
+            var tasks = apiHelper.Tasks();
+            tasks.AddRange(apiHelper.SystemTasks());
             //tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
             tasks.ForEach(x => x.TaskEnd += tdispatcher.HandleTaskEnd);
             tdispatcher.Tasks = tasks;
@@ -222,7 +224,7 @@ namespace puck.core.Helpers
         }
         public static void UpdateAQNMappings()
         {
-            foreach (var t in ApiHelper.AllModels(true))
+            foreach (var t in apiHelper.AllModels(true))
             {
                 PuckCache.ModelFullNameToAQN[t.Name] = t.AssemblyQualifiedName;
             }
@@ -231,7 +233,7 @@ namespace puck.core.Helpers
         {
             var panalyzers = new List<Analyzer>();
             var analyzerForModel = new Dictionary<Type, Analyzer>();
-            foreach (var t in ApiHelper.AllModels(true))
+            foreach (var t in apiHelper.AllModels(true))
             {
                 var instance = ApiHelper.CreateInstance(t);
                 try

@@ -1,8 +1,11 @@
 ﻿@model List<string>
+@{
+    var apiHelper = PuckCache.ApiHelper;
+}
 <div class="editor_parameters editor_parameters_@ViewData.ModelMetadata.PropertyName">
 @{
     var settingTypes = ApiHelper.EditorSettingTypes();
-    var models = ApiHelper.AllModels(true);
+    var models = apiHelper.AllModels(true);
     var propsForType = new Dictionary<string, List<System.Reflection.PropertyInfo>>();
     
     if(settingTypes.Count==0){

@@ -14,32 +14,39 @@ $(document).off("click.tabs").on("click.tabs", ".editor-field .nav-tabs li", fun
     console.log("index",el.index());
 });
 
-$('a.settings').click(function (e) {
-    e.preventDefault();
-    if (!canChangeMainContent())
-        return false;
-    getSettings(function (data) {
-        cright.html(data);
-        afterDom();
-        //setup validation
-        wireForm(cright.find('form'), function (data) {
-            msg(true, "settings updated.");
-            window.scrollTo(0,0);
-            getVariants(function (data) {
-                languages = data;
-            });
-        }, function (data) {
-            msg(false, data.message);
-        });
-        setChangeTracker();
-    });
+//$('a.settings').click(function (e) {
+//    e.preventDefault();
+//    if (!canChangeMainContent())
+//        return false;
+//    getSettings(function (data) {
+//        cright.html(data);
+//        afterDom();
+//        //setup validation
+//        wireForm(cright.find('form'), function (data) {
+//            msg(true, "settings updated.");
+//            window.scrollTo(0,0);
+//            getVariants(function (data) {
+//                languages = data;
+//            });
+//        }, function (data) {
+//            msg(false, data.message);
+//        });
+//        setChangeTracker();
+//    });
+//});
+$("html").on("click", ".left_settings li button", function (e) {
+    //if (!canChangeMainContent())
+    //    return false;
+    //var el = $(this).parent();
+    //var path = el.attr("data-path");
+    //showSettings(path);
 });
 //root new content button
 $(".create_default").show().click(function () { newContent("00000000-0000-0000-0000-000000000000"); });
 //task list
-$(".menutop .tasks").click(function (e) { e.preventDefault(); showTasks(); });
+//$(".menutop .tasks").click(function (e) { e.preventDefault(); showTasks(); });
 //users
-$(".menutop .users").click(function (e) { e.preventDefault(); showUsers(); });
+//$(".menutop .users").click(function (e) { e.preventDefault(); showUsers(); });
 //select state
 $(".menutop li").click(function () {
     $(".menutop li").removeClass("selected");
@@ -455,7 +462,8 @@ cleft.find("ul.content").on("click", "li.node span.nodename", function () {
         return false;
     var node = $(this).parents(".node:first");
     var firstVariant = node.attr("data-variants").split(",")[0];
-    displayMarkup(null, node.attr("data-type"), firstVariant, undefined, node.attr("data-id"));
+    location.hash = "#content?id=" + node.attr("data-id") + "&variant=" + firstVariant;
+    //displayMarkup(null, node.attr("data-type"), firstVariant, undefined, node.attr("data-id"));
 });
 $("button.search").click(function () {
     searchDialog("");
@@ -500,32 +508,55 @@ var checkHash = function () {
     }
     setTimeout(checkHash, 500);
 }
-checkHash(true);
+//checkHash(true);
+$(window).on("hashchange", function (e) {
+    handleHash(location.hash);
+    //msg(false, "old hash " + obj.oldHash + "|| new hash " + obj.newHash + " " + Math.random());
+});
 $(document).on("puck.hash_change", function (e,obj) {
     handleHash(obj.newHash);
     //msg(false, "old hash " + obj.oldHash + "|| new hash " + obj.newHash + " " + Math.random());
 });
+var getHashValues = function (hash) {
+    var h = hash.substring(hash.indexOf("?")+1);
+    var kvp = h.split("&");
+    var dict = [];
+    for (var i = 0; i < kvp.length; i++) {
+        var k = kvp[i].split("=")[0];
+        var v = kvp[i].split("=")[1];
+        dict[k] = v;
+    }
+    return dict;
+}
 var handleHash = function (hash) {
     if (/^#content/.test(hash)) {
-        var h = hash.replace("#content?", "");
-        var kvp = h.split("&");
-        var path;
-        var variant;
-        for (var i = 0; i < kvp.length;i++){
-            var k = kvp[i].split("=")[0];
-            var v = kvp[i].split("=")[1];
-            if (k == "path")
-                path = v;
-            if (k == "variant")
-                variant = v;
+        $(".left_item").hide();
+        cleft.find(".left_content").show();
+        var dict = getHashValues(hash);
+        if (dict["id"] == undefined || dict["variant"] == undefined) {
+            cright.html("");
+            return;
         }
-        displayMarkup(path,"",variant);
+        displayMarkup(null, null, dict["variant"], undefined, dict["id"]);
     } else if (/^#settings/.test(hash)) {
+        //if (!canChangeMainContent())
+        //    return false;
+        $(".left_item").hide();
+        cleft.find(".left_settings").show();
+        var dict = getHashValues(hash);
+        var path = dict["path"];
+        cleft.find(".left_settings a").removeClass("current");
+        cleft.find(".left_settings a[href='"+hash+"']").addClass("current");
+        showSettings(path);
         $(".menutop .settings").click();
     } else if (/^#users/.test(hash)) {
-        $(".menutop .users").click();
-    } else if (/^#tasks/.test(hash)) {
-        $(".menutop .tasks").click();
+        $(".left_item").hide();
+        cleft.find(".left_users").show();
+        showUsers();
+    } else if (/^#developer/.test(hash)) {
+        $(".left_item").hide();
+        cleft.find(".left_developer").show();
+        showTasks();
     }
 }
 $(window).load(function () {

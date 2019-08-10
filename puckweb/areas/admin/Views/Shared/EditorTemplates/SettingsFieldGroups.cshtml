@@ -1,7 +1,8 @@
 ﻿@using puck.core.Models;
 @model List<string>
 @{
-    var models = ApiHelper.AllModels(inclusive:true);
+    var apiHelper = PuckCache.ApiHelper;
+    var models = apiHelper.AllModels(inclusive:true);
     var dic = new Dictionary<string, Dictionary<string, List<string>>>();
     foreach(var s in Model){
         var nkv = s.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
@@ -17,7 +18,7 @@
         if (!dic[typeName][groupName].Contains(FieldName)){
             dic[typeName][groupName].Add(FieldName);
         }
-    }            
+    }
 }
 <div class="fieldgroups">
 <ul>

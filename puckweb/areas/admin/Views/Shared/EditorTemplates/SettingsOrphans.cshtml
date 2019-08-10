@@ -1,6 +1,7 @@
 ﻿@model Dictionary<string,string>
 @{
-    var orphans = ApiHelper.OrphanedTypeNames();    
+    var apiHelper = PuckCache.ApiHelper;
+    var orphans = apiHelper.OrphanedTypeNames();
 }
 <div class="orphans">
     @if(orphans.Count>0){
@@ -16,7 +17,7 @@
         <li>
             <label>New Assembly Qualified Name</label>
             <select class="to">
-                @foreach (var t in ApiHelper.AllModels()) { 
+                @foreach (var t in apiHelper.AllModels()) { 
                     <option value="@t.AssemblyQualifiedName">@t.AssemblyQualifiedName</option>
                 }
             </select>

@@ -1147,6 +1147,14 @@
     <Content Include="areas\admin\Views\Api\ChangeTypeMappingDialog.cshtml" />
     <Content Include="areas\admin\Views\Api\TimedPublishDialog.cshtml" />
     <Content Include="areas\admin\Views\Api\Audit.cshtml" />
+    <Content Include="areas\admin\Views\Settings\Languages.cshtml" />
+    <Content Include="areas\admin\Views\Settings\Redirects.cshtml" />
+    <Content Include="areas\admin\Views\Settings\FieldGroups.cshtml" />
+    <Content Include="areas\admin\Views\Settings\AllowedTemplates.cshtml" />
+    <Content Include="areas\admin\Views\Settings\AllowedModels.cshtml" />
+    <Content Include="areas\admin\Views\Settings\EditorParameters.cshtml" />
+    <Content Include="areas\admin\Views\Settings\CachePolicy.cshtml" />
+    <Content Include="areas\admin\Views\Settings\OrphanedModels.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

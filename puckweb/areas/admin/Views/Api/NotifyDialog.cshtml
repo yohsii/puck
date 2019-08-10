@@ -1,16 +1,17 @@
 ﻿@model puck.core.Models.Notify
 @{
     Layout = null;
-    List<Type> types; 
+    var apiHelper = PuckCache.ApiHelper;
+    List<Type> types;
     if(string.IsNullOrEmpty(Request["type"])){
-        types = ApiHelper.AllModels(false);
+        types = apiHelper.AllModels(false);
     }else{
-        types = ApiHelper.AllowedTypes(Request["type"]);
+        types = apiHelper.AllowedTypes(Request["type"]);
         if(types.Count==0){
-            types = ApiHelper.Models(false);
+            types = apiHelper.Models(false);
         }
     }    
-    var variants = ApiHelper.Variants();    
+    var variants = apiHelper.Variants();    
 }
 <div class="create_dialog settings">
     @using(Html.BeginForm("Notify","Api")){

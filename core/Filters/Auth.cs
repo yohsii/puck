@@ -14,7 +14,7 @@ using puck.core.Abstract;
 using puck.core.Constants;
 using puck.core.Identity;
 using puck.core.Models;
-
+using puck.core.State;
 namespace puck.core.Filters
 {
     public class Auth:AuthorizeAttribute

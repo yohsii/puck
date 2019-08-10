@@ -53,7 +53,7 @@ namespace puck.Transformers
                 p.Width = img.Width;
                 p.Height = img.Height;
             }catch(Exception ex){
-                puck.core.Constants.PuckCache.PuckLog.Log(ex);
+                puck.core.State.PuckCache.PuckLog.Log(ex);
             }finally {
                 p.File = null;
             }

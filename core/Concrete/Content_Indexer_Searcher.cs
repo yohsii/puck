@@ -23,6 +23,7 @@ using puck.core.PuckLucene;
 using StackExchange.Profiling;
 using System.Threading.Tasks;
 using System.Web.Hosting;
+using puck.core.State;
 
 namespace puck.core.Concrete
 {
@@ -568,6 +569,13 @@ namespace puck.core.Concrete
             int total;
             return Query<T>(qstr,null,null,out total);
         }
+        public int Count<T>(string qstr) where T : BaseModel
+        {
+            int total;
+            var result = Query<T>(qstr, null, null, out total, limit: 1);
+            return total;
+        }
+        
         public IList<T> Query<T>(string qstr,Filter filter,Sort sort,out int total,int limit=500,int skip=0) where T:BaseModel {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);

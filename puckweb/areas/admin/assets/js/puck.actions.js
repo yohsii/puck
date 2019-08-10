@@ -344,6 +344,23 @@ var showCacheInfo = function (path) {
         }
     });
 }
+var showSettings = function(path){
+    getSettings(path,function (data) {
+        cright.html(data);
+        afterDom();
+        //setup validation
+        wireForm(cright.find('form'), function (data) {
+            msg(true, "settings updated.");
+            window.scrollTo(0, 0);
+            getVariants(function (data) {
+                languages = data;
+            });
+        }, function (data) {
+            msg(false, data.message);
+        });
+        setChangeTracker();
+    });
+}
 var editParameters = function (settingsType, modelType, propertyName, success) {
     getEditorParametersMarkup(function (data) {
         overlay(data, 500, undefined, undefined, "Edit Parameters");
@@ -691,12 +708,13 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                 });
         }
         //get field groups and build tabs
-        getFieldGroups(type, function (data) {
+        var groupedFields = cright.find("[data-groupname]");
+        if (groupedFields.length > 0) {
             var groups = [];
-            $(data).each(function (i) {
-                var val = this
-                if (!groups.contains(val.split(':')[1]))
-                    groups.push(val.split(":")[1]);
+            $(groupedFields).each(function (i) {
+                var groupName = $(this).attr("data-groupname");
+                if (!groups.contains(groupName))
+                    groups.push(groupName);
             });
             var tabHtml = '<ul class="nav nav-tabs">';
             $(groups).each(function (i) {
@@ -718,34 +736,79 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                 e.preventDefault();
                 $(this).tab("show");
             });
-            $(data).each(function (i) {
-                var val = this;
-                var type = val.split(":")[0];
-                var group = val.split(":")[1];
-                var field = val.split(":")[2];
-                var fieldWrapper = $(".fieldwrapper[data-fieldname='" + field + "']");
-                var groupContainer = $(".tab-pane[data-group='" + group + "']");
-                groupContainer.append(fieldWrapper);
+            $(groupedFields).each(function (i) {
+                var el = $(this);
+                var group = el.attr("data-groupname");
+                var groupContainer = cright.find(".tab-pane[data-group='" + group + "']");
+                groupContainer.append(el);
             });
-            cright.find("div.fields>.fieldwrapper").each(function () {
+            cright.find("div.fields>.fieldwrapper.root").each(function () {
                 var el = $(this);
                 var fieldname = el.attr("data-fieldname");
-                if (fieldname.split(".").length > 1)
-                    cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']>.editor-field>.fields").append(el);
-                else el.appendTo(cright.find("[data-group='default']"));
-            });
-            cright.find(".fieldwrapper.complex_child").each(function () {
-                var el = $(this);
-                if (el.find(".fieldwrapper").length == 0 || el.find(".fields").length == 0) {
-                    el.addClass("single_field");
-                }
+                el.appendTo(cright.find("[data-group='default']"));
             });
             afterDom();
             cright.show();
             cright.find(".fieldtabs:first").click();
             setChangeTracker();
             highlightSelectedNodeById(contentId);
-        });
+        } else {
+            getFieldGroups(type, function (data) {
+                var groups = [];
+                $(data).each(function (i) {
+                    var val = this
+                    if (!groups.contains(val.split(':')[1]))
+                        groups.push(val.split(":")[1]);
+                });
+                var tabHtml = '<ul class="nav nav-tabs">';
+                $(groups).each(function (i) {
+                    var val = this;
+                    tabHtml += '<li class="' + (i == 0 ? "active" : "") + '"><a class="fieldtabs" href="#fieldtabs' + i + '">' + val + '</a></li>';
+                });
+                tabHtml += '<li class=""><a class="fieldtabs" href="#fieldtabs' + groups.length + '">default</a></li>';
+                tabHtml += '</ul>';
+
+                tabHtml += '<div class="tab-content">';
+                $(groups).each(function (i) {
+                    var val = this;
+                    tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '"></div>';
+                });
+                tabHtml += '<div data-group="default" class="tab-pane" id="fieldtabs' + groups.length + '"></div>';
+                tabHtml += "</div>";
+                cright.find("form").prepend(tabHtml);
+                cright.find(".nav .fieldtabs").click(function (e) {
+                    e.preventDefault();
+                    $(this).tab("show");
+                });
+                $(data).each(function (i) {
+                    var val = this;
+                    var type = val.split(":")[0];
+                    var group = val.split(":")[1];
+                    var field = val.split(":")[2];
+                    var fieldWrapper = cright.find(".fieldwrapper[data-fieldname='" + field + "']");
+                    var groupContainer = cright.find(".tab-pane[data-group='" + group + "']");
+                    groupContainer.append(fieldWrapper);
+                });
+                cright.find("div.fields>.fieldwrapper.root").each(function () {
+                    var el = $(this);
+                    var fieldname = el.attr("data-fieldname");
+                    if (fieldname.split(".").length > 1)
+                        cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']>.editor-field>.fields").append(el);
+                    else el.appendTo(cright.find("[data-group='default']"));
+                });
+                cright.find(".fieldwrapper.complex_child").each(function () {
+                    var el = $(this);
+                    if (el.find(".fieldwrapper").length == 0 || el.find(".fields").length == 0) {
+                        el.addClass("single_field");
+                    }
+                });
+                afterDom();
+                cright.show();
+                cright.find(".fieldtabs:first").click();
+                setChangeTracker();
+                highlightSelectedNodeById(contentId);
+            });
+        }
         //publish btn
         if (userRoles.contains("_publish")) {
             cright.find(".content_publish").click(function () {
@@ -753,9 +816,11 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
             });
         } else { cright.find(".content_publish").hide(); }
         //udpate btn
-        cright.find(".content_update").click(function () {
-            cright.find("input:hidden[name='Published']").val("false");
-        });
+        if (userRoles.contains("_edit")) {
+            cright.find(".content_update").click(function () {
+                cright.find("input:hidden[name='Published']").val("false");
+            });
+        } else { cright.find(".content_update").hide(); }
         //preview btn
         if (contentId) {
             cright.find(".content_preview").click(function (e) {
@@ -775,7 +840,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
             msg(false, data.message);
         });
     }, fromVariant, contentId);
-    getPrepopulatedMarkup(type, function (data) {
+    getPrepopulatedMarkup(type,contentId, function (data) {
         cinterfaces.find("div[data-type='" + type + "']").remove();
         cinterfaces.append($("<div/>").attr("data-type", type));
         cinterfaces.find("div[data-type='"+type+"']").html(data);
@@ -1008,16 +1073,17 @@ getUserLanguage(function (d) { defaultLanguage = d; });
 getUserRoles(function (d) {
     userRoles = d; hideTopNav();
     $(document).ready(function () {
-        var index = location.href.indexOf("?");
-        var qs = location.href.substring(index);
-        if (index != -1 && qs != "") {
-            //console.log("qs %o",qs);
-            var rp = /\?action=([a-zA-Z0-1]+)&/;
-            var action = rp.exec(qs)[1];
-            var hash = "#" + action + "?" + qs.replace(rp, "");
-            //console.log("hash %o",hash);
-            handleHash(hash);
-        }
+        handleHash(location.hash);
+        //var index = location.href.indexOf("?");
+        //var qs = location.href.substring(index);
+        //if (index != -1 && qs != "") {
+        //    //console.log("qs %o",qs);
+        //    var rp = /\?action=([a-zA-Z0-1]+)&/;
+        //    var action = rp.exec(qs)[1];
+        //    var hash = "#" + action + "?" + qs.replace(rp, "");
+        //    //console.log("hash %o",hash);
+        //    handleHash(hash);
+        //}
         if (!userRoles.contains("_republish")) $(".republish_entire_site").hide();
     });
 });

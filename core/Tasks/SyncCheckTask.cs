@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using puck.core.State;
 namespace puck.core.Tasks
 {
     class SyncCheckTask:BaseTask

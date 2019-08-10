@@ -1,7 +1,10 @@
 ﻿@model List<string>
+@{ 
+    var apiHelper = PuckCache.ApiHelper;
+}
 <div class="cachepolicy cachepolicy_@ViewData.ModelMetadata.PropertyName">
 @{
-    var models = ApiHelper.AllModels(true);
+    var models = apiHelper.AllModels(true);
     <table>
     <tr>
         <td>Model Type</td>

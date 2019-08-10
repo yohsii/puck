@@ -17,7 +17,7 @@ using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using puck.core.Attributes;
-
+using puck.core.State;
 namespace puck.core.Controllers
 {
     [SetPuckCulture]
@@ -26,7 +26,9 @@ namespace puck.core.Controllers
     {
         I_Puck_Repository repo;
         I_Log log;
-        public TaskController(I_Puck_Repository repo,I_Log log) {
+        ApiHelper apiHelper;
+        public TaskController(ApiHelper ah,I_Puck_Repository repo,I_Log log) {
+            this.apiHelper = ah;
             this.repo = repo;
             this.log = log;
         }
@@ -448,7 +450,7 @@ namespace puck.core.Controllers
             var mod = model;
             var isDuplicate = false;
             var modelProps = model.Properties.ToList();
-            var parentProps = ApiHelper.AllProperties(parent);
+            var parentProps = apiHelper.AllProperties(parent);
             dupes = modelProps.Select(x => x.Name.ToLower()).Intersect(parentProps.Select(x => x.Name.ToLower())).ToList();
             if (dupes.Any())
                 isDuplicate = true;
@@ -689,7 +691,7 @@ namespace puck.core.Controllers
         public ActionResult Index()
         {
             var model = new TasksModel();
-            model.Tasks = ApiHelper.Tasks();
+            model.Tasks = apiHelper.Tasks();
             model.GeneratedModels = repo.GetGeneratedModel().ToList();
             return View(model);
         }

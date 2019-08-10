@@ -1,6 +1,7 @@
 ﻿@model List<string>
 @{
-    var models = ApiHelper.AllModels(false);
+    var apiHelper = PuckCache.ApiHelper;
+    var models = apiHelper.AllModels(false);
 }
 <span onclick="handleSettingsTypeAllowedTypes()" class="trigger clear"></span>
 <div class="settings_type_allowed_types">

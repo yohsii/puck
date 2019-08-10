@@ -284,6 +284,8 @@
     <Compile Include="Models\PuckUserViewModel.cs" />
     <Compile Include="Models\Variant.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ContentService.cs" />
+    <Compile Include="State\PuckCache.cs" />
     <Compile Include="Tasks\KeepAliveTask.cs" />
     <Compile Include="Tasks\TimedPublishTask.cs" />
     <Compile Include="Tasks\SyncCheckTask.cs" />

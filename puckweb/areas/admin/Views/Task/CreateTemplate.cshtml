@@ -1,7 +1,8 @@
 ﻿@model puck.core.Models.CreateTemplate
 @{
+    var apiHelper = PuckCache.ApiHelper;
     Layout = null;
-    var types = ApiHelper.AllModels(false);
+    var types = apiHelper.AllModels(false);
 }
 @using(Html.BeginForm()){
     @Html.HiddenFor(x=>x.Path)

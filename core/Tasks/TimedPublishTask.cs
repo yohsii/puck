@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using puck.core.State;
 namespace puck.core.Tasks
 {
     class TimedPublishTask:BaseTask
@@ -23,6 +23,7 @@ namespace puck.core.Tasks
             //PuckCache.PuckLog.Log(new Exception($"{DateTime.Now.ToString()}"));
             base.Run(t);
             var repo = PuckCache.PuckRepo;
+            var contentService = PuckCache.ContentService;
             var publishMeta = repo.GetPuckMeta().Where(x=>x.Name==DBNames.TimedPublish && x.Dt.HasValue && x.Dt.Value<=DateTime.Now).ToList();
             var unpublishMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TimedUnpublish && x.Dt.HasValue && x.Dt.Value <= DateTime.Now).ToList();
 
@@ -30,7 +31,7 @@ namespace puck.core.Tasks
                 var id =Guid.Parse(meta.Key.Split(':')[0]);
                 var variant = meta.Key.Split(':')[1];
                 var descendantVariants = (meta.Value ?? "").Split(new char[] { ','},StringSplitOptions.RemoveEmptyEntries).ToList();
-                ApiHelper.Publish(id, variant,descendantVariants,userName:meta.Username);
+                contentService.Publish(id, variant,descendantVariants,userName:meta.Username);
             }
 
             foreach (var meta in unpublishMeta)
@@ -38,7 +39,7 @@ namespace puck.core.Tasks
                 var id = Guid.Parse(meta.Key.Split(':')[0]);
                 var variant = meta.Key.Split(':')[1];
                 var descendantVariants = new List<string>() {variant };
-                ApiHelper.UnPublish(id, variant, descendantVariants,userName:meta.Username);
+                contentService.UnPublish(id, variant, descendantVariants,userName:meta.Username);
             }
 
             publishMeta.ForEach(x => repo.DeleteMeta(x));

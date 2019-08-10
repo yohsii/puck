@@ -24,10 +24,10 @@ var getSearchTypes = function (root,f) {
 var getMarkup = function (parentId, type, variant, f, fromVariant, contentId) {
     $.get("/admin/api/edit?" + (parentId == null ? "" : "parentId=" + parentId + "&")
         + (contentId == null ? "" : "contentId=" + contentId + "&")
-        + "&p_variant=" + variant + "&p_type=" + type + /*"&p_path=" + path +*/ "&p_fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
+        + "&p_variant=" + variant + "&p_type=" + (type==null?"":type) + /*"&p_path=" + path +*/ "&p_fromVariant=" + (fromVariant == undefined ? "" : fromVariant), f, "html");
 }
-var getPrepopulatedMarkup = function (type,f) {
-    $.get("/admin/api/prepopulatedEdit?p_type="+type, f, "html");
+var getPrepopulatedMarkup = function (type,id,f) {
+    $.get("/admin/api/prepopulatedEdit?p_type="+(type==null?"":type)+"&id="+id, f, "html");
 }
 var getAuditMarkup = function (id, variant, username, page, pageSize, f) {
     $.get("/admin/api/auditMarkup?id=" + id + "&variant=" + (variant || "") + "&username=" + (username || "") + "&page=" + page + "&pageSize=" + pageSize, f, "html");
@@ -50,8 +50,9 @@ var getTemplateCreateDialog = function (f, p) {
 var getTemplateFolderCreateDialog = function (f, p) {
     $.get("/admin/task/createfolder" + (p === undefined ? "" : "?path=" + p), f, "html");
 }
-var getSettings = function (f) {
-    $.get("/admin/settings/edit", f, "html");
+var getSettings = function (path, f) {
+    if (path == undefined) path = "/admin/settings/edit";
+    $.get(path, f, "html");
 }
 var getVariants = function (f) {
     $.get("/admin/api/variants", f);

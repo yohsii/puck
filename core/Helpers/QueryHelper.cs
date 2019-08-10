@@ -19,7 +19,7 @@ using Spatial4n.Core.Context;
 using Spatial4n.Core.Distance;
 using Lucene.Net.Spatial;
 using Lucene.Net.Spatial.Vector;
-
+using puck.core.State;
 namespace puck.core.Helpers
 {
     public static class QueryExtensions {

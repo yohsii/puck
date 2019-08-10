@@ -3,7 +3,7 @@
     ViewBag.Title = "Puck";
     //Layout = null;
     ViewBag.Level0Type = Model.GetType();
-    
+    var apiHelper = PuckCache.ApiHelper;
 }
 <h1 class="master">Puck</h1>
 
@@ -78,7 +78,7 @@
                     <label>Specific type</label>
                     <select>
                         <option value="">All</option>
-                        @foreach (var m in ApiHelper.AllModels())
+                        @foreach (var m in apiHelper.AllModels())
                         {
                             <option value="@m.AssemblyQualifiedName">@m.Name</option>
                         }
@@ -152,7 +152,7 @@
 <script type="text/javascript">
     var userName = "@User.Identity.Name";
     var variantNames = [];
-    @foreach(var v in ApiHelper.AllVariants()){
+    @foreach(var v in apiHelper.AllVariants()){
         @Html.Raw("variantNames['"+v.Key+"']=\""+v.FriendlyName+"\";");
     }
 

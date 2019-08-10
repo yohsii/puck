@@ -1,50 +1,77 @@
 ﻿@{
     ViewBag.Title = "Puck";
+    var apiHelper = PuckCache.ApiHelper;
 }
 <h1 class="master">Puck</h1>
 
 <div class="main grid container_12">
     <div class="grid_12 menutop">
         <ul>
-            <li><a class='content' href="/admin"><i class="icon-home"></i></a></li>
-            <li><a title="settings" data-permission="_settings" class='settings' href="/"><i class="icon-cog"></i></a></li>
-            <li><a title="users" data-permission="_users" class='users' href="/"><i class="icon-user"></i></a></li>
-            <li><a title="developer" data-permission="_tasks" class='tasks' href="/"><i class="icon-wrench"></i></a></li>
+            <li><a class='content' href="#content"><i class="icon-home"></i></a></li>
+            <li><a title="settings" data-permission="_settings" class='settings' href="#settings?path=/admin/settings/languages"><i class="icon-cog"></i></a></li>
+            <li><a title="users" data-permission="_users" class='users' href="#users"><i class="icon-user"></i></a></li>
+            <li><a title="developer" data-permission="_tasks" class='tasks' href="#developer"><i class="icon-wrench"></i></a></li>
             <li><a title="logout" class='logout' href="@Url.Action("out","admin")"><i class="icon-circle-arrow-left"></i></a></li>
         </ul>
         
     </div>
     <div class="grid_3 alpha leftarea">
-        <button data-permission="_republish" title="republish entire site" style="padding-left:0px;" class="republish_entire_site btn btn-link"><i class="icon-repeat"></i></button>
-        <button class="create_default btn btn-link"><i class="icon-plus-sign"></i>&nbsp;create</button>
-        <div class="search">
-            <button class="search btn btn-link"><i class="icon-search"></i></button>
+        <div class="left_content left_item">
+            <button data-permission="_republish" title="republish entire site" style="padding-left:0px;" class="republish_entire_site btn btn-link"><i class="icon-repeat"></i></button>
+            <button class="create_default btn btn-link"><i class="icon-plus-sign"></i>&nbsp;create</button>
+            <div class="search">
+                <button class="search btn btn-link"><i class="icon-search"></i></button>
+            </div>
+            <div class="startpath"></div>
+            <ul data-dropdown="node-dropdown" class="content">
+                <li class="node" data-children_path="/"></li>
+            </ul>
+            <div class="btn-group node-dropdown puck-dropdown">
+                <ul class="dropdown-menu">
+                    <li><a href="#" data-action="create" data-permission="_create"><i class="icon-plus-sign"></i> Create</a></li>
+                    <li><a href="#" data-action="translate" data-permission="_create"><i class="icon-file"></i> Translation</a></li>
+                    <li><a href="#" data-action="delete" data-permission="_delete"><i class="icon-trash"></i> Delete</a></li>
+                    <li><a href="#" data-action="publish" data-permission="_publish"><i class="icon-book"></i> Publish</a></li>
+                    <li><a href="#" data-action="unpublish" data-permission="_unpublish"><i class="icon-ban-circle"></i> Unpublish</a></li>
+                    <li><a href="#" data-action="localisation" data-permission="_localisation"><i class="icon-plane"></i> Localisation</a></li>
+                    <li><a href="#" data-action="move" data-permission="_move"><i class="icon-move"></i> Move</a></li>
+                    <li><a href="#" data-action="copy" data-permission="_copy"><i class="icon-file"></i> Copy</a></li>
+                    <li><a href="#" data-action="changetype" data-permission="_changetype"><i class="icon-edit"></i> Change Type</a></li>
+                    <li><a href="#" data-action="domain" data-permission="_domain"><i class="icon-globe"></i> Domain</a></li>
+                    <li><a href="#" data-action="revert" data-permission="_revert"><i class="icon-backward"></i> Revert</a></li>
+                    <li><a href="#" data-action="cache" data-permission="_cache"><i class="icon-hdd"></i> Cache</a></li>
+                    <li><a href="#" data-action="notify" data-permission="_notify"><i class="icon-envelope"></i> Notification</a></li>
+                    <li><a href="#" data-action="timedpublish" data-permission="_timedpublish"><i class="icon-time"></i> Scheduled Publish</a></li>
+                    <li><a href="#" data-action="audit" data-permission="_audit"><i class="icon-book"></i> View Audit</a></li>
+                    <!--
+                <li class="divider"></li>
+                <li><a href="#"><i class="i"></i> Make admin</a></li>
+                -->
+                </ul>
+            </div>
         </div>
-        <div class="startpath"></div>
-        <ul data-dropdown="node-dropdown" class="content">
-            <li class="node" data-children_path="/"></li>
-        </ul>
-        <div class="btn-group node-dropdown puck-dropdown">
-            <ul class="dropdown-menu">
-                <li><a href="#" data-action="create" data-permission="_create"><i class="icon-plus-sign"></i> Create</a></li>
-                <li><a href="#" data-action="translate" data-permission="_create"><i class="icon-file"></i> Translation</a></li>
-                <li><a href="#" data-action="delete" data-permission="_delete"><i class="icon-trash"></i> Delete</a></li>
-                <li><a href="#" data-action="publish" data-permission="_publish"><i class="icon-book"></i> Publish</a></li>
-                <li><a href="#" data-action="unpublish" data-permission="_unpublish"><i class="icon-ban-circle"></i> Unpublish</a></li>
-                <li><a href="#" data-action="localisation" data-permission="_localisation"><i class="icon-plane"></i> Localisation</a></li>
-                <li><a href="#" data-action="move" data-permission="_move"><i class="icon-move"></i> Move</a></li>
-                <li><a href="#" data-action="copy" data-permission="_copy"><i class="icon-file"></i> Copy</a></li>
-                <li><a href="#" data-action="changetype" data-permission="_changetype"><i class="icon-edit"></i> Change Type</a></li>
-                <li><a href="#" data-action="domain" data-permission="_domain"><i class="icon-globe"></i> Domain</a></li>
-                <li><a href="#" data-action="revert" data-permission="_revert"><i class="icon-backward"></i> Revert</a></li>
-                <li><a href="#" data-action="cache" data-permission="_cache"><i class="icon-hdd"></i> Cache</a></li>
-                <li><a href="#" data-action="notify" data-permission="_notify"><i class="icon-envelope"></i> Notification</a></li>
-                <li><a href="#" data-action="timedpublish" data-permission="_timedpublish"><i class="icon-time"></i> Scheduled Publish</a></li>
-                <li><a href="#" data-action="audit" data-permission="_audit"><i class="icon-book"></i> View Audit</a></li>
-                <!--
-    <li class="divider"></li>
-    <li><a href="#"><i class="i"></i> Make admin</a></li>
-    -->
+        <div class="left_settings left_item">
+            <ul data-dropdown="node-dropdown" class="settings">
+                <li data-path="/admin/settings/languages" class="node"><a href="#settings?path=/admin/settings/languages" class="btn btn-link">Languages</a></li>
+                <li data-path="/admin/settings/redirects" class="node"><a href="#settings?path=/admin/settings/redirects" class="btn btn-link">Redirects</a></li>
+                <li data-path="/admin/settings/fieldgroups" class="node"><a href="#settings?path=/admin/settings/fieldgroups" class="btn btn-link">Field Groups</a></li>
+                <li data-path="/admin/settings/allowedtemplates" class="node"><a href="#settings?path=/admin/settings/allowedtemplates" class="btn btn-link">Allowed Templates</a></li>
+                <li data-path="/admin/settings/allowedmodels" class="node"><a href="#settings?path=/admin/settings/allowedmodels" class="btn btn-link">Allowed Models</a></li>
+                <li data-path="/admin/settings/editorparameters" class="node"><a href="#settings?path=/admin/settings/editorparameters" class="btn btn-link">Editor Parameters</a></li>
+                <li data-path="/admin/settings/cachepolicy" class="node"><a href="#settings?path=/admin/settings/cachepolicy" class="btn btn-link">Output Caching</a></li>
+                <li data-path="/admin/settings/orphanedmodels" class="node"><a href="#settings?path=/admin/settings/orphanedmodels" class="btn btn-link">Orphaned Models</a></li>
+
+            </ul>
+
+        </div>
+        <div class="left_users left_item">
+            <ul data-dropdown="node-dropdown" class="users">
+                <li class="node"><a href="#users" class="current btn btn-link">Users</a></li>
+            </ul>
+        </div>
+        <div class="left_developer left_item">
+            <ul data-dropdown="node-dropdown" class="developer">
+                <li class="node"><a href="#developer" class="current btn btn-link">Developer</a></li>
             </ul>
         </div>
 
@@ -69,7 +96,7 @@
                     <label>Specific type</label>
                     <select>
                         <option value="">All</option>
-                        @foreach (var m in ApiHelper.AllModels())
+                        @foreach (var m in apiHelper.AllModels())
                         {
                             <option value="@m.AssemblyQualifiedName">@m.Name</option>
                         }
@@ -155,7 +182,7 @@
 <script type="text/javascript">
     var userName = "@User.Identity.Name";
     var variantNames = [];
-    @foreach(var v in ApiHelper.AllVariants()){
+    @foreach(var v in apiHelper.AllVariants()){
         @Html.Raw("variantNames['"+v.Key+"']=\""+v.FriendlyName+"\";");
     }    
 </script>

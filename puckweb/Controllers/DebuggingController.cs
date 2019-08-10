@@ -1,5 +1,6 @@
 ﻿using puck.core.Abstract;
 using puck.core.Helpers;
+using puck.core.Services;
 using puck.ViewModels;
 using StackExchange.Profiling;
 using System;
@@ -13,14 +14,16 @@ namespace puck.Controllers
     public class DebuggingController : Controller
     {
         I_Puck_Repository r;
-        public DebuggingController(I_Puck_Repository r)
+        ContentService contentService;
+        public DebuggingController(ContentService cs,I_Puck_Repository r)
         {
+            this.contentService = cs;
             this.r = r;
         }
         public ActionResult RepublishAll() {
             using (MiniProfiler.Current.Step("save models"))
             {
-                ApiHelper.RePublishEntireSite2();
+                contentService.RePublishEntireSite2();
             }
             return View("~/views/home/test.cshtml");
         }
@@ -32,24 +35,24 @@ namespace puck.Controllers
             {
                 var rootGuid = Guid.Parse("d2710660-29f0-4fe3-b288-91f294cf45ab");
                 for (var i = 0; i < 7; i++) {
-                    var model1 = ApiHelper.Create<Page>(rootGuid, "en-gb","testnode"+count.ToString(),published:true);
+                    var model1 = contentService.Create<Page>(rootGuid, "en-gb","testnode"+count.ToString(),published:true);
                     model1 = PopulatePageModel(model1,count);
-                    ApiHelper.SaveContent(model1);
+                    contentService.SaveContent(model1);
                     dict.Add(count.ToString(), true);
                     count++;
                     
                     for (var j = 0; j < 10; j++) {
-                        var model2 = ApiHelper.Create<Page>(model1.Id, "en-gb", "testnode" + count.ToString(), published: true);
+                        var model2 = contentService.Create<Page>(model1.Id, "en-gb", "testnode" + count.ToString(), published: true);
                         model2 = PopulatePageModel(model2, count);
-                        ApiHelper.SaveContent(model2);
+                        contentService.SaveContent(model2);
                         dict.Add(count.ToString(), true);
                         count++;
 
                         for (var k = 0; k < 100; k++)
                         {
-                            var model3 = ApiHelper.Create<Page>(model2.Id, "en-gb", "testnode" + count.ToString(), published: true);
+                            var model3 = contentService.Create<Page>(model2.Id, "en-gb", "testnode" + count.ToString(), published: true);
                             model3 = PopulatePageModel(model3, count);
-                            ApiHelper.SaveContent(model3);
+                            contentService.SaveContent(model3);
                             dict.Add(count.ToString(), true);
                             count++;
 

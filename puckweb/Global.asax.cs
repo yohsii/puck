@@ -20,6 +20,9 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.WebPages;
+using puck.core.State;
+using puck.core.Services;
+using puck.core.Helpers;
 
 namespace puckweb
 {
@@ -56,11 +59,13 @@ namespace puckweb
             kernel.Bind<I_Content_Indexer>().To<Content_Indexer_Searcher>().InSingletonScope();
             kernel.Bind<I_Content_Searcher>().ToMethod(x => x.Kernel.Get<I_Content_Indexer>() as I_Content_Searcher);
             kernel.Bind<I_Task_Dispatcher>().To<Dispatcher>().InSingletonScope();
+            kernel.Bind<ContentService>().To<ContentService>().InTransientScope();
+            kernel.Bind<ApiHelper>().To<ApiHelper>().InTransientScope();
 
             kernel.Bind<PuckRoleManager>().ToMethod(context =>
             {
-                var cbase = new HttpContextWrapper(HttpContext.Current);
-                return cbase.GetOwinContext().Get<PuckRoleManager>();
+                var roleStore = new RoleStore<IdentityRole>(new PuckContext());
+                return new PuckRoleManager(roleStore);
             });
 
             kernel.Bind<PuckUserManager>().ToMethod(context =>

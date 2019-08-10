@@ -1,6 +1,7 @@
 ﻿@model puck.core.Entities.GeneratedModel
 
 @{
+    var apiHelper = PuckCache.ApiHelper;
     Layout = null;
 }
 
@@ -35,7 +36,7 @@
                         }                            
                     }
                 }
-                @foreach(var gm in ApiHelper.GeneratedModels().Where(x=>!exclude.Any(xx=>xx.AssemblyQualifiedName.Equals(x.IFullName))).Where(x=>!string.IsNullOrEmpty(x.CName))){
+                @foreach(var gm in apiHelper.GeneratedModels().Where(x=>!exclude.Any(xx=>xx.AssemblyQualifiedName.Equals(x.IFullName))).Where(x=>!string.IsNullOrEmpty(x.CName))){
                     <option @(!string.IsNullOrEmpty(Model.Inherits)&&Model.Inherits.Equals(gm.CName)?"selected":"") value="@gm.CName">
                         @gm.Name
                     </option>
