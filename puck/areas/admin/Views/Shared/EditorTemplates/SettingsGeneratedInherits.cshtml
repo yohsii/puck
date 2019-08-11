@@ -1,9 +1,0 @@
-﻿@model string
-
-<select name="@ViewData.ModelMetadata.PropertyName">
-    <option value="">None</option>
-@foreach(var modelType in ApiHelper.GeneratedModelTypes()){
-    <option value="@modelType.AssemblyQualifiedName">@modelType.Name</option>
-}
-
-</select>
