@@ -1,4 +1,48 @@
-﻿.fas {
+﻿/*stuff from bootstrap 2*/
+select, input[type="file"] {
+    height: 30px;
+    *margin-top: 4px;
+    line-height: 30px;
+}
+
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    display: inline-block;
+    height: 30px;
+    padding: 4px 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #555555;
+    vertical-align: middle;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+select {
+    width: 220px;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    height: 30px;
+}
+label {
+    display: block!important;
+    margin-bottom: 5px;
+}
+select[multiple], select[size] {
+    height: auto;
+}
+/*end stuff from bootstrap 2*/
+
+.mt-30 {
+margin-top:30px;
+}
+ul.content {
+padding:0px;
+}
+ul.content ul {
+padding:0px;
+}
+.fas {
     color:#333;
 }
 .settings_display_image span{word-wrap:break-word;width:100%;display:block;}
@@ -42,7 +86,7 @@ span.variant.published{color:#33aa33;}
 .create_default{display:none;padding-left:0px !important;border-bottom:2px solid lightgrey;}
 div.search{float:right;}
 button.search{}
-input.search{width:0px;height: 10px;margin-top:0px;opacity:0;}
+input.search{width:0px;height: 25px;margin-top:0px;opacity:0;}
 .search_options{padding:0px !important;padding-left:12px !important;opacity:0;}
 .search_ops button{float:right;}
 .search_ops,.overlay_screen{
@@ -129,6 +173,9 @@ div.search_results tr:hover
 div.settings{padding-top:0px;}
 select.languages{height:200px !important;width:550px !important;}
 .nodisplay{display:none;}
+.puck-dropdown.open ul {
+    display:block;
+}
 .btn-group.template-dropdown, .btn-group.node-dropdown
 {
     position:absolute;
@@ -137,10 +184,19 @@ select.languages{height:200px !important;width:550px !important;}
 {
     min-width:initial !important;
 }
-.settings .redirects,.settings .orphans{padding-bottom:20px;}
+.settings .redirects, .settings .orphans {
+    padding-bottom: 20px;
+}
 .settings .redirects ul,.settings .orphans ul{padding:0px;margin:0px;}
 .settings .redirects li,.settings .orphans li{float:left;margin-left:10px;}
-.settings .redirects button,.settings .orphans button{vertical-align:bottom;margin-top:25px;height:31px;}
+.settings .redirects button,.settings .orphans button{vertical-align:bottom;margin-top:25px;height:35px;}
+.settings .redirects input.from, .settings .redirects input.to {
+    width: 200px;
+}
+.settings .redirects .redirect_type{width:97px;}
+.settings .redirects button {
+/*margin-top:0px!important;*/
+}
 .settings .orphans select{width:300px !important;}
 .overlay_screen ul.content.redirect .node span{cursor:pointer;}
 .settings div.submit{clear:both;width:100%;}
@@ -210,9 +266,9 @@ span.nodename{cursor:default;}
 i.menu{cursor:pointer;}
 div.node-dropdown{position:absolute;}
 .tred{color:#ff3333;}
-button.content_preview{position:absolute;top:0px;right:60px;}
-button.content_update{position:absolute;top:0px;right:30px;}
-button.content_publish{position:absolute;top:0px;right:0px;}
+button.content_preview{position:absolute;top:1px;right:60px;}
+button.content_update{position:absolute;top:1px;right:30px;}
+button.content_publish{position:absolute;top:1px;right:0px;}
 .content_btns{border:none;background-color:#fff;padding:1px;}
 .path_locale_dialog button{float:right;}
 .domain_mapping_dialog button{float:right;}
@@ -238,11 +294,23 @@ ul.content.nomenu .node i.menu{display:none;}
 /*
 .leftarea .node span.variant{display:none;}
 */
+.leftarea .left_item a {
+    margin-top:-3px;
+}
+.leftarea .left_content i {
+font-size:16px!important;
+}
+.leftarea .left_item i {
+font-size:21px;
+vertical-align:sub;
+display:inline;
+}
 .leftarea .node.selected>.inner{border-top:1px solid #0088cc;border-bottom:1px solid #0088cc;}
 .leftarea .node > .inner{position:relative;}
 .leftarea .node > .inner:hover .icon-search, .leftarea .node > .inner:hover .icon_search {
     display: block;
 }
+ul.translations{padding:0px;}
 .node > .inner .icon-search, .node > .inner .icon_search {
     position: absolute;
     right: 0px;

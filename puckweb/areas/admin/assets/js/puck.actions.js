@@ -69,7 +69,7 @@ var searchDialog = function (root, f) {
         }
 
         var el = $(".interfaces .search_ops").clone();
-        el.css({ left: cright.offset().left - 20 + "px", width: "0px", top: "90px", height: $(window).height() - 90 + "px" });
+        el.css({ left: cright.position().left - 30 + "px", width: "0px", top: "0px", height: $(window).height() - 90 + "px" });
         cright.append(el);
         el.animate({ width: "280px" }, 200, function () { if (f) f(); });
         $("input.search").animate({ width: 205, opacity: 1 }, 500);
@@ -716,20 +716,20 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                 if (!groups.contains(groupName))
                     groups.push(groupName);
             });
-            var tabHtml = '<ul class="nav nav-tabs">';
+            var tabHtml = '<ul class="nav nav-tabs" role="tablist">';
             $(groups).each(function (i) {
                 var val = this;
-                tabHtml += '<li class="' + (i == 0 ? "active" : "") + '"><a class="fieldtabs" href="#fieldtabs' + i + '">' + val + '</a></li>';
+                tabHtml += '<li class="nav-item ' + (i == 0 ? "active" : "") + '"><a class="nav-link fieldtabs ' + (i == 0 ? "active" : "") + '" data-toggle="tab" role="tab" href="#fieldtabs' + i + '">' + val + '</a></li>';
             });
-            tabHtml += '<li class=""><a class="fieldtabs" href="#fieldtabs' + groups.length + '">default</a></li>';
+            tabHtml += '<li class="nav-item"><a class="nav-link fieldtabs" data-toggle="tab" role="tab" href="#fieldtabs' + groups.length + '">default</a></li>';
             tabHtml += '</ul>';
 
             tabHtml += '<div class="tab-content">';
             $(groups).each(function (i) {
                 var val = this;
-                tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '"></div>';
+                tabHtml += '<div data-group="' + val + '" role="tabpanel" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '"></div>';
             });
-            tabHtml += '<div data-group="default" class="tab-pane" id="fieldtabs' + groups.length + '"></div>';
+            tabHtml += '<div data-group="default" role="tabpanel" class="tab-pane" id="fieldtabs' + groups.length + '"></div>';
             tabHtml += "</div>";
             cright.find("form").prepend(tabHtml);
             cright.find(".nav .fieldtabs").click(function (e) {
@@ -760,20 +760,20 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                     if (!groups.contains(val.split(':')[1]))
                         groups.push(val.split(":")[1]);
                 });
-                var tabHtml = '<ul class="nav nav-tabs">';
+                var tabHtml = '<ul class="nav nav-tabs" role="tablist">';
                 $(groups).each(function (i) {
                     var val = this;
-                    tabHtml += '<li class="' + (i == 0 ? "active" : "") + '"><a class="fieldtabs" href="#fieldtabs' + i + '">' + val + '</a></li>';
+                    tabHtml += '<li class="nav-item ' + (i == 0 ? "active" : "") + '"><a class="nav-link fieldtabs ' + (i == 0 ? "active" : "") + '" data-toggle="tab" role="tab" href="#fieldtabs' + i + '">' + val + '</a></li>';
                 });
-                tabHtml += '<li class=""><a class="fieldtabs" href="#fieldtabs' + groups.length + '">default</a></li>';
+                tabHtml += '<li class="nav-item"><a class="nav-link fieldtabs" data-toggle="tab" role="tab" href="#fieldtabs' + groups.length + '">default</a></li>';
                 tabHtml += '</ul>';
 
                 tabHtml += '<div class="tab-content">';
                 $(groups).each(function (i) {
                     var val = this;
-                    tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '"></div>';
+                    tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" role="tabpanel" id="fieldtabs' + i + '"></div>';
                 });
-                tabHtml += '<div data-group="default" class="tab-pane" id="fieldtabs' + groups.length + '"></div>';
+                tabHtml += '<div data-group="default" class="tab-pane" role="tabpanel" id="fieldtabs' + groups.length + '"></div>';
                 tabHtml += "</div>";
                 cright.find("form").prepend(tabHtml);
                 cright.find(".nav .fieldtabs").click(function (e) {
@@ -840,7 +840,10 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
             msg(false, data.message);
         });
     }, fromVariant, contentId);
-    getPrepopulatedMarkup(type,contentId, function (data) {
+    getPrepopulatedMarkup(type, contentId, function (data) {
+        debugger;
+        var temp = $("<div/>").append(data);
+        var type = temp.find("input[name='Type']").val();
         cinterfaces.find("div[data-type='" + type + "']").remove();
         cinterfaces.append($("<div/>").attr("data-type", type));
         cinterfaces.find("div[data-type='"+type+"']").html(data);
@@ -878,7 +881,7 @@ var overlay = function (el, width, height, top, title) {
     searchDialogClose();
     var outer = $(".interfaces .overlay_screen").clone().addClass("");
     outer.find(">h1:first").html(title || "")
-    outer.css({ left: cright.offset().left - 20 + "px", width: "0px", top: "90px", height: $(window).height() - 90 + "px" });
+    outer.css({ left: cright.position().left - 30 + "px", width: "0px", top: "0px", height: $(window).height() - 90 + "px" });
     if (outer.offset().top < $(document).scrollTop()) {
         outer.css({top:$(document).scrollTop()});
     }

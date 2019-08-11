@@ -888,6 +888,7 @@
     <Content Include="areas\admin\assets\js\jquery-ui-1.8.20.js" />
     <Content Include="areas\admin\assets\js\jquery-ui-1.8.20.min.js" />
     <Content Include="areas\admin\assets\js\jquery-ui-timepicker-addon.js" />
+    <Content Include="areas\admin\assets\js\jquery.browser.js" />
     <Content Include="areas\admin\assets\js\jquery.unobtrusive-ajax.js" />
     <Content Include="areas\admin\assets\js\jquery.unobtrusive-ajax.min.js" />
     <None Include="areas\admin\assets\js\jquery.validate-vsdoc.js" />

@@ -4,10 +4,10 @@
     Layout = null;
 }
 <div class="developer settings">
-    <ul class="nav nav-tabs">
-        <li class="active"><a class="fieldtabs" href="#fieldtabs0">Views</a></li>
-        <li class=""><a class="fieldtabs" href="#fieldtabs1">Generated Models</a></li>
-        <li class=""><a class="fieldtabs" href="#fieldtabs2">Tasks</a></li>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active nav-item"><a class="active nav-link fieldtabs" href="#fieldtabs0">Views</a></li>
+        <li class="nav-item"><a class="nav-link fieldtabs" href="#fieldtabs1">Generated Models</a></li>
+        <li class="nav-item"><a class="nav-link fieldtabs" href="#fieldtabs2">Tasks</a></li>
     </ul>
         
     <div id="fieldtabs0" class="fieldwrapper">
@@ -36,7 +36,7 @@
     <div id="fieldtabs2" class="tasklist fieldwrapper">
         @Html.LabelFor(model => model.Tasks)
         <p>
-            <a class="btn-link create_task" href="@Url.Action("Create")">
+            <a class="btn btn-link create_task" href="@Url.Action("Create")">
                 <i class="fas fa-plus-circle"></i>
                 New Task
             </a>
@@ -109,8 +109,8 @@
         var container = $("div.developer.settings");
         container.find("ul.nav li").click(function (e) {
             e.preventDefault();
-            container.find("ul.nav li").removeClass("active");
-            $(this).addClass("active");
+            container.find("ul.nav li a").removeClass("active");
+            $(this).find("a").addClass("active");
             container.find("div.fieldwrapper").hide();
             $($(this).find("a").attr("href")).show();
             codeMirror.refresh();

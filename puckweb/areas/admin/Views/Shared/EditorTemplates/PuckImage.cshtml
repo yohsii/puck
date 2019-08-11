@@ -10,13 +10,13 @@
 }
     <div class="puckImage puckimage_@ViewData.ModelMetadata.PropertyName puckimage_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
         <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
-        <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a @*data-toggle="tab"*@ href="#">Image info</a></li>
-            <li><a @*data-toggle="tab"*@ href="#">Crops</a></li>
+        <ul class="nav nav-tabs" role="tablist" id="myTab">
+            <li class="nav-item active"><a class="nav-link active" role="tab" @*data-toggle="tab"*@ href="#">Image info</a></li>
+            <li class="nav-item"><a @*data-toggle="tab"*@ class="nav-link" href="#">Crops</a></li>
         </ul>
 
         <div class="tab-content">
-            <div class="tab-pane active" id="_puckImage_info_tab_@ViewData.ModelMetadata.PropertyName">
+            <div class="tab-pane active" role="tabpanel" id="_puckImage_info_tab_@ViewData.ModelMetadata.PropertyName">
                 @Html.EditorFor(x => x.Path)
                 <div class="editor-label" style="">
                     @Html.LabelFor(x => x.Description)
@@ -51,7 +51,7 @@
                 }
                 @Html.EditorFor(x => x.File)
             </div>
-            <div class="tab-pane" id="_puckImage_crops_tab_@ViewData.ModelMetadata.PropertyName">
+            <div class="tab-pane" role="tabpanel" id="_puckImage_crops_tab_@ViewData.ModelMetadata.PropertyName">
                 <div class="cropSizes">
                     @foreach (var c in settings.Crops ?? new List<puck.core.Models.CropInfo>()) {
                         <div class="cropSize" data-alias="@c.Alias" data-width="@c.Width" data-height="@c.Height">

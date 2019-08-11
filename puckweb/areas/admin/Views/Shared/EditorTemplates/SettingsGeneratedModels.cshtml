@@ -5,18 +5,19 @@
 }
 <div class="settings_generated_models">
     <p>
-        <a class="new_model btn-link"><i class="fas fa-plus-circle"></i> New Model</a>
+        <a class="new_model btn btn-link"><i class="fas fa-plus-circle"></i> New Model</a>
     </p>
-    <div class="grid_3 alpha omega"><h2>models</h2></div>
-    <div class="grid_3 alpha omega"><h2>properties</h2></div>
-    <div class="grid_3 alpha omega"><h2>options</h2></div>
-    
+    <div class="row">
+        <div class="col-md-3 grid_3 alpha omega"><h2>models</h2></div>
+        <div class="col-md-3 grid_3 alpha omega"><h2>properties</h2></div>
+        <div class="col-md-3 grid_3 alpha omega"><h2>options</h2></div>
+    </div>
     <div class="models">
         
     </div>    
     <div class="clearboth"></div>
-    <div class="_interfaces">
-        <div class="grid_3 alpha omega col3"></div>        
+    <div class="_interfaces row">
+        <div class="col-md-3 grid_3 alpha omega col3"></div>        
     </div>
     <div class="btn-group puck-dropdown open model" data-context="">
         <ul class="dropdown-menu">
@@ -214,7 +215,7 @@
             }
             var mcon = $("<div/>").addClass("mod_container");
             mcon.data("model", m);
-            var el = $("<div/>").addClass("model grid_3 alpha omega").attr("data-id", m.id);
+            var el = $("<div/>").addClass("model col-md-3 grid_3 alpha omega").attr("data-id", m.id);
             var lnk = $("<a class='btn btn-link' href='#'/>").html("" + m.name);
             el.append('<i class="fas fa-chevron-right"></i>');
             el.append('<i class="fas fa-cog"></i>');

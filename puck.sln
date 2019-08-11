@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "puck", "puck\puck.csproj", "{BB7432D0-5C96-489B-BC5D-4777B1162113}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "core", "core\core.csproj", "{D79D37F5-0989-4783-809E-E0B16D545BFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{AD10D367-3C54-459D-9FED-843FE8A02BCF}"
@@ -18,12 +16,6 @@ Global
 		ReleaseDebug|Any CPU = ReleaseDebug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BB7432D0-5C96-489B-BC5D-4777B1162113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB7432D0-5C96-489B-BC5D-4777B1162113}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB7432D0-5C96-489B-BC5D-4777B1162113}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB7432D0-5C96-489B-BC5D-4777B1162113}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB7432D0-5C96-489B-BC5D-4777B1162113}.ReleaseDebug|Any CPU.ActiveCfg = ReleaseDebug|Any CPU
-		{BB7432D0-5C96-489B-BC5D-4777B1162113}.ReleaseDebug|Any CPU.Build.0 = ReleaseDebug|Any CPU
 		{D79D37F5-0989-4783-809E-E0B16D545BFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D79D37F5-0989-4783-809E-E0B16D545BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D79D37F5-0989-4783-809E-E0B16D545BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU

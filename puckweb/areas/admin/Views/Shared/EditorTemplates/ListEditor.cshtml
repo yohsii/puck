@@ -9,7 +9,7 @@
     <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
     <div style="display:none;" class="nameQuery" data-query="@Html.Raw(ViewData.ModelMetadata.ShortDisplayName)"></div>
     <div class="addContainer">
-        <button type="button" class="btn"><i class="fas fa-plus-circle"/></button>
+        <button type="button" class="btn-light btn"><i class="fas fa-plus-circle"/></button>
     </div>
     <ul class="selected_content">
         @if (Model != null)
@@ -63,7 +63,8 @@
             str = str.replace(/\[\d+\]/g, "[0]");
             return str;
         }
-        if (shouldBindListEditor||true) {
+
+        if (shouldBindListEditor || true) {
             whenTemplateReady(function (template) {
                 console.log("templateReady:" + getPropName());
                 container.find(".addContainer:first button").click(function () {

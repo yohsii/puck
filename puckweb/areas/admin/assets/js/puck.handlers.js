@@ -95,8 +95,8 @@ $(document).on("click", "ul.content:not(.templates) li.node i.expand", function 
 $(document).on("click", "ul.content li.node i.menu", function (e) {
     //display dropdown
     var node = $(this).parents(".node:first");
-    var left = node.offset().left;
-    var top = node.offset().top + 30;
+    var left = node.position().left;
+    var top = node.position().top+15;
     var dropdown = $("." + node.parents("ul.content:first").attr("data-dropdown"));
     dropdown
         .addClass("open")
