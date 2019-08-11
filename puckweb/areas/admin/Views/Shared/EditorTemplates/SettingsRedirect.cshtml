@@ -3,11 +3,11 @@
 <div class="redirects">
     <ul>
         <li>
-            <label>From (<i class="icon-pencil"></i>)</label>
+            <label>From (<i class="fas fa-pencil-alt"></i>)</label>
             <input class="from" />
         </li>
         <li>
-            <label>To (<i class="icon-pencil to"></i>)</label>
+            <label>To (<i class="fas fa-pencil-alt to"></i>)</label>
             <input class="to" />
         </li>
         <li>
@@ -21,11 +21,11 @@
             <button>add</button>
         </li>
     </ul>
-    <div class="nodisplay entry">&nbsp;<span><i class="icon-remove-sign"></i></span></div>
+    <div class="nodisplay entry">&nbsp;<span><i class="fas fa-minus-circle"></i></span></div>
     <div class="display clearboth">
         @foreach(var r in Model.ToList()){
             var rtype = r.Key.StartsWith(puck.core.Constants.DBNames.Redirect301) ? puck.core.Constants.DBNames.Redirect301 : puck.core.Constants.DBNames.Redirect302;
-            <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value - @rtype.Substring(8,3)&nbsp;<span><i class="icon-remove-sign"></i></span></div>
+            <div data-rtype="@rtype" data-from="@r.Key.Substring(rtype.Length)" data-to="@r.Value" class="entry">@r.Key.Substring(rtype.Length) - @r.Value - @rtype.Substring(8,3)&nbsp;<span><i class="fas fa-minus-circle"></i></span></div>
         }        
     </div>
     <div class="tree_container">

@@ -5,7 +5,7 @@
 }
 <div class="settings_generated_models">
     <p>
-        <a class="new_model btn-link"><i class="icon-plus-sign"></i> New Model</a>
+        <a class="new_model btn-link"><i class="fas fa-plus-circle"></i> New Model</a>
     </p>
     <div class="grid_3 alpha omega"><h2>models</h2></div>
     <div class="grid_3 alpha omega"><h2>properties</h2></div>
@@ -20,16 +20,16 @@
     </div>
     <div class="btn-group puck-dropdown open model" data-context="">
         <ul class="dropdown-menu">
-            <li><a href="#" data-action="generate"><i class="icon-off"></i> Generate</a></li>
-            <li><a href="#" data-action="add_property"><i class="icon-plus-sign"></i> Add property</a></li>
-            <li><a href="#" data-action="view_source"><i class="icon-file"></i> View source</a></li>
-            <li><a href="#" data-action="delete_model"><i class="icon-trash"></i> Delete</a></li>
+            <li><a href="#" data-action="generate"><i class="fas fa-power-off"></i> Generate</a></li>
+            <li><a href="#" data-action="add_property"><i class="fas fa-plus-circle"></i> Add property</a></li>
+            <li><a href="#" data-action="view_source"><i class="fas fa-file"></i> View source</a></li>
+            <li><a href="#" data-action="delete_model"><i class="fas fa-trash"></i> Delete</a></li>
         </ul>
     </div>
     <div class="btn-group puck-dropdown open property" data-context="">
         <ul class="dropdown-menu">
             <li>
-                <a><i class="icon-plus-sign"></i> Add option<br />
+                <a><i class="fas fa-plus-circle"></i> Add option<br />
                 <select class="optionType">
                 @{
                     <option>-- Select Option --</option>
@@ -40,12 +40,12 @@
                 </select>
                 </a>
             </li>
-            <li><a href="#" data-action="delete_property"><i class="icon-trash"></i> Delete</a></li>                
+            <li><a href="#" data-action="delete_property"><i class="fas fa-trash"></i> Delete</a></li>                
         </ul>
     </div>
     <div class="btn-group puck-dropdown open attribute" data-context="">
         <ul class="dropdown-menu">
-            <li><a href="#" data-action="delete_attribute"><i class="icon-trash"></i> Delete</a></li>                
+            <li><a href="#" data-action="delete_attribute"><i class="fas fa-trash"></i> Delete</a></li>                
         </ul>
     </div>
 </div>
@@ -54,7 +54,7 @@
 <script>
     onAfterDom(function () {
         var container = $(".settings_generated_models");
-        $(document).on("click.model_options", ".mod_container i.icon-cog", function () {
+        $(document).on("click.model_options", ".mod_container i.fa-cog", function () {
             var pos = $(this).position();
             var con = $(this).parents(".mod_container");
             var parent = $(this).parent();
@@ -100,7 +100,7 @@
                 }
             });
         });
-        container.on("click.expand_generated_models", ".model>i.icon-chevron-right", function () {
+        container.on("click.expand_generated_models", ".model>i.fa-chevron-right", function () {
             var el = $(this);
             var modelContainer = el.parents(".mod_container");
             var obj = modelContainer.data("model");
@@ -108,7 +108,7 @@
                 addProp(this,modelContainer.find(".properties"));
             });
         });
-        container.on("click.property_expand", ".property>i.icon-chevron-right", function () {
+        container.on("click.property_expand", ".property>i.fa-chevron-right", function () {
             var el = $(this);
             var modelContainer = el.parents(".mod_container");
             var pid = el.parents(".property").attr("data-id");
@@ -180,7 +180,7 @@
             }
             var el = $("<div/>").addClass("attribute").attr("data-id", a.id).attr("data-pid",a.propId).attr("data-type",a.type);
             var lnk = $("<a class='btn btn-link' href='#'/>").html(a.name);
-            el.append('<i class="icon-cog"></i>');
+            el.append('<i class="fas fa-cog"></i>');
             el.append(lnk);
             con.append(el);
         }
@@ -201,8 +201,8 @@
             }
             var el = $("<div/>").addClass("property").attr("data-id", p.id);
             var lnk = $("<a class='btn btn-link' href='#'/>").html(p.name);
-            el.append('<i class="icon-chevron-right"></i>');
-            el.append('<i class="icon-cog"></i>');
+            el.append('<i class="fas fa-chevron-right"></i>');
+            el.append('<i class="fas fa-cog"></i>');
             el.append(lnk);
             con.append(el);
         }
@@ -216,8 +216,8 @@
             mcon.data("model", m);
             var el = $("<div/>").addClass("model grid_3 alpha omega").attr("data-id", m.id);
             var lnk = $("<a class='btn btn-link' href='#'/>").html("" + m.name);
-            el.append('<i class="icon-chevron-right"></i>');
-            el.append('<i class="icon-cog"></i>');
+            el.append('<i class="fas fa-chevron-right"></i>');
+            el.append('<i class="fas fa-cog"></i>');
             el.append(lnk);
             mcon.append(el);
             var propContainer = intf("col3").addClass("properties");

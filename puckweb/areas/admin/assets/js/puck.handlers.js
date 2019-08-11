@@ -62,15 +62,15 @@ $(document).on("click", "ul.content.templates li.node i.expand", function () {
     var descendants = node.find("ul");
     if (descendants.length > 0) {//show
         if (descendants.first().is(":hidden")) {
-            node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+            node.find("i.expand").removeClass("fa-chevron-right").addClass("fa-chevron-down");
             descendants.show();
         } else {//hide
-            node.find("i.expand").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+            node.find("i.expand").removeClass("fa-chevron-down").addClass("fa-chevron-right");
             descendants.hide();
         }
     } else {
         getDrawTemplates(node.attr("data-path"), node);
-        node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+        node.find("i.expand").removeClass("fa-chevron-right").addClass("fa-chevron-down");
     }
 });
 //content tree expand
@@ -80,15 +80,15 @@ $(document).on("click", "ul.content:not(.templates) li.node i.expand", function 
     var descendants = node.find("ul");
     if (descendants.length > 0) {//show
         if (descendants.first().is(":hidden")) {
-            node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+            node.find("i.expand").removeClass("fa-chevron-right").addClass("fa-chevron-down");
             descendants.show();
         } else {//hide
-            node.find("i.expand").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+            node.find("i.expand").removeClass("fa-chevron-down").addClass("fa-chevron-right");
             descendants.hide();
         }
     } else {
         getDrawContent(node.attr("data-id"), node, true);
-        node.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+        node.find("i.expand").removeClass("fa-chevron-right").addClass("fa-chevron-down");
     }
 });
 //node settings dropdown
@@ -203,7 +203,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                         $("ul.templates .node[data-path='" + from + "']").remove();
                         var tonode = $("ul.templates .node[data-path='" + to + "']");
                         console.log({ el: tonode });
-                        tonode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
+                        tonode.find(".expand:first").removeClass("fa-chevron-right").addClass("fa-chevron-down").css({ visibility: "visible" });
                         getDrawTemplates(to);
                     } else {
                         msg(false, d.message);
@@ -332,7 +332,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                         cleft.find(".node[data-id='" + fromId + "']").remove();
                         var tonode = cleft.find(".node[data-id='" + toId + "']");
                         console.log({ el: tonode });
-                        tonode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
+                        tonode.find(".expand:first").removeClass("fa-chevron-right").addClass("fa-chevron-down").css({ visibility: "visible" });
                         getDrawContent(toId);
                     } else {
                         msg(false, d.message);
@@ -364,7 +364,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
                         var tonode = cleft.find(".node[data-id='" + toId + "']");
                         console.log({ el: tonode });
                         if (tonode.length == 0) return;
-                        tonode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
+                        tonode.find(".expand:first").removeClass("fa-chevron-right").addClass("fa-chevron-down").css({ visibility: "visible" });
                         getDrawContent(toId);
                     } else {
                         msg(false, d.message);
@@ -451,7 +451,7 @@ $(document).on("click",".node-dropdown a,.template-dropdown a",function () {
             break;
     }
 });
-cleft.on("click", ".node .icon-search", function () {
+cleft.on("click", ".node .icon_search", function () {
     var el = $(this).parents(".node:first");
     searchRoot = el.attr("data-path");
     searchDialog(el.attr("data-path"));

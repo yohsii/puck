@@ -9,7 +9,7 @@
     <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
     <div style="display:none;" class="nameQuery" data-query="@Html.Raw(ViewData.ModelMetadata.ShortDisplayName)"></div>
     <div class="addContainer">
-        <button type="button" class="btn"><i class="icon-plus"/></button>
+        <button type="button" class="btn"><i class="fas fa-plus-circle"/></button>
     </div>
     <ul class="selected_content">
         @if (Model != null)
@@ -17,7 +17,7 @@
             foreach(var m in Model)
             {
             <li class="itemContainer">
-                <div class="titleContainer"><i class="sortHandle icon-move" /><i class="expand icon-chevron-down" /> <span>item @(count+1)</span> <i class="icon-minus" /></div>
+                <div class="titleContainer"><i class="sortHandle fas fa-arrows-alt" /><i class="expand fas fa-chevron-down" /> <span>item @(count+1)</span> <i class="fas fa-minus-circle remove" /></div>
                 <div class="editorContainer">
                     @Html.EditorFor(x=>m,null,$"[{count}]",null)
                 </div>                
@@ -103,7 +103,7 @@
                             input.attr("name",name);
                     });
                     copy.find(".editorContainer").show();
-                    copy.find("i.expand").removeClass("icon-chevron-right").addClass("icon-chevron-down");
+                    copy.find("i.expand").removeClass("fa-chevron-right").addClass("fa-chevron-down");
                     copy.find(".selected_content").each(function () {
                         var container = $(this);
                         bindSortable(container);
@@ -131,16 +131,16 @@
                     var parent = el.parents(".itemContainer:first");
                     if (parent.find(".editorContainer:first").is(":visible")) {
                         parent.find(".editorContainer:first").hide();
-                        el/*.find("i.expand")*/.removeClass("icon-chevron-down").addClass("icon-chevron-right");
+                        el/*.find("i.expand")*/.removeClass("fa-chevron-down").addClass("fa-chevron-right");
                     }
                     else {
-                        el/*.find("i.expand")*/.removeClass("icon-chevron-right").addClass("icon-chevron-down");
+                        el/*.find("i.expand")*/.removeClass("fa-chevron-right").addClass("fa-chevron-down");
                         parent.find(".editorContainer:first").show();
                     }
                     
                 });
-                elSelected_container.off("click.minus").on("click.minus", ".titleContainer i.icon-minus", function (e) {
-                    if (!$(e.currentTarget).hasClass("icon-minus"))
+                elSelected_container.off("click.minus").on("click.minus", ".titleContainer i.remove", function (e) {
+                    if (!$(e.currentTarget).hasClass("remove"))
                         return;
                     var el = $(this);
                     var _selected_container = el.parents(".selected_content:first");
@@ -214,7 +214,7 @@
                 var el = $(this);
                 var parent = el.parent();
                 parent.find(".editorContainer").hide();
-                el.find("i.expand").removeClass("icon-chevron-down").addClass("icon-chevron-right");
+                el.find("i.expand").removeClass("fa-chevron-down").addClass("fa-chevron-right");
 
                 setTitle(parent);
             });

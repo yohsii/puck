@@ -32,7 +32,7 @@
                     {
                     <div class="selected_node" data-variant="@m.Variant" data-id="@m.Id">
                         <span>@node.NodeName</span>&nbsp; - &nbsp;<span>@m.Variant</span>&nbsp;
-                        <i class='icon-remove-sign'></i>
+                        <i class='fas fa-minus-circle'></i>
                     </div>
                     }
                 }
@@ -44,7 +44,7 @@
                     {
                     <div class="selected_node" data-variant="null" data-id="@m.Id">
                         <span>@node.NodeName</span>&nbsp;
-                        <i class='icon-remove-sign'></i>
+                        <i class='fas fa-minus-circle'></i>
                     </div>
                     }
                 }
@@ -102,11 +102,11 @@
             if (isVariantSelection && (selectionType == "variant" || selectionType == "both")) {
                 selected_container.append(
                     "<div class='selected_node' data-variant='" + clicked.attr("data-variant") + "' data-id='" + node.attr("data-id") + "'><span>"
-                    + node.attr("data-nodename") + "</span>&nbsp; - &nbsp;<span>" + clicked.attr("data-variant") + "</span>&nbsp;<i class='icon-remove-sign'></i></div>"
+                    + node.attr("data-nodename") + "</span>&nbsp; - &nbsp;<span>" + clicked.attr("data-variant") + "</span>&nbsp;<i class='fas fa-minus-circle remove'></i></div>"
                 );
             } else if (!isVariantSelection && (selectionType == "node" || selectionType == "both")) {
                 selected_container.append(
-                    "<div class='selected_node' data-variant='' data-id='" + node.attr("data-id") + "'><span>" + node.attr("data-nodename") + "</span>&nbsp;<i class='icon-remove-sign'></i></div>"
+                    "<div class='selected_node' data-variant='' data-id='" + node.attr("data-id") + "'><span>" + node.attr("data-nodename") + "</span>&nbsp;<i class='fas fa-minus-circle remove'></i></div>"
                 );
             }
             setValue();

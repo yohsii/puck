@@ -1,4 +1,7 @@
-﻿.settings_display_image span{word-wrap:break-word;width:100%;display:block;}
+﻿.fas {
+    color:#333;
+}
+.settings_display_image span{word-wrap:break-word;width:100%;display:block;}
 .compare_revision {float:left;width:45%;}
 .compare_revision .fields {
     padding:10px;
@@ -237,8 +240,15 @@ ul.content.nomenu .node i.menu{display:none;}
 */
 .leftarea .node.selected>.inner{border-top:1px solid #0088cc;border-bottom:1px solid #0088cc;}
 .leftarea .node > .inner{position:relative;}
-.leftarea .node > .inner:hover .icon-search{display:block;}
-.node>.inner .icon-search{position:absolute;right:0px;top:3px;display:none;}
+.leftarea .node > .inner:hover .icon-search, .leftarea .node > .inner:hover .icon_search {
+    display: block;
+}
+.node > .inner .icon-search, .node > .inner .icon_search {
+    position: absolute;
+    right: 0px;
+    top: 3px;
+    display: none;
+}
 .search_highlight{color:#ffffcc;}
 
 .settings_generated_models h3{font-size:15px;margin-bottom:0px;}
@@ -303,13 +313,16 @@ background:#ffeeee;
 .view_edit .node.selected {
     background: #eeffee;
 }
-
+.node > .inner > .menu, .node > .inner > .expand {
+    padding:0 2px;
+    margin:0 2px;
+}
 .puck_icon{
     display:none;
     display: inline-block;
     width: 14px;
     height: 14px;
-    margin-top: 1px;
+    margin-top: -3px;
     line-height: 14px;
     vertical-align: text-top;
     background-image: url("../img/glyphicons-halflings.png");

@@ -90,7 +90,7 @@ var searchDialog = function (root, f) {
         }
 
         if (!searchRoot.isEmpty()) {
-            var close = $('<i class="icon-remove-sign"></i>');
+            var close = $('<i class="fas fa-minus-circle"></i>');
             var pathspan = $("<span/>").html(searchRoot);
             el.find(".pathvalue").html('').append(pathspan).append(close);
             close.click(function () {
@@ -102,7 +102,7 @@ var searchDialog = function (root, f) {
         el.on("click", ".node span", function (e) {
             var node = $(this).parents(".node:first");
             var path = node.attr("data-path");
-            var close = $('<i class="icon-remove-sign"></i>');
+            var close = $('<i class="fas fa-minus-circle"></i>');
             var pathspan = $("<span/>").html(path);
             searchRoot = path;
             el.find(".pathvalue").html('').append(pathspan).append(close);
@@ -526,9 +526,9 @@ var drawTemplates = function (data, el, sortable) {
         var elnode = $("<li/>").addClass("node");
         var elinner = $("<div class='inner'/>");
         elnode.append(elinner);
-        elinner.append($("<i class=\"puck_icon\"></i>").addClass(node.Type == "folder" ? "icon-folder-close" : ""))
-        elinner.append($("<i class=\"icon-chevron-right expand\"></i>"))
-        elinner.append($("<i class=\"icon-cog menu\"></i>"))
+        elinner.append($("<i class=\"puck_icon\"></i>").addClass(node.Type == "folder" ? "fas fa-folder" : ""))
+        elinner.append($("<i class=\"fas fa-chevron-right expand\"></i>"))
+        elinner.append($("<i class=\"fas fa-cog menu\"></i>"))
                 .append("<span class='nodename'>" + node.Name + "&nbsp;" + "</span>");
         elnode.attr({
             "data-type": node.Type
@@ -596,10 +596,10 @@ var draw = function (data, el, sortable) {
         elnode.append(elinner);
         if (hasUnpublished)
             elnode.addClass("unpublished");
-        elinner.append($("<i class=\"icon-search\"></i>"));
+        elinner.append($("<i class=\"fas fa-search icon_search\"></i>"));
         elinner.append($("<i class=\"puck_icon\"></i>"))
-        elinner.append($("<i class=\"icon-chevron-right expand\"></i>"))
-        elinner.append($("<i class=\"icon-cog menu\"></i>"))
+        elinner.append($("<i class=\"fas fa-chevron-right expand\"></i>"))
+        elinner.append($("<i class=\"fas fa-cog menu\"></i>"))
                 .append("<span class='nodename'>" + node.NodeName + "&nbsp;" + "</span>");
         for (var i = 0; i < variants.length; i++) {
             var vel = $("<span class=\"variant\"/>").attr("data-variant", variants[i]).html(variants[i] + "&nbsp;");
@@ -833,7 +833,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
             msg(true, "content updated");
             getDrawContent(data.parentId, undefined, true, function () {
                 var pnode = cleft.find(".node[data-id='" + data.parentId + "']");
-                //pnode.find(".expand:first").removeClass("icon-chevron-right").addClass("icon-chevron-down").css({ visibility: "visible" });
+                //pnode.find(".expand:first").removeClass("fa-chevron-right").addClass("fa-chevron-down").css({ visibility: "visible" });
                 displayMarkup(null, type, variant,undefined,data.id);
             });
         }, function (data) {
@@ -882,7 +882,7 @@ var overlay = function (el, width, height, top, title) {
     if (outer.offset().top < $(document).scrollTop()) {
         outer.css({top:$(document).scrollTop()});
     }
-    var close = $('<i class="overlay_close icon-remove-sign"></i>');
+    var close = $('<i class="overlay_close fas fa-minus-circle"></i>');
     close.click(function () { overlayClose() });
     outer.append(close);
     var inner = outer.find(".inner");
@@ -914,7 +914,7 @@ var _overlay = function (el, width, height, top) {
         inner.css({ height: height + "px" });
     if (!!top)
         inner.css({ top: top + "px" });
-    var close = $("<div class='btn btn-link'><i class='icon-remove-sign'/>&nbsp;close</div>");
+    var close = $("<div class='btn btn-link'><i class='fas fa-minus-circle'/>&nbsp;close</div>");
     close.click(function () {
         overlayClose();
     });
