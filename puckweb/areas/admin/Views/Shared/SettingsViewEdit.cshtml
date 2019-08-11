@@ -13,7 +13,7 @@
             </li>
         </ul>
     </div>
-    <a class="btn-link inspect_model">inspect model</a> <a class="btn-link save">save</a>
+    <a class="btn btn-link inspect_model">inspect model</a> <a class="btn btn-link save">save</a>
     <textarea></textarea>
         
     <div class="clearboth"></div>
@@ -39,7 +39,7 @@
             <ul>
 
             </ul>
-            <a class="btn-link all_models">all models</a>
+            <a class="btn btn-link all_models">all models</a>
         </div>
     </div>
 </div>
@@ -210,11 +210,11 @@
             $(d.Data).each(function () {
                 var prop = $("<li/>").html(this.Name + "(" + this.Type + ")");
                 prop.attr({"data-iterate":this.IterateString,"data-insert":this.InsertString,"data-inspect":this.InspectString})
-                prop.append( $("<a/>").addClass("insert btn-link").html("insert"));
+                prop.append( $("<a/>").addClass("insert btn btn-link").html("insert"));
                 if(this.IsArray)
-                    prop.append( $("<a/>").addClass("iterate btn-link").html("iterate"));
+                    prop.append( $("<a/>").addClass("iterate btn btn-link").html("iterate"));
                 if(this.IsComplexType)
-                    prop.append( $("<a/>").addClass("inspect btn-link").html("inspect"));
+                    prop.append( $("<a/>").addClass("inspect btn btn-link").html("inspect"));
                 el.find("ul").append(prop);
             });
             el.find("a.all_models").click(function (e) {

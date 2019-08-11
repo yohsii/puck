@@ -829,6 +829,8 @@ namespace puck.core.Controllers
             var concreteType = ApiHelper.ConcreteType(modelType);
             model = ApiHelper.CreateInstance(concreteType);
             ObjectDumper.SetPropertyValues(model,onlyPopulateListEditorLists:true);
+            var mod = model as BaseModel;
+            mod.Type = p_type;
             return View("Edit",model);
         }
 
