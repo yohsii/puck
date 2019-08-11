@@ -11,6 +11,7 @@ using Ninject;
 using Newtonsoft.Json;
 using puck.core.Controllers;
 using System.Linq.Expressions;
+using puck.core.State;
 namespace puck.core.Extensions
 {
     public static class ViewExtensions
@@ -25,7 +26,16 @@ namespace puck.core.Extensions
                 .GetFullHtmlFieldName(name);
             return new MvcHtmlString(fullHtmlFieldName);
         }
+        public static T GetPropertyAttribute<T>(this ModelMetadata instance) where T : Attribute
+        {
+            var result = instance.ContainerType
+              .GetProperty(instance.PropertyName)
+              .GetCustomAttributes(typeof(T), false)
+              .Select(a => a as T)
+              .FirstOrDefault(a => a != null);
 
+            return result;
+        }
         public static T PuckEditorSettings<T>(this WebViewPage page) {
             var repo = PuckCache.PuckRepo;
 

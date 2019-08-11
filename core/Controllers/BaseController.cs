@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 using System.Web.Caching;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.WebPages;
 using Lucene.Net.Index;
@@ -14,7 +15,7 @@ using puck.core.Base;
 using puck.core.Constants;
 using puck.core.Helpers;
 using StackExchange.Profiling;
-
+using puck.core.State;
 namespace puck.core.Controllers
 {
     public class BaseController : Controller
@@ -24,6 +25,12 @@ namespace puck.core.Controllers
         {
             try
             {
+                StateHelper.SetFirstRequestUrl();
+                if (PuckCache.ShouldSync&&!PuckCache.IsSyncQueued)
+                {
+                    PuckCache.IsSyncQueued = true;
+                    HostingEnvironment.QueueBackgroundWorkItem(ct=> SyncHelper.Sync(ct));
+                }
                 string path = Request.Url.AbsolutePath.ToLower();
                 
                 var dmode = this.GetDisplayModeId();
@@ -133,7 +140,7 @@ namespace puck.core.Controllers
             catch (Exception ex)
             {
                 PuckCache.PuckLog.Log(ex);
-                ViewBag.error = ex.Message;
+                ViewBag.Error = ex.Message;
                 return View(PuckCache.Path500);
             }
         }

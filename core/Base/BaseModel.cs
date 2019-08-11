@@ -10,6 +10,8 @@ using puck.core.Attributes;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace puck.core.Base
 {
     public class BaseModel
@@ -34,6 +36,11 @@ namespace puck.core.Base
         [IndexSettings(FieldIndexSetting=Lucene.Net.Documents.Field.Index.NOT_ANALYZED,Analyzer=typeof(KeywordAnalyzer))]
         public Guid Id { get; set; }
 
+        [UIHint("SettingsReadOnly")]
+        [DefaultGUIDTransformer()]
+        [IndexSettings(FieldIndexSetting = Lucene.Net.Documents.Field.Index.NOT_ANALYZED, Analyzer = typeof(KeywordAnalyzer))]
+        public Guid ParentId { get; set; }
+        
         [Required]
         [Display(Name="Node Name")]
         public String NodeName { get; set; }

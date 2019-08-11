@@ -10,7 +10,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Util;
 using puck.core.Base;
 using puck.core.Constants;
-
+using puck.core.State;
 namespace puck.core.PuckLucene
 {
     public class PuckQueryParser<T>:QueryParser where T : BaseModel

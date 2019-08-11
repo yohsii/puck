@@ -20,6 +20,13 @@ using puck.core.Filters;
 using puck.core.Models;
 using StackExchange.Profiling;
 using System.Web.Security;
+using puck.core.Identity;
+using Microsoft.AspNet.Identity;
+using System.Threading.Tasks;
+using System.Web.Hosting;
+using puck.core.State;
+using puck.core.Services;
+
 namespace puck.core.Controllers
 {
     [SetPuckCulture]
@@ -30,13 +37,30 @@ namespace puck.core.Controllers
         I_Content_Searcher searcher;
         I_Log log;
         I_Puck_Repository repo;
-        public ApiController(I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r) {
+        PuckRoleManager roleManager;
+        PuckUserManager userManager;
+        PuckSignInManager signInManager;
+        ContentService contentService;
+        ApiHelper apiHelper;
+        public ApiController(ApiHelper ah,ContentService cs,I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r, PuckRoleManager rm, PuckUserManager um, PuckSignInManager sm) {
             this.indexer = i;
             this.searcher = s;
             this.log = l;
             this.repo = r;
+            this.roleManager = rm;
+            this.userManager = um;
+            this.signInManager = sm;
+            this.contentService = cs;
+            this.apiHelper = ah;
+            StateHelper.SetFirstRequestUrl();
         }
-        [Auth(Roles=PuckRoles.Puck)]
+        public ActionResult DevPage(string id = "0a2ebbd3-b118-4add-a219-4dbc54cd742a") {
+            var guid = Guid.Parse(id);
+            var revision = repo.GetPuckRevision().FirstOrDefault(x => x.Current && x.Id == guid);
+            var model = ApiHelper.RevisionToBaseModel(revision);
+            return View(model);
+        }
+        [Auth(Roles = PuckRoles.Puck)]
         public ActionResult Index()
         {
             return View();
@@ -45,22 +69,24 @@ namespace puck.core.Controllers
         public JsonResult UserLanguage()
         {
             string variant = PuckCache.SystemVariant;
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
-            if (meta != null)
-                variant = meta.Value;
+            var user = userManager.FindByName(User.Identity.Name);
+            if (!string.IsNullOrEmpty(user.UserVariant))
+                //var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == User.Identity.Name).FirstOrDefault();
+                //if (meta != null)
+                variant = user.UserVariant;
             return Json(variant, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
-        public JsonResult UserRoles()
+        public async Task<JsonResult> UserRoles()
         {
-            var roles = Roles.GetRolesForUser(User.Identity.Name);
+            var roles = await userManager.GetRolesAsync(User.Identity.GetUserId());
             return Json(roles, JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles =PuckRoles.Puck)]
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult FieldGroups(string type)
         {
-            var model = ApiHelper.FieldGroups(type);
-            return Json(model,JsonRequestBehavior.AllowGet);
+            var model = apiHelper.FieldGroups(type);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
         public ActionResult CreateDialog(string type)
@@ -70,13 +96,13 @@ namespace puck.core.Controllers
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult Variants()
         {
-            var model = ApiHelper.Variants();
-            return Json(model,JsonRequestBehavior.AllowGet);
+            var model = apiHelper.Variants();
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult AllVariants()
         {
-            var model = ApiHelper.AllVariants();
+            var model = apiHelper.AllVariants();
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
@@ -104,52 +130,70 @@ namespace puck.core.Controllers
                     templatePath = dpath;
                 }
             }
-            var mod = ApiHelper.RevisionToBaseModel(model);
+            var mod = model.ToBaseModel();
             return View(templatePath, mod);
         }
-        [Auth(Roles= PuckRoles.Notify)]
-        public JsonResult Notify(string p_path){
-            var model = ApiHelper.NotifyModel(p_path);
-            return Json(model,JsonRequestBehavior.AllowGet);
+        [Auth(Roles = PuckRoles.Notify)]
+        public JsonResult Notify(string p_path) {
+            var model = apiHelper.NotifyModel(p_path);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles=PuckRoles.Notify)]
-        public ActionResult NotifyDialog(string p_path){
-            var model = ApiHelper.NotifyModel(p_path);
+        [Auth(Roles = PuckRoles.Notify)]
+        public ActionResult NotifyDialog(string p_path) {
+            var model = apiHelper.NotifyModel(p_path);
             return View(model);
         }
-        [Auth(Roles=PuckRoles.Notify)]
+        [Auth(Roles = PuckRoles.Notify)]
         [HttpPost]
-        public JsonResult Notify(Notify model){
-            string message="";
-            bool success=false;
-            try{
-                ApiHelper.SetNotify(model);
-                success=true;
-            }catch(Exception ex){
+        public JsonResult Notify(Notify model) {
+            string message = "";
+            bool success = false;
+            try {
+                apiHelper.SetNotify(model);
+                success = true;
+            } catch (Exception ex) {
                 message = ex.Message;
             }
-            return Json(new{success=success,message=message});
+            return Json(new { success = success, message = message });
         }
         [Auth(Roles = PuckRoles.Domain)]
         public ActionResult DomainMappingDialog(string p_path)
         {
-            var model = ApiHelper.DomainMapping(p_path);
+            var model = apiHelper.DomainMapping(p_path);
             return View((object)model);
         }
         [Auth(Roles = PuckRoles.Domain)]
         public JsonResult DomainMapping(string p_path)
         {
-            var model = ApiHelper.DomainMapping(p_path);
-            return Json(model,JsonRequestBehavior.AllowGet);
+            var model = apiHelper.DomainMapping(p_path);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Domain)]
         [HttpPost]
-        public JsonResult DomainMapping(string p_path,string domains) {
+        public JsonResult DomainMapping(string p_path, string domains) {
             string message = "";
             bool success = false;
             try
             {
-                ApiHelper.SetDomain(p_path,domains);
+                apiHelper.SetDomain(p_path, domains);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                message = ex.Message;
+            }
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
+        }
+
+        [Auth(Roles = PuckRoles.Copy)]
+        public ActionResult Copy(Guid id, Guid parentId, bool includeDescendants)
+        {
+            string message = "";
+            bool success = false;
+            try
+            {
+                contentService.Copy(id, parentId, includeDescendants);
                 success = true;
             }
             catch (Exception ex)
@@ -161,6 +205,23 @@ namespace puck.core.Controllers
         }
 
         [Auth(Roles = PuckRoles.Move)]
+        public JsonResult Move(Guid startId, Guid destinationId)
+        {
+            string message = "";
+            bool success = false;
+            try
+            {
+                contentService.Move(startId, destinationId);
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                message = ex.Message;
+            }
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
+        }
+        /*[Auth(Roles = PuckRoles.Move)]
         public JsonResult Move(string start,string destination)
         {
             string message = "";
@@ -177,60 +238,300 @@ namespace puck.core.Controllers
             }
             return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);            
         }
-
+        */
         [Auth(Roles = PuckRoles.Localisation)]
         public ActionResult LocalisationDialog(string p_path)
         {
-            var model = ApiHelper.PathLocalisation(p_path);
+            var model = apiHelper.PathLocalisation(p_path);
             return View((object)model);
         }
         [Auth(Roles = PuckRoles.Localisation)]
         public JsonResult Localisation(string p_path) {
-            var model = ApiHelper.PathLocalisation(p_path);
-            return Json(model,JsonRequestBehavior.AllowGet);
+            var model = apiHelper.PathLocalisation(p_path);
+            return Json(model, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Localisation)]
         [HttpPost]
-        public JsonResult Localisation(string p_path,string variant)
+        public JsonResult Localisation(string p_path, string variant)
         {
             string message = "";
             bool success = false;
             try
             {
-                ApiHelper.SetLocalisation(p_path,variant);
+                apiHelper.SetLocalisation(p_path, variant);
                 success = true;
             }
             catch (Exception ex) {
                 log.Log(ex);
                 message = ex.Message;
             }
-            return Json(new { message=message,success=success}, JsonRequestBehavior.AllowGet);
+            return Json(new { message = message, success = success }, JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = PuckRoles.ChangeType)]
+        public ActionResult ChangeTypeDialog(Guid id) {
+            var revision = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
+            PuckRevision parent = repo.GetPuckRevision().Where(x => x.Id == revision.ParentId && x.Current).FirstOrDefault();
+            var children = repo.CurrentRevisionsByParentId(revision.Id).ToList();
 
+            //only return allowed types
+            List<Type> allowedTypes = null;
+            if (parent == null)
+                allowedTypes = apiHelper.Models();
+            else
+                allowedTypes = apiHelper.AllowedTypes(parent.Type);
+
+            if (allowedTypes.Count == 0)
+                allowedTypes = apiHelper.Models();
+
+            //further filtering based on allowed types and the types of the children nodes
+            var typesToRemove = new List<Type>();
+            foreach (var type in allowedTypes) {
+                var typeAllowedTypes = apiHelper.AllowedTypes(type.AssemblyQualifiedName);
+                if (typeAllowedTypes.Count == 0)
+                    continue;
+                foreach (var childRevision in children) {
+                    if (!typeAllowedTypes.Any(x => x.AssemblyQualifiedName == childRevision.Type)) {
+                        typesToRemove.Add(type);
+                    }
+                }
+            }
+            typesToRemove.ForEach(x => allowedTypes.Remove(x));
+
+            return View(allowedTypes);
+        }
+        [Auth(Roles = PuckRoles.ChangeType)]
+        public ActionResult ChangeTypeMappingDialog(Guid id, string newType)
+        {
+            var revision = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
+            var tCurrentType = ApiHelper.GetType(revision.Type);
+            var tNewType = ApiHelper.GetType(newType);
+
+            var baseModelProperties = typeof(BaseModel).GetProperties().ToList();
+            var currentTypeProperties = tCurrentType.GetProperties().Where(x => !baseModelProperties.Any(xx => xx.Name == x.Name)).ToList();
+            var newTypeProperties = tNewType.GetProperties().Where(x => !baseModelProperties.Any(xx => xx.Name == x.Name)).ToList();
+            var model = new ChangeType() { ContentId = id, ContentType = tCurrentType, Revision = revision,
+                ContentProperties = currentTypeProperties, NewType = tNewType, NewTypeProperties = newTypeProperties };
+
+            model.Templates = apiHelper.AllowedViews(tNewType.AssemblyQualifiedName);
+            if (model.Templates.Count == 0)
+                model.Templates = apiHelper.Views();
+            var selectListItems = new List<SelectListItem>();
+            selectListItems.Add(new SelectListItem() { Text = "-- select template --", Value = "", Selected = true });
+            foreach (var template in model.Templates.OrderBy(x => x.Name)) {
+                selectListItems.Add(new SelectListItem() { Text = template.Name, Value = ApiHelper.ToVirtualPath(template.FullName) });
+            }
+            model.TemplatesSelectListItems = selectListItems;
+
+
+            return View(model);
+        }
+        [Auth(Roles = PuckRoles.TimedPublish)]
+        public ActionResult TimedPublish(TimedPublish model) {
+            var success = false;
+            var message = "";
+            if (ModelState.IsValid)
+            {
+                var key = $"{model.Id.ToString()}:{model.Variant}";
+                if (model.PublishAt.HasValue) {
+                    var value = "";
+                    if (model.PublishDescendantVariants != null) {
+                        value = string.Join(",", model.PublishDescendantVariants);
+                    }
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedPublish && x.Key == key);
+                    if (meta == null)
+                    {
+                        meta = new PuckMeta();
+                        repo.AddMeta(meta);
+                    }
+                    meta.Name = DBNames.TimedPublish;
+                    meta.Key = key;
+                    meta.Dt = model.PublishAt.Value;
+                    meta.Username = User.Identity.Name;
+                    meta.Value = value;
+                }
+                else
+                {
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedPublish && x.Key == key);
+                    if (meta != null)
+                    {
+                        repo.DeleteMeta(meta);
+                    }
+                }
+                if (model.UnpublishAt.HasValue)
+                {
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedUnpublish && x.Key == key);
+                    if (meta == null)
+                    {
+                        meta = new PuckMeta();
+                        repo.AddMeta(meta);
+                    }
+                    meta.Name = DBNames.TimedUnpublish;
+                    meta.Key = key;
+                    meta.Dt = model.UnpublishAt.Value;
+                    meta.Username = User.Identity.Name;
+                }
+                else
+                {
+                    var meta = repo.GetPuckMeta().FirstOrDefault(x => x.Name == DBNames.TimedUnpublish && x.Key == key);
+                    if (meta != null)
+                    {
+                        repo.DeleteMeta(meta);
+                    }
+                }
+
+                repo.SaveChanges();
+                success = true;
+                message = "Schedule set";
+            }
+            else {
+                message = string.Join(". ", ModelState.Values.SelectMany(x => x.Errors.Select(xx => xx.ErrorMessage)));
+            }
+            return Json(new { success = success, message = message });
+        }
+        [Auth(Roles = PuckRoles.TimedPublish)]
+        public ActionResult TimedPublishDialog(Guid id, string variant) {
+            var model = new TimedPublish();
+            model.Id = id;
+            model.Variant = variant;
+            model.Variants = apiHelper.Variants();
+            var key = $"{id}:{variant}";
+            var publishMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TimedPublish && x.Key == key).FirstOrDefault();
+            if (publishMeta != null) {
+                if (publishMeta.Dt.HasValue)
+                {
+                    model.PublishAt = publishMeta.Dt.Value;
+                    model.PublishDescendantVariants = publishMeta.Value?.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+                else {
+                    repo.DeleteMeta(publishMeta);
+                }
+            }
+            var unPublishMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TimedUnpublish && x.Key == key).FirstOrDefault();
+            if (unPublishMeta != null)
+            {
+                if (unPublishMeta.Dt.HasValue)
+                {
+                    model.UnpublishAt = unPublishMeta.Dt.Value;
+                    model.UnpublishDescendantVariants = unPublishMeta.Value?.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                }
+                else
+                {
+                    repo.DeleteMeta(unPublishMeta);
+                }
+            }
+            repo.SaveChanges();
+            return View(model);
+        }
+        [Auth(Roles = PuckRoles.Audit)]
+        public ActionResult AuditMarkup(Guid id,int page=1,int pageSize=10,string variant=null,string userName=null) {
+            var revision = repo.GetPuckRevision().Where(x => x.Id == id).FirstOrDefault();
+            if (revision != null)
+                ViewData["nodeName"] = revision.NodeName;
+            var audit = repo.GetPuckAudit().Where(x => x.ContentId == id);
+            if (!string.IsNullOrEmpty(variant))
+                audit = audit.Where(x=>x.Variant.ToLower().Equals(variant.ToLower()));
+            if (!string.IsNullOrEmpty(userName))
+                audit = audit.Where(x=>x.Username.ToLower().Equals(userName.ToLower()));
+            var count = audit.Count();
+            var model = audit.OrderByDescending(x => x.Timestamp).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            ViewData["count"] = count;
+            ViewData["currentPage"] = page;
+            ViewData["pageSize"] = pageSize;
+            return View("Audit",model);
+        }
+        [Auth(Roles = PuckRoles.ChangeType)]
+        [HttpPost]
+        public ActionResult ChangeTypeMapping(Guid id,string newType,FormCollection fc) {
+            string message = "";
+            bool success = false;
+            try
+            {
+                var revisions = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).ToList();
+                foreach (var revision in revisions)
+                {
+                    var model = ApiHelper.RevisionToBaseModel(revision);
+                    var tNewType = ApiHelper.GetType(newType);
+                    var newModel = Activator.CreateInstance(tNewType);
+                    var newModelAsBaseModel = newModel as BaseModel;
+                    newModelAsBaseModel.Id = model.Id;
+                    newModelAsBaseModel.Created = model.Created;
+                    newModelAsBaseModel.CreatedBy = model.CreatedBy;
+                    newModelAsBaseModel.LastEditedBy = User.Identity.Name;
+                    newModelAsBaseModel.NodeName = model.NodeName;
+                    newModelAsBaseModel.ParentId = model.ParentId;
+                    newModelAsBaseModel.Path = model.Path;
+                    newModelAsBaseModel.Published = model.Published;
+                    newModelAsBaseModel.Revision = model.Revision;
+                    newModelAsBaseModel.SortOrder = model.SortOrder;
+                    newModelAsBaseModel.Type = newType;
+                    newModelAsBaseModel.TypeChain = ApiHelper.TypeChain(tNewType);
+                    newModelAsBaseModel.Updated = DateTime.Now;
+                    newModelAsBaseModel.Variant = model.Variant;
+                    newModelAsBaseModel.TemplatePath = fc["_SelectedTemplate"];
+                    foreach (var currentPropertyName in fc.AllKeys)
+                    {
+                        var newPropertyName = fc[currentPropertyName];
+                        if (string.IsNullOrEmpty(newPropertyName) || !model.GetType().GetProperties().Any(x => x.Name == currentPropertyName))
+                            continue;
+
+                        var currentValue = model.GetType().GetProperty(currentPropertyName).GetValue(model);
+
+                        PropertyInfo prop = newModel.GetType().GetProperty(newPropertyName, BindingFlags.Public | BindingFlags.Instance);
+                        if (null != prop && prop.CanWrite)
+                        {
+                            prop.SetValue(newModel, currentValue, null);
+                        }
+
+                    }
+                    contentService.SaveContent(newModelAsBaseModel);
+                }
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                log.Log(ex);
+                success = false;
+                message = ex.Message;
+            }
+            return Json(new { success = success, message = message });
+        }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult GetPath(Guid id)
         {
-            var node = repo.GetPuckRevision().Where(x => x.Id == id).FirstOrDefault();
+            var node = repo.GetPuckRevision().Where(x => x.Id == id&&x.Current).FirstOrDefault();
             string path = node == null ? string.Empty : node.Path;
             return Json(path,JsonRequestBehavior.AllowGet);
         }
-
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult StartId()
+        {
+            var user = userManager.FindByName(User.Identity.Name);
+            return Json(user.StartNodeId, JsonRequestBehavior.AllowGet);
+        }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult StartPath()
         {
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == HttpContext.User.Identity.Name).FirstOrDefault();
+            var user = userManager.FindByName(User.Identity.Name);
+            if (user.StartNodeId != Guid.Empty) {
+                var node = repo.GetPuckRevision().Where(x => x.Id == user.StartNodeId && x.Current).FirstOrDefault();
+                if (node != null)
+                {
+                    return Json(node.Path + "/", JsonRequestBehavior.AllowGet);
+                }
+            }
+            /*var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == HttpContext.User.Identity.Name).FirstOrDefault();
             if (meta != null)
             {
                 var pu = JsonConvert.DeserializeObject(meta.Value, typeof(PuckPicker)) as PuckPicker;
                 if (pu != null)
                 {
-                    var node = repo.GetPuckRevision().Where(x => x.Id == pu.Id).FirstOrDefault();
+                    var node = repo.GetPuckRevision().Where(x => x.Id == pu.Id&&x.Current).FirstOrDefault();
                     if (node != null)
                     {
                         return Json(node.Path+"/",JsonRequestBehavior.AllowGet);
                     }
                 }
-            }
+            }*/
             return Json("/", JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
@@ -305,6 +606,13 @@ namespace puck.core.Controllers
             var result = nodes.Select(x => new { Variant=x.Variant,Published=x.Published});
             return Json(result,JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult VariantsForNodeById(Guid id)
+        {
+            var nodes = repo.GetPuckRevision().Where(x=>x.Id==id && x.Current).ToList();
+            var result = nodes.Select(x => new { Variant = x.Variant, Published = x.Published });
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         [Auth(Roles=PuckRoles.Puck)]
         public JsonResult Content(string path = "/") {
             //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
@@ -332,13 +640,41 @@ namespace puck.core.Controllers
             var publishedContent = qh.Directory(p_path).GetAll().GroupByPath();
             return Json(new { current=results,published=publishedContent,children=haveChildren }, JsonRequestBehavior.AllowGet);
         }
+        [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult ContentByParentId(Guid parentId =default(Guid))
+        {
+            //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
+            List<PuckRevision> resultsRev;
+#if DEBUG
+            using (MiniProfiler.Current.Step("content by path from DB"))
+            {
+                resultsRev = repo.CurrentRevisionsByParentId(parentId).ToList();
+            }
+#else
+            resultsRev = repo.CurrentRevisionsByDirectory(p_path).ToList();
+#endif
+            var results = resultsRev.Select(x => ApiHelper.RevisionToBaseModelCast(x)).ToList()
+                .GroupById()
+                .OrderBy(x => x.Value.First().Value.SortOrder)
+                .ToDictionary(x => x.Key.ToString(), x => x.Value);
 
+            List<string> haveChildren = new List<string>();
+            foreach (var k in results)
+            {
+                var id = Guid.Parse(k.Key);
+                if (repo.CurrentRevisionChildren(id).Count() > 0)
+                    haveChildren.Add(k.Key);
+            }
+            var qh = new QueryHelper<BaseModel>();
+            var publishedContent = qh.And().Field(x=>x.ParentId,parentId.ToString()).GetAll().GroupById().ToDictionary(x=>x.Key.ToString(),x=>x.Value);
+            return Json(new { current = results, published = publishedContent, children = haveChildren }, JsonRequestBehavior.AllowGet);
+        }
         [Auth(Roles = PuckRoles.Sort)]
-        public JsonResult Sort(string p_path,List<string> items) {
+        public JsonResult Sort(Guid parentId,List<Guid> items) {
             string message = "";
             bool success = false;
             try{
-                ApiHelper.Sort(p_path,items);
+                contentService.Sort(parentId,items);
                 success = true;
             }
             catch (Exception ex) {
@@ -359,7 +695,7 @@ namespace puck.core.Controllers
                 try
                 {
                     var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    ApiHelper.Publish(id, variant, arrDescendants, true);
+                    contentService.Publish(id, variant, arrDescendants);
                     success = true;
                 }
                 catch (Exception ex)
@@ -382,7 +718,7 @@ namespace puck.core.Controllers
                 try
                 {
                     var arrDescendants = descendants.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-                    ApiHelper.Publish(id, variant, arrDescendants, false);
+                    contentService.UnPublish(id, variant, arrDescendants);
                     success = true;
                 }
                 catch (Exception ex)
@@ -403,7 +739,7 @@ namespace puck.core.Controllers
                 var success = false;
                 try
                 {
-                    ApiHelper.Delete(id, variant);
+                    contentService.Delete(id, variant);
                     success = true;
                 }
                 catch (Exception ex)
@@ -419,16 +755,16 @@ namespace puck.core.Controllers
         public JsonResult Models(string type)
         {
             if (string.IsNullOrEmpty(type))
-                return Json(ApiHelper.AllModels().Select(x =>
+                return Json(apiHelper.AllModels().Select(x =>
                     new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
                     ), JsonRequestBehavior.AllowGet);
             else
-                return Json(ApiHelper.AllowedTypes(type).Select(x =>
+                return Json(apiHelper.AllowedTypes(type).Select(x =>
                     new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
                     ), JsonRequestBehavior.AllowGet);
         }
         public ActionResult ModelOptions(string type) {
-            var models = ApiHelper.AllModels();
+            var models = apiHelper.AllModels();
             
             var modelMatches = models.Where(x => x.FullName.EndsWith(type)).ToList();
             var result = (modelMatches == null ? models : new List<Type> (modelMatches))
@@ -477,9 +813,29 @@ namespace puck.core.Controllers
 
             return Json(new { Data=result,Path=opath,Type=type,Name=ApiHelper.FriendlyClassName(tType),FullName=originalType.FullName,IsGenerated=isGenerated }, JsonRequestBehavior.AllowGet);
         }
-        
+
         [Auth(Roles = PuckRoles.Edit)]
-        public ActionResult Edit(string p_type,string p_path="/",string p_variant="",string p_fromVariant="") {
+        public ActionResult PrepopulatedEdit(string p_type,Guid id)
+        {
+            if (string.IsNullOrEmpty(p_type)) {
+                var revision = repo.GetPuckRevision().FirstOrDefault(x=>x.Id==id);
+                p_type = revision.Type;
+            }
+            ViewBag.ShouldBindListEditor = false;
+            ViewBag.IsPrepopulated = true;
+            object model = null;
+            //empty model of type
+            var modelType = ApiHelper.GetType(p_type);
+            var concreteType = ApiHelper.ConcreteType(modelType);
+            model = ApiHelper.CreateInstance(concreteType);
+            ObjectDumper.SetPropertyValues(model,onlyPopulateListEditorLists:true);
+            return View("Edit",model);
+        }
+
+        [Auth(Roles = PuckRoles.Edit)]
+        public ActionResult Edit(string p_type,Guid? parentId,Guid? contentId, string p_variant = "", string p_fromVariant = "", string p_path = "/") {
+            ViewBag.ShouldBindListEditor = true;
+            ViewBag.IsPrepopulated = false;
             if (p_variant == "null")
                 p_variant = PuckCache.SystemVariant;
             object model=null;
@@ -490,10 +846,12 @@ namespace puck.core.Controllers
                 var concreteType = ApiHelper.ConcreteType(modelType);
                 model = ApiHelper.CreateInstance(concreteType);
                 //if creating new, return early
-                if (p_path.EndsWith("/"))
+                if (contentId == null)
                 {
+                    var parentPath = contentService.GetLiveOrCurrentPath(parentId.Value)??"";
                     var basemodel = (BaseModel)model;
-                    basemodel.Path = p_path;
+                    basemodel.ParentId = parentId.Value;
+                    basemodel.Path = "";
                     basemodel.Variant = p_variant;
                     basemodel.TypeChain = ApiHelper.TypeChain(concreteType);
                     basemodel.Type = modelType.AssemblyQualifiedName;
@@ -505,11 +863,11 @@ namespace puck.core.Controllers
             //else we'll need to get current data to edit for node or return node to translate
            
             List<PuckRevision> results = null;
-            //try get node by path with particular variant
+            //try get node by id with particular variant
             if(string.IsNullOrEmpty(p_fromVariant))
-                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(p_variant.ToLower()) && x.Current).ToList();
+                results = repo.GetPuckRevision().Where(x => x.Id==contentId.Value && x.Variant.ToLower().Equals(p_variant.ToLower()) && x.Current).ToList();
             else
-                results = repo.GetPuckRevision().Where(x => x.Path.ToLower().Equals(p_path) && x.Variant.ToLower().Equals(p_fromVariant.ToLower()) && x.Current).ToList();
+                results = repo.GetPuckRevision().Where(x => x.Id == contentId.Value && x.Variant.ToLower().Equals(p_fromVariant.ToLower()) && x.Current).ToList();
 
             if (results.Count > 0) {
                 var result = results.FirstOrDefault();
@@ -528,6 +886,36 @@ namespace puck.core.Controllers
             return View(model);
         }
 
+        [Auth(Roles = PuckRoles.Puck)]
+        public ActionResult GetRepublishEntireSiteStatus()
+        {
+            string message = "";
+            if (PuckCache.IsRepublishingEntireSite)
+                message = PuckCache.IndexingStatus;
+            else
+                message = "complete";
+            return Json(new { Success = true, Message = message }, JsonRequestBehavior.AllowGet);
+        }
+
+        [Auth(Roles = PuckRoles.Republish)]
+        [HttpPost]
+        public ActionResult RepublishEntireSite() {
+            var success = true;
+            string message = "republish entire site started";
+            if (!PuckCache.IsRepublishingEntireSite)
+            {
+                HostingEnvironment.QueueBackgroundWorkItem(ct => contentService.RePublishEntireSite2());
+                PuckCache.IsRepublishingEntireSite = true;
+                PuckCache.IndexingStatus = "republish entire site task queued";
+            }
+            else
+            {
+                success = false;
+                message = "already republishing entire site";
+            }
+            return Json(new {Success=success,Message=message }, JsonRequestBehavior.AllowGet);
+        }
+
         [Auth(Roles = PuckRoles.Edit)]
         [HttpPost]
         [ValidateInput(false)]
@@ -537,16 +925,20 @@ namespace puck.core.Controllers
                 var targetType = ApiHelper.ConcreteType(ApiHelper.GetType(p_type));
                 var model = ApiHelper.CreateInstance(targetType);
                 string path = "";
+                Guid parentId = Guid.Empty;
+                Guid id = Guid.Empty;
                 bool success = false;
                 string message = "";
                 try
                 {
                     UpdateModelDynamic(model, fc.ToValueProvider());
                     ObjectDumper.BindImages(model, int.MaxValue);
-                    ObjectDumper.Transform(model, int.MaxValue);
+                    //ObjectDumper.Transform(model, int.MaxValue);
                     var mod = model as BaseModel;
-                    ApiHelper.SaveContent(mod);
                     path = mod.Path;
+                    id = mod.Id;
+                    parentId = mod.ParentId;
+                    contentService.SaveContent(mod);
                     success = true;
                 }
                 catch (Exception ex)
@@ -555,7 +947,7 @@ namespace puck.core.Controllers
                     message = ex.Message;
                     log.Log(ex);
                 }
-                return Json(new { success = success, message = message, path = path }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = success, message = message, path = path,id=id,parentId=parentId }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -646,6 +1038,8 @@ namespace puck.core.Controllers
                     //don't want to revert change node/path because it has consequences for children/descendants
                     rnode.NodeName = current.FirstOrDefault().NodeName;
                     rnode.Path = current.FirstOrDefault().Path;
+                    rnode.IdPath = current.FirstOrDefault().IdPath;
+                    rnode.SortOrder = current.FirstOrDefault().SortOrder;
                 }
                 if (current.Any(x => x.Published))
                 {

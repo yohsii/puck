@@ -11,10 +11,11 @@ namespace puck.core.Attributes
     public class DefaultGUIDTransformer:Attribute,I_Property_Transformer<Guid,string>
     {
         public string Transform(BaseModel m,string propertyName,string ukey,Guid p) {
-            if (p == default(Guid))
-                return Guid.NewGuid().ToString();
-            else
-                return p.ToString();
+            return p.ToString();
+            //if (p == default(Guid))
+            //    return Guid.NewGuid().ToString();
+            //else
+            //    return p.ToString();
         }
     }
 }

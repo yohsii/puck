@@ -10,6 +10,12 @@ using puck.core.Constants;
 using Newtonsoft.Json;
 using puck.core.Entities;
 using puck.core.Filters;
+using puck.core.Identity;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.AspNet.Identity;
+
 namespace puck.core.Controllers
 {
     public class AdminController : Controller
@@ -18,11 +24,19 @@ namespace puck.core.Controllers
         I_Content_Searcher searcher;
         I_Log log;
         I_Puck_Repository repo;
-        public AdminController(I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r) {
+        PuckRoleManager roleManager;
+        PuckUserManager userManager;
+        PuckSignInManager signInManager;
+        IAuthenticationManager authenticationManager;
+        public AdminController(I_Content_Indexer i, I_Content_Searcher s, I_Log l, I_Puck_Repository r,PuckRoleManager rm,PuckUserManager um, PuckSignInManager sm,IAuthenticationManager authenticationManager) {
             this.indexer = i;
             this.searcher = s;
             this.log = l;
             this.repo = r;
+            this.roleManager = rm;
+            this.userManager = um;
+            this.signInManager = sm;
+            this.authenticationManager = authenticationManager;
         }
 
         [HttpGet]
@@ -31,23 +45,27 @@ namespace puck.core.Controllers
         }
 
         [HttpPost]
-        public ActionResult In(puck.core.Models.LogIn user,string returnUrl) {
-            UrlHelper urlHelper = new UrlHelper(Request.RequestContext);
-
-            if (!Membership.Providers["puck"].ValidateUser(user.Username, user.Password)) {
-                ViewBag.Error = "Incorrect Login Information";
-                return View(user);
-            }
-            FormsAuthentication.SetAuthCookie(user.Username,user.PersistentCookie);
-            if (!string.IsNullOrEmpty(returnUrl))
-                return Redirect(returnUrl);
-            else
-                return RedirectToAction("Index", "api", new { area = "admin" });
+        public async Task<ActionResult> In(puck.core.Models.LogIn user,string returnUrl) {
+            var result = await this.signInManager.PasswordSignInAsync(user.Username, user.Password, user.PersistentCookie, shouldLockout: false);
+            switch (result)
+            {
+                case SignInStatus.Success:
+                    if (!string.IsNullOrEmpty(returnUrl))
+                        return Redirect(returnUrl);
+                    else
+                        return RedirectToAction("Index", "api", new { area = "admin" });
+                case SignInStatus.Failure:
+                default:
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                    ViewBag.Error = "Incorrect Login Information";
+                    return View(user);
+            }            
+            
         }
 
         public ActionResult Out() {
             Session.Abandon();
-            FormsAuthentication.SignOut();
+            authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("In");
         }
 
@@ -59,154 +77,152 @@ namespace puck.core.Controllers
         [Auth(Roles =PuckRoles.Users)]
         public ActionResult Index()
         {
-            var model = new List<PuckUser>();
-            var userCollection = Roles.GetUsersInRole(PuckRoles.Puck).ToList().Select(x=>Membership.Providers["puck"].GetUser(x,false)).ToList();
-            foreach (MembershipUser mu in userCollection) {
-                var pu = new PuckUser();
-                pu.User = mu;
-                pu.Roles = Roles.GetRolesForUser(mu.UserName).ToList();
-                var meta = repo.GetPuckMeta().Where(x =>x.Name== DBNames.UserStartNode && x.Key.Equals(mu.UserName)).FirstOrDefault();
-                if(meta!=null)
-                    pu.StartNode =new List<PuckPicker>{JsonConvert.DeserializeObject(meta.Value,typeof(PuckPicker)) as PuckPicker};
-                var userMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key.Equals(mu.UserName)).FirstOrDefault();
-                if (userMeta != null)
-                    pu.UserVariant = userMeta.Value;
-                model.Add(pu);
+            var model = new List<PuckUserViewModel>();
+            var puckRole = roleManager.FindByName(PuckRoles.Puck);
+            var userCollection = repo.GetPuckUser().Where(x => x.Roles.Any(xx => xx.RoleId == puckRole.Id)).ToList();
+            
+            foreach (PuckUser pu in userCollection) {
+                var puvm = new PuckUserViewModel();
+                puvm.User = pu;
+                puvm.Roles = userManager.GetRoles(pu.Id).ToList();
+                if(pu.StartNodeId!=Guid.Empty)
+                    puvm.StartNode =new List<PuckPicker>{ new PuckPicker {Id=pu.StartNodeId } };
+                puvm.UserVariant = pu.UserVariant;
+                
+                model.Add(puvm);
             }
             return View(model);
         }
 
         [Auth(Roles =PuckRoles.Users)]
         public ActionResult Edit(string userName=null) {
-            var model = new PuckUser();
+            var model = new PuckUserViewModel();
             if (!string.IsNullOrEmpty(userName)) {
-                var usr = Membership.Providers["puck"].GetUser(userName, false);
+                var usr = userManager.FindByName(userName);
                 model.UserName = userName;
                 model.Email = usr.Email;
-                model.Password = usr.GetPassword();
-                model.PasswordConfirm = model.Password;
-                model.Roles = Roles.GetRolesForUser(userName).ToList();
-                var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(usr.UserName)).FirstOrDefault();
-                if(meta !=null)
-                    model.StartNode = new List<PuckPicker>{JsonConvert.DeserializeObject(meta.Value, typeof(PuckPicker)) as PuckPicker};
-                var userMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key.Equals(usr.UserName)).FirstOrDefault();
-                if (userMeta != null)
-                    model.UserVariant = userMeta.Value;
+                model.CurrentEmail = usr.Email;
+                //model.Password = usr.GetPassword();
+                //model.PasswordConfirm = model.Password;
+                model.Roles = userManager.GetRoles(usr.Id).ToList();
+                if(usr.StartNodeId!=Guid.Empty)
+                    model.StartNode = new List<PuckPicker>{ new PuckPicker { Id=usr.StartNodeId} };
+                model.UserVariant = usr.UserVariant;
             }
             return View(model);
         }
 
         [HttpPost]
         [Auth(Roles=PuckRoles.Users)]
-        public JsonResult Edit(PuckUser user,bool edit)
+        public async Task<JsonResult> Edit(PuckUserViewModel user,bool edit)
         {
             bool success = false;
             string message = "";
             string startPath = "/";
-            var model = new PuckUser();
+            Guid startNodeId = Guid.Empty;
+            var model = new PuckUserViewModel();
             try
             {
                 if (!ModelState.IsValid)
                     throw new Exception("model invalid.");
-                MembershipUser muser;
                 if (!edit) {
-                    MembershipCreateStatus mcs;
-                    muser=Membership.Providers["puck"].CreateUser(user.UserName, user.Password, user.Email, null, null, true, null, out mcs);
-                    if (muser == null) {
-                        message = GetErrorMessage(mcs);
+                    if (string.IsNullOrEmpty(user.Password))
+                        throw new Exception("please enter a password");
+
+                    var puser = new PuckUser
+                    {
+                        Email = user.Email,
+                        UserName = user.UserName,
+                        UserVariant = user.UserVariant,
+                        StartNodeId = user.StartNode?.FirstOrDefault()?.Id ?? Guid.Empty
+                    };
+                    var result = userManager.Create(puser, user.Password);
+                    if (!result.Succeeded) {
+                        message = string.Join(" ",result.Errors);
                         throw new Exception(message);
                     }
-                }
-                muser = Membership.Providers["puck"].GetUser(user.UserName, false);
-                if (muser == null)
-                    throw new Exception("could not find user for edit");
-                if (!muser.Email.Equals(user.Email)) {
-                    muser.Email = user.Email;
-                    Membership.UpdateUser(muser);
-                }                
-                
-                if (!string.IsNullOrEmpty(user.NewPassword)) {
-                    muser.ChangePassword(user.Password, user.NewPassword);
-                }
-
-                var roles = Roles.GetRolesForUser(muser.UserName);
-                //never remove Puck role
-                if(roles!=null && roles.Contains(PuckRoles.Puck)){
-                    var rolesList = roles.ToList();
-                    rolesList.RemoveAll(x => x.Equals(PuckRoles.Puck));
-                    roles = rolesList.ToArray();
-                }
-                if (roles.Length > 0)
-                {
-                    Roles.RemoveUserFromRoles(user.UserName, roles);
-                }
-                if(user.Roles!=null && user.Roles.Count>0){
-                    if (edit)
+                    if (user.Roles != null && user.Roles.Count > 0)
                     {
-                        user.Roles.RemoveAll(x => x.Equals(PuckRoles.Puck));
+                        userManager.AddToRoles(puser.Id, user.Roles.ToArray());                        
                     }
-                    else {
-                        if (!user.Roles.Contains(PuckRoles.Puck)) {
-                            user.Roles.Add(PuckRoles.Puck);
+                    if (!userManager.IsInRole(puser.Id, PuckRoles.Puck))
+                    {
+                        userManager.AddToRole(puser.Id, PuckRoles.Puck);
+                    }
+                    success = true;
+                }
+                else
+                {
+                    var puser = userManager.FindByEmail(user.CurrentEmail);
+                    if (puser == null)
+                        throw new Exception("could not find user for edit");
+
+                    if (!puser.Email.Equals(user.Email))
+                    {
+                        puser.Email = user.Email;
+                    }
+                    if (!puser.UserName.Equals(user.UserName))
+                    {
+                        puser.UserName = user.UserName;
+                    }
+
+                    var roles = userManager.GetRoles(puser.Id).ToList();
+                    //never remove Puck role
+                    if (roles != null && roles.Contains(PuckRoles.Puck))
+                    {
+                        roles.RemoveAll(x => x.Equals(PuckRoles.Puck));                        
+                    }
+                    if (roles.Count > 0)
+                    {
+                        userManager.RemoveFromRoles(puser.Id, roles.ToArray());
+                    }
+                    if (user.Roles != null && user.Roles.Count > 0)
+                    {
+                        if (user.Roles.Count > 0) {
+                            var rolesToAdd = user.Roles.Where(x => x != PuckRoles.Puck).ToArray();
+                            userManager.AddToRoles(puser.Id, rolesToAdd);
                         }
                     }
-                    if(user.Roles.Count>0)
-                        Roles.AddUserToRoles(user.UserName, user.Roles.ToArray());
-                }else{
-                    if (!Roles.IsUserInRole(muser.UserName, PuckRoles.Puck)) {
-                        Roles.AddUserToRole(muser.UserName, PuckRoles.Puck);
-                    }
-                }
-
-                if (user.StartNode == null || user.StartNode.Count==0)
-                {
-                    repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(user.UserName)).ToList().ForEach(x => repo.DeleteMeta(x));
-                }
-                else {
-                    Guid picked_id = user.StartNode.First().Id;
-                    var revision = repo.GetPuckRevision().Where(x => x.Id == picked_id && x.Current).FirstOrDefault();
-                    if (revision != null)
-                        startPath = revision.Path+"/";
-                    var metas =  repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(user.UserName)).ToList();
-                    PuckMeta meta = null;
-                    if (metas.Count > 0) {
-                        meta = metas.FirstOrDefault();
-                        if (metas.Count > 1) {
-                            metas.Where(x => x != meta).ToList().ForEach(x=>repo.DeleteMeta(x));
-                        }                        
-                    }
-                    if (meta == null)
+                    if (!userManager.IsInRole(puser.Id,PuckRoles.Puck))
                     {
-                        meta = new PuckMeta();
-                        meta.Name = DBNames.UserStartNode;
-                        meta.Key = user.UserName;
-                        repo.AddMeta(meta);
+                        userManager.AddToRole(puser.Id, PuckRoles.Puck);                        
                     }
-                    meta.Value = JsonConvert.SerializeObject(user.StartNode.First());
-                }
-                if (!string.IsNullOrEmpty(user.UserVariant))
-                {
-                    var userVariantMeta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == muser.UserName).FirstOrDefault();
-                    if (userVariantMeta != null)
-                        userVariantMeta.Value = user.UserVariant;
+                    
+                    if (user.StartNode == null || user.StartNode.Count == 0)
+                    {
+                        puser.StartNodeId = Guid.Empty;
+                    }
                     else
                     {
-                        userVariantMeta = new PuckMeta() { Name = DBNames.UserVariant, Key = muser.UserName, Value = user.UserVariant };
-                        repo.AddMeta(userVariantMeta);
+                        Guid picked_id = user.StartNode.First().Id;
+                        var revision = repo.GetPuckRevision().Where(x => x.Id == picked_id && x.Current).FirstOrDefault();
+                        if (revision != null)
+                            startPath = revision.Path + "/";
+                        puser.StartNodeId = picked_id;
                     }
+                    if (!string.IsNullOrEmpty(user.UserVariant))
+                    {
+                        puser.UserVariant = user.UserVariant;
+                    }
+                    userManager.Update(puser);
+
+                    if (!string.IsNullOrEmpty(user.Password))
+                    {
+                        var token = await userManager.GeneratePasswordResetTokenAsync(puser.Id);
+                        var result = await userManager.ResetPasswordAsync(puser.Id, token, user.Password);
+                    }
+                    startNodeId = puser.StartNodeId;
+                    success = true;
                 }
-                else {
-                    repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key == muser.UserName).ToList().ForEach(x=>repo.DeleteMeta(x));
-                }
-                repo.SaveChanges();
-                success = true;
+
+                
             }
             catch (Exception ex) {
                 log.Log(ex);
                 success = false;
                 message = ex.Message;
             }
-            return Json(new {success=success,message=message,startPath=startPath }, JsonRequestBehavior.AllowGet);
+            return Json(new {success=success,message=message,startPath=startPath,startNodeId=startNodeId }, JsonRequestBehavior.AllowGet);
         }
 
         [Auth(Roles =PuckRoles.Users)]
@@ -215,10 +231,12 @@ namespace puck.core.Controllers
             string message = "";
             try
             {
-                Membership.Providers["puck"].DeleteUser(username, true);
-                repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key.Equals(username)).ToList().ForEach(x => repo.DeleteMeta(x));
-                repo.GetPuckMeta().Where(x => x.Name == DBNames.UserVariant && x.Key.Equals(username)).ToList().ForEach(x => repo.DeleteMeta(x));
-                repo.SaveChanges();
+                if (username == User.Identity.Name)
+                    throw new Exception("you cannot delete your own user");
+                var puser = userManager.FindByName(username);
+                if (puser == null)
+                    throw new Exception("user not found");
+                userManager.Delete(puser);    
                 success = true;
             }
             catch (Exception ex)
@@ -228,42 +246,6 @@ namespace puck.core.Controllers
                 message = ex.Message;
             }
             return Json(new { success = success, message = message }, JsonRequestBehavior.AllowGet);
-        }
-
-        public string GetErrorMessage(MembershipCreateStatus status)
-        {
-            switch (status)
-            {
-                case MembershipCreateStatus.DuplicateUserName:
-                    return "Username already exists. Please enter a different user name.";
-
-                case MembershipCreateStatus.DuplicateEmail:
-                    return "A username for that e-mail address already exists. Please enter a different e-mail address.";
-
-                case MembershipCreateStatus.InvalidPassword:
-                    return "The password provided is invalid. Please enter a valid password value.";
-
-                case MembershipCreateStatus.InvalidEmail:
-                    return "The e-mail address provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidAnswer:
-                    return "The password retrieval answer provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidQuestion:
-                    return "The password retrieval question provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidUserName:
-                    return "The user name provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.ProviderError:
-                    return "The authentication provider returned an error. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-                case MembershipCreateStatus.UserRejected:
-                    return "The user creation request has been canceled. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-                default:
-                    return "An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-            }
         }
     }
 }

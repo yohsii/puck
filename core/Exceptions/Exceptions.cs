@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace puck.core.Exceptions
 {
+    public class SaveCancelledException : Exception
+    {
+        public SaveCancelledException() { }
+        public SaveCancelledException(string msg) : base(msg) { }
+        public SaveCancelledException(string msg, Exception inner) : base(msg, inner) { }
+    }
     public class NodeNameExistsException : Exception
     {
         public NodeNameExistsException() { }
@@ -17,5 +23,11 @@ namespace puck.core.Exceptions
         public NoParentExistsException() { }
         public NoParentExistsException(string msg) : base(msg) { }
         public NoParentExistsException(string msg, Exception inner) : base(msg, inner) { }
+    }
+    public class UserNotFoundException : Exception
+    {
+        public UserNotFoundException() { }
+        public UserNotFoundException(string msg) : base(msg) { }
+        public UserNotFoundException(string msg, Exception inner) : base(msg, inner) { }
     }
 }

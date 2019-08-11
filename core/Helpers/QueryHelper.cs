@@ -19,7 +19,7 @@ using Spatial4n.Core.Context;
 using Spatial4n.Core.Distance;
 using Lucene.Net.Spatial;
 using Lucene.Net.Spatial.Vector;
-
+using puck.core.State;
 namespace puck.core.Helpers
 {
     public static class QueryExtensions {
@@ -247,6 +247,16 @@ namespace puck.core.Helpers
         {
             var d = new Dictionary<string, Dictionary<string, T>>();
             items.GroupBy(x => x.Path).ToList().ForEach(x =>
+            {
+                d.Add(x.Key, new Dictionary<string, T>());
+                x.ToList().ForEach(y => d[x.Key][y.Variant] = y);
+            });
+            return d;
+        }
+        public static Dictionary<Guid, Dictionary<string, T>> GroupById<T>(this List<T> items) where T : BaseModel
+        {
+            var d = new Dictionary<Guid, Dictionary<string, T>>();
+            items.GroupBy(x => x.Id).ToList().ForEach(x =>
             {
                 d.Add(x.Key, new Dictionary<string, T>());
                 x.ToList().ForEach(y => d[x.Key][y.Variant] = y);

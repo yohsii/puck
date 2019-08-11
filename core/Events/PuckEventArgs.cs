@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using puck.core.Abstract;
 using puck.core.Base;
 
 namespace puck.core.Events
@@ -24,5 +25,8 @@ namespace puck.core.Events
     }
     public class BeforeMoveEventArgs : MoveEventArgs {
         public bool Cancel{get;set;}
+    }
+    public class AfterEditorSettingsSaveEventArgs {
+        public I_Puck_Editor_Settings Setting { get; set; }
     }
 }

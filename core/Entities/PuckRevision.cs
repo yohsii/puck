@@ -5,6 +5,8 @@ using System.Text;
 using System.ComponentModel.DataAnnotations;
 using puck.core.Base;
 using puck.core.Attributes;
+using Newtonsoft.Json;
+using puck.core.Helpers;
 
 namespace puck.core.Entities
 {
@@ -17,5 +19,29 @@ namespace puck.core.Entities
         public bool Current { get; set; }
         [IndexSettings(Ignore = false)]
         public string Value { get; set; }
+        public bool HasNoPublishedRevision { get; set; }
+        public bool IsPublishedRevision { get; set; }
+        public string IdPath { get; set; }
+
+        public BaseModel ToBaseModel()
+        {
+            try
+            {
+                var model = JsonConvert.DeserializeObject(this.Value, ApiHelper.ConcreteType(ApiHelper.GetType(this.Type)));
+                var mod = model as BaseModel;
+                mod.Id = this.Id;
+                mod.ParentId = this.ParentId;
+                mod.Path = this.Path;
+                mod.SortOrder = this.SortOrder;
+                mod.NodeName = this.NodeName;
+                mod.Published = this.Published;
+
+                return mod;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

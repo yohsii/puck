@@ -17,7 +17,7 @@ using System.Text;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using puck.core.Attributes;
-
+using puck.core.State;
 namespace puck.core.Controllers
 {
     [SetPuckCulture]
@@ -26,7 +26,9 @@ namespace puck.core.Controllers
     {
         I_Puck_Repository repo;
         I_Log log;
-        public TaskController(I_Puck_Repository repo,I_Log log) {
+        ApiHelper apiHelper;
+        public TaskController(ApiHelper ah,I_Puck_Repository repo,I_Log log) {
+            this.apiHelper = ah;
             this.repo = repo;
             this.log = log;
         }
@@ -448,7 +450,7 @@ namespace puck.core.Controllers
             var mod = model;
             var isDuplicate = false;
             var modelProps = model.Properties.ToList();
-            var parentProps = ApiHelper.AllProperties(parent);
+            var parentProps = apiHelper.AllProperties(parent);
             dupes = modelProps.Select(x => x.Name.ToLower()).Intersect(parentProps.Select(x => x.Name.ToLower())).ToList();
             if (dupes.Any())
                 isDuplicate = true;
@@ -519,8 +521,8 @@ namespace puck.core.Controllers
                 DoGenerate(id,out output,compile);
                 if (compile)
                 {
-                    ApiHelper.SetGeneratedMappings();
-                    ApiHelper.UpdateAnalyzerMappings();
+                    StateHelper.SetGeneratedMappings();
+                    StateHelper.UpdateAnalyzerMappings();
                 }
                 success = true;
             }
@@ -689,7 +691,7 @@ namespace puck.core.Controllers
         public ActionResult Index()
         {
             var model = new TasksModel();
-            model.Tasks = ApiHelper.Tasks();
+            model.Tasks = apiHelper.Tasks();
             model.GeneratedModels = repo.GetGeneratedModel().ToList();
             return View(model);
         }
@@ -753,7 +755,7 @@ namespace puck.core.Controllers
                     repo.AddMeta(taskMeta);
                 }
                 repo.SaveChanges();
-                ApiHelper.UpdateTaskMappings();
+                StateHelper.UpdateTaskMappings();
                 success = true;
             }
             catch (Exception ex)
@@ -776,7 +778,7 @@ namespace puck.core.Controllers
             {
                 repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == id).ToList().ForEach(x=>repo.DeleteMeta(x));
                 repo.SaveChanges();
-                ApiHelper.UpdateTaskMappings();
+                StateHelper.UpdateTaskMappings();
                 success = true;
             }
             catch (Exception ex)

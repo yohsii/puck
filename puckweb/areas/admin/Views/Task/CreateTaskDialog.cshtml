@@ -1,0 +1,20 @@
+﻿
+@{
+    Layout = null;
+    var types = ApiHelper.TaskTypes();
+}
+<div class="create_dialog">
+    <div class="">
+        <div class="typecontainer">
+            <label>Task Type</label>
+            <select name="type">
+                @foreach(var t in types){
+                    <option value="@t.AssemblyQualifiedName">@t.Name</option>
+                }
+            </select>
+        </div>
+        <div>
+            <button class='btn-link'>Create</button>
+        </div>        
+    </div>
+</div>

@@ -22,16 +22,22 @@ using puck.core.Events;
 using System.Web.Security;
 using System.Net.Mail;
 using puck.core.Attributes;
+using puck.core.State;
 namespace puck.core.Helpers
 {
     public partial class ApiHelper
     {
+        public static string ServerName() {
+            var result = Environment.MachineName+HttpRuntime.AppDomainAppId;
+            return result;
+        }
         public static object RevisionToModel(PuckRevision revision)
         {
             try
             {
                 var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetType(revision.Type)));
                 var mod = model as BaseModel;
+                mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
                 return model;
             }
@@ -46,7 +52,10 @@ namespace puck.core.Helpers
             {
                 var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetType(revision.Type)));
                 var mod = model as BaseModel;
+                mod.Id = revision.Id;
+                mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
+                
                 return mod;
             }
             catch (Exception ex)
@@ -60,6 +69,7 @@ namespace puck.core.Helpers
             {
                 var model = JsonConvert.DeserializeObject(revision.Value, typeof(BaseModel));
                 var mod = model as BaseModel;
+                mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
                 return mod;
             }
@@ -192,19 +202,34 @@ namespace puck.core.Helpers
             var result = Regex.Replace(name, @"\W", "");
             return result;
         }
+        public static string RemoveAccent(string txt)
+        {
+            byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
+            return System.Text.Encoding.ASCII.GetString(bytes);
+        }
+
+        public static string Slugify(string phrase)
+        {
+            string str = RemoveAccent(phrase).ToLower();
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Remove all non valid chars          
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ").Trim(); // convert multiple spaces into one space  
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
+            return str;
+        }        
         public static string SanitizeUrl(string url) {
             var result = url;
             return result;
         }
-        public static void Email(string to, string subject, string body, string host = PuckCache.SmtpHost, string from = null,bool isHtml=true)
+        public static void Email(string to, string subject, string body, string host = null, string from = null,bool isHtml=true)
         {
+            //host = host ?? PuckCache.SmtpHost;
             from = from ?? PuckCache.SmtpFrom;
             MailMessage mail = new MailMessage(from, to);
             SmtpClient client = new SmtpClient();
-            client.Port = 25;
+            //client.Port = 25;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = false;
-            client.Host = host;
+            //client.UseDefaultCredentials = false;
+            //client.Host = host;
             mail.IsBodyHtml = isHtml;
             mail.Subject = subject;
             mail.Body = body;

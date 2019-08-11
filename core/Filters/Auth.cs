@@ -5,26 +5,32 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin;
 using Newtonsoft.Json;
 using puck.core.Abstract;
 using puck.core.Constants;
+using puck.core.Identity;
 using puck.core.Models;
-
+using puck.core.State;
 namespace puck.core.Filters
 {
     public class Auth:AuthorizeAttribute
     {
         private I_Puck_Repository repo = PuckCache.PuckRepo;
+        public PuckUserManager UserManager { get {
+                return HttpContext.Current.GetOwinContext().GetUserManager<PuckUserManager>();
+        } }
         
         private bool CheckPath(string path,string username) {
-            var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.UserStartNode && x.Key == username).FirstOrDefault();
-            if (meta != null) { 
-                var puckpick = JsonConvert.DeserializeObject(meta.Value,typeof(PuckPicker)) as PuckPicker;
-                if (puckpick != null) {
-                    var startNode = repo.GetPuckRevision().Where(x=>x.Id==puckpick.Id).FirstOrDefault();
-                    if (startNode != null) {
-                        return path.ToLower().StartsWith(startNode.Path.ToLower());
-                    }
+            var user = UserManager.FindByName(username);
+            if (user == null) return false;
+            if (user.StartNodeId != Guid.Empty) { 
+                var startNode = repo.GetPuckRevision().Where(x=>x.Id==user.StartNodeId&&x.Current).FirstOrDefault();
+                if (startNode != null) {
+                    return path.ToLower().StartsWith(startNode.Path.ToLower());
                 }
             }
             return true;

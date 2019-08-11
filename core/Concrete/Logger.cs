@@ -4,12 +4,13 @@ using System.Linq;
 using System.Web;
 using System.IO;
 using puck.core.Abstract;
+using System.Web.Hosting;
 
 namespace puck.core.Concrete
 {
     public class Logger:I_Log
     {
-        public static string DATADIRECTORY { get { return HttpContext.Current.Server.MapPath("~/App_Data/Log"); } }
+        public static string DATADIRECTORY { get { return HostingEnvironment.MapPath("~/App_Data/Log"); } }
         private static Object log_lock = new Object();
         public void Log(Exception e)
         {

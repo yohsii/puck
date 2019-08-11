@@ -12,6 +12,8 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Snowball;
 using System.Web;
 using puck.core.Base;
+using System.ComponentModel.DataAnnotations;
+
 namespace puck.core.Helpers
 {
     public class FlattenedObject {
@@ -29,6 +31,8 @@ namespace puck.core.Helpers
         public bool KeepValueCasing { get; set; }
         public bool Spatial { get; set; }
         public void Transform() {
+            if (Attributes == null)
+                Attributes = new object[] { };
             //lower case keys
             Key = Key.ToLower();
                     
@@ -510,7 +514,81 @@ namespace puck.core.Helpers
                     }
                 }
             }
-        }        
+        }
+        public static int SetPropertyValuesMaxDepth = 50;
+        public static void SetPropertyValues(object obj,bool onlyPopulateListEditorLists=false,int depth=1)
+        {
+            PropertyInfo[] properties = obj.GetType().GetProperties();
 
+            foreach (PropertyInfo property in properties)
+            {
+                if (IsPropertyACollection(property))
+                {
+                    var uiHintAttribute = property.GetCustomAttribute<UIHintAttribute>();
+                    var hasListEditor = false;
+                    if (uiHintAttribute != null) {
+                        hasListEditor = uiHintAttribute.UIHint.ToLower() == "listeditor";
+                    }
+                    Type propType = property.PropertyType;
+
+                    var subObject = Activator.CreateInstance(propType);
+
+                    if (propType.IsGenericType /*&&
+                        propType.GetGenericTypeDefinition()
+                        == typeof(IList<>)*/)
+                    {
+                        if (onlyPopulateListEditorLists && hasListEditor || !onlyPopulateListEditorLists)
+                        {
+                            Type itemType = propType.GetGenericArguments()[0];
+                            object listItem;
+                            if (itemType == typeof(string))
+                                listItem = " ";
+                            else
+                                listItem = Activator.CreateInstance(itemType);
+                            subObject.GetType().GetMethod("Add").Invoke(subObject, new[] { listItem });
+                            if(depth<SetPropertyValuesMaxDepth)
+                                SetPropertyValues(listItem);
+                        }
+                        property.SetValue(obj, subObject, null);
+                    }
+
+
+                }
+                else
+                if (property.PropertyType.IsClass && property.PropertyType != typeof(string))
+                {
+                    Type propType = property.PropertyType;
+                    try
+                    {
+                        var subObject = Activator.CreateInstance(propType);
+                        if(depth<SetPropertyValuesMaxDepth)
+                            SetPropertyValues(subObject);
+                        property.SetValue(obj, subObject, null);
+                    }
+                    catch (Exception ex) { }
+                }
+                /*else if (property.PropertyType == typeof(string))
+                {
+                    property.SetValue(obj, property.Name, null);
+                }
+                else if (property.PropertyType == typeof(DateTime))
+                {
+                    property.SetValue(obj, DateTime.Today, null);
+                }
+                else if (property.PropertyType == typeof(int))
+                {
+                    property.SetValue(obj, 0, null);
+                }
+                else if (property.PropertyType == typeof(decimal))
+                {
+                    property.SetValue(obj, 0, null);
+                }*/
+            }
+        }
+
+        public static bool IsPropertyACollection(PropertyInfo property)
+        {
+            return property.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null && property.PropertyType != typeof(string);
+        }
     }
 }

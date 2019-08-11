@@ -20,6 +20,10 @@ using Spatial4n.Core.Context;
 using Lucene.Net.Spatial.Vector;
 using Lucene.Net.Spatial.Queries;
 using puck.core.PuckLucene;
+using StackExchange.Profiling;
+using System.Threading.Tasks;
+using System.Web.Hosting;
+using puck.core.State;
 
 namespace puck.core.Concrete
 {
@@ -28,7 +32,7 @@ namespace puck.core.Concrete
         private Lucene.Net.Analysis.Standard.StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
         private Lucene.Net.Analysis.KeywordAnalyzer KeywordAnalyzer = new KeywordAnalyzer();
         public readonly SpatialContext ctx = SpatialContext.GEO;
-        private string INDEXPATH { get { return HttpContext.Current.Server.MapPath("~/App_Data/Lucene"); } }
+        private string INDEXPATH { get { return HostingEnvironment.MapPath("~/App_Data/Lucene"); } }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };
         private IndexSearcher Searcher = null;
         private IndexWriter Writer = null;
@@ -211,52 +215,66 @@ namespace puck.core.Concrete
             }
         }
         //mass index changes in transactional way, like changing paths for related nodes
-        public void Index<T>(List<T> models) where T:BaseModel {
+        public void Index<T>(List<T> models,bool triggerEvents=true) where T:BaseModel {
+            if (models.Count == 0) return;
             lock (write_lock)
             {
+                var cancelled = new List<BaseModel>();
+                var count = 1;
                 try
                 {
                     SetWriter(false);
-                    //by flushing before and after bulk changes from within write lock, we make the changes transactional - all deletes/adds will be successful. or none.
-                    Writer.Flush(true, true, true);
-                    
-                    var cancelled = new List<BaseModel>();
-                    foreach (var m in models)
-                    {
+                    //Writer.Flush(true, true, true);
+                    Parallel.ForEach(models, (m,state,index) => {
+                        PuckCache.IndexingStatus = $"indexing item {count} of {models.Count}";
                         var type = ApiHelper.GetType(m.Type);
                         if (type == null)
                             type = typeof(BaseModel);
                         var analyzer = PuckCache.AnalyzerForModel[type];
                         var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
-                        var args= new BeforeIndexingEventArgs() {Node=m,Cancel=false };
-                        OnBeforeIndex(this, args);
-                        if (args.Cancel)
+                        if (triggerEvents)
                         {
-                            cancelled.Add(m);
-                            continue;
+                            var args = new BeforeIndexingEventArgs() { Node = m, Cancel = false };
+                            OnBeforeIndex(this, args);
+                            if (args.Cancel)
+                            {
+                                cancelled.Add(m);
+                                return;
+                            }
                         }
                         //delete doc
-                        string removeQuery = "+"+FieldKeys.ID+":"+m.Id.ToString()+ " +"+FieldKeys.Variant+":"+m.Variant.ToLower();
+                        string removeQuery = "+" + FieldKeys.ID + ":" + m.Id.ToString() + " +" + FieldKeys.Variant + ":" + m.Variant.ToLower();
                         var q = parser.Parse(removeQuery);
-                        Writer.DeleteDocuments(q);                    
-                        
+                        Writer.DeleteDocuments(q);
+
                         Document doc = new Document();
                         //get fields to index
-                        var props = ObjectDumper.Write(m, int.MaxValue);
-                        GetFieldSettings(props, doc, null);
-                        //add cms properties
+                        List<FlattenedObject> props = null;
+                        using (MiniProfiler.Current.CustomTiming("get properties", ""))
+                        {
+                            props = ObjectDumper.Write(m, int.MaxValue);
+                        }
+                        using (MiniProfiler.Current.CustomTiming("add fields to doc", ""))
+                        {
+                            GetFieldSettings(props, doc, null);
+                        }//add cms properties
                         string jsonDoc = JsonConvert.SerializeObject(m);
                         //doc in json form for deserialization later
                         doc.Add(new Field(FieldKeys.PuckValue, jsonDoc, Field.Store.YES, Field.Index.NOT_ANALYZED));
-                        Writer.AddDocument(doc,analyzer);
+                        using (MiniProfiler.Current.CustomTiming("add document", ""))
+                        {
+                            Writer.AddDocument(doc, analyzer);
+                        }
+                        count++;
+                    });
+                    
+                    //Writer.Flush(true,true,true);
+                    using (MiniProfiler.Current.CustomTiming("commit", ""))
+                    {
+                        Writer.Commit();
                     }
-                    Writer.Flush(true,true,true);
-                    Writer.Commit();
-                    Optimize();
-                    models
-                        .Where(x=>!cancelled.Contains(x))
-                        .ToList()
-                        .ForEach(x => { OnAfterIndex(this, new IndexingEventArgs() {Node=x }); });
+                    //Optimize();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -267,6 +285,13 @@ namespace puck.core.Concrete
                 {
                     CloseWriter();
                     SetSearcher();
+                    if (triggerEvents)
+                    {
+                        models
+                            .Where(x => !cancelled.Contains(x))
+                            .ToList()
+                            .ForEach(x => { OnAfterIndex(this, new IndexingEventArgs() { Node = x }); });
+                    }
                 }
             }
         }
@@ -369,7 +394,7 @@ namespace puck.core.Concrete
             }
         }
 
-        public void Delete(string terms)
+        public void Delete(string terms,bool reloadSearcher=true)
         {
             lock (write_lock)
             {
@@ -389,7 +414,8 @@ namespace puck.core.Concrete
                 finally
                 {
                     CloseWriter();
-                    SetSearcher();
+                    if(reloadSearcher)
+                        SetSearcher();
                 }
             }
         }
@@ -543,6 +569,13 @@ namespace puck.core.Concrete
             int total;
             return Query<T>(qstr,null,null,out total);
         }
+        public int Count<T>(string qstr) where T : BaseModel
+        {
+            int total;
+            var result = Query<T>(qstr, null, null, out total, limit: 1);
+            return total;
+        }
+        
         public IList<T> Query<T>(string qstr,Filter filter,Sort sort,out int total,int limit=500,int skip=0) where T:BaseModel {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Globalization;
 using puck.core.Constants;
 using puck.core.Helpers;
+using puck.core.State;
 
 namespace puck.core.Filters
 {
@@ -14,7 +15,8 @@ namespace puck.core.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            string variant = ApiHelper.UserVariant();
+            var apiHelper = PuckCache.ApiHelper;
+            string variant = apiHelper.UserVariant();
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(variant);
         }
     }

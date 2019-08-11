@@ -15,6 +15,7 @@ namespace puck.App_Start
     using puck.core.Concrete;
     using puck.core.Constants;
     using System.Web.Mvc;
+
     public static class NinjectWebCommon 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();
@@ -70,3 +71,4 @@ namespace puck.App_Start
         }        
     }
 }
+
