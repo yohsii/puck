@@ -841,7 +841,6 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
         });
     }, fromVariant, contentId);
     getPrepopulatedMarkup(type, contentId, function (data) {
-        debugger;
         var temp = $("<div/>").append(data);
         var type = temp.find("input[name='Type']").val();
         cinterfaces.find("div[data-type='" + type + "']").remove();

@@ -1,10 +1,14 @@
 ﻿/*stuff from bootstrap 2*/
-select, input[type="file"] {
+select{
     height: 30px;
     *margin-top: 4px;
     line-height: 30px;
 }
-
+input[type="file"] {
+    height: 48px;
+    *margin-top: 4px;
+    line-height: 30px;
+}
 select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
     display: inline-block;
     height: 30px;
@@ -17,6 +21,9 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
+}
+textarea {
+height:auto;
 }
 select {
     width: 220px;
@@ -32,7 +39,9 @@ select[multiple], select[size] {
     height: auto;
 }
 /*end stuff from bootstrap 2*/
-
+.map-canvas {
+    width:100%!important;
+}
 .mt-30 {
 margin-top:30px;
 }
