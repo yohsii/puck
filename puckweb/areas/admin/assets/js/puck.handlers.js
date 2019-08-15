@@ -528,8 +528,15 @@ var getHashValues = function (hash) {
     }
     return dict;
 }
+var highlightSection = function (href) {
+    $(".menutop li").removeClass("selected");
+    var anchor = $(".menutop a[href='" + href + "']");
+    var el = anchor.parent();
+    el.addClass("selected");
+}
 var handleHash = function (hash) {
     if (/^#content/.test(hash)) {
+        highlightSection("#content");
         $(".left_item").hide();
         cleft.find(".left_content").show();
         var dict = getHashValues(hash);
@@ -539,6 +546,7 @@ var handleHash = function (hash) {
         }
         displayMarkup(null, null, dict["variant"], undefined, dict["id"]);
     } else if (/^#settings/.test(hash)) {
+        highlightSection("#settings");
         //if (!canChangeMainContent())
         //    return false;
         $(".left_item").hide();
@@ -550,10 +558,12 @@ var handleHash = function (hash) {
         showSettings(path);
         $(".menutop .settings").click();
     } else if (/^#users/.test(hash)) {
+        highlightSection("#users");
         $(".left_item").hide();
         cleft.find(".left_users").show();
         showUsers();
     } else if (/^#developer/.test(hash)) {
+        highlightSection("#developer");
         $(".left_item").hide();
         cleft.find(".left_developer").show();
         showTasks();

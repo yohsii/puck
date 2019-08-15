@@ -707,7 +707,7 @@ namespace puck.core.Controllers
         //
         // GET: /admin/Task/Create
         public JsonResult TaskTypes() {
-            var ttypes = ApiHelper.TaskTypes();
+            var ttypes = apiHelper.TaskTypes();
             return Json(ttypes.Select(x => new {Name=x.FullName,Key=x.AssemblyQualifiedName}), JsonRequestBehavior.AllowGet);
         }
         public ActionResult CreateTaskDialog() {

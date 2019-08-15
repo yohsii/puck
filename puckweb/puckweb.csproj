@@ -272,6 +272,10 @@
     <Compile Include="ViewModels\Section.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\notification_delete_template.txt" />
+    <Content Include="App_Data\notification_edit_template.txt" />
+    <Content Include="App_Data\notification_move_template.txt" />
+    <Content Include="App_Data\notification_publish_template.txt" />
     <Content Include="areas\admin\assets\css\1200.css" />
     <Content Include="areas\admin\assets\css\1200.min.css" />
     <Content Include="areas\admin\assets\css\1560.css" />
@@ -1230,7 +1234,6 @@
     <Content Include="Views\Home\test.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="areas\admin\Config\" />
     <Folder Include="Views\Test\" />
   </ItemGroup>

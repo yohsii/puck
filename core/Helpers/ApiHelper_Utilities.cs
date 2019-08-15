@@ -124,10 +124,10 @@ namespace puck.core.Helpers
             if (path == null)
                 path = HttpContext.Current.Request.Url.AbsolutePath;
         }
-        public static List<Type> TaskTypes()
-        {
-            return FindDerivedClasses(typeof(BaseTask), null, false).ToList();
-        }
+        //public static List<Type> TaskTypes(bool ignoreSystemTasks=true,bool ignoreBaseTask=true)
+        //{
+        //    return FindDerivedClasses(typeof(BaseTask), null, false).ToList();
+        //}
         public static List<Type> EditorSettingTypes()
         {
             return FindDerivedClasses(typeof(I_Puck_Editor_Settings)).ToList();

@@ -164,6 +164,21 @@ namespace puck.core.Helpers
             repo.SaveChanges();
             return result;
         }
+        public List<Type> TaskTypes(bool ignoreSystemTasks = true, bool ignoreBaseTask = true)
+        {
+            var excludedTypes = new List<Type>();
+            if (ignoreSystemTasks)
+            {
+                excludedTypes.AddRange(SystemTasks().Select(x=>x.GetType()));
+            }
+            if (ignoreBaseTask)
+            {
+                excludedTypes.Add(typeof(BaseTask));
+            }
+            var tasks= FindDerivedClasses(typeof(BaseTask), null, false).ToList();
+            var result = tasks.Where(x => !excludedTypes.Contains(x)).ToList();
+            return result;
+        }
         public List<BaseTask> SystemTasks() {
             var result = new List<BaseTask>();
             result.Add(new SyncCheckTask());

@@ -15,6 +15,11 @@ namespace puck.core.Base
 {
     public class BaseTask
     {
+        public BaseTask() {
+            this.RunOn = DateTime.Now;
+            this.IntervalSeconds = 60;
+        }
+
         [HiddenInput(DisplayValue=false)]
         public int ID { get; set; }
         public string Name { get; set; }

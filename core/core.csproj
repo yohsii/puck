@@ -277,7 +277,6 @@
     <Compile Include="Models\GroupField.cs" />
     <Compile Include="Models\LogIn.cs" />
     <Compile Include="Models\PuckPicker.cs" />
-    <Compile Include="Models\PuckTask.cs" />
     <Compile Include="Models\RevisionCompare.cs" />
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\EditorSettings\PuckPickerEditorSettings.cs" />
