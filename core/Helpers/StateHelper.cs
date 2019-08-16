@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Lucene.Net.Analysis.Standard;
 using puck.core.State;
+using Lucene.Net.Analysis.Miscellaneous;
+
 namespace puck.core.Helpers
 {
     public static class StateHelper
@@ -245,7 +247,7 @@ namespace puck.core.Helpers
                 };
                 
                 var dmp = ObjectDumper.Write(instance, int.MaxValue);
-                var analyzers = new List<KeyValuePair<string, Analyzer>>();
+                var analyzers = new Dictionary<string, Analyzer>();
                 PuckCache.TypeFields[t.AssemblyQualifiedName] = new Dictionary<string, string>();
                 foreach (var p in dmp)
                 {
@@ -257,9 +259,9 @@ namespace puck.core.Helpers
                     {
                         panalyzers.Add(p.Analyzer);
                     }
-                    analyzers.Add(new KeyValuePair<string, Analyzer>(p.Key, panalyzers.Where(x => x.GetType() == p.Analyzer.GetType()).FirstOrDefault()));
+                    analyzers.Add(p.Key, panalyzers.Where(x => x.GetType() == p.Analyzer.GetType()).FirstOrDefault());
                 }
-                var pfAnalyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), analyzers);
+                var pfAnalyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48), analyzers);
                 analyzerForModel.Add(t, pfAnalyzer);
             }
             PuckCache.Analyzers = panalyzers;
