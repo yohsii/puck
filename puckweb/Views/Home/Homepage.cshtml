@@ -1,5 +1,6 @@
 @using Page = puck.ViewModels.Page;
 @model puck.ViewModels.Homepage
+
 @{
     ViewBag.Title = "Homepage";
     var qh = new QueryHelper<Section>()
@@ -32,7 +33,7 @@
 
 <h3>Carousel Items</h3>
 <div>
-    @foreach (var imageModel in Model.CarouselItems.GetAll<ImageModel>())
+    @foreach (var imageModel in Model?.CarouselItems?.GetAll<ImageModel>()??new List<ImageModel>())
     {                        
         <img width="700" alt="@imageModel.Image.Description" src="@imageModel.Image.Path" />
     }
@@ -53,3 +54,10 @@
         @Html.Raw(r.MainContent.Highlight(searchQuery))
     </div>
 }
+
+@{
+    var qstr=@"+path:\/home\/news\/*";
+    var results=puck.core.State.PuckCache.PuckSearcher.QueryNoCast<BaseModel>(qstr);
+
+ }
+@results.Count

@@ -89,13 +89,23 @@ namespace puck.core.Helpers
             if (PuckCache.FirstRequestUrl==null)
                 PuckCache.FirstRequestUrl = HttpContext.Current.Request.Url;
         }
-        public static void UpdateTaskMappings()
+        public static void UpdateTaskMappings(bool addInstruction=false)
         {
+            var repo = Repo;
             var tasks = apiHelper.Tasks();
             tasks.AddRange(apiHelper.SystemTasks());
             //tasks = tasks.Where(x => tdispatcher.CanRun(x)).ToList();
             tasks.ForEach(x => x.TaskEnd += tdispatcher.HandleTaskEnd);
             tdispatcher.Tasks = tasks;
+            if (addInstruction)
+            {
+                var instruction = new PuckInstruction();
+                instruction.InstructionKey = InstructionKeys.UpdateTaskMappings;
+                instruction.Count = 1;
+                instruction.ServerName = ApiHelper.ServerName();
+                repo.AddPuckInstruction(instruction);
+                repo.SaveChanges();
+            }
         }
         //update class hierarchies/typechains which may have changed since last run
         public static void UpdateTypeChains()
@@ -155,7 +165,7 @@ namespace puck.core.Helpers
             });
             repo.SaveChanges();
         }
-        public static void UpdateRedirectMappings()
+        public static void UpdateRedirectMappings(bool addInstruction=false)
         {
             var repo = Repo;
             var meta301 = repo.GetPuckMeta().Where(x => x.Name == DBNames.Redirect301).ToList();
@@ -174,8 +184,17 @@ namespace puck.core.Helpers
             });
             PuckCache.Redirect301 = map301;
             PuckCache.Redirect302 = map302;
+            if (addInstruction)
+            {
+                var instruction = new PuckInstruction();
+                instruction.InstructionKey = InstructionKeys.UpdateRedirects;
+                instruction.Count = 1;
+                instruction.ServerName = ApiHelper.ServerName();
+                repo.AddPuckInstruction(instruction);
+                repo.SaveChanges();
+            }
         }
-        public static void UpdateCacheMappings()
+        public static void UpdateCacheMappings(bool addInstruction=false)
         {
             var repo = Repo;
             var metaTypeCache = repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy).ToList();
@@ -200,8 +219,18 @@ namespace puck.core.Helpers
             });
             PuckCache.TypeOutputCache = mapTypeCache;
             PuckCache.OutputCacheExclusion = mapCacheExclude;
+
+            if (addInstruction)
+            {
+                var instruction = new PuckInstruction();
+                instruction.InstructionKey = InstructionKeys.UpdateCacheMappings;
+                instruction.Count = 1;
+                instruction.ServerName = ApiHelper.ServerName();
+                repo.AddPuckInstruction(instruction);
+                repo.SaveChanges();
+            }
         }
-        public static void UpdateDomainMappings()
+        public static void UpdateDomainMappings(bool addInstruction=false)
         {
             var repo = Repo;
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping).ToList();
@@ -211,8 +240,17 @@ namespace puck.core.Helpers
                 map[x.Value.ToLower()] = x.Key.ToLower();
             });
             PuckCache.DomainRoots = map;
+            if (addInstruction)
+            {
+                var instruction = new PuckInstruction();
+                instruction.InstructionKey = InstructionKeys.UpdateDomainMappings;
+                instruction.Count = 1;
+                instruction.ServerName = ApiHelper.ServerName();
+                repo.AddPuckInstruction(instruction);
+                repo.SaveChanges();
+            }
         }
-        public static void UpdatePathLocaleMappings()
+        public static void UpdatePathLocaleMappings(bool addInstruction=false)
         {
             var repo = Repo;
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.PathToLocale).OrderByDescending(x => x.Key.Length).ToList();
@@ -223,6 +261,15 @@ namespace puck.core.Helpers
                 map[x.Key.ToLower()] = x.Value.ToLower();
             });
             PuckCache.PathToLocale = map;
+
+            if (addInstruction) {
+                var instruction = new PuckInstruction();
+                instruction.InstructionKey = InstructionKeys.UpdatePathLocales;
+                instruction.Count = 1;
+                instruction.ServerName = ApiHelper.ServerName();
+                repo.AddPuckInstruction(instruction);
+                repo.SaveChanges();
+            }
         }
         public static void UpdateAQNMappings()
         {

@@ -141,7 +141,8 @@ namespace puck.core.Helpers
             string path = n.Path.Substring(0, n.Path.LastIndexOf('/'));
             qh
                 .And()
-                .Field(x => x.Path, path.ToLower());
+                //.Field(x => x.Path, path.ToLower());
+                .Path(path.ToLower());
             if (currentLanguage)
                 qh.CurrentLanguage();
             if (noCast)
@@ -157,7 +158,8 @@ namespace puck.core.Helpers
             {
                 nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
                 innerQ
-                    .Field(x=>x.Path,nodePath);
+                    //.Field(x=>x.Path,nodePath);
+                    .Path(nodePath);
             }
             qh.And(innerQ);
             if (ExplicitType)
@@ -173,9 +175,11 @@ namespace puck.core.Helpers
             var qh = new QueryHelper<T>();
             qh
                     .And()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti())
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti())
+                    .Path(ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
+                    .Path(ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
                     .Not()
                     .Field(x => x.Id, n.Id.ToString().Wrap());
             if (ExplicitType)
@@ -205,9 +209,11 @@ namespace puck.core.Helpers
             var qh = new QueryHelper<T>();
             qh      
                     .And()
-                    .Field(x => x.Path, n.Path.ToLower() + "/".WildCardMulti())
+                    //.Field(x => x.Path, n.Path.ToLower() + "/".WildCardMulti())
+                    .Path(n.Path.ToLower() + "/".WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti() + "/*");
+                    //.Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti() + "/*");
+                    .Path(n.Path.ToLower() + "/".WildCardMulti() + "/*");
             if (ExplicitType)
                 qh.ExplicitType();
             if (currentLanguage)
@@ -220,7 +226,8 @@ namespace puck.core.Helpers
         public static List<T> Descendants<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false,bool ExplicitType=false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh.And()
-                .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti());
+                //.Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti());
+                .Path(n.Path.ToLower() + "/".WildCardMulti());
             if (ExplicitType)
                 qh.ExplicitType();
             if (currentLanguage)
@@ -574,7 +581,6 @@ namespace puck.core.Helpers
             query += string.Concat(key, ":", value," ");
             return this;
         }
-
         public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, bool value)
         {
             string key = getName(exp.Body.ToString());
@@ -608,6 +614,11 @@ namespace puck.core.Helpers
         {
             return this.Field(exp, lvalue.ToString());
         }
+        public QueryHelper<TModel> Path(string value)
+        {
+            this.Field(x => x.Path, value.Replace("/", @"\/"));
+            return this;
+        }
 
         //filters
         private void TrimAnd() {
@@ -622,7 +633,8 @@ namespace puck.core.Helpers
             {
                 nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
                 this.And()
-                    .Field(x => x.Path, nodePath);
+                    //.Field(x => x.Path, nodePath);
+                    .Path(nodePath);
             }
             return this;
         }
@@ -635,9 +647,11 @@ namespace puck.core.Helpers
             TrimAnd();
             this
                     .And()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
+                    .Path(ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti() + "/*")
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti() + "/*")
+                    .Path(ApiHelper.DirOfPath(path.ToLower()).WildCardMulti() + "/*")
                     .Not()
                     .Field(x => x.Id, id.Wrap());
             return this;
@@ -647,16 +661,19 @@ namespace puck.core.Helpers
             TrimAnd();
             this
                     .And()
-                    .Field(x => x.Path, path.ToLower() + "/".WildCardMulti())
+                    //.Field(x => x.Path, path.ToLower() + "/".WildCardMulti())
+                    .Path(path.ToLower() + "/".WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, path.ToLower() + "/".WildCardMulti() + "/*");
+                    //.Field(x => x.Path, path.ToLower() + "/".WildCardMulti() + "/*");
+                    .Path(path.ToLower() + "/".WildCardMulti() + "/*");
             return this;
         }
         public QueryHelper<TModel> Descendants(string path)
         {
             TrimAnd();
             this.And()
-                .Field(x => x.Path, path.ToLower() + "/".WildCardMulti());
+                //.Field(x => x.Path, path.ToLower() + "/".WildCardMulti());
+                .Path(path.ToLower() + "/".WildCardMulti());
             return this;
         }
 
@@ -664,7 +681,8 @@ namespace puck.core.Helpers
         {
             TrimAnd();
             this.And()
-                .Field(x => x.Path, m.Path.ToLower() + "/".WildCardMulti());
+                //.Field(x => x.Path, m.Path.ToLower() + "/".WildCardMulti());
+                .Path(m.Path.ToLower() + "/".WildCardMulti());
             return this;
         }
 
@@ -682,7 +700,8 @@ namespace puck.core.Helpers
             else currentRoot = currentPath;
             currentRoot = "/" + currentRoot + "/";
             this.And()
-                .Field(x => x.Path, currentRoot.ToLower().WildCardMulti());
+                //.Field(x => x.Path, currentRoot.ToLower().WildCardMulti());
+                .Path(currentRoot.ToLower().WildCardMulti());
             return this;
         }
 

@@ -98,7 +98,11 @@ namespace puck.core.Constants
         public static string Delete = "delete";
         public static string UpdateSettings = "updatesettings";
         public static string UpdateCrops = "updatecrops";
-
+        public static string UpdatePathLocales = "updatepathlocales";
+        public static string UpdateCacheMappings = "updatecachemappings";
+        public static string UpdateDomainMappings = "updatedomainmappings";
+        public static string UpdateRedirects = "updateredirects";
+        public static string UpdateTaskMappings = "updatetaskmappings";
     }
     public static class CacheKeys {
         public static string PrefixTemplateExist = "fexist:";

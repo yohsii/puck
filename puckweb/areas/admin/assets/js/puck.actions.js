@@ -51,7 +51,7 @@ var showSearch = function (term, type, root) {
 }
 var searchDialogClose = function () {
     if ($(".search_ops:visible").length > 0) {
-        $(".search_ops:visible").fadeOut(function () { $(this).remove(); });
+        $(".search_ops:visible").fadeOut(function () { $(this).remove(); cleft.show(); });
         return true;
     }
     return false;
@@ -69,6 +69,11 @@ var searchDialog = function (root, f) {
         }
 
         var el = $(".interfaces .search_ops").clone();
+
+        var close = $('<i class="overlay_close fas fa-minus-circle"></i>');
+        close.click(function () { searchDialogClose(); });
+        el.append(close);
+
         el.css({ left: cright.position().left - 30 + "px", width: "0px", top: "0px", height: $(window).height() - 90 + "px" });
         cright.append(el);
         el.animate({ width: "280px" }, 200, function () { if (f) f(); });
@@ -875,8 +880,19 @@ var _overlayClose = function () {
 }
 
 var overlay = function (el, width, height, top, title) {
-    var f = undefined;
     overlayClose();
+    var cleftIsVisible = false;
+    if ($(window).width() < 768) {
+        if (cleft.is(":visible")) {
+            cleftIsVisible = true;
+            console.log("overlay width set from cleft");
+            width = cleft.width();
+            cleft.hide();
+        }
+    }
+    if (width > $(window).width())
+        width = $(window).width();
+    var f = undefined;
     searchDialogClose();
     var outer = $(".interfaces .overlay_screen").clone().addClass("");
     outer.find(">h1:first").html(title || "")
@@ -885,7 +901,7 @@ var overlay = function (el, width, height, top, title) {
         outer.css({top:$(document).scrollTop()});
     }
     var close = $('<i class="overlay_close fas fa-minus-circle"></i>');
-    close.click(function () { overlayClose() });
+    close.click(function () { overlayClose(cleftIsVisible) });
     outer.append(close);
     var inner = outer.find(".inner");
     var clear = $("<div class='clearboth'/>");
@@ -896,14 +912,17 @@ var overlay = function (el, width, height, top, title) {
     outer.animate({ width: width + "px" }, 200, function () { if (f) f(); afterDom(); });
 
     $(document).keyup(function (e) {
-        if (e.keyCode == 27) { overlayClose(); }
+        if (e.keyCode == 27) { overlayClose(cleftIsVisible); }
     });
 }
 
-var overlayClose = function () {
+var overlayClose = function (showLeftArea) {
     cright.find(".overlay_screen").remove();
     $("body").css({ overflow: "initial" });
     $(document).unbind("keyup");
+    if ($(window).width() < 768 && showLeftArea) {
+        cleft.show();
+    }
 }
 
 var _overlay = function (el, width, height, top) {

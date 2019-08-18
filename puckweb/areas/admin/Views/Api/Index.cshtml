@@ -4,11 +4,11 @@
 }
 <h1 class="master">Puck</h1>
 
-<div class="main grid container_12 container">
+<div class="main grid container_12 container-fluid">
     <div class="row">
         <div class="col-md-12 grid_12 menutop">
             <ul class="p-0">
-                <li><a class='content' href="#content"><i class="fas fa-home"></i></a></li>
+                <li class="selected"><a class='content' href="#content"><i class="fas fa-home"></i></a></li>
                 <li><a title="settings" data-permission="_settings" class='settings' href="#settings?path=/admin/settings/languages"><i class="fas fa-sliders-h"></i></a></li>
                 <li><a title="users" data-permission="_users" class='users' href="#users"><i class="fas fa-user"></i></a></li>
                 <li><a title="developer" data-permission="_tasks" class='tasks' href="#developer"><i class="fas fa-wrench"></i></a></li>
@@ -17,8 +17,8 @@
 
         </div>
     </div>
-    <div class="row mt-30">
-        <div class="col-md-3 grid_3 alpha leftarea">
+    <div class="row">
+        <div class="col-9 col-md-3 grid_3 alpha leftarea">
             <div class="left_content left_item">
                 <button data-permission="_republish" title="republish entire site" style="padding-left:0px;" class="republish_entire_site btn btn-link"><i class="fas fa-redo-alt"></i></button>
                 <button class="create_default btn btn-link"><i class="fas fa-plus-circle"></i>&nbsp;create</button>
@@ -81,6 +81,7 @@
 
         </div>
         <div class="col-md-9 grid_9 rightarea">
+            <div class="leftToggle"><i class="fas fa-ellipsis-v"></i></div>
             <div class="col-md-12 grid_9 alpha omega message">
 
             </div>
