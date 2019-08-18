@@ -815,7 +815,7 @@ namespace puck.core.Controllers
         }
 
         [Auth(Roles = PuckRoles.Edit)]
-        public ActionResult PrepopulatedEdit(string p_type,Guid id)
+        public ActionResult PrepopulatedEdit(string p_type,Guid? id)
         {
             if (string.IsNullOrEmpty(p_type)) {
                 var revision = repo.GetPuckRevision().FirstOrDefault(x=>x.Id==id);

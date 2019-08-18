@@ -24,13 +24,17 @@ using StackExchange.Profiling;
 using System.Threading.Tasks;
 using System.Web.Hosting;
 using puck.core.State;
+using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Util;
+using Lucene.Net.Analysis.Core;
+using Lucene.Net.Analysis.Standard;
 
 namespace puck.core.Concrete
 {
     public class Content_Indexer_Searcher : I_Content_Indexer,I_Content_Searcher
     {
-        private Lucene.Net.Analysis.Standard.StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-        private Lucene.Net.Analysis.KeywordAnalyzer KeywordAnalyzer = new KeywordAnalyzer();
+        private StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(LuceneVersion.LUCENE_48);
+        private KeywordAnalyzer KeywordAnalyzer = new KeywordAnalyzer();
         public readonly SpatialContext ctx = SpatialContext.GEO;
         private string INDEXPATH { get { return HostingEnvironment.MapPath("~/App_Data/Lucene"); } }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };
@@ -174,26 +178,22 @@ namespace puck.core.Concrete
                 {
                     if (p.Value is int)
                     {
-                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
-                        nf.SetIntValue(int.Parse(p.Value.ToString()));
+                        var nf = new Int32Field(p.Key.ToLower(), int.Parse(p.Value.ToString()), p.FieldStoreSetting);
                         doc.Add(nf);
                     }
                     else if (p.Value is long)
                     {
-                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
-                        nf.SetLongValue(long.Parse(p.Value.ToString()));
+                        var nf = new Int64Field(p.Key.ToLower(), long.Parse(p.Value.ToString()), p.FieldStoreSetting);
                         doc.Add(nf);
                     }
                     else if (p.Value is float)
                     {
-                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
-                        nf.SetFloatValue(float.Parse(p.Value.ToString()));
+                        var nf = new SingleField(p.Key.ToLower(), float.Parse(p.Value.ToString()), p.FieldStoreSetting);
                         doc.Add(nf);
                     }
                     else if (p.Value is double)
                     {
-                        var nf = new NumericField(p.Key.ToLower(), 4, p.FieldStoreSetting, true);
-                        nf.SetDoubleValue(double.Parse(p.Value.ToString()));
+                        var nf = new DoubleField(p.Key.ToLower(), double.Parse(p.Value.ToString()), p.FieldStoreSetting);
                         doc.Add(nf);
                     }
                     else if (p.Spatial) {
@@ -201,14 +201,20 @@ namespace puck.core.Concrete
                             continue;
                         var name = p.Key.IndexOf('.')>-1?p.Key.Substring(0,p.Key.LastIndexOf('.')):p.Key;
                         var strat = new PointVectorStrategy(ctx,name);
-                        var point = ctx.ReadShape(p.Value.ToString());
+                        var yx = p.Value.ToString().Split(new char[] { ','},StringSplitOptions.RemoveEmptyEntries).Select(x=>double.Parse(x)).ToList();
+                        var point = ctx.MakePoint(yx[1],yx[0]);
+                        //var point = ctx.ReadShape(p.Value.ToString());
                         var fields = strat.CreateIndexableFields(point);
                         fields.ToList().ForEach(x=>doc.Add(x));
                     }
                     else
                     {
                         string value = p.Value == null ? null : (p.KeepValueCasing ? p.Value.ToString() : p.Value.ToString().ToLower());
-                        var f = new Field(p.Key, value ?? string.Empty, p.FieldStoreSetting, p.FieldIndexSetting);
+                        Field f=null;
+                        if (p.FieldIndexSetting == Field.Index.ANALYZED || p.FieldIndexSetting == Field.Index.ANALYZED_NO_NORMS)
+                            f = new TextField(p.Key, value ?? string.Empty, p.FieldStoreSetting);
+                        else
+                            f = new StringField(p.Key, value ?? string.Empty, p.FieldStoreSetting);
                         doc.Add(f);
                     }
                 }
@@ -231,7 +237,7 @@ namespace puck.core.Concrete
                         if (type == null)
                             type = typeof(BaseModel);
                         var analyzer = PuckCache.AnalyzerForModel[type];
-                        var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+                        var parser = new PuckQueryParser<T>(Lucene.Net.Util.LuceneVersion.LUCENE_48, FieldKeys.PuckDefaultField, analyzer);
                         if (triggerEvents)
                         {
                             var args = new BeforeIndexingEventArgs() { Node = m, Cancel = false };
@@ -260,7 +266,7 @@ namespace puck.core.Concrete
                         }//add cms properties
                         string jsonDoc = JsonConvert.SerializeObject(m);
                         //doc in json form for deserialization later
-                        doc.Add(new Field(FieldKeys.PuckValue, jsonDoc, Field.Store.YES, Field.Index.NOT_ANALYZED));
+                        doc.Add(new StringField(FieldKeys.PuckValue, jsonDoc, Field.Store.YES));
                         using (MiniProfiler.Current.CustomTiming("add document", ""))
                         {
                             Writer.AddDocument(doc, analyzer);
@@ -302,9 +308,9 @@ namespace puck.core.Concrete
                 try
                 {
                     var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-                    var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+                    var parser = new PuckQueryParser<T>(Lucene.Net.Util.LuceneVersion.LUCENE_48, FieldKeys.PuckDefaultField, analyzer);
                     SetWriter(false);
-                    Writer.Flush(true, true, true);
+                    Writer.Flush(true, true);
                     var cancelled = new List<BaseModel>();
                     foreach (var m in toDelete)
                     {
@@ -319,7 +325,7 @@ namespace puck.core.Concrete
                         var q = parser.Parse(removeQuery);
                         Writer.DeleteDocuments(q);
                     }
-                    Writer.Flush(true, true, true);
+                    Writer.Flush(true, true);
                     Writer.Commit();
                     toDelete
                         .Where(x => !cancelled.Contains(x))
@@ -371,10 +377,10 @@ namespace puck.core.Concrete
                         Field field;
                         if (NoToken.Contains(nv.Key.ToLower()))
                         {
-                            field = new Field(nv.Key.ToLower(),nv.Value, Field.Store.YES, Field.Index.NOT_ANALYZED);
+                            field = new StringField(nv.Key.ToLower(),nv.Value, Field.Store.YES);
                         }
                         else {
-                            field = new Field(nv.Key.ToLower(), nv.Value, Field.Store.YES, Field.Index.ANALYZED);
+                            field = new TextField(nv.Key.ToLower(), nv.Value, Field.Store.YES);
                         }
                         doc.Add(field);
                     }
@@ -400,7 +406,7 @@ namespace puck.core.Concrete
             {
                 try
                 {
-                    var parser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "text", StandardAnalyzer);
+                    var parser = new QueryParser(Lucene.Net.Util.LuceneVersion.LUCENE_48, "text", StandardAnalyzer);
                     var contentQuery = parser.Parse(terms);
                     SetWriter(false);
                     Writer.DeleteDocuments(contentQuery);
@@ -419,14 +425,15 @@ namespace puck.core.Concrete
                 }
             }
         }
-
+        //optimize seems to be dropped in lucene 4.8
         public void Optimize() {
+            throw new NotImplementedException();
             lock (write_lock)
             {
                 try
                 {
                     SetWriter(false);
-                    Writer.Optimize();
+                    //Writer.Optimize();
                 }
                 catch (OutOfMemoryException ex) {
                     CloseWriter();
@@ -450,14 +457,14 @@ namespace puck.core.Concrete
                 System.IO.Directory.CreateDirectory(INDEXPATH);
             }
 
-            bool create = !IndexReader.IndexExists(FSDirectory.Open(INDEXPATH));
+            bool create = !DirectoryReader.IndexExists(FSDirectory.Open(INDEXPATH));
             
             lock (write_lock)
             {
                 try
                 {
                     SetWriter(create);
-                    Writer.Optimize();
+                    //Writer.Optimize();
                 }
                 catch (Exception ex)
                 {
@@ -472,7 +479,7 @@ namespace puck.core.Concrete
         }
         public void SetWriter(bool create) {
             if(Writer==null)
-                Writer = new IndexWriter(FSDirectory.Open(INDEXPATH), StandardAnalyzer, create, IndexWriter.MaxFieldLength.UNLIMITED);                    
+                Writer = new IndexWriter(FSDirectory.Open(INDEXPATH),new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48,StandardAnalyzer));
         }
         public void CloseWriter() {
             Writer.Dispose(false);
@@ -480,13 +487,14 @@ namespace puck.core.Concrete
         }
         public void SetSearcher() {
             var oldSearcher = Searcher;
-            Searcher = new Lucene.Net.Search.IndexSearcher(FSDirectory.Open(INDEXPATH));
+            var indexReader = DirectoryReader.Open(FSDirectory.Open(INDEXPATH));
+            Searcher = new Lucene.Net.Search.IndexSearcher(indexReader);
             //kill old searcher
             if (oldSearcher != null)
             {
                 try
                 {
-                    oldSearcher.Dispose();
+                    oldSearcher.IndexReader.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -527,10 +535,10 @@ namespace puck.core.Concrete
             {
                 var type = ApiHelper.GetType(typeName);
                 var analyzer = PuckCache.AnalyzerForModel[type];
-                parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+                parser = new QueryParser(Lucene.Net.Util.LuceneVersion.LUCENE_48, FieldKeys.PuckDefaultField, analyzer);
             }
             else {
-                parser = new Lucene.Net.QueryParsers.QueryParser(Lucene.Net.Util.Version.LUCENE_30, "text", KeywordAnalyzer);
+                parser = new QueryParser(LuceneVersion.LUCENE_48, "text", KeywordAnalyzer);
             }
 
             var contentQuery = parser.Parse(terms);
@@ -544,13 +552,16 @@ namespace puck.core.Concrete
         public IList<T> QueryNoCast<T>(string qstr, Filter filter,Sort sort,out int total,int limit=500,int skip=0) where T:BaseModel
         {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-            var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30, FieldKeys.PuckDefaultField, analyzer);
+            var parser = new PuckQueryParser<T>(LuceneVersion.LUCENE_48, FieldKeys.PuckDefaultField, analyzer);
             var q = parser.Parse(qstr);
             TopDocs docs;
             if (sort == null)
                 docs = Searcher.Search(q, filter, limit);
             else
+            {
+                sort = sort.Rewrite(Searcher);
                 docs = Searcher.Search(q, filter, limit, sort);
+            }
             total = docs.TotalHits;
             var results = new List<T>();
             for (var i = 0; i < docs.ScoreDocs.Count(); i++)
@@ -578,13 +589,16 @@ namespace puck.core.Concrete
         
         public IList<T> Query<T>(string qstr,Filter filter,Sort sort,out int total,int limit=500,int skip=0) where T:BaseModel {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
-            var parser = new PuckQueryParser<T>(Lucene.Net.Util.Version.LUCENE_30,FieldKeys.PuckDefaultField,analyzer);
+            var parser = new PuckQueryParser<T>(LuceneVersion.LUCENE_48,FieldKeys.PuckDefaultField,analyzer);
             var q = parser.Parse(qstr);
             TopDocs docs;
-            if(sort==null)
-                docs = Searcher.Search(q,filter,limit);
+            if (sort == null)
+                docs = Searcher.Search(q, filter, limit);
             else
+            {
+                sort = sort.Rewrite(Searcher);
                 docs = Searcher.Search(q, filter, limit, sort);
+            }
             total = docs.TotalHits;
             var results = new List<T>();
             for (var i = 0; i < docs.ScoreDocs.Count(); i++) {

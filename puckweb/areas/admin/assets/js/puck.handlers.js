@@ -468,6 +468,41 @@ cleft.find("ul.content").on("click", "li.node span.nodename", function () {
 $("button.search").click(function () {
     searchDialog("");
 });
+
+//set heights
+var setAreaHeights = function () {
+    var _h = $(window).height() - ($(".menutop").outerHeight() + 15);
+    $(".leftarea").css({ height: _h, overflowY: "scroll" });
+    $(".rightarea").css({ height: _h, overflowY: "scroll" });
+    $(".leftToggle i").css({ top: (Math.round(_h / 2)) });
+}
+setAreaHeights();
+
+var toggleMobileUI = function () {
+    if ($(window).width() < 768) {
+        $(".leftToggle").show();
+        cleft.css({ position: "absolute" });
+        $(".main.grid").on("click.mobileUi", ".rightarea", function (e) {
+            if ($.contains($(".search_ops").get(0), e.target)) return;
+            if ($.contains($(".overlay_screen").get(0), e.target)) return;
+            cleft.hide();
+        });
+        $(".leftToggle").off().click(function (e) {
+            e.stopPropagation();
+            cleft.show();
+        });
+    } else {
+        cleft.show();
+        $(".leftToggle").hide();
+        cleft.css({ position: "relative" });
+        $(".main.grid").off("click.mobileUi");
+
+    }
+}
+
+$(window).resize(function () { setAreaHeights(); toggleMobileUI(); });
+
+toggleMobileUI();
 //extensions
 $.validator.methods.date = function (value, element) {
     {

@@ -1,0 +1,1088 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Lucene.Net.Spatial</name>
+    </assembly>
+    <members>
+        <member name="T:Lucene.Net.Spatial.DisjointSpatialFilter">
+            <summary>
+            A Spatial Filter implementing <see cref="F:Lucene.Net.Spatial.Queries.SpatialOperation.IsDisjointTo"/> in terms
+            of a <see cref="T:Lucene.Net.Spatial.SpatialStrategy">SpatialStrategy</see>'s support for
+            <see cref="F:Lucene.Net.Spatial.Queries.SpatialOperation.Intersects"/>.
+            A document is considered disjoint if it has spatial data that does not
+            intersect with the query shape.  Another way of looking at this is that it's
+            a way to invert a query shape.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.DisjointSpatialFilter.#ctor(Lucene.Net.Spatial.SpatialStrategy,Lucene.Net.Spatial.Queries.SpatialArgs,System.String)">
+            <param name="strategy">Needed to compute intersects</param>
+            <param name="args">Used in spatial intersection</param>
+            <param name="field">
+            This field is used to determine which docs have spatial data via
+            <see cref="M:Lucene.Net.Search.IFieldCache.GetDocsWithField(Lucene.Net.Index.AtomicReader,System.String)"/>.
+            Passing null will assume all docs have spatial data.
+            </param>
+        </member>
+        <member name="M:Lucene.Net.Spatial.DisjointSpatialFilter.GetDocIdSet(Lucene.Net.Index.AtomicReaderContext,Lucene.Net.Util.IBits)">
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.AbstractPrefixTreeFilter">
+            <summary>
+            Base class for Lucene Filters on SpatialPrefixTree fields.
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.AbstractPrefixTreeFilter.BaseTermsEnumTraverser">
+            <summary>
+            Holds transient state and docid collecting utility methods as part of
+            traversing a <see cref="T:Lucene.Net.Index.TermsEnum">Lucene.Net.Index.TermsEnum</see>.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter">
+            <summary>
+            Traverses a <see cref="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree">SpatialPrefixTree</see> indexed field, using the template &amp;
+            visitor design patterns for subclasses to guide the traversal and collect
+            matching documents.
+            <para/>
+            Subclasses implement <see cref="M:Lucene.Net.Search.Filter.GetDocIdSet(Lucene.Net.Index.AtomicReaderContext,Lucene.Net.Util.IBits)"/>
+            by instantiating a custom <see cref="T:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate"/> subclass (i.e. an anonymous inner class) and implement the
+            required methods.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate">
+            <summary>
+            An abstract class designed to make it easy to implement predicates or
+            other operations on a <see cref="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree"/> indexed field. An instance
+            of this class is not designed to be re-used across AtomicReaderContext
+            instances so simply create a new one for each call to, say a
+            <see cref="M:Lucene.Net.Search.Filter.GetDocIdSet(Lucene.Net.Index.AtomicReaderContext,Lucene.Net.Util.IBits)"/>.
+            The <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.GetDocIdSet"/> method here starts the work. It first checks
+            that there are indexed terms; if not it quickly returns null. Then it calls
+            <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.Start">Start()</see> so a subclass can set up a return value, like an
+            <see cref="T:Lucene.Net.Util.FixedBitSet"/>. Then it starts the traversal
+            process, calling <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.FindSubCellsToVisit(Lucene.Net.Spatial.Prefix.Tree.Cell)"/>
+            which by default finds the top cells that intersect <c>queryShape</c>. If
+            there isn't an indexed cell for a corresponding cell returned for this
+            method then it's short-circuited until it finds one, at which point
+            <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.Visit(Lucene.Net.Spatial.Prefix.Tree.Cell)"/> is called. At
+            some depths, of the tree, the algorithm switches to a scanning mode that
+            calls <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.VisitScanned(Lucene.Net.Spatial.Prefix.Tree.Cell)"/>
+            for each leaf cell found.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.AddIntersectingChildren">
+            <summary>
+            Called initially, and whenever <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.Visit(Lucene.Net.Spatial.Prefix.Tree.Cell)"/>
+            returns true.
+            </summary>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.FindSubCellsToVisit(Lucene.Net.Spatial.Prefix.Tree.Cell)">
+            <summary>
+            Called when doing a divide &amp; conquer to find the next intersecting cells
+            of the query shape that are beneath <paramref name="cell"/>. <paramref name="cell"/> is
+            guaranteed to have an intersection and thus this must return some number
+            of nodes.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.Scan(System.Int32)">
+            <summary>
+            Scans (<c>termsEnum.Next()</c>) terms until a term is found that does
+            not start with curVNode's cell. If it finds a leaf cell or a cell at
+            level <paramref name="scanDetailLevel"/> then it calls
+            <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.VisitScanned(Lucene.Net.Spatial.Prefix.Tree.Cell)"/>.
+            </summary>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.VNodeCellIterator">
+            <summary>
+            Used for <see cref="F:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VNode.children"/>.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.Start">
+            <summary>Called first to setup things.</summary>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.Finish">
+            <summary>Called last to return the result.</summary>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.Visit(Lucene.Net.Spatial.Prefix.Tree.Cell)">
+            <summary>
+            Visit an indexed cell returned from
+            <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.FindSubCellsToVisit(Lucene.Net.Spatial.Prefix.Tree.Cell)"/>.
+            </summary>
+            <param name="cell">An intersecting cell.</param>
+            <returns>
+            true to descend to more levels. It is an error to return true
+            if cell.Level == detailLevel
+            </returns>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.VisitLeaf(Lucene.Net.Spatial.Prefix.Tree.Cell)">
+            <summary>Called after visit() returns true and an indexed leaf cell is found.</summary>
+            <remarks>
+            Called after Visit() returns true and an indexed leaf cell is found. An
+            indexed leaf cell means associated documents generally won't be found at
+            further detail levels.
+            </remarks>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate.VisitScanned(Lucene.Net.Spatial.Prefix.Tree.Cell)">
+            <summary>
+            The cell is either indexed as a leaf or is the last level of detail. It
+            might not even intersect the query shape, so be sure to check for that.
+            </summary>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VNode">
+            <summary>
+            A Visitor node/cell found via the query shape for <see cref="T:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VisitorTemplate"/>.
+            Sometimes these are reset(cell). It's like a LinkedList node but forms a
+            tree.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VNode.#ctor(Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VNode)">
+            <summary>Call <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.VNode.Reset(Lucene.Net.Spatial.Prefix.Tree.Cell)"/> after to set the cell.</summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter">
+            <summary>
+            Finds docs where its indexed shape <see cref="F:Lucene.Net.Spatial.Queries.SpatialOperation.Contains"/>
+            the query shape. For use on <see cref="T:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy"/>.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.m_multiOverlappingIndexedShapes">
+            <summary>
+            If the spatial data for a document is comprised of multiple overlapping or adjacent parts,
+            it might fail to match a query shape when doing the CONTAINS predicate when the sum of
+            those shapes contain the query shape but none do individually. Set this to false to
+            increase performance if you don't care about that circumstance (such as if your indexed
+            data doesn't even have such conditions).  See LUCENE-5062.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.ContainsVisitor.Visit(Lucene.Net.Spatial.Prefix.Tree.Cell,Lucene.Net.Util.IBits)">
+            <remarks>This is the primary algorithm; recursive.  Returns null if finds none.</remarks>
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.SmallDocSet">
+            <summary>A hash based mutable set of docIds.</summary>
+            <remarks>
+            A hash based mutable set of docIds. If this were Solr code then we might
+            use a combination of HashDocSet and SortedIntDocSet instead.
+            </remarks>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.SmallDocSet.Length">
+            <summary>Largest docid.</summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.SmallDocSet.Count">
+            <summary>
+            Number of docids.
+            NOTE: This was size() in Lucene.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.SmallDocSet.Union(Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.SmallDocSet)">
+            <summary>NOTE: modifies and returns either "this" or "other"</summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.IntersectsPrefixTreeFilter">
+            <summary>
+            A Filter matching documents that have an <see cref="F:Spatial4n.Core.Shapes.SpatialRelation.INTERSECTS"/>
+            (i.e. not DISTINCT) relationship with a provided query shape.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.IntersectsPrefixTreeFilter.GetHashCode">
+            <summary>
+            LUCENENET specific: need to override GetHashCode to 
+            prevent a compiler warning and realistically, the hash code
+            should work similarly to Equals.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.IntersectsPrefixTreeFilter.GetDocIdSet(Lucene.Net.Index.AtomicReaderContext,Lucene.Net.Util.IBits)">
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.PointPrefixTreeFieldCacheProvider">
+            <summary>
+            Implementation of <see cref="T:Lucene.Net.Spatial.Util.ShapeFieldCacheProvider`1"/>
+            designed for <see cref="T:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy">PrefixTreeStrategy</see>s.
+            
+            Note, due to the fragmented representation of Shapes in these Strategies, this implementation
+            can only retrieve the central <see cref="T:Spatial4n.Core.Shapes.IPoint">Point</see> of the original Shapes.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy">
+            <summary>
+            An abstract SpatialStrategy based on <see cref="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree"/>. The two
+            subclasses are <see cref="T:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy">RecursivePrefixTreeStrategy</see> and
+            <see cref="T:Lucene.Net.Spatial.Prefix.TermQueryPrefixTreeStrategy">TermQueryPrefixTreeStrategy</see>.  This strategy is most effective as a fast
+            approximate spatial search filter.
+            
+            <h4>Characteristics:</h4>
+            <list type="bullet">
+            <item><description>Can index any shape; however only
+            <see cref="T:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy">RecursivePrefixTreeStrategy</see>
+            can effectively search non-point shapes.</description></item>
+            <item><description>Can index a variable number of shapes per field value. This strategy
+            can do it via multiple calls to <see cref="M:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy.CreateIndexableFields(Spatial4n.Core.Shapes.IShape)"/>
+            for a document or by giving it some sort of Shape aggregate (e.g. NTS
+            WKT MultiPoint).  The shape's boundary is approximated to a grid precision.
+            </description></item>
+            <item><description>Can query with any shape.  The shape's boundary is approximated to a grid
+            precision.</description></item>
+            <item><description>Only <see cref="F:Lucene.Net.Spatial.Queries.SpatialOperation.Intersects"/>
+            is supported.  If only points are indexed then this is effectively equivalent
+            to IsWithin.</description></item>
+            <item><description>The strategy supports <see cref="M:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint,System.Double)"/>
+            even for multi-valued data, so long as the indexed data is all points; the
+            behavior is undefined otherwise.  However, <c>it will likely be removed in
+            the future</c> in lieu of using another strategy with a more scalable
+            implementation.  Use of this call is the only
+            circumstance in which a cache is used.  The cache is simple but as such
+            it doesn't scale to large numbers of points nor is it real-time-search
+            friendly.</description></item>
+            </list>
+            
+            <h4>Implementation:</h4>
+            The <see cref="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree"/>
+            does most of the work, for example returning
+            a list of terms representing grids of various sizes for a supplied shape.
+            An important
+            configuration item is <see cref="P:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy.DistErrPct"/> which balances
+            shape precision against scalability.  See those docs.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy.DefaultFieldValuesArrayLen">
+            <summary>
+            A memory hint used by <see cref="M:Lucene.Net.Spatial.SpatialStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint)"/>
+            for how big the initial size of each Document's array should be. The
+            default is 2.  Set this to slightly more than the default expected number
+            of points per document.
+            </summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy.DistErrPct">
+            <summary>
+            The default measure of shape precision affecting shapes at index and query
+            times.
+            </summary>
+            <remarks>
+            The default measure of shape precision affecting shapes at index and query
+            times. Points don't use this as they are always indexed at the configured
+            maximum precision (<see cref="P:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.MaxLevels"/>);
+            this applies to all other shapes. Specific shapes at index and query time
+            can use something different than this default value.  If you don't set a
+            default then the default is <see cref="F:Lucene.Net.Spatial.Queries.SpatialArgs.DEFAULT_DISTERRPCT"/> --
+            2.5%.
+            </remarks>
+            <seealso cref="P:Lucene.Net.Spatial.Queries.SpatialArgs.DistErrPct"/>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy.FIELD_TYPE">
+            <summary>
+            Indexed, tokenized, not stored.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy.CellTokenStream">
+            <summary>Outputs the tokenString of a cell, and if its a leaf, outputs it again with the leaf byte.</summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy">
+            <summary>
+            A <see cref="T:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy"/> which uses <see cref="T:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter"/>.
+            This strategy has support for searching non-point shapes (note: not tested).
+            Even a query shape with distErrPct=0 (fully precise to the grid) should have
+            good performance for typical data, unless there is a lot of indexed data
+            coincident with the shape's edge.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy.m_pointsOnly">
+            <summary>
+            True if only indexed points shall be supported.  See <see cref="F:Lucene.Net.Spatial.Prefix.IntersectsPrefixTreeFilter.hasIndexedLeaves"/>.
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy.m_multiOverlappingIndexedShapes">
+            <summary>
+            See <see cref="F:Lucene.Net.Spatial.Prefix.ContainsPrefixTreeFilter.m_multiOverlappingIndexedShapes"/>.
+            </summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy.PrefixGridScanLevel">
+            <summary>
+            Sets the grid level [1-maxLevels] at which indexed terms are scanned brute-force
+            instead of by grid decomposition. By default this is maxLevels - 4.  The
+            final level, maxLevels, is always scanned. Value can be 1 to maxLevels.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.TermQueryPrefixTreeStrategy">
+            <summary>
+            A basic implementation of <see cref="T:Lucene.Net.Spatial.Prefix.PrefixTreeStrategy"/> using a large
+            <see cref="T:Lucene.Net.Queries.TermsFilter"/> of all the cells from
+            <see cref="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCells(Spatial4n.Core.Shapes.IShape,System.Int32,System.Boolean,System.Boolean)"/>. 
+            It only supports the search of indexed Point shapes.
+            <para/>
+            The precision of query shapes (DistErrPct) is an important factor in using
+            this Strategy. If the precision is too precise then it will result in many
+            terms which will amount to a slower query.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.Tree.Cell">
+            <summary>
+            Represents a grid cell. These are not necessarily thread-safe, although new
+            Cell("") (world cell) must be.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.Tree.Cell.m_outerInstance">
+            <summary>
+            LUCENENET specific - we need to set the SpatialPrefixTree before calling overridden 
+            members of this class, just in case those overridden members require it. This is
+            not possible from the subclass because the constructor of the base class runs first.
+            So we need to move the reference here and also set it before running the normal constructor
+            logic.
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.Tree.Cell.bytes">
+            <summary>
+            Holds a byte[] and/or String representation of the cell. Both are lazy constructed from the other.
+            Neither contains the trailing leaf byte.
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.Tree.Cell.m_shapeRel">
+            <summary>
+            When set via <see cref="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetSubCells(Spatial4n.Core.Shapes.IShape)">GetSubCells(filter)</see>, it is the relationship between this cell
+            and the given shape filter.
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.Tree.Cell.m_leaf">
+            <summary>Always false for points.</summary>
+            <remarks>
+            Always false for points. Otherwise, indicate no further sub-cells are going
+            to be provided because shapeRel is WITHIN or maxLevels or a detailLevel is
+            hit.
+            </remarks>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.Tree.Cell.IsLeaf">
+            <summary>For points, this is always false.</summary>
+            <remarks>
+            For points, this is always false.  Otherwise this is true if there are no
+            further cells with this prefix for the shape (always true at maxLevels).
+            </remarks>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.Cell.SetLeaf">
+            <summary>Note: not supported at level 0.</summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.Tree.Cell.TokenString">
+            <summary>
+            Note: doesn't contain a trailing leaf byte.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetTokenBytes">
+            <summary>Note: doesn't contain a trailing leaf byte.</summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetSubCells(Spatial4n.Core.Shapes.IShape)">
+            <summary>
+            Like <see cref="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetSubCells">GetSubCells()</see> but with the results filtered by a shape. If
+            that shape is a <see cref="T:Spatial4n.Core.Shapes.IPoint"/> then it must call 
+            <see cref="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetSubCell(Spatial4n.Core.Shapes.IPoint)"/>. The returned cells
+            should have <see cref="P:Lucene.Net.Spatial.Prefix.Tree.Cell.ShapeRel">ShapeRel</see> set to their relation with
+            <paramref name="shapeFilter"/>. In addition, <see cref="P:Lucene.Net.Spatial.Prefix.Tree.Cell.IsLeaf"/>
+            must be true when that relation is <see cref="F:Spatial4n.Core.Shapes.SpatialRelation.WITHIN"/>.
+            <para/>
+            Precondition: Never called when Level == maxLevel.
+            </summary>
+            <param name="shapeFilter">an optional filter for the returned cells.</param>
+            <returns>A set of cells (no dups), sorted. Not Modifiable.</returns>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetSubCell(Spatial4n.Core.Shapes.IPoint)">
+            <summary>
+            Performant implementations are expected to implement this efficiently by
+            considering the current cell's boundary.
+            </summary>
+            <remarks>
+            Performant implementations are expected to implement this efficiently by
+            considering the current cell's boundary. Precondition: Never called when
+            Level == maxLevel.
+            <p/>
+            Precondition: this.Shape.Relate(p) != SpatialRelation.DISJOINT.
+            </remarks>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetSubCells">
+            <summary>Gets the cells at the next grid cell level that cover this cell.</summary>
+            <remarks>
+            Gets the cells at the next grid cell level that cover this cell.
+            Precondition: Never called when Level == maxLevel.
+            </remarks>
+            <returns>A set of cells (no dups), sorted, modifiable, not empty, not null.</returns>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.Tree.Cell.SubCellsSize">
+            <summary>
+            <see cref="M:Lucene.Net.Spatial.Prefix.Tree.Cell.GetSubCells"/>.Count -- usually a constant. Should be &gt;=2
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.Tree.GeohashPrefixTree">
+            <summary>
+            A <see cref="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree">SpatialPrefixTree</see> based on
+            <a href="http://en.wikipedia.org/wiki/Geohash">Geohashes</a>.
+            Uses <see cref="T:Spatial4n.Core.Util.GeohashUtils"/> to do all the geohash work.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.Tree.GeohashPrefixTree.Factory">
+            <summary>
+            Factory for creating <see cref="T:Lucene.Net.Spatial.Prefix.Tree.GeohashPrefixTree"/>
+            instances with useful defaults
+            </summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.Tree.GeohashPrefixTree.MaxLevelsPossible">
+            <summary>Any more than this and there's no point (double lat &amp; lon are the same).</summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.Tree.QuadPrefixTree">
+            <summary>
+            A <see cref="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree"/> which uses a
+            <a href="http://en.wikipedia.org/wiki/Quadtree">quad tree</a> in which an
+            indexed term will be generated for each cell, 'A', 'B', 'C', 'D'.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.Tree.QuadPrefixTree.Factory">
+            <summary>
+            Factory for creating <see cref="T:Lucene.Net.Spatial.Prefix.Tree.QuadPrefixTree"/> instances with useful defaults
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree">
+            <summary>
+            A spatial Prefix Tree, or Trie, which decomposes shapes into prefixed strings
+            at variable lengths corresponding to variable precision.
+            </summary>
+            <remarks>
+            A spatial Prefix Tree, or Trie, which decomposes shapes into prefixed strings
+            at variable lengths corresponding to variable precision.   Each string
+            corresponds to a rectangular spatial region.  This approach is
+            also referred to "Grids", "Tiles", and "Spatial Tiers".
+            <p/>
+            Implementations of this class should be thread-safe and immutable once
+            initialized.
+            
+            @lucene.experimental
+            </remarks>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetLevelForDistance(System.Double)">
+            <summary>
+            Returns the level of the largest grid in which its longest side is less
+            than or equal to the provided distance (in degrees).
+            </summary>
+            <remarks>
+            Returns the level of the largest grid in which its longest side is less
+            than or equal to the provided distance (in degrees). Consequently
+            <paramref name="dist"/> acts as an error epsilon declaring the amount of detail needed in the
+            grid, such that you can get a grid with just the right amount of
+            precision.
+            </remarks>
+            <param name="dist">&gt;= 0</param>
+            <returns>level [1 to maxLevels]</returns>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetDistanceForLevel(System.Int32)">
+            <summary>
+            Given a cell having the specified level, returns the distance from opposite
+            corners.
+            </summary>
+            <remarks>
+            Given a cell having the specified level, returns the distance from opposite
+            corners. Since this might very depending on where the cell is, this method
+            may over-estimate.
+            </remarks>
+            <param name="level">[1 to maxLevels]</param>
+            <returns>&gt; 0</returns>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.WorldCell">
+            <summary>Returns the level 0 cell which encompasses all spatial data.</summary>
+            <remarks>
+            Returns the level 0 cell which encompasses all spatial data. Equivalent to
+            <see cref="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCell(System.String)">GetCell(string)</see> with <see cref="F:System.String.Empty"/>.
+            This cell is threadsafe, just like a spatial prefix grid is, although cells aren't
+            generally threadsafe.
+            </remarks>
+            TODO rename to GetTopCell or is this fine?
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCell(System.String)">
+            <summary>The cell for the specified token.</summary>
+            <remarks>
+            The cell for the specified token. The empty string should be equal to
+            <see cref="P:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.WorldCell">WorldCell</see>.
+            Precondition: Never called when token length &gt; maxLevel.
+            </remarks>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCell(Spatial4n.Core.Shapes.IPoint,System.Int32)">
+            <summary>
+            Returns the cell containing point <paramref name="p"/> at the specified <paramref name="level"/>.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCells(Spatial4n.Core.Shapes.IShape,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Gets the intersecting cells for the specified shape, without exceeding
+            detail level.
+            </summary>
+            <remarks>
+            Gets the intersecting cells for the specified shape, without exceeding
+            detail level. If a cell is within the query shape then it's marked as a
+            leaf and none of its children are added.
+            <para/>
+            This implementation checks if shape is a <see cref="T:Spatial4n.Core.Shapes.IPoint"/> and if so returns
+            <see cref="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCells(Spatial4n.Core.Shapes.IPoint,System.Int32,System.Boolean)"/>.
+            </remarks>
+            <param name="shape">the shape; non-null</param>
+            <param name="detailLevel">the maximum detail level to get cells for</param>
+            <param name="inclParents">
+            if true then all parent cells of leaves are returned
+            too. The top world cell is never returned.
+            </param>
+            <param name="simplify">
+            for non-point shapes, this will simply/aggregate sets of
+            complete leaves in a cell to its parent, resulting in
+            ~20-25% fewer cells.
+            </param>
+            <returns>a set of cells (no dups), sorted, immutable, non-null</returns>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.RecursiveGetCells(Lucene.Net.Spatial.Prefix.Tree.Cell,Spatial4n.Core.Shapes.IShape,System.Int32,System.Boolean,System.Boolean,System.Collections.Generic.IList{Lucene.Net.Spatial.Prefix.Tree.Cell})">
+            <summary>Returns true if cell was added as a leaf.</summary>
+            <remarks>
+            Returns true if cell was added as a leaf. If it wasn't it recursively
+            descends.
+            </remarks>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCells(Spatial4n.Core.Shapes.IPoint,System.Int32,System.Boolean)">
+            <summary>
+            A Point-optimized implementation of
+            <see cref="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCells(Spatial4n.Core.Shapes.IShape,System.Int32,System.Boolean,System.Boolean)"/>. That
+            method in facts calls this for points.
+            <para/>
+            This implementation depends on <see cref="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetCell(System.String)"/> being fast, as its
+            called repeatedly when incPlarents is true.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.CellsToTokenStrings(System.Collections.Generic.ICollection{Lucene.Net.Spatial.Prefix.Tree.Cell})">
+            <summary>Will add the trailing leaf byte for leaves. This isn't particularly efficient.</summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTreeFactory">
+            <summary>
+            Abstract Factory for creating <see cref="T:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree"/> instances with useful
+            defaults and passed on configurations defined in a <see cref="T:System.Collections.Generic.IDictionary`2"/>.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTreeFactory.MakeSPT(System.Collections.Generic.IDictionary{System.String,System.String},Spatial4n.Core.Context.SpatialContext)">
+            <summary>The factory  is looked up via "prefixTree" in args, expecting "geohash" or "quad".</summary>
+            <remarks>
+            The factory  is looked up via "prefixTree" in args, expecting "geohash" or "quad".
+            If its neither of these, then "geohash" is chosen for a geo context, otherwise "quad" is chosen.
+            </remarks>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTreeFactory.GetLevelForDistance(System.Double)">
+            <summary>
+            Calls <see cref="M:Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree.GetLevelForDistance(System.Double)">SpatialPrefixTree.GetLevelForDistance(double)</see>.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter">
+            <summary>
+            Finds docs where its indexed shape is
+            <see cref="F:Lucene.Net.Spatial.Queries.SpatialOperation.IsWithin">WITHIN</see>
+            the query shape.  It works by looking at cells outside of the query
+            shape to ensure documents there are excluded. By default, it will
+            examine all cells, and it's fairly slow.  If you know that the indexed shapes
+            are never comprised of multiple disjoint parts (which also means it is not multi-valued),
+            then you can pass <c>SpatialPrefixTree.GetDistanceForLevel(maxLevels)</c> as
+            the <c>queryBuffer</c> constructor parameter to minimally look this distance
+            beyond the query shape's edge.  Even if the indexed shapes are sometimes
+            comprised of multiple disjoint parts, you might want to use this option with
+            a large buffer as a faster approximation with minimal false-positives.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter.bufferedQueryShape">
+            TODO LUCENE-4869: implement faster algorithm based on filtering out false-positives of a
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter.#ctor(Spatial4n.Core.Shapes.IShape,System.String,Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree,System.Int32,System.Int32,System.Double)">
+            <summary>
+            See <see cref="M:Lucene.Net.Spatial.Prefix.AbstractVisitingPrefixTreeFilter.#ctor(Spatial4n.Core.Shapes.IShape,System.String,Lucene.Net.Spatial.Prefix.Tree.SpatialPrefixTree,System.Int32,System.Int32)"/>.
+            <c>queryBuffer</c> is the (minimum) distance beyond the query shape edge
+            where non-matching documents are looked for so they can be excluded. If
+            -1 is used then the whole world is examined (a good default for correctness).
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter.BufferShape(Spatial4n.Core.Shapes.IShape,System.Double)">
+            <summary>
+            Returns a new shape that is larger than shape by at distErr.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter.GetDocIdSet(Lucene.Net.Index.AtomicReaderContext,Lucene.Net.Util.IBits)">
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter.VisitorTemplateAnonymousHelper.VisitLeaf(Lucene.Net.Spatial.Prefix.Tree.Cell)">
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter.VisitorTemplateAnonymousHelper.AllCellsIntersectQuery(Lucene.Net.Spatial.Prefix.Tree.Cell,Spatial4n.Core.Shapes.SpatialRelation)">
+            <summary>
+            Returns true if the provided cell, and all its sub-cells down to
+            detailLevel all intersect the queryShape.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Prefix.WithinPrefixTreeFilter.VisitorTemplateAnonymousHelper.VisitScanned(Lucene.Net.Spatial.Prefix.Tree.Cell)">
+            <exception cref="T:System.IO.IOException"></exception>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Queries.SpatialArgs">
+            <summary>
+            Principally holds the query <see cref="T:Spatial4n.Core.Shapes.IShape"/> and the <see cref="T:Lucene.Net.Spatial.Queries.SpatialOperation"/>.
+            It's used as an argument to some methods on <see cref="T:Lucene.Net.Spatial.SpatialStrategy"/>.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.SpatialArgs.CalcDistanceFromErrPct(Spatial4n.Core.Shapes.IShape,System.Double,Spatial4n.Core.Context.SpatialContext)">
+            <summary>
+            Computes the distance given a shape and the <paramref name="distErrPct"/>.  The
+            algorithm is the fraction of the distance from the center of the query
+            shape to its furthest bounding box corner.
+            </summary>
+            <param name="shape">Mandatory.</param>
+            <param name="distErrPct">0 to 0.5</param>
+            <param name="ctx">Mandatory</param>
+            <returns>A distance (in degrees).</returns>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.SpatialArgs.ResolveDistErr(Spatial4n.Core.Context.SpatialContext,System.Double)">
+            <summary>
+            Gets the error distance that specifies how precise the query shape is. This
+            looks at <see cref="P:Lucene.Net.Spatial.Queries.SpatialArgs.DistErr"/>, <see cref="P:Lucene.Net.Spatial.Queries.SpatialArgs.DistErrPct"/>, and 
+            <paramref name="defaultDistErrPct"/>.
+            </summary>
+            <param name="ctx"></param>
+            <param name="defaultDistErrPct">0 to 0.5</param>
+            <returns>&gt;= 0</returns>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.SpatialArgs.Validate">
+            <summary>
+            Check if the arguments make sense -- throw an exception if not
+            </summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Queries.SpatialArgs.DistErrPct">
+            <summary>
+            A measure of acceptable error of the shape as a fraction. This effectively
+            inflates the size of the shape but should not shrink it.
+            </summary>
+            <returns>0 to 0.5</returns>
+        </member>
+        <member name="P:Lucene.Net.Spatial.Queries.SpatialArgs.DistErr">
+            <summary>
+            The acceptable error of the shape.  This effectively inflates the
+            size of the shape but should not shrink it.
+            </summary>
+            <returns>&gt;= 0</returns>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Queries.SpatialArgsParser">
+            <summary>
+            Parses a string that usually looks like "OPERATION(SHAPE)" into a <see cref="T:Lucene.Net.Spatial.Queries.SpatialArgs"/>
+            object. The set of operations supported are defined in <see cref="T:Lucene.Net.Spatial.Queries.SpatialOperation"/>, such
+            as "Intersects" being a common one. The shape portion is defined by WKT <see cref="T:Spatial4n.Core.IO.WktShapeParser"/>,
+            but it can be overridden/customized via <see cref="M:Lucene.Net.Spatial.Queries.SpatialArgsParser.ParseShape(System.String,Spatial4n.Core.Context.SpatialContext)"/>.
+            There are some optional name-value pair parameters that follow the closing parenthesis.  Example:
+            <code>
+              Intersects(ENVELOPE(-10,-8,22,20)) distErrPct=0.025
+            </code>
+            <para/>
+            In the future it would be good to support something at least semi-standardized like a
+            variant of <a href="http://docs.geoserver.org/latest/en/user/filter/ecql_reference.html#spatial-predicate">
+              [E]CQL</a>.
+              
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.SpatialArgsParser.WriteSpatialArgs(Lucene.Net.Spatial.Queries.SpatialArgs)">
+            <summary>
+            Writes a close approximation to the parsed input format.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.SpatialArgsParser.Parse(System.String,Spatial4n.Core.Context.SpatialContext)">
+            <summary>
+            Parses a string such as "Intersects(ENVELOPE(-10,-8,22,20)) distErrPct=0.025".
+            </summary>
+            <param name="v">The string to parse. Mandatory.</param>
+            <param name="ctx">The spatial context. Mandatory.</param>
+            <returns>Not null.</returns>
+            <exception cref="T:System.ArgumentException">if the parameters don't make sense or an add-on parameter is unknown</exception>
+            <exception cref="T:Spatial4n.Core.Exceptions.ParseException">If there is a problem parsing the string</exception>
+            <exception cref="T:Spatial4n.Core.Exceptions.InvalidShapeException">When the coordinates are invalid for the shape</exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.SpatialArgsParser.ParseMap(System.String)">
+            <summary>
+            Parses "a=b c=d f" (whitespace separated) into name-value pairs. If there
+            is no '=' as in 'f' above then it's short for f=f.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Queries.SpatialOperation">
+            <summary>
+            A clause that compares a stored geometry to a supplied geometry. For more
+            explanation of each operation, consider looking at the source implementation
+            of <see cref="M:Lucene.Net.Spatial.Queries.SpatialOperation.Evaluate(Spatial4n.Core.Shapes.IShape,Spatial4n.Core.Shapes.IShape)"/>.
+            <para>
+            See <a href="http://edndoc.esri.com/arcsde/9.1/general_topics/understand_spatial_relations.htm">
+            ESRIs docs on spatial relations</a>
+            </para>
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Queries.SpatialOperation.BBoxIntersects">
+            <summary>
+            Bounding box of the *indexed* shape.
+            </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Queries.SpatialOperation.BBoxWithin">
+            <summary>
+            Bounding box of the *indexed* shape.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.SpatialOperation.Evaluate(Spatial4n.Core.Shapes.IShape,Spatial4n.Core.Shapes.IShape)">
+            <summary>
+            Returns whether the relationship between <paramref name="indexedShape"/> and <paramref name="queryShape"/> is
+            satisfied by this operation.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Queries.UnsupportedSpatialOperation">
+            <summary>
+            Exception thrown when the <see cref="T:Lucene.Net.Spatial.SpatialStrategy"/> cannot implement the requested operation.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Queries.UnsupportedSpatialOperation.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of this class with serialized data.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Serialized.SerializedDVStrategy">
+             <summary>
+             A <see cref="T:Lucene.Net.Spatial.SpatialStrategy"/> based on serializing a Shape stored into BinaryDocValues.
+             This is not at all fast; it's designed to be used in conjuction with another index based
+             SpatialStrategy that is approximated(like <see cref="T:Lucene.Net.Spatial.Prefix.RecursivePrefixTreeStrategy"/>)
+             to add precision or eventually make more specific / advanced calculations on the per-document
+             geometry.
+             The serialization uses Spatial4j's <see cref="T:Spatial4n.Core.IO.BinaryCodec"/>.
+            
+             @lucene.experimental
+             </summary>
+        </member>
+        <member name="F:Lucene.Net.Spatial.Serialized.SerializedDVStrategy.indexLastBufSize">
+            <summary>
+            A cache heuristic for the buf size based on the last shape size.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Serialized.SerializedDVStrategy.#ctor(Spatial4n.Core.Context.SpatialContext,System.String)">
+            <summary>
+            Constructs the spatial strategy with its mandatory arguments.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Serialized.SerializedDVStrategy.MakeFilter(Lucene.Net.Spatial.Queries.SpatialArgs)">
+            <summary>
+            Returns a <see cref="T:Lucene.Net.Search.Filter"/> that should be used with <see cref="F:Lucene.Net.Search.FilteredQuery.QUERY_FIRST_FILTER_STRATEGY"/>.
+            Use in another manner is likely to result in an <see cref="T:System.NotSupportedException"/>
+            to prevent misuse because the filter can't efficiently work via iteration.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Serialized.SerializedDVStrategy.MakeShapeValueSource">
+            <summary>
+            Provides access to each shape per document as a ValueSource in which
+            <see cref="M:Lucene.Net.Queries.Function.FunctionValues.ObjectVal(System.Int32)"/> returns a <see cref="T:Spatial4n.Core.Shapes.IShape"/>.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Serialized.SerializedDVStrategy.PredicateValueSourceFilter">
+            <summary>
+            This filter only supports returning a DocSet with a GetBits(). If you try to grab the
+            iterator then you'll get a <see cref="T:System.NotSupportedException"/>.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Serialized.SerializedDVStrategy.ShapeDocValueSource">
+            <summary>
+            Implements a <see cref="T:Lucene.Net.Queries.Function.ValueSource"/> by deserializing a <see cref="T:Spatial4n.Core.Shapes.IShape"/> in from <see cref="T:Lucene.Net.Index.BinaryDocValues"/> using <see cref="T:Spatial4n.Core.IO.BinaryCodec"/>.
+            </summary>
+            <seealso cref="M:Lucene.Net.Spatial.Serialized.SerializedDVStrategy.MakeShapeValueSource"/>
+        </member>
+        <member name="T:Lucene.Net.Spatial.SpatialStrategy">
+            <summary>
+            The <see cref="T:Lucene.Net.Spatial.SpatialStrategy"/> encapsulates an approach to indexing and searching based on shapes.
+            <para/>
+            Different implementations will support different features. A strategy should
+            document these common elements:
+            <list type="bullet">
+                <item><description>Can it index more than one shape per field?</description></item>
+                <item><description>What types of shapes can be indexed?</description></item>
+                <item><description>What types of query shapes can be used?</description></item>
+                <item><description>What types of query operations are supported? This might vary per shape.</description></item>
+                <item><description>Does it use the <see cref="T:Lucene.Net.Search.FieldCache"/>, or some other type of cache?  When?</description></item>
+            </list>
+            If a strategy only supports certain shapes at index or query time, then in
+            general it will throw an exception if given an incompatible one.  It will not
+            be coerced into compatibility.
+            <para/>
+            Note that a SpatialStrategy is not involved with the Lucene stored field values of shapes, which is
+            immaterial to indexing and search.
+            <para/>
+            Thread-safe.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.SpatialStrategy.#ctor(Spatial4n.Core.Context.SpatialContext,System.String)">
+            <summary>
+            Constructs the spatial strategy with its mandatory arguments.
+            </summary>
+        </member>
+        <member name="P:Lucene.Net.Spatial.SpatialStrategy.FieldName">
+            <summary>
+            The name of the field or the prefix of them if there are multiple
+            fields needed internally.
+            </summary>
+            <returns>Not null.</returns>
+        </member>
+        <member name="M:Lucene.Net.Spatial.SpatialStrategy.CreateIndexableFields(Spatial4n.Core.Shapes.IShape)">
+            <summary>
+            Returns the IndexableField(s) from the <paramref name="shape"/> that are to be
+            added to the <see cref="T:Lucene.Net.Documents.Document"/>.  These fields
+            are expected to be marked as indexed and not stored.
+            <p/>
+            Note: If you want to <i>store</i> the shape as a string for retrieval in search
+            results, you could add it like this:
+            <code>
+                document.Add(new StoredField(fieldName, ctx.ToString(shape)));
+            </code>
+            The particular string representation used doesn't matter to the Strategy since it
+            doesn't use it.
+            </summary>
+            <param name="shape"></param>
+            <returns>Not null nor will it have null elements.</returns>
+            <exception cref="T:System.NotSupportedException">if given a shape incompatible with the strategy</exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.SpatialStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint)">
+            <summary>
+            See <see cref="M:Lucene.Net.Spatial.SpatialStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint,System.Double)"/> called with
+            a multiplier of 1.0 (i.e. units of degrees).
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.SpatialStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint,System.Double)">
+            <summary>
+            Make a ValueSource returning the distance between the center of the
+            indexed shape and <paramref name="queryPoint"/>.  If there are multiple indexed shapes
+            then the closest one is chosen. The result is multiplied by <paramref name="multiplier"/>, which
+            conveniently is used to get the desired units.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.SpatialStrategy.MakeQuery(Lucene.Net.Spatial.Queries.SpatialArgs)">
+            <summary>
+            Make a Query based principally on <see cref="T:Lucene.Net.Spatial.Queries.SpatialOperation"/>
+            and <see cref="T:Spatial4n.Core.Shapes.IShape"/> from the supplied <paramref name="args"/>.
+            The default implementation is
+            <code>return new ConstantScoreQuery(MakeFilter(args));</code>
+            </summary>
+            <exception cref="T:System.NotSupportedException">If the strategy does not support the shape in <paramref name="args"/>.</exception>
+            <exception cref="T:Lucene.Net.Spatial.Queries.UnsupportedSpatialOperation">If the strategy does not support the <see cref="T:Lucene.Net.Spatial.Queries.SpatialOperation"/> in <paramref name="args"/>.</exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.SpatialStrategy.MakeFilter(Lucene.Net.Spatial.Queries.SpatialArgs)">
+            <summary>
+            Make a Filter based principally on <see cref="T:Lucene.Net.Spatial.Queries.SpatialOperation"/>
+            and <see cref="T:Spatial4n.Core.Shapes.IShape"/> from the supplied <paramref name="args"/>.
+            <para />
+            If a subclasses implements
+            <see cref="M:Lucene.Net.Spatial.SpatialStrategy.MakeQuery(Lucene.Net.Spatial.Queries.SpatialArgs)"/>
+            then this method could be simply:
+            <code>return new QueryWrapperFilter(MakeQuery(args).Query);</code>
+            </summary>
+            <exception cref="T:System.NotSupportedException">If the strategy does not support the shape in <paramref name="args"/>.</exception>
+            <exception cref="T:Lucene.Net.Spatial.Queries.UnsupportedSpatialOperation">If the strategy does not support the <see cref="T:Lucene.Net.Spatial.Queries.SpatialOperation"/> in <paramref name="args"/>.</exception>
+        </member>
+        <member name="M:Lucene.Net.Spatial.SpatialStrategy.MakeRecipDistanceValueSource(Spatial4n.Core.Shapes.IShape)">
+            <summary>
+            Returns a ValueSource with values ranging from 1 to 0, depending inversely
+            on the distance from <see cref="M:Lucene.Net.Spatial.SpatialStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint)"/>.
+            The formula is <c>c / (d + c)</c> where 'd' is the distance and 'c' is
+            one tenth the distance to the farthest edge from the center. Thus the
+            scores will be 1 for indexed points at the center of the query shape and as
+            low as ~0.1 at its furthest edges.
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Util.CachingDoubleValueSource">
+            <summary>
+            Caches the doubleVal of another value source in a HashMap
+            so that it is computed only once.
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Util.CachingDoubleValueSource.CachingDoubleFunctionValue.SingleVal(System.Int32)">
+            <summary>
+            NOTE: This was floatVal() in Lucene
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Util.DistanceToShapeValueSource">
+            <summary>
+            The distance from a provided Point to a Point retrieved from a ValueSource via
+            <see cref="M:Lucene.Net.Queries.Function.FunctionValues.ObjectVal(System.Int32)"/>. The distance
+            is calculated via a <see cref="T:Spatial4n.Core.Distance.IDistanceCalculator"/>.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Util.ShapeFieldCache`1">
+            <summary>
+            Bounded Cache of Shapes associated with docIds.  Note, multiple Shapes can be
+            associated with a given docId
+            <para/>
+            WARNING: This class holds the data in an extremely inefficient manner as all Points are in memory as objects and they
+            are stored in many Lists (one per document).  So it works but doesn't scale.  It will be replaced in the future.
+            <para/>
+            @lucene.internal
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Util.ShapeFieldCacheDistanceValueSource">
+            <summary>
+            An implementation of the Lucene ValueSource that returns the spatial distance
+            between an input point and a document's points in
+            <see cref="T:Lucene.Net.Spatial.Util.ShapeFieldCacheProvider`1"/>. The shortest distance is returned if a
+            document has more than one point.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Util.ShapeFieldCacheDistanceValueSource.CachedDistanceFunctionValue.SingleVal(System.Int32)">
+            <summary>
+            NOTE: This was floatVal() in Lucene
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Util.ShapeFieldCacheProvider`1">
+            <summary>
+            Provides access to a
+            <see cref="T:Lucene.Net.Spatial.Util.ShapeFieldCache`1">ShapeFieldCache&lt;T&gt;</see>
+            for a given
+            <see cref="T:Lucene.Net.Index.AtomicReader">Lucene.Net.Index.AtomicReader</see>.
+            
+            If a Cache does not exist for the TextReader, then it is built by iterating over
+            the all terms for a given field, reconstructing the Shape from them, and adding
+            them to the Cache.
+            </summary>
+            @lucene.internal
+        </member>
+        <member name="T:Lucene.Net.Spatial.Util.ShapePredicateValueSource">
+            <summary>
+            A boolean <see cref="T:Lucene.Net.Queries.Function.ValueSource"/> that compares a shape from a provided <see cref="T:Lucene.Net.Queries.Function.ValueSource"/> with a given <see cref="T:Spatial4n.Core.Shapes.IShape">Shape</see> and sees
+            if it matches a given <see cref="T:Lucene.Net.Spatial.Queries.SpatialOperation"/> (the predicate).
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Util.ShapePredicateValueSource.#ctor(Lucene.Net.Queries.Function.ValueSource,Lucene.Net.Spatial.Queries.SpatialOperation,Spatial4n.Core.Shapes.IShape)">
+            <summary>
+            
+            </summary>
+            <param name="shapeValuesource">
+            Must yield <see cref="T:Spatial4n.Core.Shapes.IShape"/> instances from it's ObjectVal(doc). If null
+            then the result is false. This is the left-hand (indexed) side.
+            </param>
+            <param name="op">the predicate</param>
+            <param name="queryShape">The shape on the right-hand (query) side.</param>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Util.ValueSourceFilter">
+            <summary>
+            <see cref="T:Lucene.Net.Search.Filter"/> that matches all documents where a <see cref="T:Lucene.Net.Queries.Function.ValueSource"/> is
+            in between a range of <c>min</c> and <c>max</c> inclusive.
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Vector.DistanceValueSource">
+            <summary>
+            An implementation of the Lucene <see cref="T:Lucene.Net.Queries.Function.ValueSource"/> model that returns the distance
+            for a <see cref="T:Lucene.Net.Spatial.Vector.PointVectorStrategy"/>.
+            
+            @lucene.internal
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Vector.DistanceValueSource.#ctor(Lucene.Net.Spatial.Vector.PointVectorStrategy,Spatial4n.Core.Shapes.IPoint,System.Double)">
+            <summary>
+            Constructor.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Vector.DistanceValueSource.GetDescription">
+            <summary>
+            Returns the <see cref="T:Lucene.Net.Queries.Function.ValueSource"/> description.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Vector.DistanceValueSource.GetValues(System.Collections.IDictionary,Lucene.Net.Index.AtomicReaderContext)">
+            <summary>
+            Returns the <see cref="T:Lucene.Net.Queries.Function.FunctionValues"/> used by the function query.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Vector.DistanceValueSource.DistanceFunctionValue.SingleVal(System.Int32)">
+            <summary>
+            NOTE: This was floatVal() in Lucene
+            </summary>
+        </member>
+        <member name="T:Lucene.Net.Spatial.Vector.PointVectorStrategy">
+            <summary>
+            Simple <see cref="T:Lucene.Net.Spatial.SpatialStrategy"/> which represents Points in two numeric <see cref="T:Lucene.Net.Documents.DoubleField"/>s.
+            The Strategy's best feature is decent distance sort.
+            
+            <h4>Characteristics:</h4>
+            <list type="bullet">
+                <item><description>Only indexes points; just one per field value.</description></item>
+                <item><description>Can query by a rectangle or circle.</description></item>
+                <item><description><see cref="F:Lucene.Net.Spatial.Queries.SpatialOperation.Intersects"/> and <see cref="F:Lucene.Net.Spatial.Queries.SpatialOperation.IsWithin"/> is supported.</description></item>
+                <item><description>Uses the FieldCache for <see cref="M:Lucene.Net.Spatial.SpatialStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint)"/> and for
+                searching with a Circle.</description></item>
+            </list>
+            
+            <h4>Implementation:</h4>
+            This is a simple Strategy.  Search works with <see cref="T:Lucene.Net.Search.NumericRangeQuery"/>s on
+            an x &amp; y pair of fields.  A Circle query does the same bbox query but adds a
+            ValueSource filter on <see cref="M:Lucene.Net.Spatial.SpatialStrategy.MakeDistanceValueSource(Spatial4n.Core.Shapes.IPoint)"/>.
+            <para/>
+            One performance shortcoming with this strategy is that a scenario involving
+            both a search using a Circle and sort will result in calculations for the
+            spatial distance being done twice -- once for the filter and second for the
+            sort.
+            
+            @lucene.experimental
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Vector.PointVectorStrategy.CreateIndexableFields(Spatial4n.Core.Shapes.IPoint)">
+            <summary>
+            See <see cref="M:Lucene.Net.Spatial.Vector.PointVectorStrategy.CreateIndexableFields(Spatial4n.Core.Shapes.IShape)"/>
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Vector.PointVectorStrategy.MakeWithin(Spatial4n.Core.Shapes.IRectangle)">
+            <summary>
+            Constructs a query to retrieve documents that fully contain the input envelope.
+            </summary>
+        </member>
+        <member name="M:Lucene.Net.Spatial.Vector.PointVectorStrategy.MakeDisjoint(Spatial4n.Core.Shapes.IRectangle)">
+            <summary>
+            Constructs a query to retrieve documents that fully contain the input envelope.
+            </summary>
+        </member>
+    </members>
+</doc>

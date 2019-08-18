@@ -32,7 +32,7 @@ namespace puck.core.Extensions
             var formatter = new SimpleHTMLFormatter(highlightStartTag, highlightEndTag);
             Highlighter highlighter = new Highlighter(formatter, scorer);
             highlighter.TextFragmenter = new SimpleFragmenter(fragmentLength);
-            TokenStream stream = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29).TokenStream("field", new StringReader(text));
+            TokenStream stream = new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48).GetTokenStream("field", new StringReader(text));
             return highlighter.GetBestFragments(stream, text, 100, "...");
         }
     }

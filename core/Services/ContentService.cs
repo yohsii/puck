@@ -725,7 +725,7 @@ namespace puck.core.Services
             repo.SaveChanges();
 
         }
-        public void SaveContent<T>(T mod, bool makeRevision = true, string userName = null) where T : BaseModel
+        public void SaveContent<T>(T mod, bool makeRevision = true, string userName = null,bool handleNodeNameExists=true,int nodeNameExistsCounter=0) where T : BaseModel
         {
             lock (_savelck)
             {
@@ -737,6 +737,51 @@ namespace puck.core.Services
                         throw new UserNotFoundException("there is no user for provided username");
                 }
                 ObjectDumper.Transform(mod, int.MaxValue);
+
+                //get sibling nodes
+                if (mod.ParentId == Guid.Empty)
+                {
+                    mod.Path = "/" + ApiHelper.Slugify(mod.NodeName);
+                }
+                else
+                {
+                    var parentPath = GetLiveOrCurrentPath(mod.ParentId);
+                    mod.Path = $"{parentPath}/{ApiHelper.Slugify(mod.NodeName)}";
+                }
+                var nodeDirectory = mod.Path.Substring(0, mod.Path.LastIndexOf('/') + 1);
+
+                var nodesAtPath = repo.CurrentRevisionsByParentId(mod.ParentId).Where(x => x.Id != mod.Id)
+                    .ToList()
+                    .Select(x =>
+                        x.ToBaseModel()
+                        ).Where(x => x != null).ToList().GroupByID();
+                //check node name is unique at path
+                if (nodesAtPath.Any(x => x.Value.Any(y => y.Value.NodeName.ToLower().Equals(mod.NodeName))))
+                {
+                    if (handleNodeNameExists)
+                    {
+                        if (nodeNameExistsCounter == 0)
+                        {
+                            mod.NodeName = mod.NodeName + " (1)";
+                        }
+                        else
+                        {
+                            var regex = new Regex(@"\(\d+\)$");
+                            var newName = regex.Replace(mod.NodeName, $"({nodeNameExistsCounter + 1})");
+                            mod.NodeName = newName;
+                        }
+                        SaveContent(mod, makeRevision: makeRevision, userName: userName, handleNodeNameExists: handleNodeNameExists, nodeNameExistsCounter: nodeNameExistsCounter + 1);
+                        return;
+                    }
+                    else
+                    {
+                        throw new NodeNameExistsException($"Nodename:{mod.NodeName} exists at this path:{nodeDirectory}, choose another.");
+                    }
+                }
+                //set sort order for new content
+                if (mod.SortOrder == -1)
+                    mod.SortOrder = nodesAtPath.Count;
+
                 var beforeArgs = new BeforeIndexingEventArgs { Node = mod };
                 OnBeforeSave(this, beforeArgs);
                 if (beforeArgs.Cancel)
@@ -759,29 +804,7 @@ namespace puck.core.Services
                 var publishedParentVariants = repo.PublishedRevisions(mod.ParentId).ToList();
                 if (mod.ParentId != Guid.Empty && !publishedParentVariants.Any())//!parentVariants.Any(x => x.Published /*&& x.Variant.ToLower().Equals(mod.Variant.ToLower())*/))
                     mod.Published = false;
-                //get sibling nodes
-                if (mod.ParentId == Guid.Empty)
-                {
-                    mod.Path = "/" + ApiHelper.Slugify(mod.NodeName);
-                }
-                else
-                {
-                    var parentPath = GetLiveOrCurrentPath(mod.ParentId);
-                    mod.Path = $"{parentPath}/{ApiHelper.Slugify(mod.NodeName)}";
-                }
-                var nodeDirectory = mod.Path.Substring(0, mod.Path.LastIndexOf('/') + 1);
-
-                var nodesAtPath = repo.CurrentRevisionsByParentId(mod.ParentId).Where(x => x.Id != mod.Id)
-                    .ToList()
-                    .Select(x =>
-                        x.ToBaseModel()
-                        ).Where(x => x != null).ToList().GroupByID();
-                //set sort order for new content
-                if (mod.SortOrder == -1)
-                    mod.SortOrder = nodesAtPath.Count;
-                //check node name is unique at path
-                if (nodesAtPath.Any(x => x.Value.Any(y => y.Value.NodeName.ToLower().Equals(mod.NodeName))))
-                    throw new NodeNameExistsException($"Nodename:{mod.NodeName} exists at this path:{nodeDirectory}, choose another.");
+                    
                 //check this is an update or create
                 var original = repo.CurrentRevision(mod.Id, mod.Variant);
                 var publishedRevision = repo.PublishedRevision(mod.Id, mod.Variant);

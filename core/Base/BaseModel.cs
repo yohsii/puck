@@ -11,6 +11,7 @@ using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
+using Lucene.Net.Analysis.Core;
 
 namespace puck.core.Base
 {

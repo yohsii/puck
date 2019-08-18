@@ -88,13 +88,15 @@ namespace puck.core.Helpers
                         {
                             var toIndex = new List<BaseModel>();
                             //instruction detail holds comma separated list of ids and variants in format id:variant,id:variant
-                            var idList = instruction.InstructionDetail.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
-                            foreach (var idAndVariant in idList) {
+                            var idList = instruction.InstructionDetail.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var idAndVariant in idList)
+                            {
                                 var idAndVariantArr = idAndVariant.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                                 var id = Guid.Parse(idAndVariantArr[0]);
                                 var variant = idAndVariantArr[1];
-                                var publishedOrCurrentRevision = repo.PublishedOrCurrentRevision(id,variant);
-                                if (publishedOrCurrentRevision != null) {
+                                var publishedOrCurrentRevision = repo.PublishedOrCurrentRevision(id, variant);
+                                if (publishedOrCurrentRevision != null)
+                                {
                                     var model = ApiHelper.RevisionToBaseModel(publishedOrCurrentRevision);
                                     toIndex.Add(model);
                                 }
@@ -105,11 +107,31 @@ namespace puck.core.Helpers
                         {
                             StateHelper.UpdateCrops();
                         }
+                        else if (instruction.InstructionKey == InstructionKeys.UpdateCacheMappings) {
+                            StateHelper.UpdateCacheMappings();
+                        }
+                        else if (instruction.InstructionKey == InstructionKeys.UpdateDomainMappings)
+                        {
+                            StateHelper.UpdateDomainMappings();
+                        }
+                        else if (instruction.InstructionKey == InstructionKeys.UpdatePathLocales)
+                        {
+                            StateHelper.UpdatePathLocaleMappings();
+                        }
+                        else if (instruction.InstructionKey == InstructionKeys.UpdateRedirects)
+                        {
+                            StateHelper.UpdateRedirectMappings();
+                        }
+                        else if (instruction.InstructionKey == InstructionKeys.UpdateTaskMappings)
+                        {
+                            StateHelper.UpdateTaskMappings();
+                        }
 
                     }
                 }
                 //update syncId
-                var maxInstructionId = instructions.Max(x => x.Id);
+                //var maxInstructionId = instructions.Max(x => x.Id);
+                var maxInstructionId = repo.GetPuckInstruction().Max(x => x.Id);
                 meta.Value = maxInstructionId.ToString();
                 repo.SaveChanges();
             }

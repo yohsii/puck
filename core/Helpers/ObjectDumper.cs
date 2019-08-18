@@ -50,13 +50,13 @@ namespace puck.core.Helpers
                 {
                     if (sattr.Analyzer == typeof(SnowballAnalyzer))
                     {
-                        Analyzer = new SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "English");
+                        Analyzer = new SnowballAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48, "English");
                     }
                     else
                     {
                         try
                         {
-                            Analyzer = (Analyzer)Activator.CreateInstance(sattr.Analyzer, Lucene.Net.Util.Version.LUCENE_30);
+                            Analyzer = (Analyzer)Activator.CreateInstance(sattr.Analyzer, Lucene.Net.Util.LuceneVersion.LUCENE_48);
                         }
                         catch (MissingMethodException mmex) {
                             Analyzer = (Analyzer)Activator.CreateInstance(sattr.Analyzer);

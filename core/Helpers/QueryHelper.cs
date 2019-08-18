@@ -20,6 +20,10 @@ using Spatial4n.Core.Distance;
 using Lucene.Net.Spatial;
 using Lucene.Net.Spatial.Vector;
 using puck.core.State;
+using Lucene.Net.QueryParsers.Classic;
+using Spatial4n.Core.Shapes;
+using Lucene.Net.Queries.Function;
+
 namespace puck.core.Helpers
 {
     public static class QueryExtensions {
@@ -137,7 +141,8 @@ namespace puck.core.Helpers
             string path = n.Path.Substring(0, n.Path.LastIndexOf('/'));
             qh
                 .And()
-                .Field(x => x.Path, path.ToLower());
+                //.Field(x => x.Path, path.ToLower());
+                .Path(path.ToLower());
             if (currentLanguage)
                 qh.CurrentLanguage();
             if (noCast)
@@ -153,7 +158,8 @@ namespace puck.core.Helpers
             {
                 nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
                 innerQ
-                    .Field(x=>x.Path,nodePath);
+                    //.Field(x=>x.Path,nodePath);
+                    .Path(nodePath);
             }
             qh.And(innerQ);
             if (ExplicitType)
@@ -169,9 +175,11 @@ namespace puck.core.Helpers
             var qh = new QueryHelper<T>();
             qh
                     .And()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti())
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti())
+                    .Path(ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
+                    .Path(ApiHelper.DirOfPath(n.Path.ToLower()).WildCardMulti() + "/*")
                     .Not()
                     .Field(x => x.Id, n.Id.ToString().Wrap());
             if (ExplicitType)
@@ -201,9 +209,11 @@ namespace puck.core.Helpers
             var qh = new QueryHelper<T>();
             qh      
                     .And()
-                    .Field(x => x.Path, n.Path.ToLower() + "/".WildCardMulti())
+                    //.Field(x => x.Path, n.Path.ToLower() + "/".WildCardMulti())
+                    .Path(n.Path.ToLower() + "/".WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti() + "/*");
+                    //.Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti() + "/*");
+                    .Path(n.Path.ToLower() + "/".WildCardMulti() + "/*");
             if (ExplicitType)
                 qh.ExplicitType();
             if (currentLanguage)
@@ -216,7 +226,8 @@ namespace puck.core.Helpers
         public static List<T> Descendants<T>(this BaseModel n,bool currentLanguage=true,bool noCast = false,bool ExplicitType=false) where T : BaseModel {
             var qh = new QueryHelper<T>();
             qh.And()
-                .Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti());
+                //.Field(x => x.Path, n.Path.ToLower()+"/".WildCardMulti());
+                .Path(n.Path.ToLower() + "/".WildCardMulti());
             if (ExplicitType)
                 qh.ExplicitType();
             if (currentLanguage)
@@ -270,8 +281,8 @@ namespace puck.core.Helpers
         public static SpatialContext ctx = SpatialContext.GEO;
         public Lucene.Net.Search.Filter filter;
         //query builders append to this string
-        string query="";
-        int totalHits=0;
+        string query = "";
+        int totalHits = 0;
         Sort sort = null;
         List<SortField> sorts = null;
         public int TotalHits { get { return totalHits; } }
@@ -281,23 +292,23 @@ namespace puck.core.Helpers
         static string queryPattern = @"^\(*""(.*)""\s";
         static string fieldPattern = @"@";
         static string dateFormat = "yyyyMMddHHmmss";
-        
+
         //regexes compiled on startup and reused since they will be used frequently
-        static Regex nameRegex = new Regex(namePattern,RegexOptions.Compiled);
+        static Regex nameRegex = new Regex(namePattern, RegexOptions.Compiled);
         static Regex nameArrayRegex = new Regex(nameArrayPattern, RegexOptions.Compiled);
         static Regex paramRegex = new Regex(paramPattern, RegexOptions.Compiled);
         static Regex queryRegex = new Regex(queryPattern, RegexOptions.Compiled);
-        static Regex fieldRegex = new Regex(fieldPattern,RegexOptions.Compiled);
+        static Regex fieldRegex = new Regex(fieldPattern, RegexOptions.Compiled);
 
         //static helpers
-        public static IList<Dictionary<string,string>> Query(string q){
+        public static IList<Dictionary<string, string>> Query(string q) {
             return searcher.Query(q);
         }
         public static IList<Dictionary<string, string>> Query(Query q)
         {
             return searcher.Query(q);
         }
-        public static string Escape (string q){
+        public static string Escape(string q) {
             return QueryParser.Escape(q);
         }
         private static string getName(string str) {
@@ -311,7 +322,7 @@ namespace puck.core.Helpers
 
         public static string GetName<TModel>(Expression<Func<TModel, object>> exp)
         {
-            return getName(exp.Body.ToString());            
+            return getName(exp.Body.ToString());
         }
 
         public static string Format<TModel>(Expression<Func<TModel, object>> exp)
@@ -323,7 +334,7 @@ namespace puck.core.Helpers
         {
             values = values.Select(x => x).ToArray();
             string bodystr = exp.Body.ToString();
-            var pmatches =paramRegex.Matches(bodystr);
+            var pmatches = paramRegex.Matches(bodystr);
             var qmatch = queryRegex.Matches(bodystr);
             var query = qmatch[0].Groups[1].Value;
 
@@ -340,7 +351,7 @@ namespace puck.core.Helpers
             return query;
         }
 
-        public static List<T> GetAll<T>() where T:BaseModel{
+        public static List<T> GetAll<T>() where T : BaseModel {
             return searcher.Get<T>().ToList();
         }
 
@@ -375,18 +386,18 @@ namespace puck.core.Helpers
         }
 
         //constructor
-        public QueryHelper(bool prependTypeTerm=true)
+        public QueryHelper(bool prependTypeTerm = true)
         {
-            if(prependTypeTerm)
-                this.And().Field(x=>x.TypeChain,typeof(TModel).FullName.Wrap()).And().Field(x=>x.Published,"true");                
+            if (prependTypeTerm)
+                this.And().Field(x => x.TypeChain, typeof(TModel).FullName.Wrap()).And().Field(x => x.Published, "true");
         }
 
         public QueryHelper<TModel> New() {
-            return new QueryHelper<TModel>(prependTypeTerm:false);
+            return new QueryHelper<TModel>(prependTypeTerm: false);
         }
 
         //query builders
-        public QueryHelper<TModel> Sort(Expression<Func<TModel, object>> exp, bool descending=false,int sortField=-1)
+        public QueryHelper<TModel> SortByDistanceFromPoint(Expression<Func<TModel, object>> exp, double longitude,double latitude,bool desc=false)
         {
             if (sort == null)
             {
@@ -394,27 +405,41 @@ namespace puck.core.Helpers
                 sorts = new List<SortField>();
             }
             string key = getName(exp.Body.ToString());
-            if (sortField==-1){
-                sortField = SortField.STRING;
+            var strat = new PointVectorStrategy(ctx, key);
+            IPoint pt = ctx.MakePoint(longitude, longitude);
+            ValueSource valueSource = strat.MakeDistanceValueSource(pt, DistanceUtils.DEG_TO_KM);//the distance (in km)
+            sort = new Sort(valueSource.GetSortField(desc));//.Rewrite(indexSearcher);//false=asc dist
+            return this;
+        }
+        public QueryHelper<TModel> Sort(Expression<Func<TModel, object>> exp, bool descending=false,SortFieldType? sortFieldType=null)
+        {
+            if (sort == null)
+            {
+                sort = new Sort();
+                sorts = new List<SortField>();
+            }
+            string key = getName(exp.Body.ToString());
+            if (sortFieldType==null){
+                sortFieldType = SortFieldType.STRING;
                 string fieldTypeName = PuckCache.TypeFields[typeof(TModel).AssemblyQualifiedName][key];
                 if (fieldTypeName.Equals(typeof(int).AssemblyQualifiedName))
                 {
-                    sortField = SortField.INT;
+                    sortFieldType = SortFieldType.INT32;
                 }
                 else if (fieldTypeName.Equals(typeof(long).AssemblyQualifiedName))
                 {
-                    sortField = SortField.LONG;
+                    sortFieldType = SortFieldType.INT64;
                 }
                 else if (fieldTypeName.Equals(typeof(float).AssemblyQualifiedName))
                 {
-                    sortField = SortField.FLOAT;
+                    sortFieldType = SortFieldType.SINGLE;
                 }
                 else if (fieldTypeName.Equals(typeof(double).AssemblyQualifiedName))
                 {
-                    sortField = SortField.DOUBLE;
+                    sortFieldType = SortFieldType.DOUBLE;
                 }
             }
-            sorts.Add(new SortField(key,sortField,descending));
+            sorts.Add(new SortField(key,sortFieldType.Value,descending));
             sort.SetSort(sorts.ToArray());
             return this;
         }
@@ -556,7 +581,6 @@ namespace puck.core.Helpers
             query += string.Concat(key, ":", value," ");
             return this;
         }
-
         public QueryHelper<TModel> Field(Expression<Func<TModel, object>> exp, bool value)
         {
             string key = getName(exp.Body.ToString());
@@ -590,6 +614,11 @@ namespace puck.core.Helpers
         {
             return this.Field(exp, lvalue.ToString());
         }
+        public QueryHelper<TModel> Path(string value)
+        {
+            this.Field(x => x.Path, value.Replace("/", @"\/"));
+            return this;
+        }
 
         //filters
         private void TrimAnd() {
@@ -604,7 +633,8 @@ namespace puck.core.Helpers
             {
                 nodePath = nodePath.Substring(0, nodePath.LastIndexOf('/'));
                 this.And()
-                    .Field(x => x.Path, nodePath);
+                    //.Field(x => x.Path, nodePath);
+                    .Path(nodePath);
             }
             return this;
         }
@@ -617,9 +647,11 @@ namespace puck.core.Helpers
             TrimAnd();
             this
                     .And()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
+                    .Path(ApiHelper.DirOfPath(path.ToLower()).WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti() + "/*")
+                    //.Field(x => x.Path, ApiHelper.DirOfPath(path.ToLower()).WildCardMulti() + "/*")
+                    .Path(ApiHelper.DirOfPath(path.ToLower()).WildCardMulti() + "/*")
                     .Not()
                     .Field(x => x.Id, id.Wrap());
             return this;
@@ -629,16 +661,19 @@ namespace puck.core.Helpers
             TrimAnd();
             this
                     .And()
-                    .Field(x => x.Path, path.ToLower() + "/".WildCardMulti())
+                    //.Field(x => x.Path, path.ToLower() + "/".WildCardMulti())
+                    .Path(path.ToLower() + "/".WildCardMulti())
                     .Not()
-                    .Field(x => x.Path, path.ToLower() + "/".WildCardMulti() + "/*");
+                    //.Field(x => x.Path, path.ToLower() + "/".WildCardMulti() + "/*");
+                    .Path(path.ToLower() + "/".WildCardMulti() + "/*");
             return this;
         }
         public QueryHelper<TModel> Descendants(string path)
         {
             TrimAnd();
             this.And()
-                .Field(x => x.Path, path.ToLower() + "/".WildCardMulti());
+                //.Field(x => x.Path, path.ToLower() + "/".WildCardMulti());
+                .Path(path.ToLower() + "/".WildCardMulti());
             return this;
         }
 
@@ -646,7 +681,8 @@ namespace puck.core.Helpers
         {
             TrimAnd();
             this.And()
-                .Field(x => x.Path, m.Path.ToLower() + "/".WildCardMulti());
+                //.Field(x => x.Path, m.Path.ToLower() + "/".WildCardMulti());
+                .Path(m.Path.ToLower() + "/".WildCardMulti());
             return this;
         }
 
@@ -664,7 +700,8 @@ namespace puck.core.Helpers
             else currentRoot = currentPath;
             currentRoot = "/" + currentRoot + "/";
             this.And()
-                .Field(x => x.Path, currentRoot.ToLower().WildCardMulti());
+                //.Field(x => x.Path, currentRoot.ToLower().WildCardMulti());
+                .Path(currentRoot.ToLower().WildCardMulti());
             return this;
         }
 
