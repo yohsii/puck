@@ -192,6 +192,9 @@ var getTemplates = function (path, f) {
 var getPath = function (id, f) {
     $.get("/admin/api/getpath?id=" + id, f);
 };
+var getIdPath = function (id, f) {
+    $.get("/admin/api/getidpath?id=" + id, f);
+};
 var getStartPath = function (f) {
     $.get("/admin/api/startpath", f);
 };

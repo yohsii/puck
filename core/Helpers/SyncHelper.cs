@@ -11,11 +11,20 @@ using System.Threading.Tasks;
 using System.Web.Hosting;
 using puck.core.State;
 using puck.core.Services;
+using puck.core.Events;
 
 namespace puck.core.Helpers
 {
     public static class SyncHelper
     {
+        public static event EventHandler<AfterSyncEventArgs> AfterSync;
+
+        public static void OnAfterSync(object s, AfterSyncEventArgs args)
+        {
+            if (AfterSync != null)
+                AfterSync(s, args);
+        }
+
         private static object lck = new object();
         private static int lock_wait = 1;
         public static I_Puck_Repository Repo {get{return PuckCache.PuckRepo;}}
@@ -134,6 +143,7 @@ namespace puck.core.Helpers
                 var maxInstructionId = repo.GetPuckInstruction().Max(x => x.Id);
                 meta.Value = maxInstructionId.ToString();
                 repo.SaveChanges();
+                OnAfterSync(null, new AfterSyncEventArgs {Instructions=instructions });
             }
             catch (Exception ex) {
                 PuckCache.PuckLog.Log(ex);

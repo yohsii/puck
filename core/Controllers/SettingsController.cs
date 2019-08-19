@@ -206,7 +206,7 @@ namespace puck.core.Controllers
                 }
                 
                 repo.SaveChanges();
-                StateHelper.UpdateRedirectMappings();
+                StateHelper.UpdateRedirectMappings(true);
                 success = true;
             }
             catch (Exception ex)
@@ -418,7 +418,7 @@ namespace puck.core.Controllers
                 repo.GetPuckMeta().Where(x => x.Name == DBNames.CachePolicy && !cacheTypes.Contains(x.Key)).ToList().ForEach(x => repo.DeleteMeta(x));
 
                 repo.SaveChanges();
-                
+                StateHelper.UpdateCacheMappings(true);
                 success = true;
             }
             catch (Exception ex)

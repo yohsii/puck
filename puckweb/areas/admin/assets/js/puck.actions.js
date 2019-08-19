@@ -688,29 +688,44 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
         } else {
             if (contentId != null && contentId != undefined)
                 getVariantsForId(contentId, function (d) {
-                    for (var i = 0; i < d.length; i++) {
-                        (function () {
-                            var dtli = $("<li/>");
-                            if (!d[i].Published)
-                                dtli.addClass("unpublished");
-                            if (d[i].Variant != variant) {
-                                var lnk = $("<a href='#'/>").html("-" + variantNames[d[i].Variant]);
-                                (function () {
-                                    var v = d[i].Variant;
-                                    lnk.click(function (e) {
-                                        e.preventDefault();
-                                        displayMarkup(null, type, v,undefined,contentId);
-                                    });
-                                }());
-                                dtli.append(lnk)
-                            } else {
-                                dtli.append("-" + variantNames[d[i].Variant]);
-                            }
-                            translations.append(dtli);
-                        })();
+                    if (d.length > 1) {
+                        for (var i = 0; i < d.length; i++) {
+                            (function () {
+                                var dtli = $("<li/>");
+                                if (!d[i].Published)
+                                    dtli.addClass("unpublished");
+                                if (d[i].Variant != variant) {
+                                    var lnk = $("<a href='#'/>").html("-" + variantNames[d[i].Variant]);
+                                    (function () {
+                                        var v = d[i].Variant;
+                                        lnk.click(function (e) {
+                                            e.preventDefault();
+                                            displayMarkup(null, type, v, undefined, contentId);
+                                        });
+                                    }());
+                                    dtli.append(lnk)
+                                } else {
+                                    dtli.append("-" + variantNames[d[i].Variant]);
+                                }
+                                translations.append(dtli);
+                            })();
+                        }
+                        cright.prepend(translations);
                     }
-                    cright.prepend(translations);
                 });
+        }
+        var afterGrouping = function () {
+            afterDom();
+            cright.show();
+            cright.find(".fieldtabs:first").click();
+            setChangeTracker();
+            if (cleft.find(".node[data-id='" + contentId + "']").length > 0)
+                highlightSelectedNodeById(contentId);
+            else {
+                getIdPath(contentId, function (d) {
+                    highlightSelectedNodeByIdPath(d);
+                });
+            }
         }
         //get field groups and build tabs
         var groupedFields = cright.find("[data-groupname]");
@@ -752,11 +767,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                 var fieldname = el.attr("data-fieldname");
                 el.appendTo(cright.find("[data-group='default']"));
             });
-            afterDom();
-            cright.show();
-            cright.find(".fieldtabs:first").click();
-            setChangeTracker();
-            highlightSelectedNodeById(contentId);
+            afterGrouping();
         } else {
             getFieldGroups(type, function (data) {
                 var groups = [];
@@ -807,11 +818,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                         el.addClass("single_field");
                     }
                 });
-                afterDom();
-                cright.show();
-                cright.find(".fieldtabs:first").click();
-                setChangeTracker();
-                highlightSelectedNodeById(contentId);
+                afterGrouping();
             });
         }
         //publish btn
@@ -853,6 +860,22 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
         cinterfaces.find("div[data-type='"+type+"']").html(data);
     });
 }
+var highlightSelectedNodeByIdPath = function (idPath) {
+    var ids = idPath.split(",");
+    ids.splice(0, 0, '00000000-0000-0000-0000-000000000000');
+    var lastId = ids.pop();
+    var doGet = function () {
+        var id = ids.splice(0, 1)[0];
+        var node = cleft.find(".node[data-id='" + id + "']");
+        getDrawContent(id, node, true, function () {
+            if (ids.length > 0)
+                doGet();
+            else
+                highlightSelectedNodeById(lastId);
+        });    
+    }
+    doGet();
+};
 var setChangeTracker = function () {
     changed = false;
     cright.find(":input").change(function (e) {
@@ -886,12 +909,14 @@ var overlay = function (el, width, height, top, title) {
         if (cleft.is(":visible")) {
             cleftIsVisible = true;
             console.log("overlay width set from cleft");
-            width = cleft.width();
+            if(width!="100%")
+                width = cleft.width();
             cleft.hide();
         }
     }
-    if (width > $(window).width())
-        width = $(window).width();
+    if(width!="100%")
+        if (width > $(window).width())
+            width = $(window).width();
     var f = undefined;
     searchDialogClose();
     var outer = $(".interfaces .overlay_screen").clone().addClass("");
@@ -909,7 +934,7 @@ var overlay = function (el, width, height, top, title) {
 
     inner.append(el).append(clear);
     cright.append(outer);
-    outer.animate({ width: width + "px" }, 200, function () { if (f) f(); afterDom(); });
+    outer.animate({ width: width + (width.indexOf("%")>-1?"":"px") }, 200, function () { if (f) f(); afterDom(); });
 
     $(document).keyup(function (e) {
         if (e.keyCode == 27) { overlayClose(cleftIsVisible); }

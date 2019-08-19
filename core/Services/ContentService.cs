@@ -587,8 +587,8 @@ namespace puck.core.Services
                 cmeta.ForEach(x => { repo.DeleteMeta(x); });
                 nmeta.ForEach(x => { repo.DeleteMeta(x); });
             }
-            StateHelper.UpdateDomainMappings();
-            StateHelper.UpdatePathLocaleMappings();
+            StateHelper.UpdateDomainMappings(true);
+            StateHelper.UpdatePathLocaleMappings(true);
             AddAuditEntry(id, variant ?? "", AuditActions.Delete, notes, userName);
             repo.SaveChanges();
         }
@@ -1037,8 +1037,8 @@ namespace puck.core.Services
                     }
                 }
                 repo.SaveChanges();
-                StateHelper.UpdateDomainMappings();
-                StateHelper.UpdatePathLocaleMappings();
+                StateHelper.UpdateDomainMappings(true);
+                StateHelper.UpdatePathLocaleMappings(true);
 
                 //index related operations
                 var qh = new QueryHelper<BaseModel>();
@@ -1112,8 +1112,8 @@ namespace puck.core.Services
                         repo.GetPuckMeta().Where(x => x.Name == DBNames.DomainMapping && x.Key.ToLower().Equals(originalPath.ToLower())).ToList()
                             .ForEach(x => x.Key = mod.Path);
                         repo.SaveChanges();
-                        StateHelper.UpdateDomainMappings();
-                        StateHelper.UpdatePathLocaleMappings();
+                        StateHelper.UpdateDomainMappings(true);
+                        StateHelper.UpdatePathLocaleMappings(true);
                     }
                     indexer.Index(toIndex);
                 }
@@ -1185,7 +1185,7 @@ namespace puck.core.Services
                     using (var con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["PuckContext"].ConnectionString))
                     {
                         PuckCache.IndexingStatus = $"retrieving records to republish";
-                        var sql = "SELECT Path,Type,Value FROM PuckRevisions where ([IsPublishedRevision] = 1 OR ([HasNoPublishedRevision]=1 AND [Current] = 1))";
+                        var sql = "SELECT Path,Type,Value,TypeChain,SortOrder,ParentId FROM PuckRevisions where ([IsPublishedRevision] = 1 OR ([HasNoPublishedRevision]=1 AND [Current] = 1))";
                         var com = new SqlCommand(sql, con);
                         //com.Parameters.AddWithValue("@pricePoint", paramValue);
                         con.Open();
@@ -1196,28 +1196,36 @@ namespace puck.core.Services
                             {
                                 var aqn = reader.GetString(1);
                                 var value = reader.GetString(2);
-                                //var model = JsonConvert.DeserializeObject(reader.GetString(2), ApiHelper.GetType(aqn)) as BaseModel;
-                                typeAndValues.Add(new KeyValuePair<string, string>(aqn, value));
+                                var type = ApiHelper.GetType(aqn);
+                                if (type == null) continue;
+                                var model = JsonConvert.DeserializeObject(reader.GetString(2), type) as BaseModel;
+                                model.Type = aqn;
+                                model.Path = reader.GetString(0);
+                                model.TypeChain = reader.GetString(3);
+                                model.SortOrder = reader.GetInt32(4);
+                                model.ParentId = reader.GetGuid(5);
+                                models.Add(model);
+                                //typeAndValues.Add(new KeyValuePair<string, string>(aqn, value));
                                 //values.Add(reader.GetString(2));
                             }
                         }
                         reader.Close();
                     }
-                    using (MiniProfiler.Current.Step("deserialize"))
-                    {
-                        PuckCache.IndexingStatus = $"deserializing records";
-                        foreach (var item in typeAndValues)
-                        {
-                            try
-                            {
-                                var model = JsonConvert.DeserializeObject(item.Value, ApiHelper.GetType(item.Key)) as BaseModel;
-                                models.Add(model);
-                                //values.Add(reader.GetString(2));
-                            }
-                            catch (Exception ex) { }
+                    //using (MiniProfiler.Current.Step("deserialize"))
+                    //{
+                    //    PuckCache.IndexingStatus = $"deserializing records";
+                    //    foreach (var item in typeAndValues)
+                    //    {
+                    //        try
+                    //        {
+                    //            //var model = JsonConvert.DeserializeObject(item.Value, ApiHelper.GetType(item.Key)) as BaseModel;
+                    //            //models.Add(model);
+                    //            //values.Add(reader.GetString(2));
+                    //        }
+                    //        catch (Exception ex) { }
 
-                        }
-                    }
+                    //    }
+                    //}
                     var qh = new QueryHelper<BaseModel>(prependTypeTerm: false);
                     qh.And().Field(x => x.TypeChain, typeof(BaseModel).FullName.Wrap());
                     var query = qh.ToString();

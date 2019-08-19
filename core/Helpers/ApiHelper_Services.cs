@@ -110,7 +110,7 @@ namespace puck.core.Helpers
                 });
                 repo.SaveChanges();
             }
-            StateHelper.UpdateDomainMappings();                
+            StateHelper.UpdateDomainMappings(true);                
         }
         public void SetLocalisation(string path,string variant) {
             if (string.IsNullOrEmpty(path))
@@ -137,7 +137,7 @@ namespace puck.core.Helpers
                 repo.AddMeta(newMeta);
                 repo.SaveChanges();
             }
-            StateHelper.UpdatePathLocaleMappings();                
+            StateHelper.UpdatePathLocaleMappings(true);                
         }
         
         public List<BaseTask> Tasks()

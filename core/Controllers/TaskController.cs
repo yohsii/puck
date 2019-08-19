@@ -755,7 +755,7 @@ namespace puck.core.Controllers
                     repo.AddMeta(taskMeta);
                 }
                 repo.SaveChanges();
-                StateHelper.UpdateTaskMappings();
+                StateHelper.UpdateTaskMappings(true);
                 success = true;
             }
             catch (Exception ex)
@@ -778,7 +778,7 @@ namespace puck.core.Controllers
             {
                 repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == id).ToList().ForEach(x=>repo.DeleteMeta(x));
                 repo.SaveChanges();
-                StateHelper.UpdateTaskMappings();
+                StateHelper.UpdateTaskMappings(true);
                 success = true;
             }
             catch (Exception ex)

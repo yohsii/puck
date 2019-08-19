@@ -496,6 +496,13 @@ namespace puck.core.Controllers
             return Json(new { success = success, message = message });
         }
         [Auth(Roles = PuckRoles.Puck)]
+        public JsonResult GetIdPath(Guid id)
+        {
+            var node = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
+            string idPath = node == null ? string.Empty : node.IdPath;
+            return Json(idPath, JsonRequestBehavior.AllowGet);
+        }
+        [Auth(Roles = PuckRoles.Puck)]
         public JsonResult GetPath(Guid id)
         {
             var node = repo.GetPuckRevision().Where(x => x.Id == id&&x.Current).FirstOrDefault();
@@ -1042,6 +1049,7 @@ namespace puck.core.Controllers
                     rnode.Path = current.FirstOrDefault().Path;
                     rnode.IdPath = current.FirstOrDefault().IdPath;
                     rnode.SortOrder = current.FirstOrDefault().SortOrder;
+                    rnode.ParentId = current.FirstOrDefault().ParentId;
                 }
                 if (current.Any(x => x.Published))
                 {
