@@ -2,26 +2,44 @@
 @{
     Layout = null;    
 }
-<div class="puck_google_long_lat puck_google_long_lat_@ViewData.ModelMetadata.PropertyName">
-
+<div class="puck_google_long_lat puck_google_long_lat_@ViewData.ModelMetadata.PropertyName puck_google_long_lat_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
+    <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
     <style>
-        .puck_google_long_lat{
-            position:relative;
+        .puck_google_long_lat {
+            position: relative;
         }
-        .puck_google_long_lat .panel {
-            position: absolute;
-            top: 5px;
-            left: 50%;
-            margin-left: -180px;
-            z-index: 5;
-            background-color: #fff;
-            padding: 5px;
-            border: 1px solid #999;
-        }
+
+            .puck_google_long_lat .panel {
+                position: absolute;
+                top: 5px;
+                left: 50%;
+                margin-left: -180px;
+                z-index: 5;
+                background-color: #fff;
+                padding: 5px;
+                border: 1px solid #999;
+            }
     </style>
     <script>
-        onAfterDom(function(){
-            var container = $(".puck_google_long_lat_@ViewData.ModelMetadata.PropertyName");
+    onAfterDom(function () {
+        var modelType = "@Html.Raw(ViewBag.Level0Type.AssemblyQualifiedName)";
+        var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
+        var isPrePopulated = '@ViewBag.IsPrePopulated' == 'True';
+        var escapePropname = function (str) {
+            return str.replace(/\[/g, "_").replace(/\]/g,"_").replace(/\./g,"_");
+        }
+        //var container = $(".puck_google_long_lat_@ViewData.ModelMetadata.PropertyName");
+        
+        var container = null;
+        if (!isPrePopulated)
+            container = cright.find(".puck_google_long_lat_" + escapePropname(propname));
+        else
+            container = cinterfaces.find("div[data-type='" + modelType + "'] .puck_google_long_lat_" + escapePropname(propname))
+
+        var getPropName = function () {
+            return container.find("div:hidden.propName:first").attr("data-propName");
+        }
+        
         var geocoder;
         var map;
         var lat = @(Model==null?51.5072:Model.Latitude??51.5072);
@@ -47,9 +65,8 @@
                         map: map,
                         position: results[0].geometry.location
                     });
-                    
-                    container.find(".lat input").val(results[0].geometry.location.lat());
-                    container.find(".long input").val(results[0].geometry.location.lng());
+                    container.find(".lat input").attr("name", getPropName() + ".Latitude").val(results[0].geometry.location.lat());
+                    container.find(".long input").attr("name", getPropName()+".Longitude").val(results[0].geometry.location.lng());
                 } else {
                     msg(false,'Geocode was not successful for the following reason: ' + status);
                 }
@@ -73,13 +90,13 @@
     </div>
     <div class="map-canvas"></div>
     <div class="fieldwrapper lat">
-        @Html.LabelFor(x=>x.Latitude)
-        @Html.EditorFor(x=>x.Latitude)
+        @Html.LabelFor(x => x.Latitude)
+        @Html.EditorFor(x => x.Latitude)
     </div>
     <div class="fieldwrapper long">
-        @Html.LabelFor(x=>x.Longitude)
-        @Html.EditorFor(x=>x.Longitude)
+        @Html.LabelFor(x => x.Longitude)
+        @Html.EditorFor(x => x.Longitude)
     </div>
-    @Html.HiddenFor(x=>x.LatLong)
+    @Html.HiddenFor(x => x.LatLong)
 </div>
 

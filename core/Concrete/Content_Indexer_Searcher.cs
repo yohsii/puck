@@ -28,6 +28,10 @@ using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Util;
 using Lucene.Net.Analysis.Core;
 using Lucene.Net.Analysis.Standard;
+using Spatial4n.Core.Shapes;
+using System.Globalization;
+using Lucene.Net.Spatial.Prefix.Tree;
+using Lucene.Net.Spatial.Prefix;
 
 namespace puck.core.Concrete
 {
@@ -200,12 +204,20 @@ namespace puck.core.Concrete
                         if (p.Value == null || string.IsNullOrEmpty(p.Value.ToString()))
                             continue;
                         var name = p.Key.IndexOf('.')>-1?p.Key.Substring(0,p.Key.LastIndexOf('.')):p.Key;
-                        var strat = new PointVectorStrategy(ctx,name);
+                        int maxLevels = 11;
+                        SpatialPrefixTree grid = new GeohashPrefixTree(ctx, maxLevels);
+                        var strat = new RecursivePrefixTreeStrategy(grid, name);
+
+                        //var strat = new PointVectorStrategy(ctx,name);
                         var yx = p.Value.ToString().Split(new char[] { ','},StringSplitOptions.RemoveEmptyEntries).Select(x=>double.Parse(x)).ToList();
                         var point = ctx.MakePoint(yx[1],yx[0]);
                         //var point = ctx.ReadShape(p.Value.ToString());
                         var fields = strat.CreateIndexableFields(point);
-                        fields.ToList().ForEach(x=>doc.Add(x));
+                        fields.ToList().ForEach(x => doc.Add(x));
+                        
+                        IPoint pt = (IPoint)point;
+                        //doc.Add(new StoredField(strat.FieldName, pt.X.ToString(CultureInfo.InvariantCulture) + " " + pt.Y.ToString(CultureInfo.InvariantCulture)));
+                        
                     }
                     else
                     {

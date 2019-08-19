@@ -130,6 +130,8 @@
             
         }
         var viewportWidth = 500;
+        if ($(window).width() < viewportWidth)
+            viewportWidth = $(window).width()-30;
         var originalWidth = @(Model?.Width??0);
         var originalHeight = @(Model?.Height??0);
         var imageUrl = '@(Model?.Path??"")';

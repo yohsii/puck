@@ -16,7 +16,8 @@
         }
     }
 }
-<div class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName">
+<div class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName puckpicker_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
+    <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
     <ul class="content nomenu">
         <li class="node" data-children_path="/"></li>
     </ul>        
@@ -54,8 +55,23 @@
 </div>
 <script type="text/javascript">
     onAfterDom(function () {
-        var propname = "@ViewData.ModelMetadata.PropertyName";
-        var container = $(".puckpicker_" + propname);
+        var modelType = "@Html.Raw(ViewBag.Level0Type.AssemblyQualifiedName)";
+        var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
+        var isPrePopulated = '@ViewBag.IsPrePopulated' == 'True';
+        var escapePropname = function (str) {
+            return str.replace(/\[/g, "_").replace(/\]/g,"_").replace(/\./g,"_");
+        }
+        //var container = $(".puckpicker_" + propname);
+        var container = null;
+        if (!isPrePopulated)
+            container = cright.find(".puckpicker_" + escapePropname(propname));
+        else
+            container = cinterfaces.find("div[data-type='" + modelType + "'] .puckpicker_" + escapePropname(propname))
+
+        var getPropName = function () {
+            return container.find("div:hidden.propName:first").attr("data-propName");
+        }
+
         var selected_container = container.find(".selected_content");
         var selected_content = function () { return selected_container.find(".selected_node"); }
         var _startPath = "@startPath" == ""?startPath:"@startPath";
@@ -70,8 +86,8 @@
             selected_content().each(function (i) {
                 var node = $(this);
                 container.append(
-                    "<input type='hidden' name='" + propname + "[" + i + "].Id' value='" + node.attr("data-id") + "'/>"
-                    + "<input type='hidden' name='" + propname + "[" + i + "].Variant' value='" + node.attr("data-variant") + "'/>"
+                    "<input type='hidden' name='" + getPropName() + "[" + i + "].Id' value='" + node.attr("data-id") + "'/>"
+                    + "<input type='hidden' name='" + getPropName() + "[" + i + "].Variant' value='" + node.attr("data-variant") + "'/>"
                 );
             });
         }

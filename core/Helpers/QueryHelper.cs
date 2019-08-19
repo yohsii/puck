@@ -23,6 +23,8 @@ using puck.core.State;
 using Lucene.Net.QueryParsers.Classic;
 using Spatial4n.Core.Shapes;
 using Lucene.Net.Queries.Function;
+using Lucene.Net.Spatial.Prefix.Tree;
+using Lucene.Net.Spatial.Prefix;
 
 namespace puck.core.Helpers
 {
@@ -546,7 +548,11 @@ namespace puck.core.Helpers
             string name = getName(exp.Body.ToString());
             name = name.IndexOf('.') > -1 ? name.Substring(0, name.LastIndexOf('.')) : name;
             SpatialOperation op = SpatialOperation.Intersects;
-            SpatialStrategy strat = new PointVectorStrategy(ctx, name);
+            //SpatialStrategy strat = new PointVectorStrategy(ctx, name);
+            int maxLevels = 11;
+            SpatialPrefixTree grid = new GeohashPrefixTree(ctx, maxLevels);
+            var strat = new RecursivePrefixTreeStrategy(grid, name);
+
             var point = ctx.MakePoint(longitude, latitude);
             var shape = ctx.MakeCircle(point, distDEG);
             var args = new SpatialArgs(op, shape);
