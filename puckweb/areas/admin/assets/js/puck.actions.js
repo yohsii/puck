@@ -934,7 +934,7 @@ var overlay = function (el, width, height, top, title) {
 
     inner.append(el).append(clear);
     cright.append(outer);
-    outer.animate({ width: width + (width.indexOf("%")>-1?"":"px") }, 200, function () { if (f) f(); afterDom(); });
+    outer.animate({ width: width + (width.toString().indexOf("%")>-1?"":"px") }, 200, function () { if (f) f(); afterDom(); });
 
     $(document).keyup(function (e) {
         if (e.keyCode == 27) { overlayClose(cleftIsVisible); }
