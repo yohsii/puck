@@ -9,15 +9,16 @@ using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using puck.Models;
+using System.Configuration;
 
 namespace puck.Transformers
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
     public class PuckAzureBlobImageTransformer : Attribute, I_Property_Transformer<PuckImage, PuckImage>
     {
-        string accountName = "cmstesting";
-        string accessKey = "8LqzGEs9MHXoijekBZYlr0oo7rDpNmetQ2bI+J8ylGdoucbbTEKXubAwJEy+nRWhgL/eUzugxWes52woBSE7bQ==";
-        string containerName = "media";
+        string accountName = ConfigurationManager.AppSettings["AzureImageTransformer_AccountName"];
+        string accessKey = ConfigurationManager.AppSettings["AzureImageTransformer_AccessKey"];
+        string containerName = ConfigurationManager.AppSettings["AzureImageTransformer_ContainerName"];
 
         public PuckImage Transform(BaseModel m,string propertyName,string ukey,PuckImage p)
         {
