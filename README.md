@@ -12,6 +12,7 @@ cms based on .net mvc5. uses sqlserver and lucene for storage.
 write models as poco classes or generate models in admin interface (using CSharpCodeProvider compiler)
 - full text search - data storage is lucene based and you can set analyzers and field settings (analyze,store,ignore,keep casing) per property in your model
 - spatial search
+- image cropping using imageprocessor.web
 - basic user permissions to grant/deny permissions to particular actions and limit access to content based on a start path
 - hooks - you can transform data before it is indexed using attributes to modify how a field is indexed and how it is stored
 - display modes - supports conditional template switching
