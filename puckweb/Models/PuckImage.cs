@@ -8,7 +8,8 @@ using puck.Transformers;
 using puck.core.State;
 namespace puck.Models
 {
-    [PuckAzureBlobImageTransformer()]
+    //[PuckAzureBlobImageTransformer()]
+    [PuckImageTransformer()]
     public class PuckImage
     {
         [UIHint("SettingsDisplayImage")]
