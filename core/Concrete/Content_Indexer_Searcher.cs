@@ -476,6 +476,7 @@ namespace puck.core.Concrete
                 try
                 {
                     SetWriter(create);
+                    if (Writer != null) CloseWriter();
                     //Writer.Optimize();
                 }
                 catch (Exception ex)
@@ -484,14 +485,19 @@ namespace puck.core.Concrete
                     //logger.Log(ex);
                 }
                 finally {
-                    CloseWriter();
+                    //CloseWriter();
                 }
             }
             SetSearcher();
         }
         public void SetWriter(bool create) {
-            if(Writer==null)
-                Writer = new IndexWriter(FSDirectory.Open(INDEXPATH),new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48,StandardAnalyzer));
+            if (Writer == null)
+            {
+                var dir = FSDirectory.Open(INDEXPATH);
+                var config = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, StandardAnalyzer);
+                Writer = new IndexWriter(dir, config);
+            }
+                
         }
         public void CloseWriter() {
             Writer.Dispose(false);
