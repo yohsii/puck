@@ -1,0 +1,11 @@
+*bin/*.dll
+*bin/*.pdb
+*bin/*.xml
+*bin/*/*.dll
+*bin/*/*.pdb
+*bin/*/*.xml
+*.mdf
+*.ldf
+*/obj/*
+.vs
+.vs/*
