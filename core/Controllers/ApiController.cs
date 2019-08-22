@@ -825,7 +825,7 @@ namespace puck.core.Controllers
         public ActionResult PrepopulatedEdit(string p_type,Guid? id)
         {
             if (string.IsNullOrEmpty(p_type)) {
-                var revision = repo.GetPuckRevision().FirstOrDefault(x=>x.Id==id);
+                var revision = repo.GetPuckRevision().FirstOrDefault(x=>x.Id==id &&x.Current);
                 p_type = revision.Type;
             }
             ViewBag.ShouldBindListEditor = false;
