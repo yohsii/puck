@@ -123,6 +123,26 @@ namespace puck.core.Helpers
         {
             ObjectDumper dumper = new ObjectDumper(depth);
             dumper.topElement = element as BaseModel;
+
+            //initial transform of ViewModel
+            object attr = null;
+            var attributes = element.GetType().GetCustomAttributes(false).ToList();
+            
+            var tattr = attributes
+                .Where(x => x.GetType().GetInterfaces()
+                    .Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(I_Property_Transformer<,>))
+                );
+            if (tattr.Any())//check for custom transform attribute
+            {
+                attr = tattr.First();
+            }
+            //transform if possible
+            if (attr != null)
+            {
+                var newValue = attr.GetType().GetMethod("Transform").Invoke(attr, new[] { element, "", "", element });
+                element = newValue;
+            }
+            //transform the rest of the model
             dumper.Transform("","", element);            
         }
         public static void BindImages(object element, int depth)

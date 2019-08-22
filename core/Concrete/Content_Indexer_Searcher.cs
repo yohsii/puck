@@ -203,7 +203,7 @@ namespace puck.core.Concrete
                     else if (p.Spatial) {
                         if (p.Value == null || string.IsNullOrEmpty(p.Value.ToString()))
                             continue;
-                        var name = p.Key.IndexOf('.')>-1?p.Key.Substring(0,p.Key.LastIndexOf('.')):p.Key;
+                        var name =p.Key ;// p.Key.IndexOf('.')>-1?p.Key.Substring(0,p.Key.LastIndexOf('.')):p.Key;
                         int maxLevels = 11;
                         SpatialPrefixTree grid = new GeohashPrefixTree(ctx, maxLevels);
                         var strat = new RecursivePrefixTreeStrategy(grid, name);
