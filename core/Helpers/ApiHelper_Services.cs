@@ -232,7 +232,7 @@ namespace puck.core.Helpers
                 //model.Users = usersList;
                 model.Recursive = notify.Name.Contains(":*");
             }
-            model.AllActions = Enum.GetNames(typeof(PuckCache.NotifyActions)).Select(x => new SelectListItem() { Text = x, Value = x, Selected = model.Actions.Contains(x) });
+            model.AllActions = Enum.GetNames(typeof(NotifyActions)).Select(x => new SelectListItem() { Text = x, Value = x, Selected = model.Actions.Contains(x) });
             //model.AllUsers = Roles.GetUsersInRole(PuckRoles.Puck).ToList().Select(x => new SelectListItem() { Text = x, Value = x, Selected = model.Users.Contains(x) });
             return model;
         }
@@ -257,7 +257,7 @@ namespace puck.core.Helpers
             repo.AddMeta(newMeta);
             repo.SaveChanges();
         }
-        public List<PuckUser> UsersToNotify(string path, PuckCache.NotifyActions action)
+        public List<PuckUser> UsersToNotify(string path, NotifyActions action)
         {
             //var user = HttpContext.Current.User.Identity.Name;
             var strAction = action.ToString();

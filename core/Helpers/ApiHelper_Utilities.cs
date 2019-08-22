@@ -235,7 +235,7 @@ namespace puck.core.Helpers
             mail.Body = body;
             client.Send(mail);
         }
-        public static string EmailTransform(string template, BaseModel model,PuckCache.NotifyActions action) {
+        public static string EmailTransform(string template, BaseModel model,NotifyActions action) {
             string date = DateTime.Now.ToShortDateString();
             string time = DateTime.Now.ToShortTimeString();
             string user = "";

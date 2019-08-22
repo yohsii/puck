@@ -18,10 +18,6 @@ namespace puck.core.State
 {
     public static class PuckCache
     {
-        public enum NotifyActions
-        {
-            Edit, Publish, Delete, Move
-        }
         public static string SmtpFrom = "";
         public static string SmtpHost = "localhost";
         public static string EmailTemplatePublishPath = "~/app_data/notification_publish_template.txt";

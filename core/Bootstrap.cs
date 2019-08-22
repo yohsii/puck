@@ -79,11 +79,11 @@ namespace puck.core
                 try
                 {
                     var apiHelper = PuckCache.ApiHelper;
-                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Publish);
+                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, NotifyActions.Publish);
                     if (usersToNotify.Count == 0) return;
                     var subject = string.Concat("content published - ", args.Node.NodeName, " - ", args.Node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplatePublishPath));
-                    template = ApiHelper.EmailTransform(template, args.Node,PuckCache.NotifyActions.Publish);
+                    template = ApiHelper.EmailTransform(template, args.Node,NotifyActions.Publish);
                     var emails = string.Join(";", usersToNotify.Select(x => x.Email)).TrimEnd(';');
                     ApiHelper.Email(emails, subject, template);
                 }
@@ -97,11 +97,11 @@ namespace puck.core
                 try
                 {
                     var apiHelper = PuckCache.ApiHelper;
-                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Edit);
+                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, NotifyActions.Edit);
                     if (usersToNotify.Count == 0) return; 
                     var subject = string.Concat("content edited - ", args.Node.NodeName, " - ", args.Node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplateEditPath));
-                    template = ApiHelper.EmailTransform(template, args.Node, PuckCache.NotifyActions.Edit);
+                    template = ApiHelper.EmailTransform(template, args.Node, NotifyActions.Edit);
                     var emails = string.Join(";", usersToNotify.Select(x => x.Email)).TrimEnd(';');
                     ApiHelper.Email(emails, subject, template);
                 }
@@ -116,11 +116,11 @@ namespace puck.core
                 try
                 {
                     var apiHelper = PuckCache.ApiHelper;
-                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, PuckCache.NotifyActions.Delete);
+                    var usersToNotify = apiHelper.UsersToNotify(args.Node.Path, NotifyActions.Delete);
                     if (usersToNotify.Count == 0) return; 
                     var subject = string.Concat("content deleted - ", args.Node.NodeName, " - ", args.Node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplateDeletePath));
-                    template = ApiHelper.EmailTransform(template, args.Node, PuckCache.NotifyActions.Delete);
+                    template = ApiHelper.EmailTransform(template, args.Node, NotifyActions.Delete);
                     var emails = string.Join(";", usersToNotify.Select(x => x.Email)).TrimEnd(';');
                     ApiHelper.Email(emails, subject, template);
                 }
@@ -136,11 +136,11 @@ namespace puck.core
                 {
                     var apiHelper = PuckCache.ApiHelper;
                     var node = args.Nodes.FirstOrDefault();
-                    var usersToNotify = apiHelper.UsersToNotify(node.Path, PuckCache.NotifyActions.Move);
+                    var usersToNotify = apiHelper.UsersToNotify(node.Path, NotifyActions.Move);
                     if (usersToNotify.Count == 0) return; 
                     var subject = string.Concat("content move - ", node.NodeName, " - ", node.Path);
                     var template = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(PuckCache.EmailTemplateMovePath));
-                    template = ApiHelper.EmailTransform(template, node, PuckCache.NotifyActions.Move);
+                    template = ApiHelper.EmailTransform(template, node, NotifyActions.Move);
                     var emails = string.Join(";", usersToNotify.Select(x => x.Email)).TrimEnd(';');
                     ApiHelper.Email(emails, subject, template);
                 }

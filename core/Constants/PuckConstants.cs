@@ -23,6 +23,10 @@ namespace puck.core.Constants
             {"RichText",new GeneratedPropertySelection{Name="Rick Text Editor",Type=typeof(string),AttributeString="[UIHint(\"rte\")]"}}
         };
     }
+    public enum NotifyActions
+    {
+        Edit, Publish, Delete, Move
+    }
     public static class PuckRoles
     {
         public const string Create = "_create";
