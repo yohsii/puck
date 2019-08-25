@@ -1,5 +1,5 @@
-*App_Data/Lucene/*
-*App_Data/Log/*
+**/[Aa]pp_[Dd]ata/Lucene/*
+**/[Aa]pp_[Dd]ata/Log/*
 
 *bin/*.dll
 *bin/*.pdb
