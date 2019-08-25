@@ -3,6 +3,8 @@ Puck - Content Management System
 
 cms based on .net mvc5. uses sqlserver and lucene for storage.
 
+[Wiki](https://github.com/yohsii/puck/wiki)
+
 **features**
 
 - multi-site - multiple site roots mapped to different domains
