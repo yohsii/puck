@@ -245,9 +245,10 @@ namespace puck.core.Concrete
                     //Writer.Flush(true, true, true);
                     Parallel.ForEach(models, (m,state,index) => {
                         PuckCache.IndexingStatus = $"indexing item {count} of {models.Count}";
-                        var type = ApiHelper.GetType(m.Type);
-                        if (type == null)
-                            type = typeof(BaseModel);
+                        //var type = ApiHelper.GetType(m.Type);
+                        //if (type == null)
+                        //    type = typeof(BaseModel);
+                        var type = ApiHelper.GetTypeFromName(m.Type,defaultToBaseModel:true);
                         var analyzer = PuckCache.AnalyzerForModel[type];
                         var parser = new PuckQueryParser<T>(Lucene.Net.Util.LuceneVersion.LUCENE_48, FieldKeys.PuckDefaultField, analyzer);
                         if (triggerEvents)
