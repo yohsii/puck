@@ -786,7 +786,9 @@ namespace puck.core.Helpers
             query += string.Concat("(", q.query, ") ");
             return this;
         }
-
+        public QueryHelper<TModel> Must(QueryHelper<TModel> q = null) {
+            return And(q);
+        }
         public QueryHelper<TModel> And(QueryHelper<TModel> q=null)
         {
             TrimAnd();

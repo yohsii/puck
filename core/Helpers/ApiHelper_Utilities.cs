@@ -92,7 +92,13 @@ namespace puck.core.Helpers
             p = r.Replace(p, "~/", 1).Replace("\\", "/");
             return p;
         }
-
+        public static Type GetTypeFromName(string name,bool defaultToBaseModel=false) {
+            if (PuckCache.ModelNameToAQN.ContainsKey(name))
+                return ApiHelper.GetType(PuckCache.ModelNameToAQN[name]);
+            if (defaultToBaseModel)
+                return typeof(BaseModel);
+            return null;
+        }
         private static string DoTypeChain(Type type, string chain = "")
         {
             chain += type.FullName + " ";

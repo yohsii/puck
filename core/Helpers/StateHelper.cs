@@ -275,7 +275,9 @@ namespace puck.core.Helpers
         {
             foreach (var t in apiHelper.AllModels(true))
             {
-                PuckCache.ModelFullNameToAQN[t.Name] = t.AssemblyQualifiedName;
+                if (PuckCache.ModelNameToAQN.ContainsKey(t.Name))
+                    throw new Exception($"there is more than one ViewModel with the name:{t.Name}. ViewModel names must be unique!");
+                PuckCache.ModelNameToAQN[t.Name] = t.AssemblyQualifiedName;
             }
         }
         public static void UpdateAnalyzerMappings()

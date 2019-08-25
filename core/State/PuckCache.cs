@@ -51,7 +51,7 @@ namespace puck.core.State
         public static Dictionary<string, Type> IGeneratedToModel { get; set; }
         public static Dictionary<string, Dictionary<string, string>> TypeFields { get; set; }
         //map model type fullname to asssembly qualified name
-        public static Dictionary<string, string> ModelFullNameToAQN { get; set; }
+        public static Dictionary<string, string> ModelNameToAQN { get; set; }
         public static Dictionary<string, CropInfo> CropSizes { get; set; }
         public static HashSet<string> OutputCacheExclusion { get; set; }
         public static IKernel NinjectKernel { get; set; }
