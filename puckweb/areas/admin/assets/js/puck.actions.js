@@ -656,7 +656,7 @@ var showLoader = function (container) {
         "display": "flex",
         "justify-content": "center",
         "align-items": "center",
-        height: "100%",
+        height: "80%",
         width:"100%"
     });
     var img = $("<img src='/areas/admin/assets/img/ajax-loader.gif'/>");
