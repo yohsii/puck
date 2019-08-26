@@ -156,6 +156,8 @@ var showUserMarkup = function (username) {
     });
 }
 var showUsers = function () {
+    cright.html("");
+    showLoader(cright);
     getUsers(function (data) {
         if (!canChangeMainContent())
             return;
@@ -349,8 +351,10 @@ var showCacheInfo = function (path) {
         }
     });
 }
-var showSettings = function(path){
-    getSettings(path,function (data) {
+var showSettings = function (path) {
+    cright.html("");
+    showLoader(cright);
+    getSettings(path, function (data) {
         cright.html(data);
         afterDom();
         //setup validation
@@ -380,6 +384,8 @@ var editParameters = function (settingsType, modelType, propertyName, success) {
     }, settingsType, modelType, propertyName);
 }
 var showTasks = function () {
+    cright.html("");
+    showLoader(cright);
     if (!canChangeMainContent())
         return false;
     getTasks(function (data) {
@@ -644,8 +650,31 @@ var draw = function (data, el, sortable) {
         });
     }
 }
+
+var showLoader = function (container) {
+    var el = $("<div class='loaderContainer'/>").css({
+        "display": "flex",
+        "justify-content": "center",
+        "align-items": "center",
+        height: "100%",
+        width:"100%"
+    });
+    var img = $("<img src='/areas/admin/assets/img/ajax-loader.gif'/>");
+    el.append(img);
+    container.append(el);
+    //el.css({
+    //    position: "absolute",
+    //    top: container.position().top + (container.height() / 2),
+    //    left: container.width() / 2
+    //});
+}
+var hideLoader = function () {
+    $(".loaderContainer").remove();
+}
 var displayMarkup = function (parentId, type, variant, fromVariant,contentId,container,msgContainer) {
     container = container || cright;
+    container.html("");
+    showLoader(container);
     getMarkup(parentId, type, variant, function (data) {
         container./*hide().*/html(data);
 

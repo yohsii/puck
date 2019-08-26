@@ -117,6 +117,9 @@ z-index:10;
 }
 .main.grid .leftarea{border-right:4px solid #e2e2e2;}
 .main.grid .leftarea,.main.grid .rightarea{height:100%}
+.main.grid .rightarea .content {
+    height:100%;
+}
 .main.grid .hide{display:none;}
 ul.content > li > ul{margin-left:0px!important;}
 .leftarea .startpath{clear:both;margin-top:5px;color:#000;font-weight:bolder;background-color:#f7f7f7;font-size:12px;}
