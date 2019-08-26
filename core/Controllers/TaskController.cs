@@ -716,12 +716,15 @@ namespace puck.core.Controllers
         }
         public ActionResult Edit(string type,int id = -1)
         {
+            ViewBag.ShouldBindListEditor = true;
+            ViewBag.IsPrepopulated = false;
             if (id != -1) {
                 var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == id).FirstOrDefault();
                 if (meta != null) {
                     //Type t = Type.GetType(meta.Key);
                     Type t = apiHelper.TaskTypes().FirstOrDefault(x=>x.FullName.Equals(meta.Key));
                     var editModel = JsonConvert.DeserializeObject(meta.Value, t);
+                    ViewBag.Level0Type = editModel.GetType();
                     return View(editModel);
                 }
             }
@@ -729,6 +732,7 @@ namespace puck.core.Controllers
             Type modelType = apiHelper.TaskTypes().FirstOrDefault(x => x.FullName.Equals(type));
             var model = Activator.CreateInstance(modelType);
             ((BaseTask)model).ID = -1;
+            ViewBag.Level0Type = model.GetType();
             return View(model);
         }
 

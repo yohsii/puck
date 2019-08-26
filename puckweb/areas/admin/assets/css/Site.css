@@ -327,10 +327,23 @@ button.content_publish{position:absolute;top:1px;right:0px;}
 .fieldwrapper.complex_child .editor-label label{text-decoration:none;}
 .fieldwrapper.complex.complex_child{margin-left:15px;margin-top:10px;}
 .node.unpublished>.inner{background:#ffeeee;}
+.listeditor .expand{
+    margin: 0px 0px 0px 10px;
+    padding: 3px;
+}
 .puckpicker{padding:20px;}
 ul.content.nomenu .node i.menu{display:none;}
 .puckpicker .node {cursor:pointer;}
-.puckpicker .selected_node span{background:#eeffee;}
+.puckpicker .expand {
+padding: 2px !important;
+margin: 0px 10px 0px 0px !important;
+}
+.puckpicker .selected_node span.view {
+    cursor: pointer;
+    color: #007bff;
+    text-decoration: underline;
+}
+.puckpicker .selected_node span.v{background:#eeffee;}
 .puckpicker .selected_node i{background-color:#ffeeee;margin-left:5px;}
 /*
 .leftarea .node span.variant{display:none;}

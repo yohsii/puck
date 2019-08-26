@@ -15,8 +15,9 @@
             startId = revision.Id;
         }
     }
+    var guid = Guid.NewGuid();
 }
-<div class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName puckpicker_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
+<div data-guid="@guid.ToString()" class="puckpicker puckpicker_@ViewData.ModelMetadata.PropertyName puckpicker_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
     <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
     <ul class="content nomenu">
         <li class="node" data-children_path="/"></li>
@@ -31,9 +32,10 @@
                     var node = PuckCache.PuckRepo.GetPuckRevision().Where(x=>x.Id==m.Id && x.Variant.ToLower().Equals(m.Variant.ToLower())).FirstOrDefault();
                     if (node != null)
                     {
-                    <div class="selected_node" data-variant="@m.Variant" data-id="@m.Id">
-                        <span>@node.NodeName</span>&nbsp; - &nbsp;<span>@m.Variant</span>&nbsp;
-                        <i class='fas fa-minus-circle'></i>
+                    <div class="selected_node" data-nodename="@node.NodeName" data-variant="@m.Variant" data-id="@m.Id">
+                        <span>@node.NodeName</span>&nbsp; - &nbsp;<span class="v">@m.Variant</span>
+                        &nbsp;<span class="view">View</span>
+                        &nbsp;<i class='fas fa-minus-circle'></i>
                     </div>
                     }
                 }
@@ -55,6 +57,7 @@
 </div>
 <script type="text/javascript">
     onAfterDom(function () {
+        var guid = "@guid.ToString()";
         var modelType = "@Html.Raw(ViewBag.Level0Type.Name)";
         var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
         var isPrePopulated = '@ViewBag.IsPrePopulated' == 'True';
@@ -63,10 +66,11 @@
         }
         //var container = $(".puckpicker_" + propname);
         var container = null;
-        if (!isPrePopulated)
-            container = cright.find(".puckpicker_" + escapePropname(propname));
-        else
-            container = cinterfaces.find("div[data-type='" + modelType + "'] .puckpicker_" + escapePropname(propname))
+        container = $("[data-guid='"+guid+"']");
+        //if (!isPrePopulated)
+        //    container = cright.find(".puckpicker_" + escapePropname(propname));
+        //else
+        //    container = cinterfaces.find("div[data-type='" + modelType + "'] .puckpicker_" + escapePropname(propname))
 
         var getPropName = function () {
             return container.find("div:hidden.propName:first").attr("data-propName");
@@ -117,8 +121,9 @@
 
             if (isVariantSelection && (selectionType == "variant" || selectionType == "both")) {
                 selected_container.append(
-                    "<div class='selected_node' data-variant='" + clicked.attr("data-variant") + "' data-id='" + node.attr("data-id") + "'><span>"
-                    + node.attr("data-nodename") + "</span>&nbsp; - &nbsp;<span>" + clicked.attr("data-variant") + "</span>&nbsp;<i class='fas fa-minus-circle remove'></i></div>"
+                    "<div class='selected_node' data-nodename='"+node.attr("data-nodename")+"' data-variant='" + clicked.attr("data-variant") + "' data-id='" + node.attr("data-id") + "'>"
+                    + "<span>"+ node.attr("data-nodename") + "</span>&nbsp; - &nbsp;<span class='v'>" + clicked.attr("data-variant") + "</span>"
+                    + "&nbsp;<span class='view'>View</span> &nbsp;<i class='fas fa-minus-circle remove'></i></div>"
                 );
             } else if (!isVariantSelection && (selectionType == "node" || selectionType == "both")) {
                 selected_container.append(
@@ -126,6 +131,22 @@
                 );
             }
             setValue();
+        });
+        selected_container.on("click", ".selected_node .view", function (e) {
+            var el = $(this);
+            var selectedNode = el.parent();
+            var id = selectedNode.attr("data-id");
+            var variant = selectedNode.attr("data-variant");
+            var nodename = selectedNode.attr("data-nodename");
+
+            var container = $("<div data-tabPrefix='overlayContent_' />");
+            var inner = $("<div class='cont_inner'></div>");
+            var msgContainer = $("<div class='msgTop'></div>");
+            container.append(msgContainer).append(inner);
+
+            overlay(container, "90%", undefined, top, nodename);
+            debugger;
+            displayMarkup(null, undefined, variant, undefined, id, inner,msgContainer);
         });
     });    
 </script>

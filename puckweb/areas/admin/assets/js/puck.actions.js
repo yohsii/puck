@@ -644,12 +644,13 @@ var draw = function (data, el, sortable) {
         });
     }
 }
-var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
+var displayMarkup = function (parentId, type, variant, fromVariant,contentId,container,msgContainer) {
+    container = container || cright;
     getMarkup(parentId, type, variant, function (data) {
-        cright./*hide().*/html(data);
+        container./*hide().*/html(data);
 
         if (!type) {
-            type = cright.find("input[name=Type]").val();
+            type = container.find("input[name=Type]").val();
         }
 
         var translations = $("<ul/>").addClass("translations");
@@ -674,7 +675,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                             lnk.click(function (e) {
                                 e.preventDefault();
                                 var vcode = dataTranslation;
-                                displayMarkup(null, type, vcode,undefined,contentId);
+                                displayMarkup(null, type, vcode,undefined,contentId,container,msgContainer);
                             });
                             dtli.append(lnk)
                         } else {
@@ -683,7 +684,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                         translations.append(dtli);
                     })();
                 }
-                cright.prepend(translations);
+                container.prepend(translations);
             }
         } else {
             if (contentId != null && contentId != undefined)
@@ -700,7 +701,7 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                                         var v = d[i].Variant;
                                         lnk.click(function (e) {
                                             e.preventDefault();
-                                            displayMarkup(null, type, v, undefined, contentId);
+                                            displayMarkup(null, type, v, undefined, contentId,container,msgContainer);
                                         });
                                     }());
                                     dtli.append(lnk)
@@ -710,14 +711,14 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                                 translations.append(dtli);
                             })();
                         }
-                        cright.prepend(translations);
+                        container.prepend(translations);
                     }
                 });
         }
         var afterGrouping = function () {
             afterDom();
-            cright.show();
-            cright.find(".fieldtabs:first").click();
+            container.show();
+            container.find(".fieldtabs:first").click();
             setChangeTracker();
             if (cleft.find(".node[data-id='" + contentId + "']").length > 0)
                 highlightSelectedNodeById(contentId);
@@ -728,7 +729,8 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
             }
         }
         //get field groups and build tabs
-        var groupedFields = cright.find("[data-groupname]");
+        var tabPrefix = container.attr("data-tabPrefix");
+        var groupedFields = container.find("[data-groupname]");
         if (groupedFields.length > 0) {
             var groups = [];
             $(groupedFields).each(function (i) {
@@ -739,33 +741,33 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
             var tabHtml = '<ul class="nav nav-tabs" role="tablist">';
             $(groups).each(function (i) {
                 var val = this;
-                tabHtml += '<li class="nav-item ' + (i == 0 ? "active" : "") + '"><a class="nav-link fieldtabs ' + (i == 0 ? "active" : "") + '" data-toggle="tab" role="tab" href="#fieldtabs' + i + '">' + val + '</a></li>';
+                tabHtml += '<li class="nav-item ' + (i == 0 ? "active" : "") + '"><a class="nav-link fieldtabs ' + (i == 0 ? "active" : "") + '" data-toggle="tab" role="tab" href="#' + tabPrefix + 'fieldtabs' + i + '">' + val + '</a></li>';
             });
-            tabHtml += '<li class="nav-item"><a class="nav-link fieldtabs" data-toggle="tab" role="tab" href="#fieldtabs' + groups.length + '">default</a></li>';
+            tabHtml += '<li class="nav-item"><a class="nav-link fieldtabs" data-toggle="tab" role="tab" href="#' + tabPrefix + 'fieldtabs' + groups.length + '">default</a></li>';
             tabHtml += '</ul>';
 
             tabHtml += '<div class="tab-content">';
             $(groups).each(function (i) {
                 var val = this;
-                tabHtml += '<div data-group="' + val + '" role="tabpanel" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="fieldtabs' + i + '"></div>';
+                tabHtml += '<div data-group="' + val + '" role="tabpanel" class="tab-pane ' + (i == 0 ? "active" : "") + '" id="' + tabPrefix + 'fieldtabs' + i + '"></div>';
             });
-            tabHtml += '<div data-group="default" role="tabpanel" class="tab-pane" id="fieldtabs' + groups.length + '"></div>';
+            tabHtml += '<div data-group="default" role="tabpanel" class="tab-pane" id="' + tabPrefix + 'fieldtabs' + groups.length + '"></div>';
             tabHtml += "</div>";
-            cright.find("form").prepend(tabHtml);
-            cright.find(".nav .fieldtabs").click(function (e) {
+            container.find("form").prepend(tabHtml);
+            container.find(".nav .fieldtabs").click(function (e) {
                 e.preventDefault();
                 $(this).tab("show");
             });
             $(groupedFields).each(function (i) {
                 var el = $(this);
                 var group = el.attr("data-groupname");
-                var groupContainer = cright.find(".tab-pane[data-group='" + group + "']");
+                var groupContainer = container.find(".tab-pane[data-group='" + group + "']");
                 groupContainer.append(el);
             });
-            cright.find("div.fields>.fieldwrapper.root").each(function () {
+            container.find("div.fields>.fieldwrapper.root").each(function () {
                 var el = $(this);
                 var fieldname = el.attr("data-fieldname");
-                el.appendTo(cright.find("[data-group='default']"));
+                el.appendTo(container.find("[data-group='default']"));
             });
             afterGrouping();
         } else {
@@ -779,20 +781,20 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                 var tabHtml = '<ul class="nav nav-tabs" role="tablist">';
                 $(groups).each(function (i) {
                     var val = this;
-                    tabHtml += '<li class="nav-item ' + (i == 0 ? "active" : "") + '"><a class="nav-link fieldtabs ' + (i == 0 ? "active" : "") + '" data-toggle="tab" role="tab" href="#fieldtabs' + i + '">' + val + '</a></li>';
+                    tabHtml += '<li class="nav-item ' + (i == 0 ? "active" : "") + '"><a class="nav-link fieldtabs ' + (i == 0 ? "active" : "") + '" data-toggle="tab" role="tab" href="#' + tabPrefix + 'fieldtabs' + i + '">' + val + '</a></li>';
                 });
-                tabHtml += '<li class="nav-item"><a class="nav-link fieldtabs" data-toggle="tab" role="tab" href="#fieldtabs' + groups.length + '">default</a></li>';
+                tabHtml += '<li class="nav-item"><a class="nav-link fieldtabs" data-toggle="tab" role="tab" href="#' + tabPrefix + 'fieldtabs' + groups.length + '">default</a></li>';
                 tabHtml += '</ul>';
 
                 tabHtml += '<div class="tab-content">';
                 $(groups).each(function (i) {
                     var val = this;
-                    tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" role="tabpanel" id="fieldtabs' + i + '"></div>';
+                    tabHtml += '<div data-group="' + val + '" class="tab-pane ' + (i == 0 ? "active" : "") + '" role="tabpanel" id="' + tabPrefix + 'fieldtabs' + i + '"></div>';
                 });
-                tabHtml += '<div data-group="default" class="tab-pane" role="tabpanel" id="fieldtabs' + groups.length + '"></div>';
+                tabHtml += '<div data-group="default" class="tab-pane" role="tabpanel" id="' + tabPrefix + 'fieldtabs' + groups.length + '"></div>';
                 tabHtml += "</div>";
-                cright.find("form").prepend(tabHtml);
-                cright.find(".nav .fieldtabs").click(function (e) {
+                container.find("form").prepend(tabHtml);
+                container.find(".nav .fieldtabs").click(function (e) {
                     e.preventDefault();
                     $(this).tab("show");
                 });
@@ -801,18 +803,18 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
                     var type = val.split(":")[0];
                     var group = val.split(":")[1];
                     var field = val.split(":")[2];
-                    var fieldWrapper = cright.find(".fieldwrapper[data-fieldname='" + field + "']");
-                    var groupContainer = cright.find(".tab-pane[data-group='" + group + "']");
+                    var fieldWrapper = container.find(".fieldwrapper[data-fieldname='" + field + "']");
+                    var groupContainer = container.find(".tab-pane[data-group='" + group + "']");
                     groupContainer.append(fieldWrapper);
                 });
-                cright.find("div.fields>.fieldwrapper.root").each(function () {
+                container.find("div.fields>.fieldwrapper.root").each(function () {
                     var el = $(this);
                     var fieldname = el.attr("data-fieldname");
                     if (fieldname.split(".").length > 1)
-                        cright.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']>.editor-field>.fields").append(el);
-                    else el.appendTo(cright.find("[data-group='default']"));
+                        container.find(".fieldwrapper[data-fieldname='" + fieldname.split(".").slice(0, -1).join(".") + "']>.editor-field>.fields").append(el);
+                    else el.appendTo(container.find("[data-group='default']"));
                 });
-                cright.find(".fieldwrapper.complex_child").each(function () {
+                container.find(".fieldwrapper.complex_child").each(function () {
                     var el = $(this);
                     if (el.find(".fieldwrapper").length == 0 || el.find(".fields").length == 0) {
                         el.addClass("single_field");
@@ -823,33 +825,33 @@ var displayMarkup = function (parentId, type, variant, fromVariant,contentId) {
         }
         //publish btn
         if (userRoles.contains("_publish")) {
-            cright.find(".content_publish").click(function () {
-                cright.find("input:hidden[name='Published']").val("true");
+            container.find(".content_publish").click(function () {
+                container.find("input:hidden[name='Published']").val("true");
             });
-        } else { cright.find(".content_publish").hide(); }
+        } else { container.find(".content_publish").hide(); }
         //udpate btn
         if (userRoles.contains("_edit")) {
-            cright.find(".content_update").click(function () {
-                cright.find("input:hidden[name='Published']").val("false");
+            container.find(".content_update").click(function () {
+                container.find("input:hidden[name='Published']").val("false");
             });
-        } else { cright.find(".content_update").hide(); }
+        } else { container.find(".content_update").hide(); }
         //preview btn
         if (contentId) {
-            cright.find(".content_preview").click(function (e) {
+            container.find(".content_preview").click(function (e) {
                 e.preventDefault();
                 window.open("/admin/api/previewguid?id=" + contentId + "&variant=" + variant, "_blank");
             });
-        } else { cright.find(".content_preview").hide(); }
+        } else { container.find(".content_preview").hide(); }
 
-        wireForm(cright.find('form'), function (data) {
-            msg(true, "content updated");
+        wireForm(container.find('form'), function (data) {
+            msg(true, "content updated",undefined,msgContainer);
             getDrawContent(data.parentId, undefined, true, function () {
                 var pnode = cleft.find(".node[data-id='" + data.parentId + "']");
                 //pnode.find(".expand:first").removeClass("fa-chevron-right").addClass("fa-chevron-down").css({ visibility: "visible" });
-                displayMarkup(null, type, variant,undefined,data.id);
+                displayMarkup(null, type, variant,undefined,data.id,container,msgContainer);
             });
         }, function (data) {
-            msg(false, data.message);
+            msg(false, data.message,undefined,msgContainer);
         });
     }, fromVariant, contentId);
     getPrepopulatedMarkup(type, contentId, function (data) {
@@ -882,9 +884,10 @@ var setChangeTracker = function () {
         changed = true;
     });
 }
-var msg = function (success, str, shouldRemovePreviousMessages) {
+var msg = function (success, str, shouldRemovePreviousMessages,container) {
+    container = container || cmsg;
     if (shouldRemovePreviousMessages) {
-        cmsg.find("div").remove();
+        container.find("div").remove();
     }
     var btnClass = "";
     if (success === false) { btnClass = "btn-danger"; }
@@ -892,7 +895,7 @@ var msg = function (success, str, shouldRemovePreviousMessages) {
     var el = $("<div style='display:none;' class='btn " + btnClass + "'>" + str + "</div>");
     var remove = $("<div class='btn btnclose'>x</div>").click(function () { $(this).parent().remove(); });
     el.append(remove);
-    cmsg.html(el);
+    container.html(el);
     el.fadeIn();
 }
 var puckmaxwidth = 960;
@@ -903,6 +906,7 @@ var _overlayClose = function () {
 }
 
 var overlay = function (el, width, height, top, title) {
+    top = top || "0px";
     overlayClose();
     var cleftIsVisible = false;
     if ($(window).width() < 768) {
@@ -922,8 +926,8 @@ var overlay = function (el, width, height, top, title) {
     var outer = $(".interfaces .overlay_screen").clone().addClass("");
     outer.find(">h1:first").html(title || "")
     outer.css({ left: cright.position().left - 30 + "px", width: "0px", top: "0px", height: $(window).height() - 90 + "px" });
-    if (outer.offset().top < $(document).scrollTop()) {
-        outer.css({top:$(document).scrollTop()});
+    if (outer.position().top < $(".rightarea").scrollTop()) {
+        outer.css({top:$(".rightarea").scrollTop()});
     }
     var close = $('<i class="overlay_close fas fa-minus-circle"></i>');
     close.click(function () { overlayClose(cleftIsVisible) });

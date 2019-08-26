@@ -1,8 +1,9 @@
 ﻿@model puck.core.Models.GeoPosition
 @{
-    Layout = null;    
+    Layout = null;
+    var guid = Guid.NewGuid();
 }
-<div class="puck_google_long_lat puck_google_long_lat_@ViewData.ModelMetadata.PropertyName puck_google_long_lat_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
+<div data-guid="@guid.ToString()" class="puck_google_long_lat puck_google_long_lat_@ViewData.ModelMetadata.PropertyName puck_google_long_lat_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
     <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
     <style>
         .puck_google_long_lat {
@@ -21,7 +22,8 @@
             }
     </style>
     <script>
-    onAfterDom(function () {
+        onAfterDom(function () {
+        var guid = "@guid.ToString()";
         var modelType = "@Html.Raw(ViewBag.Level0Type.Name)";
         var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
         var isPrePopulated = '@ViewBag.IsPrePopulated' == 'True';
@@ -31,10 +33,11 @@
         //var container = $(".puck_google_long_lat_@ViewData.ModelMetadata.PropertyName");
         
         var container = null;
-        if (!isPrePopulated)
-            container = cright.find(".puck_google_long_lat_" + escapePropname(propname));
-        else
-            container = cinterfaces.find("div[data-type='" + modelType + "'] .puck_google_long_lat_" + escapePropname(propname))
+        container = $("[data-guid='"+guid+"']");
+        //if (!isPrePopulated)
+        //    container = cright.find(".puck_google_long_lat_" + escapePropname(propname));
+        //else
+        //    container = cinterfaces.find("div[data-type='" + modelType + "'] .puck_google_long_lat_" + escapePropname(propname))
 
         var getPropName = function () {
             return container.find("div:hidden.propName:first").attr("data-propName");

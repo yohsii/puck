@@ -46,10 +46,10 @@ namespace puck.core.Extensions
             var propertyName = ModelMetadata.FromStringExpression("", page.ViewData).PropertyName;
             var type = modelType;
             while (type != typeof(object)) {
-                var key = string.Concat(settingsType.AssemblyQualifiedName, ":", type.AssemblyQualifiedName, ":", propertyName);
+                var key = string.Concat(settingsType.FullName, ":", type.Name, ":", propertyName);
                 var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
                 if (meta == null) {
-                    key = string.Concat(settingsType.AssemblyQualifiedName, ":", type.AssemblyQualifiedName, ":");
+                    key = string.Concat(settingsType.FullName, ":", type.Name, ":");
                     meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
                 }
                 if (meta != null)

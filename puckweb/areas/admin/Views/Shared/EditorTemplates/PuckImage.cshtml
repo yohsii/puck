@@ -6,9 +6,9 @@
         {
             Crops=new List<puck.core.Models.CropInfo>()
         };
-    
+    var guid = Guid.NewGuid();
 }
-    <div class="puckImage puckimage_@ViewData.ModelMetadata.PropertyName puckimage_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
+    <div data-guid="@guid.ToString()" class="puckImage puckimage_@ViewData.ModelMetadata.PropertyName puckimage_@ViewData.TemplateInfo.HtmlFieldPrefix.Replace("[","_").Replace("]","_").Replace(".","_")">
         <div style="display:none;" class="propName" data-propName="@ViewData.TemplateInfo.HtmlFieldPrefix"></div>
         <ul class="nav nav-tabs" role="tablist" id="myTab">
             <li class="nav-item active"><a class="nav-link active" role="tab" @*data-toggle="tab"*@ href="#">Image info</a></li>
@@ -90,6 +90,7 @@
     </div>
 <script type="text/javascript">
     onAfterDom(function () {
+        var guid = "@guid.ToString()";
         var modelType = "@Html.Raw(ViewBag.Level0Type.Name)";
         var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
         var isPrePopulated = '@ViewBag.IsPrePopulated' == 'True';
@@ -98,10 +99,11 @@
             return str.replace(/\[/g, "_").replace(/\]/g,"_").replace(/\./g,"_");
         }
         var container = null;
-        if (!isPrePopulated)
-            container = cright.find(".puckimage_" + escapePropname(propname));
-        else
-            container = cinterfaces.find("div[data-type='" + modelType + "'] .puckimage_" + escapePropname(propname))
+        container = $("[data-guid='"+guid+"']");
+        //if (!isPrePopulated)
+        //    container = cright.find(".puckimage_" + escapePropname(propname));
+        //else
+        //    container = cinterfaces.find("div[data-type='" + modelType + "'] .puckimage_" + escapePropname(propname))
         
         //var container = cright.find(".puckimage_" + propname);
         var selected_container = container.find(".selected_content:first");

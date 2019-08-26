@@ -852,9 +852,7 @@ namespace puck.core.Controllers
 
         [Auth(Roles = PuckRoles.Edit)]
         public ActionResult Edit(string p_type,Guid? parentId,Guid? contentId, string p_variant = "", string p_fromVariant = "", string p_path = "/") {
-            ViewBag.ShouldBindListEditor = true;
-            ViewBag.IsPrepopulated = false;
-            if (p_variant == "null")
+            if (p_variant == "null"||string.IsNullOrEmpty(p_variant))
                 p_variant = PuckCache.SystemVariant;
             object model=null;
             if (!string.IsNullOrEmpty(p_type))
@@ -902,6 +900,9 @@ namespace puck.core.Controllers
                     mod.LastEditedBy = mod.CreatedBy;
                 }
             }
+            ViewBag.ShouldBindListEditor = true;
+            ViewBag.IsPrepopulated = false;
+            ViewBag.Level0Type = model.GetType();
             return View(model);
         }
 

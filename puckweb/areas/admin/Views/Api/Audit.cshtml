@@ -22,32 +22,40 @@
             <th>
                 @Html.DisplayNameFor(model => model.Username)
             </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Timestamp)
+            </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Notes)
             </th>
-        
+
             <th></th>
         </tr>
 
     @foreach (var item in Model) {
-        <tr class="">
-            <td>
-                @ViewData["nodeName"]
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Variant)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Action)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Notes)
-            </td>
-            <td></td>
-        </tr>
+    <tr class="">
+        <td>
+            @ViewData["nodeName"]
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Variant)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Action)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Username)
+        </td>
+        <td>
+            @item.Timestamp.ToString("dd/MM/yyyy mm:ss")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Notes)
+        </td>
+        <td></td>
+    </tr>
     }
     </table>
     <ul>
