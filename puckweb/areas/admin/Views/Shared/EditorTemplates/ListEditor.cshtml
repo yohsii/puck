@@ -29,7 +29,7 @@
 </div>
 <script type="text/javascript">
     onAfterDom(function () {
-        var modelType = "@Html.Raw(ViewBag.Level0Type.AssemblyQualifiedName)";
+        var modelType = "@Html.Raw(ViewBag.Level0Type.Name)";
         var nameQuery = "@Html.Raw(ViewData.ModelMetadata.ShortDisplayName)";
         var propname = "@Html.Raw(ViewData.TemplateInfo.HtmlFieldPrefix)";
         var shouldBindListEditor = '@ViewBag.ShouldBindListEditor' == 'True';

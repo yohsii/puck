@@ -25,7 +25,7 @@
     <li>
         <select>
         @foreach(var m in models){
-            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
+            <option value="@m.Name">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
         }
         </select>
     </li>
@@ -48,24 +48,24 @@
     typesChain.Add(m);
     var cb = ApiHelper.ConcreteType(m);
     var props = cb.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.DeclaredOnly);
-    if (!friendlyName.ContainsKey(m.AssemblyQualifiedName)) {
-        friendlyName.Add(m.AssemblyQualifiedName,ApiHelper.FriendlyClassName(cb));
+    if (!friendlyName.ContainsKey(m.Name)) {
+        friendlyName.Add(m.Name,ApiHelper.FriendlyClassName(cb));
     }
-    if (!typeChain.ContainsKey(m.AssemblyQualifiedName)) { 
-        typeChain.Add(m.AssemblyQualifiedName,string.Join(",",typesChain.Select(x=>x.FullName)));
+    if (!typeChain.ContainsKey(m.Name)) { 
+        typeChain.Add(m.Name,string.Join(",",typesChain.Select(x=>x.Name)));
     }
-    if (!fullNameToAssemblyName.ContainsKey(m.FullName)) {
-        fullNameToAssemblyName.Add(m.FullName,m.AssemblyQualifiedName);
+    if (!fullNameToAssemblyName.ContainsKey(m.Name)) {
+        fullNameToAssemblyName.Add(m.Name,m.AssemblyQualifiedName);
     }
     foreach (var prop in props)
     {
         var groupName = "default";
-        if (dic.ContainsKey(m.AssemblyQualifiedName) && dic[m.AssemblyQualifiedName].Any(x => x.Value.Contains(prop.Name)))
+        if (dic.ContainsKey(m.Name) && dic[m.Name].Any(x => x.Value.Contains(prop.Name)))
         {
             //group name
-            groupName = dic[m.AssemblyQualifiedName].Where(x => x.Value.Contains(prop.Name)).FirstOrDefault().Key;
+            groupName = dic[m.Name].Where(x => x.Value.Contains(prop.Name)).FirstOrDefault().Key;
         }
-        typeGroupProp.Add(new Tuple<string,string,string>(m.AssemblyQualifiedName, groupName, prop.Name));
+        typeGroupProp.Add(new Tuple<string,string,string>(m.Name, groupName, prop.Name));
     }
 }
 
@@ -136,16 +136,16 @@
                 var fullName = typeChain[i];
                 var assemblyName = fullNameToAssemblyName[fullName];
                 //console.log("fullnameL %o assemblyNameL %o",fullName,assemblyName);
-                for (var group in typeGroupProp[assemblyName]) {
-                    if (isFunction(typeGroupProp[assemblyName][group]))
+                for (var group in typeGroupProp[fullName]) {
+                    if (isFunction(typeGroupProp[fullName][group]))
                         continue;
                     if (groupAndProps[group] == undefined) {
                         groupAndProps[group] = [];
                     }
                     //console.log("group %o", group);
-                    for(var ii=0;ii<typeGroupProp[assemblyName][group].length;ii++){
-                        var item = typeGroupProp[assemblyName][group][ii];
-                        groupAndProps[group].push({name:item,inherited:type!=assemblyName});
+                    for(var ii=0;ii<typeGroupProp[fullName][group].length;ii++){
+                        var item = typeGroupProp[fullName][group][ii];
+                        groupAndProps[group].push({ name: item, inherited: type != fullName });
                     }
                 }
             }

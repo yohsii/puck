@@ -7,7 +7,7 @@
     @if(orphans.Count>0){
     <ul>
         <li>
-            <label>Original Assembly Qualified Name</label>
+            <label>Original Type Name</label>
             <select class="from">
                 @foreach (var s in orphans) { 
                     <option value="@s">@s</option>
@@ -15,10 +15,10 @@
             </select>
         </li>
         <li>
-            <label>New Assembly Qualified Name</label>
+            <label>New Type Name</label>
             <select class="to">
                 @foreach (var t in apiHelper.AllModels()) { 
-                    <option value="@t.AssemblyQualifiedName">@t.AssemblyQualifiedName</option>
+                    <option value="@t.Name">@t.Name</option>
                 }
             </select>
         </li>        

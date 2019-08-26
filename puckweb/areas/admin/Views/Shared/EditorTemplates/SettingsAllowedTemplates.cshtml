@@ -7,7 +7,7 @@
 <div class="settings_type_allowed_templates">
     <select>
         @foreach (var m in models) { 
-            <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
+            <option value="@m.Name">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
         }
     </select>
     <div class="lists">
@@ -15,12 +15,12 @@
         var included = new List<string>();
         foreach (var entry in Model) {
             var kv = entry.Split(new char[]{':'},StringSplitOptions.RemoveEmptyEntries);
-            if (m.AssemblyQualifiedName.Equals(kv[0])) {
+            if (m.Name.Equals(kv[0])) {
                 included.Add(kv[1]);
             }
         }
         var excluded = templates.Where(x=>!included.Any(i=>x.ToLower().Equals(i.ToLower()))).ToList();
-        <div class="type" data-type="@m.AssemblyQualifiedName">
+        <div class="type" data-type="@m.Name">
             <div class="list excluded"><h2>templates</h2>
                 @foreach (var t in excluded) { 
                     <div data-path="@t" class="field">@t</div>

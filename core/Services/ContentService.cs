@@ -603,7 +603,7 @@ namespace puck.core.Services
             var instance = (T)ApiHelper.CreateInstance(typeof(T));
             if (parentId != Guid.Empty)
             {
-                var parent = repo.GetPuckRevision().FirstOrDefault(x => x.Id == parentId);
+                var parent = repo.GetPuckRevision().FirstOrDefault(x => x.Id == parentId&&x.Current);
                 if (parent == null)
                     throw new Exception("could not find parent node");
                 var slug = ApiHelper.Slugify(name);
@@ -616,7 +616,7 @@ namespace puck.core.Services
             else
             {
                 var meta = repo.GetPuckMeta()
-                    .Where(x => x.Name == DBNames.TypeAllowedTemplates && x.Key == typeof(T).AssemblyQualifiedName)
+                    .Where(x => x.Name == DBNames.TypeAllowedTemplates && x.Key == typeof(T).Name)
                     .ToList();
                 if (meta == null || meta.Count == 0)
                 {
@@ -627,7 +627,7 @@ namespace puck.core.Services
             instance.NodeName = name;
             instance.Variant = variant;
             instance.TypeChain = ApiHelper.TypeChain(typeof(T));
-            instance.Type = typeof(T).AssemblyQualifiedName;
+            instance.Type = typeof(T).Name;
             if (string.IsNullOrEmpty(userName))
             {
                 instance.CreatedBy = HttpContext.Current.User.Identity.Name;
@@ -635,7 +635,7 @@ namespace puck.core.Services
             else
             {
                 var user = userManager.FindByName(userName);
-                if (user == null) throw new Exception("there is no user for provided username");
+                if (user == null) throw new UserNotFoundException("there is no user for provided username");
                 instance.CreatedBy = userName;
             }
 
@@ -1196,7 +1196,8 @@ namespace puck.core.Services
                             {
                                 var aqn = reader.GetString(1);
                                 var value = reader.GetString(2);
-                                var type = ApiHelper.GetType(aqn);
+                                //var type = ApiHelper.GetType(aqn);
+                                var type = ApiHelper.GetTypeFromName(aqn);
                                 if (type == null) continue;
                                 var model = JsonConvert.DeserializeObject(reader.GetString(2), type) as BaseModel;
                                 model.Type = aqn;
@@ -1227,7 +1228,7 @@ namespace puck.core.Services
                     //    }
                     //}
                     var qh = new QueryHelper<BaseModel>(prependTypeTerm: false);
-                    qh.And().Field(x => x.TypeChain, typeof(BaseModel).FullName.Wrap());
+                    qh.And().Field(x => x.TypeChain, typeof(BaseModel).Name.Wrap());
                     var query = qh.ToString();
                     PuckCache.IndexingStatus = $"deleting all indexed items";
                     using (MiniProfiler.Current.Step("delete models"))
@@ -1388,7 +1389,8 @@ namespace puck.core.Services
 
         public void RenameOrphaned(string orphanTypeName, string newTypeName)
         {
-            var newType = ApiHelper.GetType(newTypeName);
+            //var newType = ApiHelper.GetType(newTypeName);
+            var newType = ApiHelper.GetTypeFromName(newTypeName);
             var newTypeChain = ApiHelper.TypeChain(newType);
             var indexChecked = new HashSet<string>();
             //determines how many db revisions to get at once and also the reindex threshhold - useful for handling large amount of data without raping server resources.

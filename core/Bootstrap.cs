@@ -64,14 +64,7 @@ namespace puck.core
             //publish
             ApiHelper.AfterEditorSettingsSave += (object o,puck.core.Events.AfterEditorSettingsSaveEventArgs args)=> {
                 if (args.Setting is PuckImageEditorSettings) {
-                    StateHelper.UpdateCrops();
-                    var repo = PuckCache.PuckRepo;
-                    var instruction = new PuckInstruction();
-                    instruction.InstructionKey = InstructionKeys.UpdateCrops;
-                    instruction.Count = 1;
-                    instruction.ServerName = ApiHelper.ServerName();
-                    repo.AddPuckInstruction(instruction);
-                    repo.SaveChanges();
+                    StateHelper.UpdateCrops(addInstruction:true);
                 }
             };
             PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_publish_notification", (object o, puck.core.Events.IndexingEventArgs args) =>

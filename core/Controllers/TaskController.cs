@@ -226,7 +226,8 @@ namespace puck.core.Controllers
                 var isGenerated = false;
                 
                 if (!string.IsNullOrEmpty(model.TemplateModel)) {
-                    var type = ApiHelper.GetType(model.TemplateModel);
+                    //var type = ApiHelper.GetType(model.TemplateModel);
+                    var type = ApiHelper.GetTypeFromName(model.TemplateModel);
                     modelname = type.FullName;
                     isGenerated = typeof(I_Generated).IsAssignableFrom(type);
                 }
@@ -708,7 +709,7 @@ namespace puck.core.Controllers
         // GET: /admin/Task/Create
         public JsonResult TaskTypes() {
             var ttypes = apiHelper.TaskTypes();
-            return Json(ttypes.Select(x => new {Name=x.FullName,Key=x.AssemblyQualifiedName}), JsonRequestBehavior.AllowGet);
+            return Json(ttypes.Select(x => new {Name=x.FullName,Key=x.FullName}), JsonRequestBehavior.AllowGet);
         }
         public ActionResult CreateTaskDialog() {
             return View();
@@ -717,13 +718,15 @@ namespace puck.core.Controllers
         {
             if (id != -1) {
                 var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks && x.ID == id).FirstOrDefault();
-                if (meta != null) { 
-                    Type t = Type.GetType(meta.Key);
+                if (meta != null) {
+                    //Type t = Type.GetType(meta.Key);
+                    Type t = apiHelper.TaskTypes().FirstOrDefault(x=>x.FullName.Equals(meta.Key));
                     var editModel = JsonConvert.DeserializeObject(meta.Value, t);
                     return View(editModel);
                 }
             }
-            Type modelType = Type.GetType(type);
+            //Type modelType = Type.GetType(type);
+            Type modelType = apiHelper.TaskTypes().FirstOrDefault(x => x.FullName.Equals(type));
             var model = Activator.CreateInstance(modelType);
             ((BaseTask)model).ID = -1;
             return View(model);
@@ -735,7 +738,8 @@ namespace puck.core.Controllers
         [HttpPost]
         public ActionResult Edit(string p_type,FormCollection fc)
         {
-            var targetType = Type.GetType(p_type);
+            //var targetType = Type.GetType(p_type);
+            var targetType = apiHelper.TaskTypes().FirstOrDefault(x=>x.FullName.Equals(p_type));
             var model = Activator.CreateInstance(targetType);
             bool success = false;
             string message = "";
@@ -750,7 +754,7 @@ namespace puck.core.Controllers
                 }else{
                     taskMeta = new PuckMeta();
                     taskMeta.Name = DBNames.Tasks;
-                    taskMeta.Key = mod.GetType().AssemblyQualifiedName;
+                    taskMeta.Key = mod.GetType().FullName;
                     taskMeta.Value = taskMeta.Value = JsonConvert.SerializeObject(mod);
                     repo.AddMeta(taskMeta);
                 }

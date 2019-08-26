@@ -40,11 +40,11 @@ namespace puck.core.Helpers
         public static ApiHelper apiHelper { get { return PuckCache.ApiHelper; } }
         public static I_Log logger { get { return PuckCache.PuckLog; } }
 
-        public static void UpdateCrops() {
+        public static void UpdateCrops(bool addInstruction=false) {
             var settingsType = typeof(PuckImageEditorSettings);
             var modelType = typeof(BaseModel);
             var repo = Repo;
-            string key = string.Concat(settingsType.AssemblyQualifiedName, ":", modelType.AssemblyQualifiedName, ":");
+            string key = string.Concat(settingsType.FullName, ":", modelType.Name, ":");
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(key)).FirstOrDefault();
             if (meta != null)
             {
@@ -56,6 +56,15 @@ namespace puck.core.Helpers
                             PuckCache.CropSizes[crop.Alias] = crop;
                     }
                 }
+            }
+            if (addInstruction)
+            {
+                var instruction = new PuckInstruction();
+                instruction.InstructionKey = InstructionKeys.UpdateCrops;
+                instruction.Count = 1;
+                instruction.ServerName = ApiHelper.ServerName();
+                repo.AddPuckInstruction(instruction);
+                repo.SaveChanges();
             }
         }
 
@@ -118,7 +127,7 @@ namespace puck.core.Helpers
             foreach (var item in meta)
             {
                 //check saved type is in currentTypes
-                var type = currentTypes.FirstOrDefault(x => x.AssemblyQualifiedName.Equals(item.Key));
+                var type = currentTypes.FirstOrDefault(x => x.Name.Equals(item.Key));
                 if (type != null)
                 {
                     var typeChain = ApiHelper.TypeChain(type);
@@ -135,7 +144,7 @@ namespace puck.core.Helpers
             foreach (var type in typesToUpdate)
             {
                 //get revisions whose typechains have changed
-                var revisions = repo.GetPuckRevision().Where(x => x.Type.Equals(type.AssemblyQualifiedName));
+                var revisions = repo.GetPuckRevision().Where(x => x.Type.Equals(type.Name));
                 foreach (var revision in revisions)
                 {
                     //update typechain in revision and in model which may need to be published
@@ -158,7 +167,7 @@ namespace puck.core.Helpers
                 var newMeta = new PuckMeta
                 {
                     Name = DBNames.TypeChain,
-                    Key = x.AssemblyQualifiedName,
+                    Key = x.Name,
                     Value = ApiHelper.TypeChain(x)
                 };
                 repo.AddMeta(newMeta);

@@ -35,7 +35,8 @@ namespace puck.core.Helpers
         {
             try
             {
-                var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetType(revision.Type)));
+                //var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetType(revision.Type)));
+                var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetTypeFromName(revision.Type)));
                 var mod = model as BaseModel;
                 mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
@@ -50,7 +51,8 @@ namespace puck.core.Helpers
         {
             try
             {
-                var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetType(revision.Type)));
+                //var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetType(revision.Type)));
+                var model = JsonConvert.DeserializeObject(revision.Value, ConcreteType(ApiHelper.GetTypeFromName(revision.Type)));
                 var mod = model as BaseModel;
                 mod.Id = revision.Id;
                 mod.ParentId = revision.ParentId;
@@ -101,7 +103,8 @@ namespace puck.core.Helpers
         }
         private static string DoTypeChain(Type type, string chain = "")
         {
-            chain += type.FullName + " ";
+            //chain += type.FullName + " ";
+            chain += type.Name + " ";
             if (type.BaseType != null && type.BaseType != typeof(Object))
                 chain = DoTypeChain(type.BaseType, chain);
             return chain.TrimEnd();

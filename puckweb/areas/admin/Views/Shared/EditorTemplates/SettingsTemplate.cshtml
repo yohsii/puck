@@ -3,8 +3,17 @@
 @{
     var apiHelper = PuckCache.ApiHelper;
     var views = new List<FileInfo>();
-    if(!string.IsNullOrEmpty(Request["type"])){
-        views = apiHelper.AllowedViews(Request["type"],new string[] { "~/views/shared/", "~/views/_ViewStart.cshtml" });
+    var typeString = Request["type"];
+    if (string.IsNullOrEmpty(typeString)) {
+        typeString = Request["p_type"];
+    }
+    if (string.IsNullOrEmpty(typeString)) {
+        if (ViewBag.Level0Type != null) {
+            typeString = ViewBag.Level0Type.Name;
+        }
+    }
+    if(!string.IsNullOrEmpty(typeString)){
+        views = apiHelper.AllowedViews(typeString,new string[] { "~/views/shared/", "~/views/_ViewStart.cshtml" });
         if(views.Count==0){
             views = apiHelper.Views(new string[] { "~/views/shared/", "~/views/_ViewStart.cshtml" });
         }

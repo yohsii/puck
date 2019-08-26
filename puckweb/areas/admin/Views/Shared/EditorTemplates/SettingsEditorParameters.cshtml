@@ -16,7 +16,7 @@
         <td><label>parameters:</label></td>
         <td><select class="stype">
         @foreach(var setting in settingTypes){
-            <option value="@setting.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(setting))</option>    
+            <option value="@setting.FullName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(setting))</option>    
         }
         </select>
         </td>
@@ -27,9 +27,9 @@
         <td><select class="mtype">
         @foreach (var mod in models)
         {
-            <option value="@mod.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(mod))</option>
+            <option value="@mod.Name">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(mod))</option>
             var props = ApiHelper.ConcreteType(mod).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            propsForType[mod.AssemblyQualifiedName] = props.ToList();
+            propsForType[mod.Name] = props.ToList();
         }
         </select>
         </td>
@@ -67,15 +67,17 @@
             {
                 var keys = entry.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 if (keys.Length < 2) { continue; }
-                var settingsType = ApiHelper.GetType(keys[0]);
-                var modelType = ApiHelper.GetType(keys[1]);
+                //var settingsType = ApiHelper.GetType(keys[0]);
+                var settingsType = ApiHelper.EditorSettingTypes().FirstOrDefault(x=>x.FullName.Equals(keys[0]));
+                //var modelType = ApiHelper.GetType(keys[1]);
+                var modelType = ApiHelper.GetTypeFromName(keys[1]);
                 if (settingsType == null || modelType == null){
                     continue;
                 }
                 var propertyName = keys.Length < 3 ? "" : keys[2];
                 <tr>
-                    <td data-type="@settingsType.AssemblyQualifiedName">@settingsType.FullName</td>
-                    <td data-type="@modelType.AssemblyQualifiedName">@modelType.FullName</td>
+                    <td data-type="@settingsType.FullName">@settingsType.FullName</td>
+                    <td data-type="@modelType.Name">@modelType.Name</td>
                     <td>@propertyName</td>
                     <td>
                         <a href="#" class="edit">edit</a>

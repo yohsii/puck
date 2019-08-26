@@ -286,11 +286,11 @@ namespace puck.core.Controllers
             //further filtering based on allowed types and the types of the children nodes
             var typesToRemove = new List<Type>();
             foreach (var type in allowedTypes) {
-                var typeAllowedTypes = apiHelper.AllowedTypes(type.AssemblyQualifiedName);
+                var typeAllowedTypes = apiHelper.AllowedTypes(type.Name);
                 if (typeAllowedTypes.Count == 0)
                     continue;
                 foreach (var childRevision in children) {
-                    if (!typeAllowedTypes.Any(x => x.AssemblyQualifiedName == childRevision.Type)) {
+                    if (!typeAllowedTypes.Any(x => x.Name == childRevision.Type)) {
                         typesToRemove.Add(type);
                     }
                 }
@@ -303,8 +303,10 @@ namespace puck.core.Controllers
         public ActionResult ChangeTypeMappingDialog(Guid id, string newType)
         {
             var revision = repo.GetPuckRevision().Where(x => x.Id == id && x.Current).FirstOrDefault();
-            var tCurrentType = ApiHelper.GetType(revision.Type);
-            var tNewType = ApiHelper.GetType(newType);
+            //var tCurrentType = ApiHelper.GetType(revision.Type);
+            var tCurrentType = ApiHelper.GetTypeFromName(revision.Type);
+            //var tNewType = ApiHelper.GetType(newType);
+            var tNewType = ApiHelper.GetTypeFromName(newType);
 
             var baseModelProperties = typeof(BaseModel).GetProperties().ToList();
             var currentTypeProperties = tCurrentType.GetProperties().Where(x => !baseModelProperties.Any(xx => xx.Name == x.Name)).ToList();
@@ -312,7 +314,7 @@ namespace puck.core.Controllers
             var model = new ChangeType() { ContentId = id, ContentType = tCurrentType, Revision = revision,
                 ContentProperties = currentTypeProperties, NewType = tNewType, NewTypeProperties = newTypeProperties };
 
-            model.Templates = apiHelper.AllowedViews(tNewType.AssemblyQualifiedName);
+            model.Templates = apiHelper.AllowedViews(tNewType.Name);
             if (model.Templates.Count == 0)
                 model.Templates = apiHelper.Views();
             var selectListItems = new List<SelectListItem>();
@@ -450,7 +452,8 @@ namespace puck.core.Controllers
                 foreach (var revision in revisions)
                 {
                     var model = ApiHelper.RevisionToBaseModel(revision);
-                    var tNewType = ApiHelper.GetType(newType);
+                    //var tNewType = ApiHelper.GetType(newType);
+                    var tNewType = ApiHelper.GetTypeFromName(newType);
                     var newModel = Activator.CreateInstance(tNewType);
                     var newModelAsBaseModel = newModel as BaseModel;
                     newModelAsBaseModel.Id = model.Id;
@@ -548,7 +551,8 @@ namespace puck.core.Controllers
             var typeStrings = typeGroups.Select(x=>x.Key);
             var result = new List<dynamic>();
             foreach (var typeString in typeStrings) {
-                var type = ApiHelper.GetType(typeString);
+                //var type = ApiHelper.GetType(typeString);
+                var type = ApiHelper.GetTypeFromName(typeString);
                 if (type != null) {
                     result.Add(new {Name=ApiHelper.FriendlyClassName(type),Type=typeString});
                 }
@@ -566,8 +570,9 @@ namespace puck.core.Controllers
             if (string.IsNullOrEmpty(type))
             {
                 foreach (var typeString in typeStrings) {
+                    var _type = ApiHelper.GetTypeFromName(typeString);
                     var tqs = "(";
-                    foreach (var t in PuckCache.TypeFields[typeString])
+                    foreach (var t in PuckCache.TypeFields[_type.AssemblyQualifiedName])
                     {
                         if (tqs.IndexOf(" " + t.Key + ":") > -1)
                             continue;
@@ -585,8 +590,9 @@ namespace puck.core.Controllers
                 results = results.OrderByDescending(x => float.Parse(x[FieldKeys.Score])).ToList();
             }
             else {
+                var _type = ApiHelper.GetTypeFromName(type);
                 var tqs = "(";
-                foreach (var f in PuckCache.TypeFields[type])
+                foreach (var f in PuckCache.TypeFields[_type.AssemblyQualifiedName])
                 {
                     tqs += string.Concat(f.Key, ":", q, " ");
                 }
@@ -602,7 +608,8 @@ namespace puck.core.Controllers
             
             var model = new List<BaseModel>();
             foreach (var res in results) {
-                var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue],ApiHelper.ConcreteType(ApiHelper.GetType(res[FieldKeys.PuckType]))) as BaseModel;
+                //var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue],ApiHelper.ConcreteType(ApiHelper.GetType(res[FieldKeys.PuckType]))) as BaseModel;
+                var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue], ApiHelper.GetTypeFromName(res[FieldKeys.PuckType])) as BaseModel;
                 model.Add(mod);
             }
             return View(model);
@@ -763,11 +770,11 @@ namespace puck.core.Controllers
         {
             if (string.IsNullOrEmpty(type))
                 return Json(apiHelper.AllModels().Select(x =>
-                    new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
+                    new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.Name}
                     ), JsonRequestBehavior.AllowGet);
             else
                 return Json(apiHelper.AllowedTypes(type).Select(x =>
-                    new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.AssemblyQualifiedName }
+                    new { Name = ApiHelper.FriendlyClassName(x), AssemblyName = x.Name}
                     ), JsonRequestBehavior.AllowGet);
         }
         public ActionResult ModelOptions(string type) {
@@ -775,13 +782,14 @@ namespace puck.core.Controllers
             
             var modelMatches = models.Where(x => x.FullName.EndsWith(type)).ToList();
             var result = (modelMatches == null ? models : new List<Type> (modelMatches))
-                .Select(x => new {Name=ApiHelper.FriendlyClassName(x),AssemblyName=x.AssemblyQualifiedName})
+                .Select(x => new {Name=ApiHelper.FriendlyClassName(x),AssemblyName=x.Name})
                 .ToList();
             return Json(result,JsonRequestBehavior.AllowGet);
         }
         public ActionResult InspectModel(string type,string opath="") {
             var isGenerated = false;
-            var tType = ApiHelper.GetType(type);
+            //var tType = ApiHelper.GetType(type);
+            var tType = ApiHelper.GetTypeFromName(type);
             var originalType = tType;
             if (typeof(I_Generated).IsAssignableFrom(tType))
             {
@@ -832,7 +840,8 @@ namespace puck.core.Controllers
             ViewBag.IsPrepopulated = true;
             object model = null;
             //empty model of type
-            var modelType = ApiHelper.GetType(p_type);
+            //var modelType = ApiHelper.GetType(p_type);
+            var modelType = ApiHelper.GetTypeFromName(p_type);
             var concreteType = ApiHelper.ConcreteType(modelType);
             model = ApiHelper.CreateInstance(concreteType);
             ObjectDumper.SetPropertyValues(model,onlyPopulateListEditorLists:true);
@@ -851,7 +860,8 @@ namespace puck.core.Controllers
             if (!string.IsNullOrEmpty(p_type))
             {
                 //empty model of type
-                var modelType = ApiHelper.GetType(p_type);
+                //var modelType = ApiHelper.GetType(p_type);
+                var modelType = ApiHelper.GetTypeFromName(p_type);
                 var concreteType = ApiHelper.ConcreteType(modelType);
                 model = ApiHelper.CreateInstance(concreteType);
                 //if creating new, return early
@@ -863,7 +873,7 @@ namespace puck.core.Controllers
                     basemodel.Path = "";
                     basemodel.Variant = p_variant;
                     basemodel.TypeChain = ApiHelper.TypeChain(concreteType);
-                    basemodel.Type = modelType.AssemblyQualifiedName;
+                    basemodel.Type = modelType.Name;
                     basemodel.CreatedBy = User.Identity.Name;
                     basemodel.LastEditedBy = basemodel.CreatedBy;
                     return View(model);
@@ -931,7 +941,8 @@ namespace puck.core.Controllers
         public JsonResult Edit(FormCollection fc,string p_type,string p_path) {
             lock (_savelck)
             {
-                var targetType = ApiHelper.ConcreteType(ApiHelper.GetType(p_type));
+                //var targetType = ApiHelper.ConcreteType(ApiHelper.GetType(p_type));
+                var targetType = ApiHelper.ConcreteType(ApiHelper.GetTypeFromName(p_type));
                 var model = ApiHelper.CreateInstance(targetType);
                 string path = "";
                 Guid parentId = Guid.Empty;
@@ -1021,8 +1032,10 @@ namespace puck.core.Controllers
             var model = new RevisionCompare{Current=null,Revision=null,RevisionID=-1};
             if (compareTo != null && current != null)
             {
-                var mCompareTo = JsonConvert.DeserializeObject(compareTo.Value,ApiHelper.ConcreteType(ApiHelper.GetType(compareTo.Type))) as BaseModel;
-                var mCurrent = JsonConvert.DeserializeObject(current.Value,ApiHelper.ConcreteType(ApiHelper.GetType(current.Type))) as BaseModel;
+                //var mCompareTo = JsonConvert.DeserializeObject(compareTo.Value,ApiHelper.ConcreteType(ApiHelper.GetType(compareTo.Type))) as BaseModel;
+                var mCompareTo = JsonConvert.DeserializeObject(compareTo.Value, ApiHelper.ConcreteType(ApiHelper.GetTypeFromName(compareTo.Type))) as BaseModel;
+                //var mCurrent = JsonConvert.DeserializeObject(current.Value,ApiHelper.ConcreteType(ApiHelper.GetType(current.Type))) as BaseModel;
+                var mCurrent = JsonConvert.DeserializeObject(current.Value, ApiHelper.ConcreteType(ApiHelper.GetTypeFromName(current.Type))) as BaseModel;
                 model = new RevisionCompare { Current = mCurrent, Revision = mCompareTo,RevisionID=compareTo.RevisionID};
             }
             return View(model);
@@ -1050,10 +1063,13 @@ namespace puck.core.Controllers
                     rnode.IdPath = current.FirstOrDefault().IdPath;
                     rnode.SortOrder = current.FirstOrDefault().SortOrder;
                     rnode.ParentId = current.FirstOrDefault().ParentId;
+                    //rnode.Type = current.FirstOrDefault().Type;
+                    //rnode.TypeChain = current.FirstOrDefault().TypeChain;
                 }
                 if (current.Any(x => x.Published))
                 {
-                    var model = JsonConvert.DeserializeObject(rnode.Value,ApiHelper.ConcreteType(ApiHelper.GetType(rnode.Type))) as BaseModel;
+                    //var model = JsonConvert.DeserializeObject(rnode.Value,ApiHelper.ConcreteType(ApiHelper.GetType(rnode.Type))) as BaseModel;
+                    var model = JsonConvert.DeserializeObject(rnode.Value, ApiHelper.ConcreteType(ApiHelper.GetTypeFromName(rnode.Type))) as BaseModel;
                     indexer.Index(new List<BaseModel>(){model});
                 }
                 path = rnode.Path;

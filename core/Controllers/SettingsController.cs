@@ -63,7 +63,9 @@ namespace puck.core.Controllers
 
         public ActionResult EditParameters(string settingsType,string modelType,string propertyName) {
             string key = string.Concat(settingsType, ":", modelType, ":", propertyName);
-            var typeSettings = Type.GetType(settingsType);
+            var typeModel = ApiHelper.GetTypeFromName(modelType);
+            //var typeSettings = Type.GetType(settingsType);
+            var typeSettings = ApiHelper.EditorSettingTypes().FirstOrDefault(x=> x.FullName==settingsType);
             var meta = repo.GetPuckMeta().Where(x=>x.Name==DBNames.EditorSettings && x.Key == key).FirstOrDefault();
             object model = null;
             if (meta != null) {
@@ -77,13 +79,17 @@ namespace puck.core.Controllers
             if (model == null) {
                 model = Activator.CreateInstance(typeSettings);
             }
+            ViewBag.ShouldBindListEditor = true;
+            ViewBag.IsPrepopulated = false;
+            ViewBag.Level0Type = typeModel;
             return View(model);
         }
 
         [HttpPost]
         public JsonResult EditParameters(string puck_settingsType,string puck_modelType,string puck_propertyName,FormCollection fc) {
             string key = string.Concat(puck_settingsType, ":", puck_modelType, ":", puck_propertyName);
-            var targetType = Type.GetType(puck_settingsType);
+            //var targetType = Type.GetType(puck_settingsType);
+            var targetType = ApiHelper.EditorSettingTypes().FirstOrDefault(x=>x.FullName==puck_settingsType);
             var model = Activator.CreateInstance(targetType);
             bool success = false;
             string message = "";
@@ -245,7 +251,7 @@ namespace puck.core.Controllers
                 {
                     foreach (var mod in apiHelper.AllModels(true))
                     {
-                        var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups + mod.AssemblyQualifiedName)).ToList();
+                        var fieldGroupMeta = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups + mod.Name)).ToList();
                         fieldGroupMeta.ForEach(x =>
                         {
                             repo.DeleteMeta(x);

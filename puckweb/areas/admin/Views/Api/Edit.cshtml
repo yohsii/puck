@@ -5,7 +5,7 @@
     ViewBag.Level0Type = Model.GetType();
 }
 <div class="content_edit_page">
-@using (Html.BeginForm("Edit", "Api", new {p_type=Model.GetType().AssemblyQualifiedName,p_path=Request["p_path"] }, FormMethod.Post))
+@using (Html.BeginForm("Edit", "Api", new {p_type=Model.GetType().Name,p_path=Request["p_path"] }, FormMethod.Post))
 {
     @Html.EditorForModel()
     

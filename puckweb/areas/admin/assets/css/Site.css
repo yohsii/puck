@@ -109,6 +109,12 @@ z-index:10;
 .main.grid .leftarea .left_item a {
     color:#333;
 }
+.main.grid .left_item {
+    padding:15px 0 0 15px;
+}
+.main.grid .left_item.left_content {
+    padding: 0px;
+}
 .main.grid .leftarea{border-right:4px solid #e2e2e2;}
 .main.grid .leftarea,.main.grid .rightarea{height:100%}
 .main.grid .hide{display:none;}

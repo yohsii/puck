@@ -391,7 +391,7 @@ namespace puck.core.Helpers
         public QueryHelper(bool prependTypeTerm = true)
         {
             if (prependTypeTerm)
-                this.And().Field(x => x.TypeChain, typeof(TModel).FullName.Wrap()).And().Field(x => x.Published, "true");
+                this.And().Field(x => x.TypeChain, typeof(TModel).Name.Wrap()).And().Field(x => x.Published, "true");
         }
 
         public QueryHelper<TModel> New() {
@@ -446,7 +446,7 @@ namespace puck.core.Helpers
             return this;
         }
         public void Clear() {
-            query = "+" + this.Field(FieldKeys.PuckTypeChain, typeof(TModel).FullName.Wrap()) + " ";
+            query = "+" + this.Field(FieldKeys.PuckTypeChain, typeof(TModel).Name.Wrap()) + " ";
         }
 
         public QueryHelper<TModel> Format(Expression<Func<TModel, object>> exp) {
@@ -546,7 +546,7 @@ namespace puck.core.Helpers
         private QueryHelper<TModel> GeoFilter(Expression<Func<TModel, object>> exp, double longitude, double latitude, double distDEG)
         {
             string name = getName(exp.Body.ToString());
-            name = name.IndexOf('.') > -1 ? name.Substring(0, name.LastIndexOf('.')) : name;
+            //name = name.IndexOf('.') > -1 ? name.Substring(0, name.LastIndexOf('.')) : name;
             SpatialOperation op = SpatialOperation.Intersects;
             //SpatialStrategy strat = new PointVectorStrategy(ctx, name);
             int maxLevels = 11;
@@ -734,7 +734,7 @@ namespace puck.core.Helpers
         {
             TrimAnd();
             string key = FieldKeys.PuckType;
-            query += string.Concat("+",key, ":", typeof(AType).AssemblyQualifiedName.Wrap(), " ");
+            query += string.Concat("+",key, ":", typeof(AType).Name.Wrap(), " ");
             return this;
         }
 
@@ -742,7 +742,7 @@ namespace puck.core.Helpers
         {
             TrimAnd();
             string key = FieldKeys.PuckType;
-            query += string.Concat("+",key, ":", typeof(TModel).AssemblyQualifiedName.Wrap(), " ");
+            query += string.Concat("+",key, ":", typeof(TModel).Name.Wrap(), " ");
             return this;
         }
 

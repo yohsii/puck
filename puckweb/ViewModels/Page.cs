@@ -23,7 +23,6 @@ namespace puck.ViewModels
         public List<TestModel3> Cities { get; set; }
     }
     public class TestModel {
-        [Display(GroupName ="Content")]
         public int Age { get; set; }
         public string Name { get; set; }
         [Display(ShortName = "[name$='Name']")]

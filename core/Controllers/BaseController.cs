@@ -49,14 +49,21 @@ namespace puck.core.Controllers
 
                 //do redirects
                 string redirectUrl;
-                if (PuckCache.Redirect301.TryGetValue(searchPath, out redirectUrl) || PuckCache.Redirect302.TryGetValue(searchPath, out redirectUrl))
+                if (PuckCache.Redirect301.TryGetValue(searchPath, out redirectUrl) )
                 {
                     Response.Cache.SetCacheability(HttpCacheability.Public);
                     Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
                     Response.Cache.SetValidUntilExpires(true);
                     Response.RedirectPermanent(redirectUrl, true);
                 }
-                
+                if (PuckCache.Redirect302.TryGetValue(searchPath, out redirectUrl))
+                {
+                    Response.Cache.SetCacheability(HttpCacheability.Public);
+                    Response.Cache.SetExpires(DateTime.Now.AddMinutes(PuckCache.RedirectOuputCacheMinutes));
+                    Response.Cache.SetValidUntilExpires(true);
+                    Response.Redirect(redirectUrl, true);
+                }
+
                 string variant;
                 if (!PuckCache.PathToLocale.TryGetValue(searchPath, out variant))
                 {
@@ -91,7 +98,7 @@ namespace puck.core.Controllers
 #if DEBUG
                     using (MiniProfiler.Current.Step("deserialize"))
                     {
-                        model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], ApiHelper.GetType(result[FieldKeys.PuckType])) as BaseModel;
+                        model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], ApiHelper.GetTypeFromName(result[FieldKeys.PuckType])) as BaseModel;
                     }
 #else
                     model = JsonConvert.DeserializeObject(result[FieldKeys.PuckValue], ApiHelper.GetType(result[FieldKeys.PuckType])) as BaseModel;
@@ -101,7 +108,7 @@ namespace puck.core.Controllers
                         int cacheMinutes;
                         if (!PuckCache.TypeOutputCache.TryGetValue(result[FieldKeys.PuckType], out cacheMinutes))
                         {
-                            if (!PuckCache.TypeOutputCache.TryGetValue(typeof(BaseModel).AssemblyQualifiedName, out cacheMinutes))
+                            if (!PuckCache.TypeOutputCache.TryGetValue(typeof(BaseModel).Name, out cacheMinutes))
                             {
                                 cacheMinutes = PuckCache.DefaultOutputCacheMinutes;
                             }

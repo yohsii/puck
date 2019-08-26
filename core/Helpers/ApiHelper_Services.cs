@@ -146,7 +146,8 @@ namespace puck.core.Helpers
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.Tasks).ToList();
             var toRemove = new List<PuckMeta>();
             meta.ForEach(x => {
-                var type = Type.GetType(x.Key);
+                //var type = Type.GetType(x.Key);
+                var type = TaskTypes().FirstOrDefault(xx=>xx.FullName.Equals(x.Key));
                 if (type == null)
                 {
                     toRemove.Add(x);
@@ -296,12 +297,13 @@ namespace puck.core.Helpers
                 result.Add(string.Concat(typeName, ":", groupName, ":", FieldName));
             });
             if (!string.IsNullOrEmpty(type)) {
-                var targetType = ApiHelper.GetType(type);
+                //var targetType = ApiHelper.GetType(type);
+                var targetType = ApiHelper.GetTypeFromName(type);
                 var baseTypes = BaseTypes(targetType);
                 baseTypes.Add(targetType);
                 result = result
                     .Where(x => baseTypes
-                        .Any(xx => xx.AssemblyQualifiedName.Equals(x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[0])))
+                        .Any(xx => xx.Name.Equals(x.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries)[0])))
                         .ToList();
             }
             return result;
@@ -367,7 +369,8 @@ namespace puck.core.Helpers
             {
                 //key - settingsType:modelType:propertyName
                 var keys = x.Key.Split(new char[] { ':' },StringSplitOptions.RemoveEmptyEntries);
-                var type = Type.GetType(keys[0]);
+                //var type = Type.GetType(keys[0]);
+                var type = ApiHelper.EditorSettingTypes().FirstOrDefault(xx=>xx.FullName.Equals(keys[0]));
                 var instance = JsonConvert.DeserializeObject(x.Value, type) as I_Puck_Editor_Settings;
                 result.Add(instance);
             });
@@ -375,7 +378,8 @@ namespace puck.core.Helpers
         }
         public List<Type> AllowedTypes(string typeName) {
             var meta = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTypes && x.Key.Equals(typeName)).ToList();
-            var result = meta.Select(x=>ApiHelper.GetType(x.Value)).ToList();
+            //var result = meta.Select(x=>ApiHelper.GetType(x.Value)).ToList();
+            var result = meta.Select(x => ApiHelper.GetTypeFromName(x.Value)).ToList();
             return result;
         }
         
@@ -423,8 +427,8 @@ namespace puck.core.Helpers
             return result;
         }
         public List<string> OrphanedTypeNames() {
-            var loadedTypes = Models().Select(x => x.AssemblyQualifiedName).ToList();
-            var names = repo.GetPuckRevision().Where(x => !loadedTypes.Contains(x.Type)).Select(x => x.Type).Distinct().ToList();
+            var loadedTypes = Models().Select(x => x.Name).ToList();
+            var names = repo.GetPuckRevision().Where(x =>x.Current && !loadedTypes.Contains(x.Type)).Select(x => x.Type).Distinct().ToList();
             return names;
         }
         

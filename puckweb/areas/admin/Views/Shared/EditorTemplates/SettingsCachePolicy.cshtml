@@ -15,7 +15,7 @@
         <td>
             <select>
             @foreach(var m in models){
-                <option value="@m.AssemblyQualifiedName">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
+                <option value="@m.Name">@ApiHelper.FriendlyClassName(ApiHelper.ConcreteType(m))</option>
             }
             </select>
         </td>
@@ -28,13 +28,14 @@
         @foreach(var m in Model){
             var kvp = m.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
             try{
-                var ctype = ApiHelper.GetType(kvp[0]);
+                //var ctype = ApiHelper.GetType(kvp[0]);
+                var ctype = ApiHelper.GetTypeFromName(kvp[0]);
                 var mins=0;
                 var error = false;
                 if(ctype==null || !int.TryParse(kvp[1],out mins)){
                     error = true;
                 }
-            <tr class="entry @(error?"error":"")"><td data-type="@kvp[0]">@ctype.FullName</td><td data-minutes="@kvp[1]">@kvp[1]</td></tr>
+            <tr class="entry @(error?"error":"")"><td data-type="@kvp[0]">@ctype.Name</td><td data-minutes="@kvp[1]">@kvp[1]</td></tr>
             }catch(Exception ex){
                 <b>could not load type @(kvp.Length>0?" - "+kvp[0]:"")</b>
                 <!--@ex.Message <text>-</text> @m-->
