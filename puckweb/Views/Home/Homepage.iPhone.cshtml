@@ -26,7 +26,7 @@
 
 <h3>Carousel Items</h3>
 <div>
-    @foreach (var imageModel in Model.CarouselItems.GetAll<ImageModel>())
+    @foreach (var imageModel in Model.CarouselItems.GetAll<ImageVM>())
     {                        
         <img width="700" alt="@imageModel.Image.Description" src="@imageModel.Image.Path" />
     }

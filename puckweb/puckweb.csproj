@@ -244,7 +244,7 @@
     <Compile Include="Transformers\PuckImageTransformer.cs" />
     <Compile Include="ViewModels\Folder.cs" />
     <Compile Include="ViewModels\Homepage.cs" />
-    <Compile Include="ViewModels\Image.cs" />
+    <Compile Include="ViewModels\ImageVM.cs" />
     <Compile Include="ViewModels\Page.cs" />
     <Compile Include="ViewModels\Section.cs" />
   </ItemGroup>

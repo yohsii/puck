@@ -489,7 +489,6 @@ namespace puck.core.Helpers
         {
             return this.Range(exp, start.ToString(), end.ToString(), true,true);
         }
-
         public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, long start, long end, bool inclusiveStart, bool inclusiveEnd)
         {
             return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, inclusiveEnd);
@@ -502,7 +501,31 @@ namespace puck.core.Helpers
         {
             return this.Range(exp, start.ToString(), end.ToString(), true, true);
         }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, float start, float end, bool inclusiveStart, bool inclusiveEnd)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, inclusiveEnd);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, float start, float end, bool inclusiveStart)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, true);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, float start, float end)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), true, true);
+        }
 
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, double start, double end, bool inclusiveStart, bool inclusiveEnd)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, inclusiveEnd);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, double start, double end, bool inclusiveStart)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), inclusiveStart, true);
+        }
+        public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, double start, double end)
+        {
+            return this.Range(exp, start.ToString(), end.ToString(), true, true);
+        }
         public QueryHelper<TModel> Range(Expression<Func<TModel, object>> exp, DateTime start, DateTime end, bool inclusiveStart, bool inclusiveEnd)
         {
             return this.Range(exp, start.ToString(dateFormat), end.ToString(dateFormat), inclusiveStart, inclusiveEnd);            
@@ -542,7 +565,67 @@ namespace puck.core.Helpers
         {
             return this.Range(exp, long.MinValue.ToString(), end.ToString(), true, true);
         }
+        public QueryHelper<TModel> GreaterThanEqualTo(Expression<Func<TModel, object>> exp, float start)
+        {
+            return this.Range(exp, start.ToString(), float.MaxValue.ToString(), true, true);
+        }
+        public QueryHelper<TModel> LessThanEqualTo(Expression<Func<TModel, object>> exp, float end)
+        {
+            return this.Range(exp, float.MinValue.ToString(), end.ToString(), true, true);
+        }
+        public QueryHelper<TModel> GreaterThanEqualTo(Expression<Func<TModel, object>> exp, double start)
+        {
+            return this.Range(exp, start.ToString(), double.MaxValue.ToString(), true, true);
+        }
+        public QueryHelper<TModel> LessThanEqualTo(Expression<Func<TModel, object>> exp, double end)
+        {
+            return this.Range(exp, double.MinValue.ToString(), end.ToString(), true, true);
+        }
 
+        //
+        public QueryHelper<TModel> GreaterThan(Expression<Func<TModel, object>> exp, DateTime start)
+        {
+            return this.Range(exp, start.ToString(dateFormat), DateTime.MaxValue.ToString(dateFormat), false, true);
+        }
+        public QueryHelper<TModel> LessThan(Expression<Func<TModel, object>> exp, DateTime end)
+        {
+            return this.Range(exp, DateTime.MinValue.ToString(dateFormat), end.ToString(dateFormat), true, false);
+        }
+
+        public QueryHelper<TModel> GreaterThan(Expression<Func<TModel, object>> exp, int start)
+        {
+            return this.Range(exp, start.ToString(), int.MaxValue.ToString(), false, true);
+        }
+        public QueryHelper<TModel> LessThan(Expression<Func<TModel, object>> exp, int end)
+        {
+            return this.Range(exp, int.MinValue.ToString(), end.ToString(), true, false);
+        }
+
+        public QueryHelper<TModel> GreaterThan(Expression<Func<TModel, object>> exp, long start)
+        {
+            return this.Range(exp, start.ToString(), long.MaxValue.ToString(), false, true);
+        }
+        public QueryHelper<TModel> LessThan(Expression<Func<TModel, object>> exp, long end)
+        {
+            return this.Range(exp, long.MinValue.ToString(), end.ToString(), true, false);
+        }
+        public QueryHelper<TModel> GreaterThan(Expression<Func<TModel, object>> exp, float start)
+        {
+            return this.Range(exp, start.ToString(), float.MaxValue.ToString(), false, true);
+        }
+        public QueryHelper<TModel> LessThan(Expression<Func<TModel, object>> exp, float end)
+        {
+            return this.Range(exp, float.MinValue.ToString(), end.ToString(), true, false);
+        }
+        public QueryHelper<TModel> GreaterThan(Expression<Func<TModel, object>> exp, double start)
+        {
+            return this.Range(exp, start.ToString(), double.MaxValue.ToString(), false, true);
+        }
+        public QueryHelper<TModel> LessThan(Expression<Func<TModel, object>> exp, double end)
+        {
+            return this.Range(exp, double.MinValue.ToString(), end.ToString(), true, false);
+        }
+        //
         private QueryHelper<TModel> GeoFilter(Expression<Func<TModel, object>> exp, double longitude, double latitude, double distDEG)
         {
             string name = getName(exp.Body.ToString());
