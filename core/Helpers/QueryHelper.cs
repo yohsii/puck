@@ -582,7 +582,6 @@ namespace puck.core.Helpers
             return this.Range(exp, double.MinValue.ToString(), end.ToString(), true, true);
         }
 
-        //
         public QueryHelper<TModel> GreaterThan(Expression<Func<TModel, object>> exp, DateTime start)
         {
             return this.Range(exp, start.ToString(dateFormat), DateTime.MaxValue.ToString(dateFormat), false, true);
@@ -625,7 +624,7 @@ namespace puck.core.Helpers
         {
             return this.Range(exp, double.MinValue.ToString(), end.ToString(), true, false);
         }
-        //
+        
         private QueryHelper<TModel> GeoFilter(Expression<Func<TModel, object>> exp, double longitude, double latitude, double distDEG)
         {
             string name = getName(exp.Body.ToString());
