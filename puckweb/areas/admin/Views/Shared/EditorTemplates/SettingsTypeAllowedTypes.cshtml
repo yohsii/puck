@@ -49,7 +49,7 @@
             container.find(".included .msg").remove();
             if (container.find(".included:visible .field").length == 0) {
                 container.find(".included:visible").append($("<div class='msg'></div>")
-                    .html("if this is empty, all child types will be allowed for this type"));
+                    .html("drag types here. if this is empty, all child types will be allowed for this type"));
             }
         }
         select.change(function (e) {
