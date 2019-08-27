@@ -713,6 +713,9 @@ namespace puck.core.Helpers
             if (query.EndsWith("+"))
                 query = query.TrimEnd('+');
         }
+        public QueryHelper<TModel> Ancestors(BaseModel m) {
+            return this.Ancestors(m.Path);
+        }
         public QueryHelper<TModel> Ancestors(string path)
         {
             TrimAnd();
@@ -725,6 +728,10 @@ namespace puck.core.Helpers
                     .Path(nodePath);
             }
             return this;
+        }
+        public QueryHelper<TModel> Siblings(BaseModel m)
+        {
+            return this.Siblings(m.Path, m.Id.ToString());
         }
         public QueryHelper<TModel> Siblings(string path, Guid id)
         {
@@ -743,6 +750,9 @@ namespace puck.core.Helpers
                     .Not()
                     .Field(x => x.Id, id.Wrap());
             return this;
+        }
+        public QueryHelper<TModel> Children(BaseModel m) {
+            return this.Children(m.Path);
         }
         public QueryHelper<TModel> Children(string path)
         {
@@ -767,11 +777,7 @@ namespace puck.core.Helpers
 
         public QueryHelper<TModel> Descendants(BaseModel m)
         {
-            TrimAnd();
-            this.And()
-                //.Field(x => x.Path, m.Path.ToLower() + "/".WildCardMulti());
-                .Path(m.Path.ToLower() + "/".WildCardMulti());
-            return this;
+            return this.Descendants(m.Path);
         }
 
         public QueryHelper<TModel> CurrentRoot(BaseModel m = null)
