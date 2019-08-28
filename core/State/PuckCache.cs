@@ -31,6 +31,7 @@ namespace puck.core.State
         public static bool UpdateTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool UpdateRecurringTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool TaskCatchUp = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckTaskCatchUp"]) && ConfigurationManager.AppSettings["PuckTaskCatchUp"].ToLower() == bool.TrueString.ToLower();
+        public static bool IsEditServer = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["IsEditServer"]) && ConfigurationManager.AppSettings["IsEditServer"].ToLower() == bool.TrueString.ToLower();
         public static int RedirectOuputCacheMinutes = 1;
         public static int DefaultOutputCacheMinutes = 0;
         public static int DisplayModesCacheMinutes = 10;

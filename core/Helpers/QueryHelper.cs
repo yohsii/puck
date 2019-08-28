@@ -373,7 +373,8 @@ namespace puck.core.Helpers
             string absPath = HttpContext.Current.Request.Url.AbsolutePath.ToLower();
             string path = PathPrefix() + (absPath == "/" ? "" : absPath);
             var qh = new QueryHelper<TModel>();
-            qh.And().Field(x => x.Path, path);
+            //qh.And().Field(x => x.Path, path);
+            qh.And().Path(path);
             return qh.GetAll();
         }
 
@@ -383,7 +384,8 @@ namespace puck.core.Helpers
             string absPath = HttpContext.Current.Request.Url.AbsolutePath.ToLower();
             string path = PathPrefix() + (absPath == "/" ? "" : absPath);
             var qh = new QueryHelper<TModel>();
-            qh.And().Field(x => x.Path, path).Variant(variant);
+            //qh.And().Field(x => x.Path, path).Variant(variant);
+            qh.And().Path(path).Variant(variant);
             return qh.Get();
         }
 
@@ -812,9 +814,10 @@ namespace puck.core.Helpers
         {
             TrimAnd();
             var includePath = string.Join("", Enumerable.Range(0, level).ToList().Select(x => "/*"));
-            var excludePath = includePath + "/";
+            var excludePath = includePath + "/".WildCardMulti();
             var key = FieldKeys.Path;
-            query += string.Concat("+", key, ":", includePath, " -", key, ":", excludePath, " ");
+            //query += string.Concat("+", key, ":", includePath, " -", key, ":", excludePath, " ");
+            this.Must().Path(includePath).Not().Path(excludePath);
             return this;
         }
 
@@ -863,7 +866,8 @@ namespace puck.core.Helpers
             string key = FieldKeys.Path;
             if (!value.EndsWith("/"))
                 value += "/";
-            query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/".WildCardMulti());
+            //query += string.Concat("+",key,":",value.WildCardMulti()," -",key,":",value.WildCardMulti()+"/".WildCardMulti());
+            this.Must().Path(value.WildCardMulti()).Not().Path(value.WildCardMulti()+"/".WildCardMulti());
             return this;
         }
         //end filters

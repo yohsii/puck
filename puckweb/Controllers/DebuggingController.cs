@@ -1,4 +1,5 @@
 ﻿using puck.core.Abstract;
+using puck.core.Controllers;
 using puck.core.Helpers;
 using puck.core.Services;
 using puck.ViewModels;
@@ -11,7 +12,7 @@ using System.Web.Mvc;
 
 namespace puck.Controllers
 {
-    public class DebuggingController : Controller
+    public class DebuggingController : BaseController
     {
         I_Puck_Repository r;
         ContentService contentService;
@@ -20,6 +21,12 @@ namespace puck.Controllers
             this.contentService = cs;
             this.r = r;
         }
+
+        [Authorize(Roles = "_puck")]
+        public ActionResult Protected() {
+            return base.Puck();
+        }
+
         public ActionResult RepublishAll() {
             using (MiniProfiler.Current.Step("save models"))
             {

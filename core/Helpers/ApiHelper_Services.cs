@@ -183,8 +183,9 @@ namespace puck.core.Helpers
         public List<BaseTask> SystemTasks() {
             var result = new List<BaseTask>();
             result.Add(new SyncCheckTask());
-            result.Add(new TimedPublishTask());
             result.Add(new KeepAliveTask());
+            if (PuckCache.IsEditServer)
+                result.Add(new TimedPublishTask());
             return result;
         }
         
