@@ -583,7 +583,7 @@ namespace puck.core.Controllers
                     tqs += string.Concat(" AND ", FieldKeys.PuckType, ":", "\"",typeString,"\"");
                     if (!string.IsNullOrEmpty(root))
                     {
-                        tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root, "/*");
+                        tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root.Replace("/", @"\/"), @"\/*");
                     }
                     results.AddRange(PuckCache.PuckSearcher.Query(tqs,typeString));
                 }
@@ -601,7 +601,7 @@ namespace puck.core.Controllers
                 tqs +=string.Concat(" AND ",FieldKeys.PuckType,":","\"",type,"\"");
                 if (!string.IsNullOrEmpty(root))
                 {
-                    tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root, "/*");
+                    tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root.Replace("/", @"\/"), @"\/*");
                 }
                 results.AddRange(PuckCache.PuckSearcher.Query(tqs,type));
             }
