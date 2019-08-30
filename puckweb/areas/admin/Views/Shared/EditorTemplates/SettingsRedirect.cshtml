@@ -56,7 +56,7 @@
             var markup = redirectsContainer.find(".tree_container").clone();
             var el = markup.find(".node:first");
             overlay(markup,undefined,undefined,undefined,to?"Redirect To":"Redirect From");
-            getDrawContent(startPath, el);
+            getDrawContent(startId, el);
             markup.on("click", ".node span", function (e) {
                 var node = $(this).parents(".node:first");
                 var path = node.attr("data-path");

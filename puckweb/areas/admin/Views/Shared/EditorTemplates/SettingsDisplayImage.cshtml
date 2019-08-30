@@ -1,9 +1,23 @@
 ﻿@model Object
 
 <div class="noedit settings_display_image">
-    @if(Model !=null){
-        <img alt="image" src="@Model" width="100" />
-        <a href="@Model.ToString()" target="_blank" style="display:block;">@Model.ToString()</a>
+    @if (Model != null)
+    {
+        var value = Model.ToString();
+        <img alt="image" src="@value" width="100" />
+        <a href="@value" target="_blank" style="display:block;">
+            @{ 
+                value = value.TrimEnd('/');
+            }
+            @if (value.IndexOf("/") > -1)
+            {
+                @value.Substring(Model.ToString().LastIndexOf("/")+1)
+            }
+            else
+            {
+                @value
+            }
+        </a>
     }    
 </div>
 @Html.Hidden("",Model==null?null:Model.ToString())

@@ -110,7 +110,7 @@
         var getPropName = function () {
             return container.find("div:hidden.propName:first").attr("data-propName");
         }        
-        container.parents(".editor-field:first").css({ clear: "both" });
+        //container.parents(".editor-field:first").css({ clear: "both" });
         var setValue = function () {
             selected_container.find("input:hidden").remove();
             container.find(".cropSizes:first .cropSize").each(function (i) {
