@@ -16,6 +16,7 @@ namespace puck.core.Abstract
         void Delete(string query,bool reloadSearcher=true);
         void Delete<T>(List<T> toDelete) where T : BaseModel;
         void Delete<T>(T toDelete) where T : BaseModel;
+        void DeleteAll(bool reloadSearcher = true);
         void Ini();
         void Optimize();
         event EventHandler<BeforeIndexingEventArgs> BeforeIndex;

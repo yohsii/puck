@@ -40,6 +40,8 @@ namespace puck.core.Helpers
                 var mod = model as BaseModel;
                 mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
+                mod.Type = revision.Type;
+                mod.TypeChain = revision.TypeChain;
                 return model;
             }
             catch (Exception ex)
@@ -57,7 +59,8 @@ namespace puck.core.Helpers
                 mod.Id = revision.Id;
                 mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
-                
+                mod.Type = revision.Type;
+                mod.TypeChain = revision.TypeChain;
                 return mod;
             }
             catch (Exception ex)
@@ -73,6 +76,8 @@ namespace puck.core.Helpers
                 var mod = model as BaseModel;
                 mod.ParentId = revision.ParentId;
                 mod.Path = revision.Path; mod.SortOrder = revision.SortOrder; mod.NodeName = revision.NodeName; mod.Published = revision.Published;
+                mod.Type = revision.Type;
+                mod.TypeChain = revision.TypeChain;
                 return mod;
             }
             catch (Exception ex)

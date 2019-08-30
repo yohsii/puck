@@ -448,6 +448,7 @@ namespace puck.core.Controllers
         {
             string msg = "";
             bool success = false;
+            int affected = 0;
             try
             {
                 //orphan types
@@ -457,7 +458,7 @@ namespace puck.core.Controllers
                     {
                         var t1 = entry.Key;
                         var t2 = entry.Value;
-                        contentService.RenameOrphaned(t1, t2);
+                        affected = contentService.RenameOrphaned2(t1, t2);
                     }
                 }
                 repo.SaveChanges();
@@ -469,7 +470,7 @@ namespace puck.core.Controllers
                 msg = ex.Message;
                 success = false;
             }
-            return Json(new { success = success, message = msg }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = success, message = msg,affected=affected }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Edit()

@@ -393,7 +393,22 @@ namespace puck.core.Helpers
         public QueryHelper(bool prependTypeTerm = true)
         {
             if (prependTypeTerm)
-                this.And().Field(x => x.TypeChain, typeof(TModel).Name.Wrap()).And().Field(x => x.Published, "true");
+            {
+                if (typeof(TModel) == typeof(BaseModel)) {
+                    this.And().Field(x => x.Published, "true");
+                }
+                else
+                {
+                    var innerQ = this.New();
+                    foreach (var type in PuckCache.ModelDerivedModels[typeof(TModel).Name])
+                    {
+                        innerQ.Field(x=>x.Type,type.Name);
+                    }
+                    innerQ.Field(x=>x.Type,typeof(TModel).Name);
+                    this.Must().Group(innerQ).And().Field(x => x.Published, "true");
+                }
+                //this.And().Field(x => x.TypeChain, typeof(TModel).Name.Wrap()).And().Field(x => x.Published, "true");
+            }
         }
 
         public QueryHelper<TModel> New() {

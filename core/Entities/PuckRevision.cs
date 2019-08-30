@@ -27,7 +27,7 @@ namespace puck.core.Entities
         {
             try
             {
-                var model = JsonConvert.DeserializeObject(this.Value, ApiHelper.ConcreteType(ApiHelper.GetType(this.Type)));
+                var model = JsonConvert.DeserializeObject(this.Value, ApiHelper.ConcreteType(ApiHelper.GetTypeFromName(this.Type)));
                 var mod = model as BaseModel;
                 mod.Id = this.Id;
                 mod.ParentId = this.ParentId;
@@ -35,7 +35,8 @@ namespace puck.core.Entities
                 mod.SortOrder = this.SortOrder;
                 mod.NodeName = this.NodeName;
                 mod.Published = this.Published;
-
+                mod.Type = this.Type;
+                mod.TypeChain = this.TypeChain;
                 return mod;
             }
             catch (Exception ex)

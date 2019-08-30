@@ -1227,13 +1227,14 @@ namespace puck.core.Services
 
                     //    }
                     //}
-                    var qh = new QueryHelper<BaseModel>(prependTypeTerm: false);
-                    qh.And().Field(x => x.TypeChain, typeof(BaseModel).Name.Wrap());
-                    var query = qh.ToString();
+                    //var qh = new QueryHelper<BaseModel>(prependTypeTerm: false);
+                    //qh.And().Field(x => x.TypeChain, typeof(BaseModel).Name.Wrap());
+                    //var query = qh.ToString();
                     PuckCache.IndexingStatus = $"deleting all indexed items";
                     using (MiniProfiler.Current.Step("delete models"))
                     {
-                        indexer.Delete(query, reloadSearcher: false);
+                        //indexer.Delete(query, reloadSearcher: false);
+                        indexer.DeleteAll();
                     }
                     using (MiniProfiler.Current.Step("index models"))
                     {
@@ -1386,7 +1387,68 @@ namespace puck.core.Services
                 OnAfterMove(null, afterArgs);
             }
         }
+        public int UpdateTypeAndTypeChain(string oldType, string newType,string newTypeChain)
+        {
+            int rowsAffected = 0;
+            using (var con = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["PuckContext"].ConnectionString))
+            {
+                var sql = "update PuckRevisions set [Type] = @newType, [TypeChain] = @newTypeChain where [Type] = @oldType";
+                var com = new SqlCommand(sql, con);
+                com.Parameters.AddWithValue("@oldType", oldType);
+                com.Parameters.AddWithValue("@newType", newType);
+                com.Parameters.AddWithValue("@newTypeChain", newTypeChain);
+                con.Open();
+                rowsAffected = com.ExecuteNonQuery();
+            }
+            return rowsAffected;
+        }
+        public int RenameOrphaned2(string orphanTypeName, string newTypeName)
+        {
+            var newType = ApiHelper.GetTypeFromName(newTypeName);
+            var newTypeChain = ApiHelper.TypeChain(newType);
 
+            List<BaseModel> toIndex = null;
+
+            var affected = UpdateTypeAndTypeChain(orphanTypeName, newTypeName, newTypeChain);
+
+            var qh = new QueryHelper<BaseModel>(prependTypeTerm:false);
+            qh.Must().Field(x=>x.Type,orphanTypeName);
+            toIndex = qh.GetAllNoCast(limit: int.MaxValue);
+
+            toIndex.ForEach(x=> { x.Type = newTypeName; x.TypeChain = newTypeChain; });
+
+            indexer.Index(toIndex);
+
+            //update relevant meta entries
+            var metaTypeAllowedTypes = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTypes && (x.Key.Equals(orphanTypeName) || x.Value.Equals(orphanTypeName))).ToList();
+            metaTypeAllowedTypes.ForEach(x => {
+                if (x.Key.Equals(orphanTypeName))
+                    x.Key = newTypeName;
+                if (x.Value.Equals(orphanTypeName))
+                    x.Value = newTypeName;
+            });
+
+            var metaEditorSettings = repo.GetPuckMeta().Where(x => x.Name == DBNames.EditorSettings && x.Key.Equals(orphanTypeName)).ToList();
+            metaEditorSettings.ForEach(x =>
+            {
+                x.Key = newTypeName;
+            });
+
+            var metaTypeAllowedTemplates = repo.GetPuckMeta().Where(x => x.Name == DBNames.TypeAllowedTemplates && x.Key.Equals(orphanTypeName)).ToList();
+            metaTypeAllowedTemplates.ForEach(x =>
+            {
+                x.Key = newTypeName;
+            });
+
+            var metaFieldGroups = repo.GetPuckMeta().Where(x => x.Name.StartsWith(DBNames.FieldGroups + orphanTypeName)).ToList();
+            metaFieldGroups.ForEach(x =>
+            {
+                x.Name = DBNames.FieldGroups + newTypeName;
+            });
+
+            repo.SaveChanges();
+            return affected;
+        }
         public void RenameOrphaned(string orphanTypeName, string newTypeName)
         {
             //var newType = ApiHelper.GetType(newTypeName);

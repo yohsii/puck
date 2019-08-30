@@ -32,6 +32,7 @@ using Spatial4n.Core.Shapes;
 using System.Globalization;
 using Lucene.Net.Spatial.Prefix.Tree;
 using Lucene.Net.Spatial.Prefix;
+using System.Configuration;
 
 namespace puck.core.Concrete
 {
@@ -40,7 +41,14 @@ namespace puck.core.Concrete
         private StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(LuceneVersion.LUCENE_48);
         private KeywordAnalyzer KeywordAnalyzer = new KeywordAnalyzer();
         public readonly SpatialContext ctx = SpatialContext.GEO;
-        private string INDEXPATH { get { return HostingEnvironment.MapPath("~/App_Data/Lucene"); } }
+        private string INDEXPATH {
+            get {
+                if (PuckCache.UseAzureLucenePath) {
+                    return ConfigurationManager.AppSettings["LuceneAzureIndexPath"];
+                }
+                return HostingEnvironment.MapPath(ConfigurationManager.AppSettings["LuceneIndexPath"]);
+            }
+        }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };
         private IndexSearcher Searcher = null;
         private IndexWriter Writer = null;
@@ -412,7 +420,29 @@ namespace puck.core.Concrete
                 }
             }
         }
-
+        public void DeleteAll(bool reloadSearcher = true)
+        {
+            lock (write_lock)
+            {
+                try
+                {
+                    SetWriter(false);
+                    Writer.DeleteAll();
+                    Writer.Commit();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                    //logger.Log(ex);
+                }
+                finally
+                {
+                    CloseWriter();
+                    if (reloadSearcher)
+                        SetSearcher();
+                }
+            }
+        }
         public void Delete(string terms,bool reloadSearcher=true)
         {
             lock (write_lock)
@@ -607,7 +637,10 @@ namespace puck.core.Concrete
             var result = Query<T>(qstr, null, null, out total, limit: 1);
             return total;
         }
-        
+        public int DocumentCount() {
+            var docs = Searcher.Search(new MatchAllDocsQuery(),1);
+            return docs.TotalHits;
+        }
         public IList<T> Query<T>(string qstr,Filter filter,Sort sort,out int total,int limit=500,int skip=0) where T:BaseModel {
             var analyzer = PuckCache.AnalyzerForModel[typeof(T)];
             var parser = new PuckQueryParser<T>(LuceneVersion.LUCENE_48,FieldKeys.PuckDefaultField,analyzer);

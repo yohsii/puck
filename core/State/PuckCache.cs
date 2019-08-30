@@ -32,6 +32,7 @@ namespace puck.core.State
         public static bool UpdateRecurringTaskLastRun = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"]) && ConfigurationManager.AppSettings["PuckUpdateRecurringTaskLastRun"].ToLower() == bool.TrueString.ToLower();
         public static bool TaskCatchUp = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["PuckTaskCatchUp"]) && ConfigurationManager.AppSettings["PuckTaskCatchUp"].ToLower() == bool.TrueString.ToLower();
         public static bool IsEditServer = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["IsEditServer"]) && ConfigurationManager.AppSettings["IsEditServer"].ToLower() == bool.TrueString.ToLower();
+        public static bool UseAzureLucenePath = !string.IsNullOrEmpty(ConfigurationManager.AppSettings["UseAzureLucenePath"]) && ConfigurationManager.AppSettings["UseAzureLucenePath"].ToLower() == bool.TrueString.ToLower();
         public static int RedirectOuputCacheMinutes = 1;
         public static int DefaultOutputCacheMinutes = 0;
         public static int DisplayModesCacheMinutes = 10;
@@ -51,6 +52,7 @@ namespace puck.core.State
         public static Dictionary<string, int> TypeOutputCache { get; set; }
         public static Dictionary<string, Type> IGeneratedToModel { get; set; }
         public static Dictionary<string, Dictionary<string, string>> TypeFields { get; set; }
+        public static Dictionary<string,List<Type>> ModelDerivedModels { get; set; }
         //map model type fullname to asssembly qualified name
         public static Dictionary<string, string> ModelNameToAQN { get; set; }
         public static Dictionary<string, CropInfo> CropSizes { get; set; }

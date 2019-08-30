@@ -41,15 +41,17 @@ namespace puck.core
             StateHelper.UpdateAQNMappings();
             StateHelper.UpdateAnalyzerMappings();
             //update typechains which may have changed since last run
-            StateHelper.UpdateTypeChains();
+            //StateHelper.UpdateTypeChains();
+            /*will likely get rid of typechains*/
             StateHelper.UpdateCrops();
-
+            StateHelper.SetModelDerivedMappings();
             //figure out whether or not to republish entire site / ie coldboot
             var shouldColdBoot=SyncHelper.InitializeSync();
-            var qh = new QueryHelper<BaseModel>(prependTypeTerm: false);
-            qh.And().Field(x => x.TypeChain, typeof(BaseModel).FullName.Wrap());
-            var query = qh.ToString();
-            var documentCount = PuckCache.PuckSearcher.Count<BaseModel>(query);
+            //var qh = new QueryHelper<BaseModel>(prependTypeTerm: false);
+            //qh.And().Field(x => x.TypeChain, typeof(BaseModel).FullName.Wrap());
+            //var query = qh.ToString();
+            //var documentCount = PuckCache.PuckSearcher.Count<BaseModel>(query);
+            var documentCount = PuckCache.PuckSearcher.DocumentCount();
             if (shouldColdBoot || documentCount==0) {
                 if (!PuckCache.IsRepublishingEntireSite)
                 {

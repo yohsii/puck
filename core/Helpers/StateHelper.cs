@@ -332,7 +332,15 @@ namespace puck.core.Helpers
             if (meta != null && !string.IsNullOrEmpty(meta.Value))
                 PuckCache.SystemVariant = meta.Value;
         }
-
+        public static void SetModelDerivedMappings() {
+            var apiH = apiHelper;
+            PuckCache.ModelDerivedModels = new Dictionary<string, List<Type>>();
+            var modelTypes = apiH.Models();
+            foreach (var modelType in modelTypes) {
+                var derivedClasses = ApiHelper.FindDerivedClasses(modelType);
+                PuckCache.ModelDerivedModels[modelType.Name] = derivedClasses.ToList();
+            }
+        }
 
     }
 }
