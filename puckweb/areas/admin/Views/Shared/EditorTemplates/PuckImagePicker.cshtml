@@ -81,7 +81,7 @@
             </div>
             <div class="metaContainer">
                 <span class="nodename"></span>
-                - <span class="variant"></span>
+                <span class="separator">-</span> <span class="variant"></span>
             </div>
         </div>
     </div>
@@ -184,9 +184,13 @@
                 //console.log(res);
                 for (guid in res.current) {
                     var itemGroup = res.current[guid];
-                    for(variant in itemGroup) {
+                    var vCount = 0;
+                    for (variant in itemGroup) {
                         var item = itemGroup[variant];
-                        draw(item,res.children,itemContainer);
+                        if (vCount > 0 && item.Type != "ImageVM")
+                            break;
+                        draw(item, res.children, itemContainer);
+                        vCount++;
                     }
                 }
 
@@ -208,6 +212,8 @@
                 el.find("img").attr({ src: model.Image.Path }).css({width:"100%"});
             } else {
                 el.find(".imageContainer").hide();
+                el.find(".variant").hide();
+                el.find(".separator").hide();
             }
             if (children.includes(model.Id)) {
                 el.find(".metaContainer").addClass("folder");
@@ -274,6 +280,7 @@
         cursor:pointer;
         border: 1px dashed #121212;
         padding: 3px;
+        text-align:center;
     }
     .imagePickerOverlayContainer .metaContainer.folder span.nodename{cursor:pointer!important;}
     .imagePickerOverlayContainer .searchContainer button {
