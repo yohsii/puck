@@ -76,7 +76,7 @@
                 }
                 var propertyName = keys.Length < 3 ? "" : keys[2];
                 <tr>
-                    <td data-type="@settingsType.FullName">@settingsType.FullName</td>
+                    <td data-type="@settingsType.FullName">@ApiHelper.FriendlyClassName(settingsType)</td>
                     <td data-type="@modelType.Name">@modelType.Name</td>
                     <td>@propertyName</td>
                     <td>
@@ -98,6 +98,11 @@
         var models_sel = container.find("select.mtype");
         var props_sel = container.find("select.props");
         var edit_btn = container.find("button");
+        var fullNameToName = function (fullName) {
+            if (fullName.indexOf(".") > -1)
+                return fullName.substring(fullName.lastIndexOf(".") + 1);
+            return fullName;
+        }
         var showProptertiesForModel = function () {
             props_sel.hide();
             props_sel.filter("[data-model='" + models_sel.val() + "']").show();
@@ -132,7 +137,8 @@
             if (a.hasClass("edit")) {
                 editParameters(settingsType, modelType, propName,function(){});
             } else {
-                deleteParameters(key, function () { row.remove(); });
+                if(confirm("are you sure you want to delete this parameter?"))
+                    deleteParameters(key, function () { row.remove(); });
             }
         });
         showProptertiesForModel();

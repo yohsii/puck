@@ -920,7 +920,7 @@ var msg = function (success, str, shouldRemovePreviousMessages,container) {
     if (shouldRemovePreviousMessages) {
         container.find("div").remove();
     }
-    var btnClass = "";
+    var btnClass = "btn-light";
     if (success === false) { btnClass = "btn-danger"; }
     else if (success === true) { btnClass = "btn-success"; }
     var el = $("<div style='display:none;' class='btn " + btnClass + "'>" + str + "</div>");

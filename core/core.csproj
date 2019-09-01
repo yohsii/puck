@@ -253,6 +253,7 @@
     <Compile Include="Models\ChangeType.cs" />
     <Compile Include="Models\CropInfo.cs" />
     <Compile Include="Models\EditorSettings\PuckImageEditorSettings.cs" />
+    <Compile Include="Models\EditorSettings\PuckImagePickerEditorSettings.cs" />
     <Compile Include="Models\GeneratedModel.cs" />
     <Compile Include="Models\GeneratedPropertySelection.cs" />
     <Compile Include="Models\NotifyDialog.cs" />

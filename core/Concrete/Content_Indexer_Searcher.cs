@@ -33,6 +33,7 @@ using System.Globalization;
 using Lucene.Net.Spatial.Prefix.Tree;
 using Lucene.Net.Spatial.Prefix;
 using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace puck.core.Concrete
 {
@@ -41,12 +42,21 @@ namespace puck.core.Concrete
         private StandardAnalyzer StandardAnalyzer = new Lucene.Net.Analysis.Standard.StandardAnalyzer(LuceneVersion.LUCENE_48);
         private KeywordAnalyzer KeywordAnalyzer = new KeywordAnalyzer();
         public readonly SpatialContext ctx = SpatialContext.GEO;
+        private Regex regexIndexPathReplaceMachineName = new Regex(Regex.Escape("{machinename}"),RegexOptions.IgnoreCase|RegexOptions.Compiled);
         private string INDEXPATH {
             get {
+                string path = null;
                 if (PuckCache.UseAzureLucenePath) {
-                    return ConfigurationManager.AppSettings["LuceneAzureIndexPath"];
+                    path = ConfigurationManager.AppSettings["LuceneAzureIndexPath"];
                 }
-                return HostingEnvironment.MapPath(ConfigurationManager.AppSettings["LuceneIndexPath"]);
+                else
+                {
+                    path = HostingEnvironment.MapPath(
+                        regexIndexPathReplaceMachineName
+                            .Replace(ConfigurationManager.AppSettings["LuceneIndexPath"], ApiHelper.ServerName())
+                        ); 
+                }
+                return path;
             }
         }
         private string[] NoToken = new string[] { FieldKeys.ID.ToString(), FieldKeys.Path.ToString() };

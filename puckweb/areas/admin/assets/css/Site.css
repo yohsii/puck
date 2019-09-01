@@ -291,7 +291,14 @@ select.languages{height:200px !important;width:550px !important;}
 /*
 .main.grid table{border-collapse:separate;border-spacing:10px;}
 */
-table.revisions tr:nth-child(odd){/*background:#fbfbfb;*/}
+.editor_parameters tr:nth-child(odd) {
+    background: #fbfbfb;
+}
+.editor_parameters tr:nth-child(event) {
+    background: #fff;
+}
+table.revisions tr:nth-child(odd) { /*background:#fbfbfb;*/
+}
 table.revisions tr:nth-child(even){/*background:#fff;*/}
 table.revisions tr.current{background:#eeffee;}
 table.revisions tr td{border-top:1px solid #f9f9f9;}
