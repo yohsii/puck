@@ -5,7 +5,7 @@ var ctop = $(".menutop");
 var cleft = $(".leftarea");
 var cright = $(".rightarea .content");
 var cinterfaces = $("body>.main>.interfaces");
-var cmsg = $(".rightarea .message");
+var cmsg = $(".top .message");
 var searchType = '';
 var searchRoot = '';
 var searchTerm = '';
@@ -927,7 +927,8 @@ var msg = function (success, str, shouldRemovePreviousMessages,container) {
     var remove = $("<div class='btn btnclose'>x</div>").click(function () { $(this).parent().remove(); });
     el.append(remove);
     container.html(el);
-    el.fadeIn();
+    el.fadeIn(function () { setAreaHeights(); });
+    setTimeout(function () { el.fadeOut(function () { el.remove(); setAreaHeights(); }); }, 5000);
 }
 var puckmaxwidth = 960;
 var _overlayClose = function () {

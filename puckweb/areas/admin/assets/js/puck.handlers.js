@@ -473,7 +473,7 @@ $("button.search").click(function () {
 
 //set heights
 var setAreaHeights = function () {
-    var _h = $(window).height() - ($(".menutop").outerHeight() + 15);
+    var _h = $(window).height() - ($(".menutop").outerHeight() + 15) - ($(window).width()<768?$(".top .message").outerHeight():0);
     $(".leftarea").css({ height: _h, overflowY: "scroll" });
     $(".rightarea").css({ height: _h, overflowY: "scroll" });
     $(".leftToggle i").css({ top: (Math.round(_h / 2)) });
@@ -578,6 +578,7 @@ var handleHash = function (hash) {
         cleft.find(".left_content").show();
         var dict = getHashValues(hash);
         if (dict["id"] == undefined || dict["variant"] == undefined) {
+            cleft.show();
             cright.html("");
             return;
         }

@@ -5,8 +5,8 @@
 <h1 class="master">Puck</h1>
 
 <div class="main grid container_12 container-fluid">
-    <div class="row">
-        <div class="col-md-12 grid_12 menutop">
+    <div class="row top">
+        <div class="col-md-3 grid_12 menutop">
             <ul class="p-0">
                 <li class="selected"><a class='content' href="#content"><i class="fas fa-home"></i></a></li>
                 <li><a title="settings" data-permission="_settings" class='settings' href="#settings?path=/admin/settings/languages"><i class="fas fa-sliders-h"></i></a></li>
@@ -15,6 +15,11 @@
                 <li><a title="logout" class='logout' href="@Url.Action("out","admin")"><i class="fas fa-arrow-circle-left"></i></a></li>
             </ul>
 
+        </div>
+        <div class="col-md-9">
+            <div class="col-md-12 grid_9 alpha omega message">
+
+            </div>
         </div>
     </div>
     <div class="row">
@@ -82,9 +87,7 @@
         </div>
         <div class="col-md-9 grid_9 rightarea">
             <div class="leftToggle"><i class="fas fa-ellipsis-v"></i></div>
-            <div class="col-md-12 grid_9 alpha omega message">
-
-            </div>
+            
             <div data-tabPrefix="rightContent_" class="col-md-12 grid_9 alpha omega content">
 
             </div>
