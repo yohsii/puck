@@ -1,5 +1,7 @@
+**/[Aa]pp_[Dd]ata/Lucene*
 **/[Aa]pp_[Dd]ata/Lucene/*
 **/[Aa]pp_[Dd]ata/Log/*
+**/puckweb/Media/*
 
 *bin/*.dll
 *bin/*.pdb
