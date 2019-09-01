@@ -124,7 +124,8 @@ namespace puck.core.Controllers
                     //404
                     return View(PuckCache.Path404);
                 }
-                string templatePath = result[FieldKeys.TemplatePath];
+                //string templatePath = result[FieldKeys.TemplatePath];
+                string templatePath = model.TemplatePath;
                 if (!string.IsNullOrEmpty(dmode))
                 {
                     string cacheKey = CacheKeys.PrefixTemplateExist + dmode + templatePath;

@@ -90,7 +90,7 @@ namespace puck.core.Base
 
         [Display(Name = "Type Chain")]
         [UIHint("SettingsReadOnly")]
-        [IndexSettings(FieldIndexSetting=Lucene.Net.Documents.Field.Index.ANALYZED,Analyzer=typeof(StandardAnalyzer),FieldStoreSetting=Lucene.Net.Documents.Field.Store.YES)]
+        [IndexSettings(FieldIndexSetting=Lucene.Net.Documents.Field.Index.ANALYZED,Analyzer=typeof(StandardAnalyzer),FieldStoreSetting=Lucene.Net.Documents.Field.Store.NO)]
         public string TypeChain { get; set; }
 
         [UIHint("SettingsReadOnly")]
