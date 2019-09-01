@@ -14,6 +14,14 @@ namespace puck.ViewModels
 {
     public class Page:BaseModel
     {
+        [Display(Name = "Image Gallery", GroupName = "Images")]
+        [UIHint("PuckImagePicker")]
+        public List<PuckPicker> ImageGallery { get; set; }
+
+        [Display(GroupName = "Images")]
+        [UIHint("PuckImage")]
+        public PuckImage Image { get; set; }
+
         [Display(ShortName ="input",GroupName ="Content")]
         [UIHint("ListEditor")]
         public List<string> Names { get; set; }
@@ -21,10 +29,6 @@ namespace puck.ViewModels
         [Display(ShortName = "[name$='Name']",GroupName ="Content")]
         [UIHint("ListEditor")]
         public List<TestModel> Test { get; set; }
-
-        [Display(GroupName ="Content")]
-        [UIHint("PuckImage")]
-        public PuckImage Image { get; set; }
 
         [Required]
         [Display(Name = "Keywords",GroupName ="Content")]

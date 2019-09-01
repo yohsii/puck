@@ -182,8 +182,9 @@ var getEditorParametersMarkup = function (f, settingsType, modelType, propertyNa
 var getContent = function (path, f) {
     $.get("/admin/api/content?path=" + path, f);
 }
-var getContentByParentId = function (parentId, f) {
-    $.get("/admin/api/contentbyparentid?parentid=" + parentId, f);
+var getContentByParentId = function (parentId, f, cast) {
+    if (cast == undefined) cast = true;
+    $.get("/admin/api/contentbyparentid?cast="+cast+"&parentid=" + parentId, f);
 }
 
 var getTemplates = function (path, f) {
@@ -201,8 +202,11 @@ var getStartPath = function (f) {
 var getStartId = function (f) {
     $.get("/admin/api/startid", f);
 };
+var getSearchView = function (term, f, type, root) {
+    $.get("/admin/api/searchview?q=" + term + "&type=" + type + "&root=" + root, f, "html");
+}
 var getSearch = function (term, f, type, root) {
-    $.get("/admin/api/search?q=" + term + "&type=" + type + "&root=" + root, f, "html");
+    $.get("/admin/api/search?q=" + term + "&type=" + type + "&root=" + root, f);
 }
 var setRepublishEntireSite = function (f) {
     $.post("/admin/api/RepublishEntireSite", f);

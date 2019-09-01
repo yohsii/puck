@@ -559,60 +559,74 @@ namespace puck.core.Controllers
             }
             return Json(result,JsonRequestBehavior.AllowGet);
         }
-        [Auth(Roles = PuckRoles.Puck)]
-        public ActionResult Search(string q,string type,string root)
+        private List<BaseModel> DoSearch(string q, string type, string root)
         {
             var results = new List<Dictionary<string, string>>();
 
             var typeGroups = repo.GetPuckRevision().Where(x => x.Path.StartsWith(root + "/") && x.Current).GroupBy(x => x.Type);
             var typeStrings = typeGroups.Select(x => x.Key);
-            
+
             if (string.IsNullOrEmpty(type))
             {
-                foreach (var typeString in typeStrings) {
+                foreach (var typeString in typeStrings)
+                {
                     var _type = ApiHelper.GetTypeFromName(typeString);
                     var tqs = "(";
                     foreach (var t in PuckCache.TypeFields[_type.AssemblyQualifiedName])
                     {
                         if (tqs.IndexOf(" " + t.Key + ":") > -1)
                             continue;
-                            tqs += string.Concat(t.Key, ":", q, " ");
+                        tqs += string.Concat(t.Key, ":", q, " ");
                     }
                     tqs = tqs.Trim();
                     tqs += ")";
-                    tqs += string.Concat(" AND ", FieldKeys.PuckType, ":", "\"",typeString,"\"");
+                    tqs += string.Concat(" AND ", FieldKeys.PuckType, ":", "\"", typeString, "\"");
                     if (!string.IsNullOrEmpty(root))
                     {
                         tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root.Replace("/", @"\/"), @"\/*");
                     }
-                    results.AddRange(PuckCache.PuckSearcher.Query(tqs,typeString));
+                    results.AddRange(PuckCache.PuckSearcher.Query(tqs, typeString));
                 }
                 results = results.OrderByDescending(x => float.Parse(x[FieldKeys.Score])).ToList();
             }
-            else {
+            else
+            {
                 var _type = ApiHelper.GetTypeFromName(type);
                 var tqs = "(";
                 foreach (var f in PuckCache.TypeFields[_type.AssemblyQualifiedName])
                 {
                     tqs += string.Concat(f.Key, ":", q, " ");
                 }
-                tqs=tqs.Trim();
-                tqs+=")";
-                tqs +=string.Concat(" AND ",FieldKeys.PuckType,":","\"",type,"\"");
+                tqs = tqs.Trim();
+                tqs += ")";
+                tqs += string.Concat(" AND ", FieldKeys.PuckType, ":", "\"", type, "\"");
                 if (!string.IsNullOrEmpty(root))
                 {
                     tqs = string.Concat(tqs, " AND ", FieldKeys.Path, ":", root.Replace("/", @"\/"), @"\/*");
                 }
-                results.AddRange(PuckCache.PuckSearcher.Query(tqs,type));
+                results.AddRange(PuckCache.PuckSearcher.Query(tqs, type));
             }
-            
+
             var model = new List<BaseModel>();
-            foreach (var res in results) {
+            foreach (var res in results)
+            {
                 //var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue],ApiHelper.ConcreteType(ApiHelper.GetType(res[FieldKeys.PuckType]))) as BaseModel;
                 var mod = JsonConvert.DeserializeObject(res[FieldKeys.PuckValue], ApiHelper.GetTypeFromName(res[FieldKeys.PuckType])) as BaseModel;
                 model.Add(mod);
             }
-            return View(model);
+            return model;
+        }
+        [Auth(Roles = PuckRoles.Puck)]
+        public ActionResult SearchView(string q,string type,string root)
+        {
+            var model = DoSearch(q,type,root);
+            return View("search",model);
+        }
+        [Auth(Roles = PuckRoles.Puck)]
+        public ActionResult Search(string q, string type, string root)
+        {
+            var model = DoSearch(q, type, root);
+            return Json(model,JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
         public JsonResult VariantsForNode(string path){
@@ -655,7 +669,7 @@ namespace puck.core.Controllers
             return Json(new { current=results,published=publishedContent,children=haveChildren }, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Puck)]
-        public JsonResult ContentByParentId(Guid parentId =default(Guid))
+        public JsonResult ContentByParentId(Guid parentId =default(Guid),bool cast=true)
         {
             //using path instead of p_path in the method sig means path won't be checked against user's start node - which we don't want for this method
             List<PuckRevision> resultsRev;
@@ -667,7 +681,7 @@ namespace puck.core.Controllers
 #else
             resultsRev = repo.CurrentRevisionsByDirectory(p_path).ToList();
 #endif
-            var results = resultsRev.Select(x => ApiHelper.RevisionToBaseModelCast(x)).ToList()
+            var results = resultsRev.Select(x =>cast?ApiHelper.RevisionToBaseModelCast(x): x.ToBaseModel()).ToList()
                 .GroupById()
                 .OrderBy(x => x.Value.First().Value.SortOrder)
                 .ToDictionary(x => x.Key.ToString(), x => x.Value);

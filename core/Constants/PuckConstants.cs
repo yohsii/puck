@@ -126,8 +126,8 @@ namespace puck.core.Constants
         {
             {typeof(DateTime),typeof(DateTransformer)}
         };
-        public static Field.Index FieldIndexSetting = Field.Index.NOT_ANALYZED;
-        public static Field.Store FieldStoreSetting = Field.Store.YES;
+        public static Field.Index FieldIndexSetting = Field.Index.ANALYZED;
+        public static Field.Store FieldStoreSetting = Field.Store.NO;
 
     }
     

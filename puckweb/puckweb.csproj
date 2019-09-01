@@ -338,6 +338,10 @@
     <Content Include="areas\admin\assets\img\glyphicons-halflings.png" />
     <Content Include="areas\admin\assets\js\adapt.js" />
     <Content Include="areas\admin\assets\js\adapt.min.js" />
+    <Content Include="areas\admin\assets\js\angularjs\Controllers\PuckRootController.js" />
+    <Content Include="areas\admin\assets\js\angularjs\Controllers\PuckImagePicker.js" />
+    <Content Include="areas\admin\assets\js\angularjs\PuckApplication.js" />
+    <Content Include="areas\admin\assets\js\angularjs\Views\PuckImagePicker.html" />
     <Content Include="areas\admin\assets\js\bootstrap-wysihtml5-0.0.2.js" />
     <Content Include="areas\admin\assets\js\bootstrap.bundle.min.js" />
     <Content Include="areas\admin\assets\js\bootstrap.js" />
@@ -885,6 +889,7 @@
     <Content Include="areas\admin\assets\js\puck.actions.js" />
     <Content Include="areas\admin\assets\js\puck.get_set.js" />
     <Content Include="areas\admin\assets\js\puck.handlers.js" />
+    <Content Include="areas\admin\assets\js\require.js" />
     <Content Include="areas\admin\assets\js\select2.js" />
     <Content Include="areas\admin\assets\js\select2.min.js" />
     <Content Include="areas\admin\assets\js\tinymceMIN\changelog.txt" />
@@ -1157,7 +1162,10 @@
     <Content Include="areas\admin\assets\webfonts\fa-solid-900.ttf" />
     <Content Include="areas\admin\assets\webfonts\fa-solid-900.woff" />
     <Content Include="areas\admin\assets\webfonts\fa-solid-900.woff2" />
-    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsReadOnly - Copy.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\SettingsReadOnly.cshtml" />
+    <Content Include="areas\admin\Views\Shared\includes.cshtml" />
+    <Content Include="areas\admin\Views\Shared\includesAfterPuckAngularModule.cshtml" />
+    <Content Include="areas\admin\Views\Shared\EditorTemplates\PuckImagePicker.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
