@@ -54,6 +54,9 @@ namespace puck.core.Controllers
             this.apiHelper = ah;
             StateHelper.SetFirstRequestUrl();
         }
+        public ActionResult KeepAlive() {
+            return base.Content("success");
+        }
         public ActionResult DevPage(string id = "0a2ebbd3-b118-4add-a219-4dbc54cd742a") {
             var guid = Guid.Parse(id);
             var revision = repo.GetPuckRevision().FirstOrDefault(x => x.Current && x.Id == guid);
