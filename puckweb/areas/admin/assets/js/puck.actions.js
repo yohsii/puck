@@ -924,7 +924,7 @@ var msg = function (success, str, shouldRemovePreviousMessages,container) {
     if (success === false) { btnClass = "btn-danger"; }
     else if (success === true) { btnClass = "btn-success"; }
     var el = $("<div style='display:none;' class='btn " + btnClass + "'>" + str + "</div>");
-    var remove = $("<div class='btn btnclose'>x</div>").click(function () { $(this).parent().remove(); });
+    var remove = $("<div class='btn btnclose'>x</div>").click(function () { $(this).parent().remove(); setAreaHeights(); });
     el.append(remove);
     container.html(el);
     el.fadeIn(function () { setAreaHeights(); });
