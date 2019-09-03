@@ -1,7 +1,5 @@
 # puck
-Puck - a code first Content Management System
-
-cms based on .net mvc5. uses sqlserver and lucene for storage.
+a code first content management system based on .net mvc5 that uses sqlserver and lucene for storage.
 
 [Wiki](https://github.com/yohsii/puck/wiki)
 
