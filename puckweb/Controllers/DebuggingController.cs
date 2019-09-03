@@ -22,6 +22,17 @@ namespace puck.Controllers
             this.r = r;
         }
 
+        [HttpPost]
+        [Route("users/register")]
+        public ActionResult HandleForm(string model) {
+            if (ModelState.IsValid) {
+                //handle post
+                Response.Redirect("/users/register/success");
+            }
+            ViewBag.RegisterModel = model;
+            return Content("register");
+        }
+
         [Authorize(Roles = "_puck")]
         public ActionResult Protected() {
             return base.Puck();
@@ -87,37 +98,23 @@ namespace puck.Controllers
             model.Title = "title " + index;
             return model;
         }
-        public ActionResult Test2()
-        {
-            //var affected = ApiHelper.UpdateDescendantPaths("/home/","/home1/");
-            var qh = new QueryHelper<Page>();
-            var query = qh.ToString();
-
-            ApiHelper.Email("yohsii@hotmail.co.uk", "test sendgrid", "<h1>testing sendgrid</h1>");
-
-            var max = 7000;
-
-            for(var i = 0; i < max; i++)
-            {
-
-                var str = "";
-
-            }
-
-            return View("~/views/home/test.cshtml");
-        }
-        public ActionResult Test()
-        {
-            string aqn = "puck.core.Base.BaseModel, puck.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
-            var aqn1 = puck.core.debugging.GetType(aqn)?.AssemblyQualifiedName ?? "nope1";
-            var aqn2 = Type.GetType(aqn)?.AssemblyQualifiedName ?? "nope2";
-            return Content($"{aqn1}<br/>{aqn2}");
-        }
         public ActionResult Index() {
+            //example of how to get current node
+            var currentNode = QueryHelper<Page>.Current();
+            //example of how to get current revisions based on url
+            var currentRevisions =
+                r.CurrentRevisionsByPath(QueryHelper<Page>.PathPrefix() + Request.Url.AbsolutePath.ToLower()).ToList();
+            //return control back to puck for routing
+
+
             string aqn = "puck.core.Base.BaseModel, puck.core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
             var aqn1 = puck.core.debugging.GetType(aqn)?.AssemblyQualifiedName ?? "nope1";
             var aqn2 = Type.GetType(aqn)?.AssemblyQualifiedName ?? "nope2";
             return Content($"{aqn1}<br/>{aqn2}");
+        }
+        protected override void HandleUnknownAction(string actionName)
+        {
+            base.Puck().ExecuteResult(ControllerContext);
         }
     }
 }

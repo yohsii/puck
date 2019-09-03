@@ -607,6 +607,21 @@ var handleHash = function (hash) {
         showTasks();
     }
 }
+function getQueryString(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
 $(window).load(function () {
+    var hash = getQueryString("hash");
+    console.log("hashQs",hash);
+    if (!hash) return;
+    setTimeout(function () {
+        location.hash = hash;
+    }, 500);
     
 });

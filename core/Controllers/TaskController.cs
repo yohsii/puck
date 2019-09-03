@@ -533,7 +533,7 @@ namespace puck.core.Controllers
             return Json(new{message=message,success=success,Output=output},JsonRequestBehavior.AllowGet);
         }
 
-        public void DoGenerate(int id,out string cs_source,bool compile=true) {
+        private void DoGenerate(int id,out string cs_source,bool compile=true) {
             var gm = this.repo.GetGeneratedModel().Where(x => x.ID == id).FirstOrDefault();
             var currentClassName = gm.CName;
 

@@ -264,7 +264,7 @@ namespace puck.core.Helpers
             //var user = HttpContext.Current.User.Identity.Name;
             var strAction = action.ToString();
             var metas = repo.GetPuckMeta()
-                .Where(x => x.Name.Contains(":" + strAction + ":"))
+                .Where(x => x.Name.Contains(":" + strAction /*+ ":"*/))
                 .Where(
                     x => x.Key.Equals(path) && x.Name.Contains(":.:")
                     ||
