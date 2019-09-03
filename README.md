@@ -7,7 +7,7 @@ cms based on .net mvc5. uses sqlserver and lucene for storage.
 
 **why use puck**
 
-there are no unnecessary abstractions, if you're already using asp.net mvc then you'll know how to use puck. your pages are based on [ViewModels](https://github.com/yohsii/puck/wiki/Creating-ViewModels) which are just classes optionally decorated with attributes and the edit screen is made up of [Editor Templates](https://github.com/yohsii/puck/wiki/Editor-templates) just like in standard .net mvc. your razor views will receive instances of the appropriate ViewModel as its Model and you even [query](https://github.com/yohsii/puck/wiki/Querying-for-content) for content in a strongly typed manner using the properties of your ViewModel and query expressions.
+there are no unnecessary abstractions, if you're already using asp.net mvc then you'll know how to use puck. your pages are based on [ViewModels](https://github.com/yohsii/puck/wiki/Creating-ViewModels) which are just classes optionally decorated with attributes and the edit screen is made up of [Editor Templates](https://github.com/yohsii/puck/wiki/Editor-templates) just like in standard .net mvc. your razor views will receive instances of the appropriate ViewModel as its Model property and you even [query](https://github.com/yohsii/puck/wiki/Querying-for-content) for content in a strongly typed manner using the properties of your ViewModel and query expressions.
 
 **features**
 
