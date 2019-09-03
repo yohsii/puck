@@ -1,9 +1,13 @@
 # puck
-Puck - Content Management System
-
-cms based on .net mvc5. uses sqlserver and lucene for storage.
+a code first content management system based on .net mvc5 that uses sqlserver and lucene for storage.
 
 [Wiki](https://github.com/yohsii/puck/wiki)
+
+**why use puck**
+
+there are no unnecessary abstractions, if you're already using asp.net mvc then you'll know how to use puck. your pages are based on [ViewModels](https://github.com/yohsii/puck/wiki/Creating-ViewModels) which are just classes optionally decorated with attributes and the edit screen is made up of [Editor Templates](https://github.com/yohsii/puck/wiki/Editor-templates) just like in standard .net mvc. your razor views will receive instances of the appropriate ViewModel as its Model property and you even [query](https://github.com/yohsii/puck/wiki/Querying-for-content) for content in a strongly typed manner using the properties of your ViewModels and query expressions.
+
+it's fast, with queries avoiding the database and instead using Lucene. it's also scalable, syncing between servers in a load balanced environment.
 
 **features**
 
