@@ -285,7 +285,7 @@ namespace puck.core.Controllers
             model.TypeAllowedTemplates = typeAllowedTemplates;
             return View(model);
         }
-        // POST: /admin/Settings/Edit/5
+        // POST: /puck/Settings/Edit/5
         [ValidateInput(enableValidation: false)]
         [HttpPost]
         public JsonResult AllowedTemplates(Settings model)
@@ -510,7 +510,7 @@ namespace puck.core.Controllers
         }
 
         //
-        // POST: /admin/Settings/Edit/5
+        // POST: /puck/Settings/Edit/5
         [ValidateInput(enableValidation:false)]
         [HttpPost]
         public JsonResult Edit(Settings model)

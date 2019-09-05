@@ -258,7 +258,7 @@ namespace puck.core.Helpers
                 var hcontext = HttpContext.Current;
                 user = hcontext.User.Identity.Name;
                 editUrl = hcontext.Request.Url.Scheme +"://" + hcontext.Request.Url.Host + ":" + hcontext.Request.Url.Port
-                    + "/admin?hash="
+                    + "/puck?hash="
                     +HttpUtility.UrlEncode("content?id="+model.Id.ToString()+"&variant="+model.Variant);
             }
             catch (Exception ex) {

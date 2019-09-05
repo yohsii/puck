@@ -53,7 +53,7 @@ namespace puck.core.Controllers
                     if (!string.IsNullOrEmpty(returnUrl))
                         return Redirect(returnUrl);
                     else
-                        return RedirectToAction("Index", "api", new { area = "admin" });
+                        return RedirectToAction("Index", "api", new { area = "puck" });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
@@ -97,6 +97,7 @@ namespace puck.core.Controllers
         [Auth(Roles =PuckRoles.Users)]
         public ActionResult Edit(string userName=null) {
             var model = new PuckUserViewModel();
+            ViewBag.Level0Type = typeof(PuckUserViewModel);
             if (!string.IsNullOrEmpty(userName)) {
                 var usr = userManager.FindByName(userName);
                 model.UserName = userName;

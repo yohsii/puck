@@ -69,7 +69,7 @@ namespace puck.core
                     StateHelper.UpdateCrops(addInstruction:true);
                 }
             };
-            PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_publish_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
+            PuckCache.PuckIndexer.RegisterAfterIndexHandler<puck.core.Base.BaseModel>("puck_publish_notification", (object o, puck.core.Events.IndexingEventArgs args)=>
             {
                 try
                 {
@@ -85,7 +85,7 @@ namespace puck.core
                 catch (Exception ex) {
                     PuckCache.PuckLog.Log(ex);
                 }
-            }, true);
+            }, Propagate:true);
             //edit
             ContentService.RegisterAfterSaveHandler<puck.core.Base.BaseModel>("puck_edit_notification", (object o, puck.core.Events.IndexingEventArgs args) =>
             {

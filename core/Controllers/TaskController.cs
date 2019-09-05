@@ -687,7 +687,7 @@ namespace puck.core.Controllers
         }
 
         //
-        // GET: /admin/Task/
+        // GET: /puck/Task/
 
         public ActionResult Index()
         {
@@ -698,7 +698,7 @@ namespace puck.core.Controllers
         }
 
         //
-        // GET: /admin/Task/Details/5
+        // GET: /puck/Task/Details/5
 
         public ActionResult Details(int id)
         {
@@ -706,7 +706,7 @@ namespace puck.core.Controllers
         }
 
         //
-        // GET: /admin/Task/Create
+        // GET: /puck/Task/Create
         public JsonResult TaskTypes() {
             var ttypes = apiHelper.TaskTypes();
             return Json(ttypes.Select(x => new {Name=x.FullName,Key=x.FullName}), JsonRequestBehavior.AllowGet);
@@ -737,7 +737,7 @@ namespace puck.core.Controllers
         }
 
         //
-        // POST: /admin/Task/Edit/5
+        // POST: /puck/Task/Edit/5
 
         [HttpPost]
         public ActionResult Edit(string p_type,FormCollection fc)
@@ -776,7 +776,7 @@ namespace puck.core.Controllers
         }
 
         //
-        // GET: /admin/Task/Delete/5
+        // GET: /puck/Task/Delete/5
 
         public JsonResult Delete(int id)
         {

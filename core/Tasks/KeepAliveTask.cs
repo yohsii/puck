@@ -25,7 +25,7 @@ namespace puck.core.Tasks
             base.Run(t);
             if (PuckCache.FirstRequestUrl != null) {
                 var uri = PuckCache.FirstRequestUrl;
-                var url = $"{uri.Scheme}://{uri.Host}:{uri.Port}/admin/api/keepalive";
+                var url = $"{uri.Scheme}://{uri.Host}:{uri.Port}/puck/api/keepalive";
                 WebRequest request = WebRequest.Create(url);
                 WebResponse response = request.GetResponse();
                 var content = "";

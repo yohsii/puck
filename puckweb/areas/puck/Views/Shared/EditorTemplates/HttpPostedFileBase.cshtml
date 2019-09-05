@@ -1,0 +1,5 @@
+﻿@model HttpPostedFileBase
+@{
+    var value = Model == null ? "" : Model.FileName;    
+}
+@Html.Input("file")
