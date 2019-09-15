@@ -345,101 +345,95 @@ namespace puck.core.Services
         }
         public void Publish(Guid id, string variant, List<string> descendantVariants, string userName = null)
         {
-            lock (_savelck)
+            PuckUser user = null;
+            if (!string.IsNullOrEmpty(userName))
             {
-                PuckUser user = null;
-                if (!string.IsNullOrEmpty(userName))
-                {
-                    user = userManager.FindByName(userName);
-                    if (user == null)
-                        throw new UserNotFoundException("there is no user for provided username");
-                }
-                else
-                    userName = HttpContext.Current.User.Identity.Name;
-
-                var currentRevision = repo.CurrentRevision(id, variant);
-                if (currentRevision.ParentId != Guid.Empty)
-                {
-                    var publishedParentRevisions = repo.PublishedRevisions(currentRevision.ParentId);
-                    if (publishedParentRevisions.Count() == 0)
-                    {
-                        throw new Exception("You cannot publish this node because its parent is not published.");
-                    }
-                }
-                var mod = ApiHelper.RevisionToBaseModel(currentRevision);
-                mod.Published = true;
-                SaveContent(mod, makeRevision: false, userName: userName);
-                var affected = 0;
-                string notes = "";
-                if (descendantVariants.Any())
-                {
-                    //set descendants to have HasNoPublishedRevision set to false
-                    affected = UpdateDescendantHasNoPublishedRevision(currentRevision.IdPath + ",", "0", descendantVariants);
-                    //set descendants to have IsPublishedRevision set to false
-                    affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "0", false, descendantVariants);
-                    //set current descendants to have IsPublishedRevision set to true, since we're publishing Current descendants
-                    affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "1", true, descendantVariants);
-                    var descendantVariantsLowerCase = descendantVariants.Select(x => x.ToLower()).ToList();
-                    var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
-                    var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
-                    AddPublishInstruction(descendantModels);
-                    indexer.Index(descendantModels);
-                    if (descendantModels.Any())
-                        notes = $"{descendantModels.Count} descendant items also published";
-                }
-                AddAuditEntry(mod.Id, mod.Variant, AuditActions.Publish, notes, userName);
+                user = userManager.FindByName(userName);
+                if (user == null)
+                    throw new UserNotFoundException("there is no user for provided username");
             }
+            else
+                userName = HttpContext.Current.User.Identity.Name;
+
+            var currentRevision = repo.CurrentRevision(id, variant);
+            if (currentRevision.ParentId != Guid.Empty)
+            {
+                var publishedParentRevisions = repo.PublishedRevisions(currentRevision.ParentId);
+                if (publishedParentRevisions.Count() == 0)
+                {
+                    throw new Exception("You cannot publish this node because its parent is not published.");
+                }
+            }
+            var mod = ApiHelper.RevisionToBaseModel(currentRevision);
+            mod.Published = true;
+            SaveContent(mod, makeRevision: false, userName: userName);
+            var affected = 0;
+            string notes = "";
+            if (descendantVariants.Any())
+            {
+                //set descendants to have HasNoPublishedRevision set to false
+                affected = UpdateDescendantHasNoPublishedRevision(currentRevision.IdPath + ",", "0", descendantVariants);
+                //set descendants to have IsPublishedRevision set to false
+                affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "0", false, descendantVariants);
+                //set current descendants to have IsPublishedRevision set to true, since we're publishing Current descendants
+                affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "1", true, descendantVariants);
+                var descendantVariantsLowerCase = descendantVariants.Select(x => x.ToLower()).ToList();
+                var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
+                var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
+                AddPublishInstruction(descendantModels);
+                indexer.Index(descendantModels);
+                if (descendantModels.Any())
+                    notes = $"{descendantModels.Count} descendant items also published";
+            }
+            AddAuditEntry(mod.Id, mod.Variant, AuditActions.Publish, notes, userName);
         }
         public void UnPublish(Guid id, string variant, List<string> descendantVariants, string userName = null)
         {
-            lock (_savelck)
+            PuckUser user = null;
+            if (!string.IsNullOrEmpty(userName))
             {
-                PuckUser user = null;
-                if (!string.IsNullOrEmpty(userName))
-                {
-                    user = userManager.FindByName(userName);
-                    if (user == null)
-                        throw new UserNotFoundException("there is no user for provided username");
-                }
-                else
-                    userName = HttpContext.Current.User.Identity.Name;
-
-                var toIndex = new List<BaseModel>();
-                var currentRevision = repo.CurrentRevision(id, variant);
-                var publishedRevision = repo.PublishedRevision(id, variant);
-                var mod = ApiHelper.RevisionToBaseModel(currentRevision);
-                mod.Published = false;
-                SaveContent(mod, makeRevision: false, userName: userName);
-                toIndex.Add(mod);
-                var publishedVariants = repo.PublishedRevisionVariants(id, variant).ToList();
-                var affected = 0;
-                if (publishedVariants.Count() == 0)
-                {
-                    if (!currentRevision.IsPublishedRevision && publishedRevision != null && !currentRevision.Path.ToLower().Equals(publishedRevision.Path.ToLower()))
-                    {
-                        //since we're unpublishing the published revision (which descendant paths are based on), we should set descendant paths to be based off of the current revision
-                        affected = UpdateDescendantPaths(publishedRevision.Path + "/", currentRevision.Path + "/");
-                        UpdatePathRelatedMeta(publishedRevision.Path, currentRevision.Path);
-                    }
-                }
-                var notes = "";
-                if (descendantVariants.Any())
-                {
-                    //set descendants to have HasNoPublishedRevision set to true
-                    affected = UpdateDescendantHasNoPublishedRevision(currentRevision.IdPath + ",", "1", descendantVariants);
-                    //set descendants to have IsPublishedRevision set to false
-                    affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "0", false, descendantVariants);
-                    var descendantVariantsLowerCase = descendantVariants.Select(x => x.ToLower()).ToList();
-                    var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
-                    var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
-                    toIndex.AddRange(descendantModels);
-                    if (descendantModels.Any())
-                        notes = $"{descendantModels.Count} descendant items also unpublished";
-                }
-                AddPublishInstruction(toIndex);
-                indexer.Index(toIndex);
-                AddAuditEntry(mod.Id, mod.Variant, AuditActions.Unpublish, notes, userName);
+                user = userManager.FindByName(userName);
+                if (user == null)
+                    throw new UserNotFoundException("there is no user for provided username");
             }
+            else
+                userName = HttpContext.Current.User.Identity.Name;
+
+            var toIndex = new List<BaseModel>();
+            var currentRevision = repo.CurrentRevision(id, variant);
+            var publishedRevision = repo.PublishedRevision(id, variant);
+            var mod = ApiHelper.RevisionToBaseModel(currentRevision);
+            mod.Published = false;
+            SaveContent(mod, makeRevision: false, userName: userName);
+            toIndex.Add(mod);
+            var publishedVariants = repo.PublishedRevisionVariants(id, variant).ToList();
+            var affected = 0;
+            if (publishedVariants.Count() == 0)
+            {
+                if (!currentRevision.IsPublishedRevision && publishedRevision != null && !currentRevision.Path.ToLower().Equals(publishedRevision.Path.ToLower()))
+                {
+                    //since we're unpublishing the published revision (which descendant paths are based on), we should set descendant paths to be based off of the current revision
+                    affected = UpdateDescendantPaths(publishedRevision.Path + "/", currentRevision.Path + "/");
+                    UpdatePathRelatedMeta(publishedRevision.Path, currentRevision.Path);
+                }
+            }
+            var notes = "";
+            if (descendantVariants.Any())
+            {
+                //set descendants to have HasNoPublishedRevision set to true
+                affected = UpdateDescendantHasNoPublishedRevision(currentRevision.IdPath + ",", "1", descendantVariants);
+                //set descendants to have IsPublishedRevision set to false
+                affected = UpdateDescendantIsPublishedRevision(currentRevision.IdPath + ",", "0", false, descendantVariants);
+                var descendantVariantsLowerCase = descendantVariants.Select(x => x.ToLower()).ToList();
+                var descendantRevisions = repo.CurrentRevisionDescendants(currentRevision.IdPath).Where(x => descendantVariantsLowerCase.Contains(x.Variant.ToLower())).ToList();
+                var descendantModels = descendantRevisions.Select(x => ApiHelper.RevisionToBaseModel(x)).ToList();
+                toIndex.AddRange(descendantModels);
+                if (descendantModels.Any())
+                    notes = $"{descendantModels.Count} descendant items also unpublished";
+            }
+            AddPublishInstruction(toIndex);
+            indexer.Index(toIndex);
+            AddAuditEntry(mod.Id, mod.Variant, AuditActions.Unpublish, notes, userName);
         }
         public void AddPublishInstruction(List<BaseModel> toIndex)
         {
