@@ -1066,6 +1066,7 @@ namespace puck.core.Controllers
             string path = "";
             string type = "";
             string variant = "";
+            Guid modelId = Guid.Empty;
             try
             {
                 var rnode = repo.GetPuckRevision().Where(x=>x.RevisionID==id).FirstOrDefault();
@@ -1092,6 +1093,7 @@ namespace puck.core.Controllers
                 }
                 path = rnode.Path;
                 type = rnode.Type;
+                modelId = rnode.Id;
                 variant = rnode.Variant;
                 repo.SaveChanges();                
                 success = true;
@@ -1102,7 +1104,7 @@ namespace puck.core.Controllers
                 message = ex.Message;
                 log.Log(ex);
             }
-            return Json(new { success = success, message = message,path=path,type=type,variant=variant }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = success, message = message,id=modelId,path=path,type=type,variant=variant }, JsonRequestBehavior.AllowGet);
         }
         [Auth(Roles = PuckRoles.Revert)]
         public JsonResult DeleteRevision(int id)

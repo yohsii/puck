@@ -283,7 +283,7 @@ var showRevisions = function (variant, id) {
             var el = $(this);
             setRevert(el.attr("data-id"), function (data) {
                 if (data.success) {
-                    displayMarkup(data.path, data.type, data.variant);
+                    displayMarkup(null, data.type, data.variant, undefined, data.id);
                 } else {
                     msg(false, data.message);
                 }
@@ -302,7 +302,7 @@ var showCompare = function (id) {
             setRevert(el.attr("data-id"), function (d) {
                 if (d.success) {
                     overlayClose();
-                    displayMarkup(d.path, d.type, d.variant);
+                    displayMarkup(null, d.type, d.variant, undefined, d.id);
                 } else {
                     overlayClose();
                     msg(false, d.message);
