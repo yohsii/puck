@@ -1,7 +1,7 @@
 # puck
 a code first content management system based on .net mvc5 that uses sqlserver and lucene for storage.
 
-**asp.net core version is here [puck-core](https://github.com/yohsii/puck-core)**
+**no longer actively developed. try the asp.net core version, [puck-core](https://github.com/yohsii/puck-core)**
 
 [Wiki](https://github.com/yohsii/puck/wiki)
 
